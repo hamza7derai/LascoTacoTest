@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LASCOTACO | Manager Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #FDFBFA; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-card { background: white; border-radius: 20px; border: 1px solid #F1F3F5; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+        .input-field { background-color: #FFFFFF; border: 1px solid #E9ECEF; border-radius: 12px; padding: 12px; width: 100%; outline: none; transition: 0.2s; font-size: 14px; }
+        .input-field:focus { border-color: #E85A24; ring: 3px solid rgba(232, 90, 36, 0.1); }
+        .btn-black { background-color: #1A1A1A; color: white; border-radius: 14px; padding: 16px; font-weight: 800; width: 100%; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; cursor: pointer; }
+        .btn-black:hover { background-color: #E85A24; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="p-4 md:p-10 pb-20">
+
+    <header class="max-w-[1400px] mx-auto mb-10">
+        <h1 class="text-3xl font-extrabold text-[#E85A24] tracking-tight">
+            LASCOTACO <span class="text-gray-400 font-medium italic text-xl ml-1">Manager</span>
+        </h1>
+    </header>
+
+    <div class="max-w-[1400px] mx-auto grid grid-cols-12 gap-8">
+        
+        <div class="col-span-12 lg:col-span-5 space-y-6">
+            
+            <div class="glass-card p-8">
+                <div class="flex items-center gap-2 mb-8">
+                    <div class="bg-orange-50 p-2 rounded-lg text-orange-600"><i data-lucide="plus-square" class="w-5 h-5"></i></div>
+                    <h3 class="font-bold text-gray-800 uppercase tracking-widest text-xs">Nouvel Article</h3>
+                </div>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase mb-1 block ml-1">Nom du produit</label>
+                        <input id="p-name" type="text" placeholder="ex: Pizza Margherita" class="input-field" oninput="updatePreview()">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[10px] font-black text-gray-400 uppercase mb-1 block ml-1">Prix (DH)</label>
+                            <input id="p-price" type="number" placeholder="50" class="input-field" oninput="updatePreview()">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black text-gray-400 uppercase mb-1 block ml-1">Mise en avant</label>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
+                                <span class="text-[9px] font-bold text-gray-500 flex items-center gap-1"><i data-lucide="zap" class="w-3 h-3"></i> Top Vente</span>
+                                <input type="checkbox" id="p-top" class="w-4 h-4 accent-orange-600" onchange="updatePreview()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[10px] font-black text-gray-400 uppercase mb-1 block ml-1">Type</label>
+                            <select id="p-type" class="input-field font-bold text-xs" onchange="syncLabels()">
+                                <option value="Restaurant">Restaurant</option>
+                                <option value="Épicerie">Épicerie</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black text-gray-400 uppercase mb-1 block ml-1">Label (Catégorie)</label>
+                            <div class="flex gap-1">
+                                <select id="p-label" class="input-field font-bold text-xs flex-1"></select>
+                                <button onclick="addNewLabel()" class="p-3 bg-gray-100 rounded-xl text-gray-400 hover:text-orange-600 font-bold">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase mb-1 block ml-1">URL Image</label>
+                        <input id="p-img" type="text" placeholder="https://..." class="input-field" oninput="updatePreview()">
+                    </div>
+
+                    <button onclick="publishItem()" class="btn-black mt-4">
+                        <i data-lucide="send" class="w-5 h-5"></i> PUBLIER L'ARTICLE
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 mt-10 border-t pt-8">
+                    <div class="bg-gray-50 p-4 rounded-2xl flex flex-col items-center">
+                        <i data-lucide="package" class="w-4 h-4 text-gray-400 mb-1"></i>
+                        <span id="stat-total" class="text-xl font-black">0</span>
+                        <span class="text-[8px] font-bold text-gray-400 uppercase">Articles</span>
+                    </div>
+                    <div class="bg-orange-50 p-4 rounded-2xl flex flex-col items-center">
+                        <i data-lucide="zap" class="w-4 h-4 text-orange-500 mb-1"></i>
+                        <span id="stat-top" class="text-xl font-black text-orange-600">0</span>
+                        <span class="text-[8px] font-bold text-orange-400 uppercase">Top</span>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-2xl flex flex-col items-center">
+                        <i data-lucide="tag" class="w-4 h-4 text-blue-500 mb-1"></i>
+                        <span id="stat-cats" class="text-xl font-black text-blue-600">0</span>
+                        <span class="text-[8px] font-bold text-blue-400 uppercase">Labels</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-8">
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="bg-blue-50 p-2 rounded-lg text-blue-600"><i data-lucide="image" class="w-5 h-5"></i></div>
+                    <h3 class="font-bold text-gray-800 uppercase tracking-widest text-xs">Gestion des Slides</h3>
+                </div>
+                <div class="space-y-4">
+                    <input id="banner-url" type="text" placeholder="URL de l'image (Slide)" class="input-field">
+                    <button onclick="addBanner()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition">
+                        <i data-lucide="plus"></i> AJOUTER LE SLIDE
+                    </button>
+                    <div id="banner-list" class="grid grid-cols-3 gap-2 mt-4">
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-12 lg:col-span-7 space-y-8">
+            
+            <div class="glass-card p-8">
+                <div class="flex items-center gap-2 mb-6 text-gray-400">
+                    <i data-lucide="eye" class="w-4 h-4"></i>
+                    <h3 class="text-[10px] font-bold uppercase tracking-widest">Aperçu en direct</h3>
+                </div>
+                <div class="flex flex-col md:flex-row gap-8 items-center bg-gray-50/50 p-8 rounded-[2rem] border-2 border-dashed border-gray-200">
+                    <div class="w-48 h-36 bg-gray-100 rounded-2xl overflow-hidden shrink-0 shadow-inner">
+                        <img id="prev-img" src="https://via.placeholder.com/150" class="w-full h-full object-cover">
+                    </div>
+                    <div class="space-y-1 text-center md:text-left">
+                        <div class="flex items-center justify-center md:justify-start gap-2">
+                            <h4 id="prev-name" class="font-extrabold text-gray-800 text-xl italic tracking-tight">Nom...</h4>
+                            <span id="prev-top-badge" class="hidden text-[8px] bg-orange-600 text-white px-2 py-0.5 rounded-full font-bold uppercase">TOP</span>
+                        </div>
+                        <p id="prev-price" class="text-orange-600 font-black text-3xl">0 DH</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="layout-list" class="w-5 h-5 text-gray-400"></i>
+                        <h3 class="font-bold text-gray-800 uppercase tracking-widest text-xs">Articles en ligne</h3>
+                    </div>
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <input id="search-bar" oninput="refreshList()" type="text" placeholder="Rechercher..." class="text-xs p-3 px-5 bg-gray-50 rounded-full border-none outline-none ring-1 ring-gray-100 focus:ring-orange-500 w-full">
+                        <select id="filter-type" onchange="refreshList()" class="text-[10px] font-bold p-3 bg-gray-50 rounded-full border-none ring-1 ring-gray-100">
+                            <option value="All">Tous</option>
+                            <option value="Restaurant">Resto</option>
+                            <option value="Épicerie">Épicerie</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="admin-list" class="space-y-4 max-h-[600px] overflow-y-auto pr-2 no-scrollbar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+        <div class="glass-card p-8 w-full max-w-md">
+            <h3 class="font-black text-xl mb-6">Modifier l'article</h3>
+            <div class="space-y-4">
+                <input id="edit-id" type="hidden">
+                <input id="edit-name" type="text" class="input-field" placeholder="Nom">
+                <input id="edit-price" type="number" class="input-field" placeholder="Prix">
+                <input id="edit-img" type="text" class="input-field" placeholder="URL Image">
+                <div class="flex gap-3">
+                    <button onclick="closeEdit()" class="flex-1 p-4 bg-gray-100 rounded-xl font-bold cursor-pointer">Annuler</button>
+                    <button onclick="saveEdit()" class="flex-1 p-4 bg-black text-white rounded-xl font-bold cursor-pointer">Sauvegarder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBebaGxqiNBvCqofveg1Fmztl7av3Mdoyg",
+            authDomain: "lascotaco-67fe5.firebaseapp.com",
+            projectId: "lascotaco-67fe5",
+            storageBucket: "lascotaco-67fe5.firebasestorage.app",
+            messagingSenderId: "865918381027",
+            appId: "1:865918381027:web:abc6435df20894020c4ed6"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // 1. Label Management
+        async function syncLabels() {
+            const type = document.getElementById('p-type').value;
+            const select = document.getElementById('p-label');
+            select.innerHTML = "";
+            const snap = await db.collection("categories").where("type", "==", type).get();
+            snap.forEach(doc => {
+                select.innerHTML += `<option value="${doc.data().name}">${doc.data().name}</option>`;
+            });
+            document.getElementById('stat-cats').innerText = (await db.collection("categories").get()).size;
+        }
+
+        async function addNewLabel() {
+            const name = prompt("Nom du nouveau label (ex: Panuzzo, Lait, Tacos...):");
+            if(name) {
+                const type = document.getElementById('p-type').value;
+                await db.collection("categories").add({ name: name, type: type });
+                syncLabels();
+            }
+        }
+
+        // 2. Banner Management
+        async function addBanner() {
+            const url = document.getElementById('banner-url').value;
+            if(!url) return;
+            await db.collection("banners").add({ url: url, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+            document.getElementById('banner-url').value = "";
+            loadBannersAdmin();
+        }
+
+        async function loadBannersAdmin() {
+            const list = document.getElementById('banner-list');
+            list.innerHTML = "";
+            const snap = await db.collection("banners").orderBy("timestamp", "desc").get();
+            snap.forEach(doc => {
+                list.innerHTML += `
+                    <div class="relative h-20 rounded-xl overflow-hidden group border border-gray-100">
+                        <img src="${doc.data().url}" class="w-full h-full object-cover">
+                        <button onclick="deleteBanner('${doc.id}')" class="absolute inset-0 bg-red-600/80 text-white opacity-0 group-hover:opacity-100 transition flex items-center justify-center cursor-pointer">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>`;
+            });
+            lucide.createIcons();
+        }
+
+        async function deleteBanner(id) {
+            if(confirm("Supprimer ce slide ?")) {
+                await db.collection("banners").doc(id).delete();
+                loadBannersAdmin();
+            }
+        }
+
+        // 3. Preview Logic
+        function updatePreview() {
+            document.getElementById('prev-name').innerText = document.getElementById('p-name').value || "Nom...";
+            document.getElementById('prev-price').innerText = (document.getElementById('p-price').value || 0) + " DH";
+            document.getElementById('prev-img').src = document.getElementById('p-img').value || "https://via.placeholder.com/150";
+            document.getElementById('prev-top-badge').classList.toggle('hidden', !document.getElementById('p-top').checked);
+        }
+
+        // 4. Publish Item
+        async function publishItem() {
+            const data = {
+                name: document.getElementById('p-name').value,
+                price: Number(document.getElementById('p-price').value),
+                isTop: document.getElementById('p-top').checked,
+                category: document.getElementById('p-label').value,
+                type: document.getElementById('p-type').value,
+                image: document.getElementById('p-img').value,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            if(!data.name || !data.price) return alert("Remplissez le nom et le prix !");
+            await db.collection("products").add(data);
+            location.reload();
+        }
+
+        // 5. List Rendering
+        async function refreshList() {
+            const search = document.getElementById('search-bar').value.toLowerCase();
+            const filterType = document.getElementById('filter-type').value;
+            const list = document.getElementById('admin-list');
+            
+            const snap = await db.collection("products").orderBy("timestamp", "desc").get();
+            list.innerHTML = "";
+            let topCount = 0; let totalCount = 0;
+
+            snap.forEach(doc => {
+                const p = doc.data();
+                if(filterType !== "All" && p.type !== filterType) return;
+                if(search && !p.name.toLowerCase().includes(search)) return;
+
+                totalCount++; if(p.isTop) topCount++;
+
+                list.innerHTML += `
+                <div class="flex items-center justify-between p-4 bg-white border border-gray-50 rounded-2xl hover:shadow-lg transition-all group">
+                    <div class="flex items-center gap-4">
+                        <img src="${p.image}" class="w-14 h-14 rounded-xl object-cover bg-gray-50">
+                        <div>
+                            <p class="font-bold text-sm text-gray-800">${p.name}</p>
+                            <div class="flex gap-2 items-center">
+                                <span class="text-[9px] font-black uppercase px-2 py-0.5 bg-gray-50 text-gray-400 rounded-md">${p.category}</span>
+                                ${p.isTop ? '<i data-lucide="zap" class="w-3 h-3 text-orange-500"></i>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <p class="font-black text-gray-700 text-sm">${p.price} DH</p>
+                        <div class="flex gap-2">
+                            <button onclick="openEdit('${doc.id}', '${p.name}', ${p.price}, '${p.image}')" class="p-2 bg-gray-50 rounded-lg text-gray-400 hover:text-blue-600 transition cursor-pointer"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                            <button onclick="deleteProd('${doc.id}')" class="p-2 bg-gray-50 rounded-lg text-gray-400 hover:text-red-500 transition cursor-pointer"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('stat-total').innerText = totalCount;
+            document.getElementById('stat-top').innerText = topCount;
+            lucide.createIcons();
+        }
+
+        // 6. Edit & Delete
+        function openEdit(id, name, price, img) {
+            document.getElementById('edit-id').value = id;
+            document.getElementById('edit-name').value = name;
+            document.getElementById('edit-price').value = price;
+            document.getElementById('edit-img').value = img;
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+        function closeEdit() { document.getElementById('edit-modal').classList.add('hidden'); }
+
+        async function saveEdit() {
+            const id = document.getElementById('edit-id').value;
+            await db.collection("products").doc(id).update({
+                name: document.getElementById('edit-name').value,
+                price: Number(document.getElementById('edit-price').value),
+                image: document.getElementById('edit-img').value
+            });
+            location.reload();
+        }
+
+        async function deleteProd(id) {
+            if(confirm("Supprimer cet article ?")) {
+                await db.collection("products").doc(id).delete();
+                refreshList();
+            }
+        }
+
+        syncLabels();
+        refreshList();
+        loadBannersAdmin();
+    </script>
+</body>
+</html>
