@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LASCOTACO | Admin</title>
+    <title>LASCOTACO | Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -11,40 +11,43 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        :root { --brand: #E85A24; --brand-hover: #D04D1B; --bg-app: #FDFBFA; --green: #10B981; }
-        body { background-color: #E9ECEF; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        :root { --brand: #E85A24; --brand-hover: #D04D1B; --brand-soft: rgba(232, 90, 36, 0.1); --bg-app: #FDFBFA; --green: #10B981; }
+        body { background-color: #E2E8F0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        .app-container { max-width: 500px; margin: 0 auto; width: 100%; background: var(--bg-app); min-height: 100vh; position: relative; box-shadow: 0 0 60px rgba(0,0,0,0.1); overflow-x: hidden; }
-        
+        .app-container { max-width: 500px; margin: 0 auto; width: 100%; background: var(--bg-app); min-height: 100vh; position: relative; box-shadow: 0 0 40px rgba(0,0,0,0.05); overflow-x: hidden; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .premium-ease { transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); }
 
-        /* INPUTS */
-        .input-box { background-color: white; border: 1px solid #E2E8F0; border-radius: 16px; padding: 14px 16px; width: 100%; outline: none; font-weight: 600; font-size: 14px; color: #1A202C; transition: 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
-        .input-box:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(232, 90, 36, 0.1); }
-        .input-box::placeholder { color: #A0AEC0; font-weight: 500; }
-        .label-text { display: block; font-size: 12px; font-weight: 700; color: #4A5568; margin-bottom: 6px; margin-left: 2px; }
+        /* PREMIUM INPUTS */
+        .input-premium { width: 100%; background-color: #F4F5F7; border: 2px solid transparent; border-radius: 16px; padding: 16px; font-weight: 600; font-size: 14px; color: #1A202C; transition: 0.3s ease; outline: none; }
+        .input-premium:focus { background-color: #FFFFFF; border-color: var(--brand); box-shadow: 0 4px 20px var(--brand-soft); }
+        .input-premium::placeholder { color: #A0AEC0; font-weight: 500; }
+        .label-text { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #A0AEC0; margin-bottom: 8px; margin-left: 4px; }
 
         /* IOS TOGGLE */
-        .toggle-switch { appearance: none; width: 44px; height: 24px; background-color: #E2E8F0; border-radius: 9999px; position: relative; cursor: pointer; outline: none; transition: background-color 0.3s ease; }
-        .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background-color: white; border-radius: 50%; transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+        .toggle-switch { appearance: none; width: 48px; height: 26px; background-color: #E2E8F0; border-radius: 9999px; position: relative; cursor: pointer; outline: none; transition: background-color 0.3s ease; }
+        .toggle-switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background-color: white; border-radius: 50%; transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .toggle-switch:checked { background-color: var(--green); }
-        .toggle-switch:checked::after { transform: translateX(20px); }
+        .toggle-switch:checked::after { transform: translateX(22px); }
         .toggle-switch.orange:checked { background-color: var(--brand); }
 
         /* BOTTOM SHEET MODAL */
-        #modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; z-index: 1000; }
-        #modal-panel { position: fixed; bottom: 0; left: 50%; width: 100%; max-width: 500px; transform: translate(-50%, 100%); background: #F8F9FA; border-radius: 32px 32px 0 0; pointer-events: none; z-index: 1001; max-height: 92vh; display: flex; flex-direction: column; box-shadow: 0 -20px 40px rgba(0,0,0,0.1); }
+        #modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; z-index: 1000; }
+        #modal-panel { position: fixed; bottom: 0; left: 50%; width: 100%; max-width: 500px; transform: translate(-50%, 100%); background: #F4F5F7; border-radius: 32px 32px 0 0; pointer-events: none; z-index: 1001; max-height: 92vh; display: flex; flex-direction: column; box-shadow: 0 -20px 60px rgba(0,0,0,0.15); }
         
-        /* THE FIX: Apply classes based on body being modal-open */
         body.modal-open #modal-overlay { opacity: 1; pointer-events: auto; }
         body.modal-open #modal-panel { transform: translate(-50%, 0); pointer-events: auto; }
+
+        /* ANIMATED SECTIONS */
+        .expandable-ui { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); }
+        .expandable-ui.open { grid-template-rows: 1fr; }
+        .expandable-content { overflow: hidden; }
 
         /* TOAST */
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
         
-        .cat-pill { padding: 8px 16px; border-radius: 99px; font-weight: 700; font-size: 13px; color: #4A5568; background: white; border: 1px solid #E2E8F0; flex: 0 0 auto; cursor: pointer; transition: 0.2s; }
-        .cat-pill.active { background: var(--brand); color: white; border-color: var(--brand); }
+        .cat-pill { padding: 10px 20px; border-radius: 99px; font-weight: 800; font-size: 13px; color: #718096; background: #F4F5F7; flex: 0 0 auto; cursor: pointer; transition: 0.2s; border: 2px solid transparent; }
+        .cat-pill.active { background: white; color: var(--brand); border-color: var(--brand); box-shadow: 0 4px 15px var(--brand-soft); }
     </style>
 </head>
 <body>
@@ -53,21 +56,21 @@
 
     <div class="app-container" id="app-root">
         
-        <header class="bg-white px-5 pt-6 pb-4 sticky top-0 z-40 border-b border-gray-100 shadow-sm">
-            <div class="flex justify-between items-center mb-4">
-                <h1 class="text-2xl font-black italic tracking-tight" style="color: var(--brand)">LASCOTACO <span class="text-gray-300 font-bold text-sm not-italic ml-1">Admin</span></h1>
-                <button onclick="openModal()" class="w-10 h-10 bg-[#E85A24] text-white rounded-full flex justify-center items-center font-black shadow-lg shadow-orange-500/30 active:scale-90 transition">
-                    <i data-lucide="plus" class="w-5 h-5"></i>
+        <header class="bg-white/90 backdrop-blur-xl px-5 pt-6 pb-4 sticky top-0 z-40 border-b border-gray-100">
+            <div class="flex justify-between items-center mb-5">
+                <h1 class="text-2xl font-black italic tracking-tighter" style="color: var(--brand)">LASCOTACO <span class="text-gray-400 font-bold text-sm not-italic ml-1">Admin</span></h1>
+                <button onclick="openModal()" class="px-5 py-2.5 bg-[#E85A24] text-white rounded-full flex justify-center items-center gap-2 font-bold text-[13px] shadow-lg shadow-orange-500/25 active:scale-95 transition">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Produit
                 </button>
             </div>
             
             <div class="relative">
-                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input type="text" id="search-bar" oninput="refreshList()" placeholder="Rechercher un produit..." class="w-full bg-gray-50 border border-gray-200 rounded-full py-3 pl-11 pr-4 text-[14px] font-bold outline-none focus:border-orange-500 transition-colors">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                <input type="text" id="search-bar" oninput="refreshList()" placeholder="Rechercher un produit..." class="w-full bg-gray-50 border-2 border-transparent rounded-[16px] py-3.5 pl-12 pr-4 text-[14px] font-semibold outline-none focus:bg-white focus:border-orange-500 transition-colors">
             </div>
         </header>
 
-        <div class="px-5 py-4 bg-white/80 backdrop-blur-md sticky top-[138px] z-30">
+        <div class="px-5 py-4 bg-white/80 backdrop-blur-md sticky top-[146px] z-30">
             <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2" id="filter-container">
                 <div class="cat-pill active" onclick="setFilter('All')">Tous</div>
                 <div class="cat-pill" onclick="setFilter('Restaurant')">Restaurant</div>
@@ -75,48 +78,49 @@
             </div>
         </div>
 
-        <main id="admin-list" class="p-5 flex flex-col gap-4 pb-20"></main>
+        <main id="admin-list" class="p-5 flex flex-col gap-4 pb-24 min-h-[50vh]"></main>
     </div>
 
     <div id="modal-overlay" class="premium-ease" onclick="closeModal()"></div>
     <div id="modal-panel" class="premium-ease">
         
-        <div class="p-5 bg-white border-b border-gray-100 flex justify-between items-center shrink-0 rounded-t-[32px] relative z-10">
-            <div class="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1.5 bg-gray-200 rounded-full"></div>
-            <h2 id="modal-title" class="text-xl font-black text-gray-900 mt-2">Nouveau Produit</h2>
-            <button onclick="closeModal()" class="p-2 bg-gray-50 rounded-full text-gray-500 active:scale-90 transition mt-2"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <div class="p-6 bg-white flex justify-between items-center shrink-0 rounded-t-[32px] relative z-20 shadow-sm">
+            <div class="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full"></div>
+            <h2 id="modal-title" class="text-2xl font-black text-gray-900 mt-2 tracking-tight">Nouveau Produit</h2>
+            <button onclick="closeModal()" class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-500 active:scale-90 transition mt-2"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
 
-        <div class="flex-1 overflow-y-auto no-scrollbar p-5 space-y-6" id="modal-content">
+        <div class="flex-1 overflow-y-auto no-scrollbar p-5 space-y-6 relative z-10" id="modal-content">
             <input type="hidden" id="p-id">
             
-            <div class="bg-white p-5 rounded-[24px] border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center gap-3">
-                <div class="w-16 h-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 relative overflow-hidden">
-                    <img id="img-preview" src="" class="w-full h-full object-cover hidden">
-                    <i data-lucide="image" id="img-icon" class="w-6 h-6"></i>
+            <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-4">
+                <div class="relative w-full h-36 bg-[#F4F5F7] rounded-[16px] border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 overflow-hidden group">
+                    <img id="img-preview" src="" class="w-full h-full object-cover hidden transition-transform duration-500 group-hover:scale-105">
+                    <div id="img-icon" class="flex flex-col items-center gap-2">
+                        <i data-lucide="image" class="w-8 h-8 text-gray-400"></i>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Aperçu</span>
+                    </div>
                 </div>
-                <div class="w-full">
-                    <label class="label-text text-left">URL de l'image</label>
-                    <input id="p-img" type="text" placeholder="https://..." class="input-box text-xs" oninput="updateImagePreview()">
+                <div>
+                    <label class="label-text">URL de l'image</label>
+                    <input id="p-img" type="text" placeholder="Collez le lien de l'image ici..." class="input-premium" oninput="updateImagePreview()">
                 </div>
             </div>
 
-            <div class="bg-white p-5 rounded-[24px] border border-gray-100 shadow-sm space-y-4">
-                <h3 class="font-black text-sm text-gray-900 flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4 text-orange-500"></i> Infos générales</h3>
-                
+            <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-5">
                 <div>
                     <label class="label-text">Nom du produit</label>
-                    <input id="p-name" type="text" placeholder="Ex: Tacos Nuggets" class="input-box">
+                    <input id="p-name" type="text" placeholder="Ex: Tacos Double Viande" class="input-premium">
                 </div>
                 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="label-text">Prix (DH)</label>
-                        <input id="p-price" type="number" placeholder="0.00" class="input-box">
+                        <input id="p-price" type="number" placeholder="0.00" class="input-premium font-black text-[#E85A24]">
                     </div>
                     <div>
                         <label class="label-text">Type</label>
-                        <select id="p-type" class="input-box appearance-none" onchange="syncCategories()">
+                        <select id="p-type" class="input-premium appearance-none cursor-pointer" onchange="syncCategories()">
                             <option value="Restaurant">Restaurant</option>
                             <option value="Épicerie">Épicerie</option>
                         </select>
@@ -124,77 +128,91 @@
                 </div>
 
                 <div>
-                    <label class="label-text flex justify-between">Catégorie <button onclick="addNewCat()" class="text-orange-500 hover:underline">+ Ajouter</button></label>
-                    <select id="p-label" class="input-box appearance-none"></select>
+                    <label class="label-text flex justify-between items-center">
+                        Catégorie 
+                        <button onclick="addNewCat()" class="text-orange-500 hover:text-orange-600 bg-orange-50 px-3 py-1 rounded-full text-[10px]">+ Ajouter</button>
+                    </label>
+                    <select id="p-label" class="input-premium appearance-none cursor-pointer"></select>
                 </div>
 
                 <div>
-                    <label class="label-text">Description courte</label>
-                    <textarea id="p-desc" placeholder="Ingrédients, détails..." class="input-box h-24 resize-none"></textarea>
+                    <label class="label-text">Description</label>
+                    <textarea id="p-desc" placeholder="Ingrédients, détails (2 lignes max)..." class="input-premium h-24 resize-none"></textarea>
                 </div>
             </div>
 
             <div class="space-y-4">
-                <h3 class="font-black text-[11px] text-gray-400 uppercase tracking-widest pl-2">Options Avancées</h3>
+                <h3 class="font-black text-[11px] text-gray-400 uppercase tracking-widest pl-2 mb-2">Configuration Avancée</h3>
 
-                <div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="zap" class="w-5 h-5 text-orange-500"></i>
-                        <div><p class="font-bold text-sm text-gray-900">Mettre en avant</p><p class="text-[10px] text-gray-500 font-semibold">Afficher dans le top vente</p></div>
+                <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex justify-between items-center">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-orange-50 rounded-[12px] flex items-center justify-center text-orange-500"><i data-lucide="zap" class="w-5 h-5"></i></div>
+                        <div><p class="font-bold text-sm text-gray-900">Mettre en avant</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Afficher dans le top vente</p></div>
                     </div>
                     <input type="checkbox" id="p-top" class="toggle-switch orange">
                 </div>
 
-                <div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm">
-                    <div class="flex justify-between items-center mb-1">
-                        <div><p class="font-bold text-sm text-gray-900">Choix de sauces</p><p class="text-[10px] text-gray-500 font-semibold">Le client pourra choisir une sauce</p></div>
-                        <input type="checkbox" id="p-sauce-toggle" class="toggle-switch" onchange="toggleUI('sauce-ui', this.checked)">
+                <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+                    <div class="flex justify-between items-center">
+                        <div><p class="font-bold text-sm text-gray-900">Choix de sauces</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Le client pourra choisir une sauce</p></div>
+                        <input type="checkbox" id="p-sauce-toggle" class="toggle-switch" onchange="toggleUIAccordion('sauce-ui', this.checked)">
                     </div>
-                    <div id="sauce-ui" class="hidden mt-4 space-y-3 pt-4 border-t border-gray-50">
-                        <div id="sauce-list" class="space-y-2"></div>
-                        <button onclick="addDynamicField('sauces')" class="w-full py-2.5 border border-dashed border-gray-300 rounded-xl font-bold text-gray-500 text-xs hover:border-orange-500 hover:text-orange-500 transition">+ Ajouter une sauce</button>
-                    </div>
-                </div>
-
-                <div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm">
-                    <div class="flex justify-between items-center mb-1">
-                        <div><p class="font-bold text-sm text-gray-900">Tailles / Variantes</p><p class="text-[10px] text-gray-500 font-semibold">Proposez différentes tailles/prix</p></div>
-                        <input type="checkbox" id="p-size-toggle" class="toggle-switch" onchange="toggleUI('size-ui', this.checked)">
-                    </div>
-                    <div id="size-ui" class="hidden mt-4 space-y-3 pt-4 border-t border-gray-50">
-                        <div id="size-list" class="space-y-2"></div>
-                        <button onclick="addDynamicField('sizes')" class="w-full py-2.5 border border-dashed border-gray-300 rounded-xl font-bold text-gray-500 text-xs hover:border-orange-500 hover:text-orange-500 transition">+ Ajouter une taille</button>
+                    <div id="sauce-ui" class="expandable-ui">
+                        <div class="expandable-content">
+                            <div class="mt-5 pt-5 border-t border-gray-100 space-y-3">
+                                <div id="sauce-list" class="space-y-2"></div>
+                                <button onclick="addDynamicField('sauces')" class="w-full py-3.5 border-2 border-dashed border-gray-200 rounded-[16px] font-bold text-gray-400 text-sm hover:border-orange-500 hover:text-orange-500 hover:bg-orange-50 transition-all">+ Ajouter une sauce</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm">
-                    <div class="flex justify-between items-center mb-1">
-                        <div><p class="font-bold text-sm text-gray-900">Extras</p><p class="text-[10px] text-gray-500 font-semibold">Options supplémentaires payantes</p></div>
-                        <input type="checkbox" id="p-extra-toggle" class="toggle-switch" onchange="toggleUI('extra-ui', this.checked)">
+                <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+                    <div class="flex justify-between items-center">
+                        <div><p class="font-bold text-sm text-gray-900">Tailles & Variantes</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Proposez différentes tailles/prix</p></div>
+                        <input type="checkbox" id="p-size-toggle" class="toggle-switch" onchange="toggleUIAccordion('size-ui', this.checked)">
                     </div>
-                    <div id="extra-ui" class="hidden mt-4 space-y-3 pt-4 border-t border-gray-50">
-                        <div id="extra-list" class="space-y-2"></div>
-                        <button onclick="addDynamicField('extras')" class="w-full py-2.5 border border-dashed border-gray-300 rounded-xl font-bold text-gray-500 text-xs hover:border-orange-500 hover:text-orange-500 transition">+ Ajouter un extra</button>
+                    <div id="size-ui" class="expandable-ui">
+                        <div class="expandable-content">
+                            <div class="mt-5 pt-5 border-t border-gray-100 space-y-3">
+                                <div id="size-list" class="space-y-2"></div>
+                                <button onclick="addDynamicField('sizes')" class="w-full py-3.5 border-2 border-dashed border-gray-200 rounded-[16px] font-bold text-gray-400 text-sm hover:border-orange-500 hover:text-orange-500 hover:bg-orange-50 transition-all">+ Ajouter une taille</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm flex justify-between items-center">
-                    <div><p class="font-bold text-sm text-gray-900">Instructions Spéciales</p><p class="text-[10px] text-gray-500 font-semibold">Autoriser les notes du client</p></div>
+                <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+                    <div class="flex justify-between items-center">
+                        <div><p class="font-bold text-sm text-gray-900">Extras</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Options payantes supplémentaires</p></div>
+                        <input type="checkbox" id="p-extra-toggle" class="toggle-switch" onchange="toggleUIAccordion('extra-ui', this.checked)">
+                    </div>
+                    <div id="extra-ui" class="expandable-ui">
+                        <div class="expandable-content">
+                            <div class="mt-5 pt-5 border-t border-gray-100 space-y-3">
+                                <div id="extra-list" class="space-y-2"></div>
+                                <button onclick="addDynamicField('extras')" class="w-full py-3.5 border-2 border-dashed border-gray-200 rounded-[16px] font-bold text-gray-400 text-sm hover:border-orange-500 hover:text-orange-500 hover:bg-orange-50 transition-all">+ Ajouter un extra</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex justify-between items-center">
+                    <div><p class="font-bold text-sm text-gray-900">Instructions Spéciales</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Autoriser les notes du client</p></div>
                     <input type="checkbox" id="p-instructions" class="toggle-switch" checked>
                 </div>
 
-                <div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm flex justify-between items-center">
-                    <div><p class="font-bold text-sm text-gray-900">Produit Disponible</p><p class="text-[10px] text-gray-500 font-semibold">Activer/désactiver la vente</p></div>
+                <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex justify-between items-center border-l-4 border-green-500">
+                    <div><p class="font-bold text-sm text-gray-900">Produit Disponible</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Visible sur l'application client</p></div>
                     <input type="checkbox" id="p-active" class="toggle-switch" checked>
                 </div>
             </div>
             
-            <div class="h-10"></div>
-        </div>
+            <div class="h-10"></div> </div>
 
-        <div class="p-5 bg-white shrink-0 border-t border-gray-100 rounded-t-[24px] shadow-[0_-10px_20px_rgba(0,0,0,0.02)] relative z-10">
-            <button onclick="saveProduct()" class="w-full bg-[#E85A24] text-white py-4 rounded-xl font-black text-[16px] shadow-lg shadow-orange-500/20 active:scale-95 transition">
-                Enregistrer le produit
+        <div class="sticky bottom-0 p-5 bg-white border-t border-gray-100 rounded-t-[32px] shadow-[0_-15px_40px_rgba(0,0,0,0.06)] z-20">
+            <button onclick="saveProduct()" class="w-full bg-[#1A1A1A] hover:bg-[#E85A24] text-white py-4.5 rounded-[20px] font-black text-[16px] shadow-xl transition-all duration-300 active:scale-95 flex items-center justify-center gap-2">
+                <i data-lucide="save" class="w-5 h-5"></i> Enregistrer le produit
             </button>
         </div>
     </div>
@@ -215,8 +233,8 @@
         function showToast(msg) {
             const container = document.getElementById('toast-container');
             const t = document.createElement('div');
-            t.className = 'bg-[#1A1A1A] text-white px-5 py-4 rounded-[16px] text-[13px] font-bold shadow-xl transition-all duration-300 translate-y-[-20px] opacity-0 flex items-center justify-between z-[9999]';
-            t.innerHTML = `<div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#25D366]"></i> <span>${msg}</span></div>`;
+            t.className = 'bg-[#1A1A1A] text-white px-5 py-4 rounded-[16px] text-[13px] font-bold shadow-2xl transition-all duration-300 translate-y-[-20px] opacity-0 flex items-center gap-3 z-[9999]';
+            t.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5 text-[#10B981]"></i> <span>${msg}</span>`;
             container.appendChild(t); lucide.createIcons();
             requestAnimationFrame(() => t.classList.remove('translate-y-[-20px]', 'opacity-0'));
             setTimeout(() => { t.classList.add('translate-y-[-20px]', 'opacity-0'); setTimeout(() => t.remove(), 300); }, 2500);
@@ -230,9 +248,9 @@
             refreshList();
         }
 
-        function toggleUI(id, show) {
+        function toggleUIAccordion(id, show) {
             const el = document.getElementById(id);
-            if(show) el.classList.remove('hidden'); else el.classList.add('hidden');
+            if(show) { el.classList.add('open'); } else { el.classList.remove('open'); }
         }
 
         function updateImagePreview() {
@@ -243,9 +261,8 @@
             else { img.classList.add('hidden'); icon.classList.remove('hidden'); }
         }
 
-        // 4. MODAL MANAGEMENT - FIXED HERE
+        // 4. MODAL MANAGEMENT
         function openModal(id = null) {
-            // Target document.body instead of 'app-root'
             document.body.classList.add('modal-open');
             document.body.style.overflow = 'hidden';
             if(!id) {
@@ -256,7 +273,6 @@
             }
         }
         function closeModal() { 
-            // Target document.body instead of 'app-root'
             document.body.classList.remove('modal-open'); 
             document.body.style.overflow = '';
         }
@@ -267,44 +283,45 @@
             document.getElementById('p-img').value = ""; document.getElementById('p-top').checked = false;
             document.getElementById('p-active').checked = true; document.getElementById('p-instructions').checked = true;
             
-            document.getElementById('p-sauce-toggle').checked = false; toggleUI('sauce-ui', false); dynamicSauces = []; renderDynamic('sauces');
-            document.getElementById('p-size-toggle').checked = false; toggleUI('size-ui', false); dynamicSizes = []; renderDynamic('sizes');
-            document.getElementById('p-extra-toggle').checked = false; toggleUI('extra-ui', false); dynamicExtras = []; renderDynamic('extras');
+            document.getElementById('p-sauce-toggle').checked = false; toggleUIAccordion('sauce-ui', false); dynamicSauces = []; renderDynamic('sauces');
+            document.getElementById('p-size-toggle').checked = false; toggleUIAccordion('size-ui', false); dynamicSizes = []; renderDynamic('sizes');
+            document.getElementById('p-extra-toggle').checked = false; toggleUIAccordion('extra-ui', false); dynamicExtras = []; renderDynamic('extras');
             
             updateImagePreview();
             syncCategories();
+            document.getElementById('modal-content').scrollTo(0,0);
         }
 
-        // 5. DYNAMIC ARRAYS (Sauces, Tailles, Extras)
+        // 5. DYNAMIC ARRAYS
         function renderDynamic(type) {
             if(type === 'sauces') {
                 const list = document.getElementById('sauce-list');
                 list.innerHTML = dynamicSauces.map((s, i) => `
-                    <div class="flex gap-2 bg-white border border-gray-200 rounded-xl p-1.5 items-center">
-                        <i data-lucide="grip-vertical" class="w-4 h-4 text-gray-300 ml-1"></i>
-                        <input type="text" value="${s}" onchange="dynamicSauces[${i}]=this.value" class="flex-1 bg-transparent text-sm font-bold outline-none text-gray-800" placeholder="Ex: Algérienne">
-                        <button onclick="dynamicSauces.splice(${i},1); renderDynamic('sauces')" class="w-8 h-8 flex justify-center items-center text-red-400 hover:bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <div class="flex gap-2 bg-[#F4F5F7] border border-transparent focus-within:border-orange-500 focus-within:bg-white transition-all rounded-[16px] p-2 items-center shadow-sm">
+                        <i data-lucide="grip-vertical" class="w-4 h-4 text-gray-400 ml-2"></i>
+                        <input type="text" value="${s}" onchange="dynamicSauces[${i}]=this.value" class="flex-1 bg-transparent text-[14px] font-bold outline-none text-gray-900 px-2" placeholder="Ex: Algérienne">
+                        <button onclick="dynamicSauces.splice(${i},1); renderDynamic('sauces')" class="w-10 h-10 flex justify-center items-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded-[12px] transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                     </div>`).join('');
             } else if(type === 'sizes') {
                 const list = document.getElementById('size-list');
                 list.innerHTML = dynamicSizes.map((s, i) => `
-                    <div class="flex gap-2 bg-white border border-gray-200 rounded-xl p-1.5 items-center">
-                        <i data-lucide="grip-vertical" class="w-4 h-4 text-gray-300 ml-1"></i>
-                        <input type="text" value="${s.name}" onchange="dynamicSizes[${i}].name=this.value" class="w-1/2 bg-transparent text-sm font-bold outline-none text-gray-800" placeholder="Nom (Ex: Grande)">
-                        <input type="number" value="${s.price}" onchange="dynamicSizes[${i}].price=Number(this.value)" class="w-1/3 bg-transparent text-sm font-black outline-none text-[#E85A24] text-right pr-2" placeholder="Prix">
-                        <span class="text-xs font-bold text-gray-400">DH</span>
-                        <button onclick="dynamicSizes.splice(${i},1); renderDynamic('sizes')" class="w-8 h-8 flex justify-center items-center text-red-400 hover:bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <div class="flex gap-2 bg-[#F4F5F7] border border-transparent focus-within:border-orange-500 focus-within:bg-white transition-all rounded-[16px] p-2 items-center shadow-sm">
+                        <i data-lucide="grip-vertical" class="w-4 h-4 text-gray-400 ml-2"></i>
+                        <input type="text" value="${s.name}" onchange="dynamicSizes[${i}].name=this.value" class="w-1/2 bg-transparent text-[14px] font-bold outline-none text-gray-900 px-2 border-r border-gray-200" placeholder="Nom (Grande)">
+                        <input type="number" value="${s.price}" onchange="dynamicSizes[${i}].price=Number(this.value)" class="w-1/3 bg-transparent text-[14px] font-black outline-none text-[#E85A24] text-right pr-2" placeholder="Prix">
+                        <span class="text-xs font-bold text-gray-400 pr-1">DH</span>
+                        <button onclick="dynamicSizes.splice(${i},1); renderDynamic('sizes')" class="w-10 h-10 flex justify-center items-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded-[12px] transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                     </div>`).join('');
             } else if(type === 'extras') {
                 const list = document.getElementById('extra-list');
                 list.innerHTML = dynamicExtras.map((e, i) => `
-                    <div class="flex gap-2 bg-white border border-gray-200 rounded-xl p-1.5 items-center">
-                        <i data-lucide="grip-vertical" class="w-4 h-4 text-gray-300 ml-1"></i>
-                        <input type="text" value="${e.name}" onchange="dynamicExtras[${i}].name=this.value" class="w-1/2 bg-transparent text-sm font-bold outline-none text-gray-800" placeholder="Option (Ex: Fromage)">
-                        <span class="text-xs font-bold text-gray-400 pl-2">+</span>
-                        <input type="number" value="${e.price}" onchange="dynamicExtras[${i}].price=Number(this.value)" class="w-1/3 bg-transparent text-sm font-black outline-none text-gray-600 text-right pr-2" placeholder="Prix">
-                        <span class="text-xs font-bold text-gray-400">DH</span>
-                        <button onclick="dynamicExtras.splice(${i},1); renderDynamic('extras')" class="w-8 h-8 flex justify-center items-center text-red-400 hover:bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <div class="flex gap-2 bg-[#F4F5F7] border border-transparent focus-within:border-orange-500 focus-within:bg-white transition-all rounded-[16px] p-2 items-center shadow-sm">
+                        <i data-lucide="grip-vertical" class="w-4 h-4 text-gray-400 ml-2"></i>
+                        <input type="text" value="${e.name}" onchange="dynamicExtras[${i}].name=this.value" class="w-1/2 bg-transparent text-[14px] font-bold outline-none text-gray-900 px-2 border-r border-gray-200" placeholder="Ex: Fromage">
+                        <span class="text-[14px] font-bold text-gray-400 pl-2">+</span>
+                        <input type="number" value="${e.price}" onchange="dynamicExtras[${i}].price=Number(this.value)" class="w-1/3 bg-transparent text-[14px] font-black outline-none text-gray-700 text-right pr-2" placeholder="Prix">
+                        <span class="text-xs font-bold text-gray-400 pr-1">DH</span>
+                        <button onclick="dynamicExtras.splice(${i},1); renderDynamic('extras')" class="w-10 h-10 flex justify-center items-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded-[12px] transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                     </div>`).join('');
             }
             lucide.createIcons();
@@ -340,7 +357,6 @@
         async function saveProduct() {
             const id = document.getElementById('p-id').value;
             
-            // Filter empty dynamic fields
             const finalSauces = dynamicSauces.filter(s => s.trim() !== '');
             const finalSizes = dynamicSizes.filter(s => s.name.trim() !== '' && s.price > 0);
             const finalExtras = dynamicExtras.filter(e => e.name.trim() !== '' && e.price > 0);
@@ -388,18 +404,17 @@
             updateImagePreview();
 
             document.getElementById('p-top').checked = p.isTop || false;
-            document.getElementById('p-active').checked = p.isActive !== false; // default true
+            document.getElementById('p-active').checked = p.isActive !== false;
             document.getElementById('p-instructions').checked = p.hasInstructions !== false;
 
-            // Toggles & Arrays
             document.getElementById('p-sauce-toggle').checked = p.requiresSauce || false;
-            toggleUI('sauce-ui', p.requiresSauce); dynamicSauces = p.sauces || []; renderDynamic('sauces');
+            toggleUIAccordion('sauce-ui', p.requiresSauce); dynamicSauces = p.sauces || []; renderDynamic('sauces');
 
             document.getElementById('p-size-toggle').checked = p.hasSizes || false;
-            toggleUI('size-ui', p.hasSizes); dynamicSizes = p.sizes || []; renderDynamic('sizes');
+            toggleUIAccordion('size-ui', p.hasSizes); dynamicSizes = p.sizes || []; renderDynamic('sizes');
 
             document.getElementById('p-extra-toggle').checked = p.hasExtras || false;
-            toggleUI('extra-ui', p.hasExtras); dynamicExtras = p.extras || []; renderDynamic('extras');
+            toggleUIAccordion('extra-ui', p.hasExtras); dynamicExtras = p.extras || []; renderDynamic('extras');
 
             openModal(id);
         }
@@ -418,34 +433,56 @@
             const snap = await db.collection("products").orderBy("timestamp", "desc").get();
             list.innerHTML = "";
 
+            let count = 0;
+
             snap.forEach(doc => {
                 const p = doc.data();
                 if(currentFilter !== "All" && p.type !== currentFilter) return;
                 if(search && !p.name.toLowerCase().includes(search)) return;
 
-                // Build Badges
-                let badges = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md text-gray-500 bg-gray-100 uppercase tracking-wider">${p.category}</span>`;
-                if(p.isTop) badges += `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md text-orange-600 bg-orange-100 flex items-center gap-0.5"><i data-lucide="zap" class="w-3 h-3"></i> TOP</span>`;
-                if(p.requiresSauce) badges += `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md text-green-600 bg-green-100">SAUCES</span>`;
-                if(p.hasSizes) badges += `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md text-blue-600 bg-blue-100">TAILLES</span>`;
-                if(p.hasExtras) badges += `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md text-purple-600 bg-purple-100">EXTRAS</span>`;
+                count++;
 
-                const opacity = p.isActive === false ? 'opacity-50' : 'opacity-100';
+                let badges = `<span class="text-[9px] font-bold px-2 py-1 rounded-md text-gray-500 bg-gray-100 uppercase tracking-wider">${p.category}</span>`;
+                if(p.isTop) badges += `<span class="text-[9px] font-bold px-2 py-1 rounded-md text-orange-600 bg-orange-50 flex items-center gap-1 border border-orange-100"><i data-lucide="zap" class="w-3 h-3"></i> TOP</span>`;
+                if(p.requiresSauce) badges += `<span class="text-[9px] font-bold px-2 py-1 rounded-md text-green-600 bg-green-50 border border-green-100">SAUCES</span>`;
+                if(p.hasSizes) badges += `<span class="text-[9px] font-bold px-2 py-1 rounded-md text-blue-600 bg-blue-50 border border-blue-100">TAILLES</span>`;
+                if(p.hasExtras) badges += `<span class="text-[9px] font-bold px-2 py-1 rounded-md text-purple-600 bg-purple-50 border border-purple-100">EXTRAS</span>`;
+
+                const opacity = p.isActive === false ? 'opacity-50 grayscale-[50%]' : 'opacity-100';
 
                 list.innerHTML += `
-                <div class="bg-white rounded-[24px] border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] p-3 flex items-center gap-4 ${opacity}">
-                    <img src="${p.image}" class="w-20 h-20 rounded-xl object-cover bg-gray-50 shrink-0">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex flex-wrap gap-1 mb-1.5">${badges}</div>
-                        <h3 class="font-bold text-[14px] text-gray-900 leading-tight truncate">${p.name}</h3>
-                        <p class="font-black mt-1 text-[15px]" style="color: var(--brand)">${p.price} DH</p>
+                <div class="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-3 flex items-stretch gap-4 ${opacity} transition-all hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] group">
+                    <div class="w-24 h-24 rounded-[16px] overflow-hidden bg-[#F4F5F7] shrink-0 relative">
+                        <img src="${p.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        ${p.isActive === false ? '<div class="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-[9px] font-black uppercase tracking-widest backdrop-blur-sm">Caché</div>' : ''}
                     </div>
-                    <div class="flex flex-col gap-2 shrink-0">
-                        <button onclick="editProduct('${doc.id}')" class="w-10 h-10 flex justify-center items-center bg-gray-50 text-gray-600 rounded-xl hover:bg-gray-100 active:scale-95 transition"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-                        <button onclick="deleteProd('${doc.id}', '${p.name.replace(/'/g, "\\'")}')" class="w-10 h-10 flex justify-center items-center bg-red-50 text-red-500 rounded-xl hover:bg-red-100 active:scale-95 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <div class="flex-1 min-w-0 flex flex-col justify-center py-1">
+                        <div class="flex flex-wrap gap-1 mb-2">${badges}</div>
+                        <h3 class="font-bold text-[15px] text-gray-900 leading-tight truncate">${p.name}</h3>
+                        <p class="font-black mt-1 text-[16px]" style="color: var(--brand)">${p.price} DH</p>
+                    </div>
+                    <div class="flex flex-col justify-between shrink-0 py-1">
+                        <button onclick="deleteProd('${doc.id}', '${p.name.replace(/'/g, "\\'")}')" class="w-9 h-9 flex justify-center items-center bg-gray-50 text-gray-400 rounded-full hover:bg-red-50 hover:text-red-500 active:scale-90 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        <button onclick="editProduct('${doc.id}')" class="w-9 h-9 flex justify-center items-center bg-gray-50 text-gray-600 rounded-full hover:bg-gray-200 active:scale-90 transition"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
                     </div>
                 </div>`;
             });
+
+            // EMPTY STATE
+            if(count === 0) {
+                list.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-20 text-center px-4">
+                        <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-6 shadow-[0_10px_40px_rgba(0,0,0,0.05)]">
+                            <i data-lucide="package-open" class="w-10 h-10 text-gray-300"></i>
+                        </div>
+                        <h3 class="font-black text-gray-900 text-xl tracking-tight">Aucun produit</h3>
+                        <p class="text-[14px] font-medium text-gray-500 mt-2 mb-8 leading-relaxed max-w-[250px]">Vous n'avez pas encore de produit dans cette catégorie.</p>
+                        <button onclick="openModal()" class="font-bold text-[15px] text-white bg-[#E85A24] px-8 py-4 rounded-full shadow-lg shadow-orange-500/25 active:scale-95 transition flex items-center gap-2">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Ajouter un produit
+                        </button>
+                    </div>`;
+            }
+
             lucide.createIcons();
         }
 
