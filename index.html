@@ -21,30 +21,36 @@
         .theme-resto { --brand: var(--resto); --brand-soft: rgba(232, 90, 36, 0.1); }
         .theme-epi { --brand: var(--epi); --brand-soft: rgba(16, 185, 129, 0.1); }
 
-        /* SKELETON LOADERS */
-        .skeleton { background: linear-gradient(90deg, #F1F3F5 25%, #E9ECEF 50%, #F1F3F5 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 12px; }
+        /* SKELETONS */
+        .skeleton { background: linear-gradient(90deg, #F1F3F5 25%, #E9ECEF 50%, #F1F3F5 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 20px; }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
         /* CATEGORIES */
         .category-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 12px 24px; scroll-padding-left: 24px; scroll-behavior: smooth;}
-        .category-pill { flex: 0 0 auto; scroll-snap-align: start; transition: all 0.3s ease; background: #F1F3F5; color: #6C757D; }
+        .category-pill { flex: 0 0 auto; scroll-snap-align: start; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); background: #F1F3F5; color: #6C757D; }
         .active-label { background-color: var(--brand) !important; color: white !important; transform: scale(1.05); box-shadow: 0 8px 20px var(--brand-soft); }
 
-        /* PRODUCTS */
-        .product-card { background: #FFFAF8; border-radius: 22px; border: 1px solid #F1F3F5; transition: all 0.3s ease; animation: fadeIn 0.4s ease-out forwards; }
+        /* PRODUCTS - Restored Rounded Corners */
+        .product-card { background: #FFFAF6; border-radius: 24px; border: 1px solid #FFF0E5; transition: all 0.3s ease; animation: fadeIn 0.4s ease-out forwards; }
         .product-card:active { transform: scale(0.97); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .product-img-wrap { overflow: hidden; border-radius: 20px; height: 135px; background: white; width: 100%; }
+        .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; border-radius: 20px; transition: transform 0.4s ease; }
+        .product-card:hover img { transform: scale(1.05); }
 
-        /* BOTTOM SHEET (OPTIONS) */
+        /* BOTTOM SHEET (OPTIONS) - Ultra Smooth */
         #bottom-sheet-root { position: fixed; inset: 0; z-index: 2000; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
-        #bs-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
-        #bs-panel { width: 100%; max-width: 500px; background: white; border-radius: 32px 32px 0 0; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1); pointer-events: auto; padding-bottom: env(safe-area-inset-bottom); max-height: 85vh; display: flex; flex-direction: column; }
+        #bs-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+        #bs-panel { width: 100%; max-width: 500px; background: white; border-radius: 32px 32px 0 0; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); pointer-events: auto; padding-bottom: env(safe-area-inset-bottom); max-height: 85vh; display: flex; flex-direction: column; }
         .bs-open #bs-overlay { opacity: 1; pointer-events: auto; }
         .bs-open #bs-panel { transform: translateY(0); }
 
+        /* TOGGLE SWITCH ANIMATION */
+        #store-toggle-bg { transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), background-color 0.4s ease; }
+
         /* UTILS */
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .active-store-btn { background-color: var(--brand) !important; color: white !important; box-shadow: 0 10px 20px var(--brand-soft); }
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
     </style>
 </head>
@@ -69,16 +75,20 @@
             </div>
         </div>
 
-        <div class="px-5 py-2 flex gap-3 bg-white sticky top-[68px] z-40">
-            <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 py-3.5 rounded-2xl font-extrabold flex items-center justify-center gap-2 transition-all bg-white border border-gray-100 active-store-btn">
-                <i data-lucide="utensils" class="w-4 h-4"></i> Resto
-            </button>
-            <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 py-3.5 rounded-2xl font-extrabold flex items-center justify-center gap-2 transition-all bg-white border border-gray-100">
-                <i data-lucide="shopping-basket" class="w-4 h-4"></i> Épicerie
-            </button>
+        <div class="px-5 py-3 sticky top-[68px] bg-white/95 backdrop-blur-md z-40">
+            <div class="bg-gray-100 p-1.5 rounded-[2rem] flex relative w-full items-center">
+                <div id="store-toggle-bg" class="absolute left-1.5 top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-[#E85A24] rounded-[1.5rem] shadow-sm"></div>
+                
+                <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 relative z-10 py-3 rounded-[1.5rem] text-sm font-extrabold flex items-center justify-center gap-2 text-white transition-colors duration-300">
+                    <i data-lucide="utensils" class="w-4 h-4"></i> Resto
+                </button>
+                <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 relative z-10 py-3 rounded-[1.5rem] text-sm font-extrabold flex items-center justify-center gap-2 text-gray-400 transition-colors duration-300">
+                    <i data-lucide="shopping-basket" class="w-4 h-4"></i> Épicerie
+                </button>
+            </div>
         </div>
 
-        <div id="sub-nav" class="category-scroll no-scrollbar sticky top-[138px] bg-white/95 backdrop-blur-md z-30"></div>
+        <div id="sub-nav" class="category-scroll no-scrollbar sticky top-[146px] bg-white/95 backdrop-blur-md z-30"></div>
 
         <main id="product-grid" class="p-5 grid grid-cols-2 gap-4 pb-40">
             </main>
@@ -108,17 +118,18 @@
             <div class="p-6 overflow-y-auto no-scrollbar flex-1 space-y-6">
                 <div id="bs-sauces" class="space-y-3 hidden">
                     <h4 class="font-bold text-sm text-gray-500 uppercase tracking-widest">Choix de Sauce</h4>
-                    <select id="sauce-select" class="w-full p-4 bg-gray-50 rounded-2xl font-bold text-sm border border-gray-100 outline-none focus:border-[#E85A24]">
+                    <select id="sauce-select" class="w-full p-4 bg-gray-50 rounded-2xl font-bold text-sm border border-gray-100 outline-none focus:border-[#E85A24] transition-colors">
                         <option value="">Sans sauce</option>
                         <option value="Algérienne">Algérienne</option>
                         <option value="Big Mac">Big Mac</option>
                         <option value="Fromagère">Fromagère</option>
+                        <option value="Andalouse">Andalouse</option>
                     </select>
                 </div>
                 
                 <div class="space-y-3">
                     <h4 class="font-bold text-sm text-gray-500 uppercase tracking-widest">Instructions spéciales</h4>
-                    <textarea id="bs-notes" placeholder="Ex: Sans oignons, bien cuit..." class="w-full p-4 bg-gray-50 rounded-2xl font-semibold text-sm border border-gray-100 outline-none focus:border-[#E85A24] resize-none h-24"></textarea>
+                    <textarea id="bs-notes" placeholder="Ex: Sans oignons, bien cuit..." class="w-full p-4 bg-gray-50 rounded-2xl font-semibold text-sm border border-gray-100 outline-none focus:border-[#E85A24] resize-none h-24 transition-colors"></textarea>
                 </div>
             </div>
 
@@ -132,7 +143,7 @@
 
     <div id="cart-drawer-root" style="position: fixed; inset: 0; z-index: 1000; pointer-events: none;">
         <div id="cart-overlay" style="position: absolute; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.4s ease; pointer-events: none;" onclick="toggleCart(false)"></div>
-        <div id="cart-panel" style="position: absolute; right: 0; top: 0; bottom: 0; width: 88%; max-width: 420px; background: white; border-radius: 30px 0 0 30px; transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1); pointer-events: auto; display: flex; flex-direction: column;">
+        <div id="cart-panel" style="position: absolute; right: 0; top: 0; bottom: 0; width: 88%; max-width: 420px; background: white; border-radius: 30px 0 0 30px; transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1); pointer-events: auto; display: flex; flex-direction: column;">
             
             <div class="p-6 border-b flex justify-between items-center shrink-0">
                 <h2 class="text-xl font-black italic tracking-tight">Mon Panier</h2>
@@ -141,16 +152,6 @@
             
             <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar"></div>
             
-            <div id="upsell-container" class="px-6 pb-4 shrink-0">
-                <p class="font-bold text-[10px] text-gray-400 uppercase tracking-widest mb-3">N'oubliez pas !</p>
-                <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
-                    <div onclick="quickAdd('Coca Cola 33cl', 10, 'https://cdn-icons-png.flaticon.com/512/3075/3075977.png')" class="min-w-[120px] bg-gray-50 p-3 rounded-2xl flex items-center gap-3 border border-gray-100 active:scale-95 transition">
-                        <div class="flex-1"><p class="font-bold text-[10px] text-gray-800">Coca Cola</p><p class="font-black text-[9px] text-[#E85A24]">+10 DH</p></div>
-                        <div class="w-6 h-6 bg-white rounded-full flex items-center justify-center font-bold text-xs shadow-sm">+</div>
-                    </div>
-                </div>
-            </div>
-
             <div class="p-8 bg-gray-50/80 border-t border-gray-100 space-y-4 shrink-0">
                 <div class="flex justify-between items-center px-2">
                     <span class="font-bold text-gray-400 uppercase text-[10px]">Livraison</span>
@@ -168,13 +169,6 @@
     </div>
 
     <script>
-        // SERVICE WORKER REGISTRATION (PWA)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW setup failed'));
-            });
-        }
-
         // FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyBebaGxqiNBvCqofveg1Fmztl7av3Mdoyg",
@@ -187,11 +181,11 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        let cart = []; // Changed to Array to support complex items
+        let cart = []; 
         let activeStore = 'Restaurant'; let activeCat = '🔥 Top vente';
         let livraisonFee = 20;
-        let allProducts = []; // Local cache for Search
-        let currentItemForSheet = null; // Temp holder
+        let allProducts = []; 
+        let currentItemForSheet = null;
 
         // --- TOAST SYSTEM ---
         function showToast(message) {
@@ -210,22 +204,23 @@
             const grid = document.getElementById('product-grid');
             grid.innerHTML = Array(4).fill().map(() => `
                 <div class="product-card p-3 flex flex-col gap-3 border-transparent shadow-none">
-                    <div class="skeleton h-32 w-full rounded-2xl"></div>
+                    <div class="skeleton h-32 w-full rounded-[20px]"></div>
                     <div class="skeleton h-4 w-3/4 rounded mt-1"></div>
                     <div class="flex justify-between items-center mt-auto pt-2">
                         <div class="skeleton h-4 w-12 rounded"></div>
-                        <div class="skeleton h-8 w-8 rounded-xl"></div>
+                        <div class="skeleton h-8 w-8 rounded-full"></div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // --- STORE SWITCH ---
+        // --- REAL TOGGLE SWITCH ---
         function setStore(type) { 
             activeStore = type; activeCat = '🔥 Top vente';
             document.getElementById('search-input').value = '';
             
             const body = document.getElementById('body-wrap');
+            const toggleBg = document.getElementById('store-toggle-bg');
             const btnResto = document.getElementById('btn-resto');
             const btnEpi = document.getElementById('btn-epi');
             const waBtn = document.getElementById('wa-btn');
@@ -233,11 +228,21 @@
 
             if(type === 'Restaurant') {
                 body.className = "drawer-closed theme-resto";
-                btnResto.classList.add('active-store-btn'); btnEpi.classList.remove('active-store-btn');
+                toggleBg.style.transform = 'translateX(0)';
+                toggleBg.style.backgroundColor = 'var(--resto)';
+                
+                btnResto.classList.replace('text-gray-400', 'text-white');
+                btnEpi.classList.replace('text-white', 'text-gray-400');
+                
                 waBtn.style.backgroundColor = "#25D366"; bsBtn.style.backgroundColor = "#E85A24";
             } else {
                 body.className = "drawer-closed theme-epi";
-                btnResto.classList.remove('active-store-btn'); btnEpi.classList.add('active-store-btn');
+                toggleBg.style.transform = 'translateX(100%)';
+                toggleBg.style.backgroundColor = 'var(--epi)';
+                
+                btnEpi.classList.replace('text-gray-400', 'text-white');
+                btnResto.classList.replace('text-white', 'text-gray-400');
+                
                 waBtn.style.backgroundColor = "#10B981"; bsBtn.style.backgroundColor = "#10B981";
             }
             renderSkeletons(); renderLabels(); loadProducts(); 
@@ -251,7 +256,7 @@
             
             nav.innerHTML = catsData.map((cat, idx) => `
                 <button id="btn-cat-${idx}" onclick="handleCatClick('${cat.name}', 'btn-cat-${idx}')" 
-                    class="category-pill px-6 py-2.5 rounded-xl font-bold whitespace-nowrap ${activeCat === cat.name ? 'active-label' : ''}">
+                    class="category-pill px-6 py-2.5 rounded-[1rem] font-bold whitespace-nowrap ${activeCat === cat.name ? 'active-label' : ''}">
                     ${cat.name}
                 </button>
             `).join('');
@@ -272,7 +277,7 @@
                 const filtered = allProducts.filter(p => p.name.toLowerCase().includes(term));
                 renderProductGrid(filtered);
             } else {
-                renderProductGrid(allProducts); // reset
+                renderProductGrid(allProducts);
             }
         });
 
@@ -284,7 +289,12 @@
             
             query.onSnapshot(snap => {
                 allProducts = [];
-                snap.forEach(doc => allProducts.push(doc.data()));
+                snap.forEach(doc => {
+                    let data = doc.data();
+                    // Keep original category reference for sauce logic
+                    if (!data.category) data.category = activeCat; 
+                    allProducts.push(data);
+                });
                 renderProductGrid(allProducts);
             });
         }
@@ -294,31 +304,40 @@
             if(products.length === 0) { grid.innerHTML = '<p class="col-span-2 text-center text-gray-400 py-10 font-bold text-xs">Aucun résultat</p>'; return; }
             
             grid.innerHTML = products.map(p => `
-                <div class="product-card p-3 flex flex-col gap-3" onclick="openOptions('${p.name}', ${p.price}, '${p.image}')">
+                <div class="product-card p-3 flex flex-col gap-3" onclick="openOptions('${p.name}', ${p.price}, '${p.image}', '${p.category}')">
                     <div class="product-img-wrap relative">
                         <img src="${p.image}" loading="lazy">
-                        ${p.isTop ? `<span class="absolute top-2 left-2 ${activeStore === 'Restaurant' ? 'bg-orange-600' : 'bg-emerald-500'} text-white text-[7px] font-black px-2 py-1 rounded-md uppercase">Top</span>` : ''}
+                        ${p.isTop ? `<span class="absolute top-2 left-2 ${activeStore === 'Restaurant' ? 'bg-[#E85A24]' : 'bg-[#10B981]'} text-white text-[7px] font-black px-2 py-1 rounded-md uppercase">Top</span>` : ''}
                     </div>
                     <h3 class="font-bold text-[11px] text-gray-800 leading-tight h-8 overflow-hidden pr-1">${p.name}</h3>
-                    <div class="flex justify-between items-center mt-auto">
-                        <span class="font-black text-sm" style="color: var(--brand)">${p.price} DH</span>
-                        <div class="w-8 h-8 rounded-xl font-bold text-xs flex items-center justify-center text-white shadow-md active:scale-90 transition" style="background-color: var(--brand)">+</div>
+                    <div class="flex justify-between items-center mt-auto pb-1">
+                        <span class="font-black text-[13px]" style="color: var(--brand)">${p.price} DH</span>
+                        <div class="w-7 h-7 rounded-full font-bold text-[14px] flex items-center justify-center text-white shadow-md active:scale-90 transition" style="background-color: var(--brand)">+</div>
                     </div>
                 </div>`).join('');
         }
 
-        // --- BOTTOM SHEET (CUSTOMIZATION) ---
-        function openOptions(name, price, image) {
+        // --- SMART BOTTOM SHEET (CONDITIONAL SAUCES) ---
+        function openOptions(name, price, image, category) {
             currentItemForSheet = { name, price, image };
             document.getElementById('bs-title').innerText = name;
             document.getElementById('bs-price').innerText = price + ' DH';
             document.getElementById('sauce-select').value = '';
             document.getElementById('bs-notes').value = '';
             
-            // Show sauces only for restaurant
+            // SMART LOGIC: Only show sauces for specific food types
+            const foodName = name.toLowerCase();
+            const foodCat = category ? category.toLowerCase() : '';
+            const needsSauce = ['tacos', 'burger', 'burgers', 'sandwich', 'panini'].some(keyword => 
+                foodName.includes(keyword) || foodCat.includes(keyword)
+            );
+
             const sauceDiv = document.getElementById('bs-sauces');
-            if(activeStore === 'Restaurant') sauceDiv.classList.remove('hidden');
-            else sauceDiv.classList.add('hidden');
+            if(activeStore === 'Restaurant' && needsSauce) {
+                sauceDiv.classList.remove('hidden');
+            } else {
+                sauceDiv.classList.add('hidden');
+            }
 
             document.getElementById('body-wrap').classList.add('bs-open', 'modal-open');
         }
@@ -333,7 +352,6 @@
             const sauce = document.getElementById('sauce-select').value;
             const notes = document.getElementById('bs-notes').value.trim();
             
-            // Generate unique ID based on options
             const complexId = `${currentItemForSheet.name}-${sauce}-${notes}`;
             
             const existingItem = cart.find(i => i.id === complexId);
@@ -355,15 +373,6 @@
             syncUI();
             showToast(`${currentItemForSheet.name} ajouté !`);
         });
-
-        // Quick add for upsells
-        function quickAdd(name, price, img) {
-            const id = `${name}--`;
-            const existing = cart.find(i => i.id === id);
-            if(existing) existing.qty++;
-            else cart.push({ id, name, price, image: img, sauce: '', notes: '', qty: 1 });
-            syncUI(); renderDrawer(); showToast(`${name} ajouté !`);
-        }
 
         function updateCartItemQty(id, change) {
             const index = cart.findIndex(i => i.id === id);
@@ -440,8 +449,8 @@
             window.open(`https://wa.me/212708006088?text=${encodeURIComponent(msg)}`);
         }
 
-        // INIT
-        document.addEventListener('DOMContentLoaded', () => { setStore('Restaurant'); lucide.createIcons(); });
+        document.addEventListener('DOMContentLoaded', () => { renderSkeletons(); setStore('Restaurant'); lucide.createIcons(); });
     </script>
 </body>
 </html>
+
