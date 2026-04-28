@@ -3,288 +3,318 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LASCOTACO | Manager</title>
+    <title>LASCOTACO | Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --brand: #E85A24; --bg: #FDFBFA; }
-        body { background-color: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        :root { --brand: #E85A24; --brand-hover: #D04D1B; --bg-app: #FDFBFA; --green: #10B981; }
+        body { background-color: #E9ECEF; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        .premium-ease { transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); }
+        .app-container { max-width: 500px; margin: 0 auto; width: 100%; background: var(--bg-app); min-height: 100vh; position: relative; box-shadow: 0 0 60px rgba(0,0,0,0.1); overflow-x: hidden; }
+        
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        /* INPUTS */
-        .input-solid { background-color: #F4F5F7; border: 2px solid transparent; border-radius: 16px; padding: 16px; width: 100%; outline: none; font-weight: 600; font-size: 15px; color: #1A1A1A; transition: 0.3s ease; }
-        .input-solid:focus { border-color: var(--brand); background-color: white; box-shadow: 0 4px 20px rgba(232, 90, 36, 0.1); }
-        .input-solid::placeholder { color: #A0AEC0; font-weight: 500; }
+        .premium-ease { transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); }
 
-        /* TOGGLE SWITCH (iOS Style) */
-        .toggle-checkbox:checked { right: 0; border-color: var(--brand); }
-        .toggle-checkbox:checked + .toggle-label { background-color: var(--brand); }
-        .toggle-checkbox:checked + .toggle-label:after { transform: translateX(100%); border-color: white; }
+        /* INPUTS */
+        .input-box { background-color: white; border: 1px solid #E2E8F0; border-radius: 16px; padding: 14px 16px; width: 100%; outline: none; font-weight: 600; font-size: 14px; color: #1A202C; transition: 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
+        .input-box:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(232, 90, 36, 0.1); }
+        .input-box::placeholder { color: #A0AEC0; font-weight: 500; }
+        .label-text { display: block; font-size: 12px; font-weight: 700; color: #4A5568; margin-bottom: 6px; margin-left: 2px; }
+
+        /* IOS TOGGLE */
+        .toggle-switch { appearance: none; width: 44px; height: 24px; background-color: #E2E8F0; border-radius: 9999px; position: relative; cursor: pointer; outline: none; transition: background-color 0.3s ease; }
+        .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background-color: white; border-radius: 50%; transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+        .toggle-switch:checked { background-color: var(--green); }
+        .toggle-switch:checked::after { transform: translateX(20px); }
+        .toggle-switch.orange:checked { background-color: var(--brand); }
 
         /* BOTTOM SHEET MODAL */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; z-index: 1000; }
-        .modal-panel { position: fixed; bottom: 0; left: 0; right: 0; max-width: 600px; margin: 0 auto; background: white; border-radius: 36px 36px 0 0; transform: translateY(100%); pointer-events: none; z-index: 1001; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 -20px 40px rgba(0,0,0,0.1); }
-        .modal-open .modal-overlay { opacity: 1; pointer-events: auto; }
-        .modal-open .modal-panel { transform: translateY(0); pointer-events: auto; }
+        #modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; z-index: 1000; }
+        #modal-panel { position: fixed; bottom: 0; left: 50%; width: 100%; max-width: 500px; transform: translate(-50%, 100%); background: #F8F9FA; border-radius: 32px 32px 0 0; pointer-events: none; z-index: 1001; max-height: 92vh; display: flex; flex-direction: column; box-shadow: 0 -20px 40px rgba(0,0,0,0.1); }
+        .modal-open #modal-overlay { opacity: 1; pointer-events: auto; }
+        .modal-open #modal-panel { transform: translate(-50%, 0); pointer-events: auto; }
 
-        /* PRODUCT CARDS */
-        .product-card { background: white; border-radius: 28px; border: 1px solid #F1F3F5; box-shadow: 0 8px 24px rgba(0,0,0,0.02); overflow: hidden; }
-        .product-card:active { transform: scale(0.97); }
+        /* TOAST */
+        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
+        
+        .cat-pill { padding: 8px 16px; border-radius: 99px; font-weight: 700; font-size: 13px; color: #4A5568; background: white; border: 1px solid #E2E8F0; flex: 0 0 auto; cursor: pointer; transition: 0.2s; }
+        .cat-pill.active { background: var(--brand); color: white; border-color: var(--brand); }
     </style>
 </head>
-<body class="pb-32" id="body-wrap">
+<body>
 
-    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-5 py-4 flex justify-between items-center max-w-[800px] mx-auto">
-        <h1 class="text-2xl font-black text-[#E85A24] italic tracking-tight">LASCOTACO <span class="text-gray-300 font-bold text-sm not-italic ml-1">Admin</span></h1>
-        <div class="flex gap-2">
-            <button onclick="openBannerModal()" class="w-11 h-11 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center font-bold shadow-sm active:scale-95 premium-ease">
-                <i data-lucide="image" class="w-5 h-5"></i>
-            </button>
-            <button onclick="openProductModal()" class="px-5 py-0 bg-[#E85A24] text-white rounded-full font-black text-sm shadow-[0_8px_20px_rgba(232,90,36,0.25)] flex gap-2 items-center active:scale-95 premium-ease">
-                <i data-lucide="plus" class="w-5 h-5"></i> <span class="hidden sm:inline">Produit</span>
-            </button>
-        </div>
-    </header>
+    <div id="toast-container"></div>
 
-    <div class="max-w-[800px] mx-auto px-5 pt-6 pb-4 flex flex-col sm:flex-row gap-3 sticky top-[73px] z-30 bg-var(--bg)">
-        <div class="relative flex-1">
-            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
-            <input type="text" id="search-bar" oninput="refreshList()" placeholder="Rechercher un produit..." class="w-full bg-white rounded-[20px] py-4 pl-12 pr-4 shadow-sm border border-gray-100 outline-none focus:border-[#E85A24] font-bold text-[15px] transition-colors">
+    <div class="app-container" id="app-root">
+        
+        <header class="bg-white px-5 pt-6 pb-4 sticky top-0 z-40 border-b border-gray-100 shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-2xl font-black italic tracking-tight" style="color: var(--brand)">LASCOTACO <span class="text-gray-300 font-bold text-sm not-italic ml-1">Admin</span></h1>
+                <button onclick="openModal()" class="w-10 h-10 bg-[#E85A24] text-white rounded-full flex justify-center items-center font-black shadow-lg shadow-orange-500/30 active:scale-90 transition">
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="relative">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <input type="text" id="search-bar" oninput="refreshList()" placeholder="Rechercher un produit..." class="w-full bg-gray-50 border border-gray-200 rounded-full py-3 pl-11 pr-4 text-[14px] font-bold outline-none focus:border-orange-500 transition-colors">
+            </div>
+        </header>
+
+        <div class="px-5 py-4 bg-white/80 backdrop-blur-md sticky top-[138px] z-30">
+            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2" id="filter-container">
+                <div class="cat-pill active" onclick="setFilter('All')">Tous</div>
+                <div class="cat-pill" onclick="setFilter('Restaurant')">Restaurant</div>
+                <div class="cat-pill" onclick="setFilter('Épicerie')">Épicerie</div>
+            </div>
         </div>
-        <select id="filter-type" onchange="refreshList()" class="bg-white rounded-[20px] px-5 py-4 shadow-sm border border-gray-100 outline-none font-bold text-gray-700 text-[15px] appearance-none cursor-pointer">
-            <option value="All">Tous les types</option>
-            <option value="Restaurant">Restaurant</option>
-            <option value="Épicerie">Épicerie</option>
-        </select>
+
+        <main id="admin-list" class="p-5 flex flex-col gap-4 pb-20"></main>
     </div>
 
-    <main id="admin-list" class="max-w-[800px] mx-auto p-5 grid grid-cols-1 sm:grid-cols-2 gap-5"></main>
-
-
-    <div class="modal-overlay premium-ease" id="modal-overlay" onclick="closeProductModal()"></div>
-    <div class="modal-panel premium-ease" id="modal-panel">
+    <div id="modal-overlay" class="premium-ease" onclick="closeModal()"></div>
+    <div id="modal-panel" class="premium-ease">
         
-        <div class="p-6 border-b border-gray-100 flex justify-between items-center shrink-0 relative">
-            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full"></div>
-            <h2 id="modal-title" class="text-2xl font-black text-gray-900 mt-2 tracking-tight">Nouveau Produit</h2>
-            <button onclick="closeProductModal()" class="p-2.5 bg-gray-50 rounded-full text-gray-500 active:scale-90 premium-ease mt-2"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <div class="p-5 bg-white border-b border-gray-100 flex justify-between items-center shrink-0 rounded-t-[32px] relative z-10">
+            <div class="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1.5 bg-gray-200 rounded-full"></div>
+            <h2 id="modal-title" class="text-xl font-black text-gray-900 mt-2">Nouveau Produit</h2>
+            <button onclick="closeModal()" class="p-2 bg-gray-50 rounded-full text-gray-500 active:scale-90 transition mt-2"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
 
-        <div class="p-6 overflow-y-auto no-scrollbar flex-1 space-y-8">
+        <div class="flex-1 overflow-y-auto no-scrollbar p-5 space-y-6" id="modal-content">
             <input type="hidden" id="p-id">
             
+            <div class="bg-white p-5 rounded-[24px] border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center gap-3">
+                <div class="w-16 h-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 relative overflow-hidden">
+                    <img id="img-preview" src="" class="w-full h-full object-cover hidden">
+                    <i data-lucide="image" id="img-icon" class="w-6 h-6"></i>
+                </div>
+                <div class="w-full">
+                    <label class="label-text text-left">URL de l'image</label>
+                    <input id="p-img" type="text" placeholder="https://..." class="input-box text-xs" oninput="updateImagePreview()">
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-[24px] border border-gray-100 shadow-sm space-y-4">
+                <h3 class="font-black text-sm text-gray-900 flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4 text-orange-500"></i> Infos générales</h3>
+                
+                <div>
+                    <label class="label-text">Nom du produit</label>
+                    <input id="p-name" type="text" placeholder="Ex: Tacos Nuggets" class="input-box">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="label-text">Prix (DH)</label>
+                        <input id="p-price" type="number" placeholder="0.00" class="input-box">
+                    </div>
+                    <div>
+                        <label class="label-text">Type</label>
+                        <select id="p-type" class="input-box appearance-none" onchange="syncCategories()">
+                            <option value="Restaurant">Restaurant</option>
+                            <option value="Épicerie">Épicerie</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="label-text flex justify-between">Catégorie <button onclick="addNewCat()" class="text-orange-500 hover:underline">+ Ajouter</button></label>
+                    <select id="p-label" class="input-box appearance-none"></select>
+                </div>
+
+                <div>
+                    <label class="label-text">Description courte</label>
+                    <textarea id="p-desc" placeholder="Ingrédients, détails..." class="input-box h-24 resize-none"></textarea>
+                </div>
+            </div>
+
             <div class="space-y-4">
-                <h3 class="font-black text-xs text-gray-400 uppercase tracking-widest ml-1">Infos Générales</h3>
-                <input id="p-name" type="text" placeholder="Nom du produit (ex: Tacos Nuggets)" class="input-solid">
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="relative">
-                        <input id="p-price" type="number" placeholder="Prix" class="input-solid pr-12">
-                        <span class="absolute right-4 top-1/2 -translate-y-1/2 font-black text-gray-400">DH</span>
-                    </div>
-                    <select id="p-type" class="input-solid appearance-none" onchange="syncLabels()">
-                        <option value="Restaurant">Restaurant</option>
-                        <option value="Épicerie">Épicerie</option>
-                    </select>
-                </div>
+                <h3 class="font-black text-[11px] text-gray-400 uppercase tracking-widest pl-2">Options Avancées</h3>
 
-                <div class="flex gap-2">
-                    <select id="p-label" class="input-solid appearance-none flex-1"></select>
-                    <button onclick="addNewLabel()" class="px-5 bg-gray-100 rounded-2xl text-gray-500 font-black text-xl hover:bg-gray-200 active:scale-95 premium-ease">+</button>
-                </div>
-
-                <textarea id="p-desc" placeholder="Description courte (ingrédients, détails...)" class="input-solid h-24 resize-none"></textarea>
-                
-                <div class="relative">
-                    <input id="p-img" type="text" placeholder="URL de l'image" class="input-solid pl-12">
-                    <i data-lucide="image" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
-                </div>
-            </div>
-
-            <hr class="border-gray-100">
-
-            <div class="space-y-6">
-                <h3 class="font-black text-xs text-gray-400 uppercase tracking-widest ml-1">Options & Paramètres</h3>
-                
-                <div class="flex items-center justify-between p-4 bg-orange-50 rounded-[20px] border border-orange-100">
+                <div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm flex justify-between items-center">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-orange-500 shadow-sm"><i data-lucide="zap" class="w-5 h-5"></i></div>
-                        <div>
-                            <p class="font-bold text-gray-900">Mettre en avant</p>
-                            <p class="text-[11px] font-semibold text-orange-600">Afficher dans "Top vente"</p>
-                        </div>
+                        <i data-lucide="zap" class="w-5 h-5 text-orange-500"></i>
+                        <div><p class="font-bold text-sm text-gray-900">Mettre en avant</p><p class="text-[10px] text-gray-500 font-semibold">Afficher dans le top vente</p></div>
                     </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="p-top" class="sr-only peer">
-                        <div class="w-14 h-8 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#E85A24] shadow-inner"></div>
-                    </label>
+                    <input type="checkbox" id="p-top" class="toggle-switch orange">
                 </div>
 
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-[20px] border border-gray-100">
-                    <div>
-                        <p class="font-bold text-gray-900">Choix de Sauces</p>
-                        <p class="text-[11px] font-semibold text-gray-500">Demander la sauce au client</p>
+                <div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm">
+                    <div class="flex justify-between items-center mb-1">
+                        <div><p class="font-bold text-sm text-gray-900">Choix de sauces</p><p class="text-[10px] text-gray-500 font-semibold">Le client pourra choisir une sauce</p></div>
+                        <input type="checkbox" id="p-sauce-toggle" class="toggle-switch" onchange="toggleUI('sauce-ui', this.checked)">
                     </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="p-sauce" class="sr-only peer" onchange="toggleSection('sauce-ui')">
-                        <div class="w-14 h-8 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#10B981] shadow-inner"></div>
-                    </label>
-                </div>
-
-                <div id="sauce-ui" class="hidden bg-gray-50 p-4 rounded-[20px] space-y-3 border border-gray-100">
-                    <div id="sauce-list" class="space-y-2"></div>
-                    <button onclick="addSauceField()" class="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl font-bold text-gray-500 text-sm hover:border-green-500 hover:text-green-600 premium-ease">+ Ajouter une sauce</button>
-                </div>
-
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-[20px] border border-gray-100">
-                    <div>
-                        <p class="font-bold text-gray-900">Tailles / Variantes</p>
-                        <p class="text-[11px] font-semibold text-gray-500">Ex: Petite 30DH, Grande 50DH</p>
+                    <div id="sauce-ui" class="hidden mt-4 space-y-3 pt-4 border-t border-gray-50">
+                        <div id="sauce-list" class="space-y-2"></div>
+                        <button onclick="addDynamicField('sauces')" class="w-full py-2.5 border border-dashed border-gray-300 rounded-xl font-bold text-gray-500 text-xs hover:border-orange-500 hover:text-orange-500 transition">+ Ajouter une sauce</button>
                     </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="p-sizes-toggle" class="sr-only peer" onchange="toggleSection('size-ui')">
-                        <div class="w-14 h-8 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#10B981] shadow-inner"></div>
-                    </label>
                 </div>
 
-                <div id="size-ui" class="hidden bg-gray-50 p-4 rounded-[20px] space-y-3 border border-gray-100">
-                    <div id="size-list" class="space-y-2"></div>
-                    <button onclick="addSizeField()" class="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl font-bold text-gray-500 text-sm hover:border-green-500 hover:text-green-600 premium-ease">+ Ajouter une taille</button>
-                </div>
-
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-[20px] border border-gray-100">
-                    <div>
-                        <p class="font-bold text-gray-900">Instructions Spéciales</p>
-                        <p class="text-[11px] font-semibold text-gray-500">Permettre les notes (ex: sans oignons)</p>
+                <div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm">
+                    <div class="flex justify-between items-center mb-1">
+                        <div><p class="font-bold text-sm text-gray-900">Tailles / Variantes</p><p class="text-[10px] text-gray-500 font-semibold">Proposez différentes tailles/prix</p></div>
+                        <input type="checkbox" id="p-size-toggle" class="toggle-switch" onchange="toggleUI('size-ui', this.checked)">
                     </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="p-instructions" class="sr-only peer" checked>
-                        <div class="w-14 h-8 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#10B981] shadow-inner"></div>
-                    </label>
+                    <div id="size-ui" class="hidden mt-4 space-y-3 pt-4 border-t border-gray-50">
+                        <div id="size-list" class="space-y-2"></div>
+                        <button onclick="addDynamicField('sizes')" class="w-full py-2.5 border border-dashed border-gray-300 rounded-xl font-bold text-gray-500 text-xs hover:border-orange-500 hover:text-orange-500 transition">+ Ajouter une taille</button>
+                    </div>
                 </div>
 
+                <div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm">
+                    <div class="flex justify-between items-center mb-1">
+                        <div><p class="font-bold text-sm text-gray-900">Extras</p><p class="text-[10px] text-gray-500 font-semibold">Options supplémentaires payantes</p></div>
+                        <input type="checkbox" id="p-extra-toggle" class="toggle-switch" onchange="toggleUI('extra-ui', this.checked)">
+                    </div>
+                    <div id="extra-ui" class="hidden mt-4 space-y-3 pt-4 border-t border-gray-50">
+                        <div id="extra-list" class="space-y-2"></div>
+                        <button onclick="addDynamicField('extras')" class="w-full py-2.5 border border-dashed border-gray-300 rounded-xl font-bold text-gray-500 text-xs hover:border-orange-500 hover:text-orange-500 transition">+ Ajouter un extra</button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm flex justify-between items-center">
+                    <div><p class="font-bold text-sm text-gray-900">Instructions Spéciales</p><p class="text-[10px] text-gray-500 font-semibold">Autoriser les notes du client</p></div>
+                    <input type="checkbox" id="p-instructions" class="toggle-switch" checked>
+                </div>
+
+                <div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm flex justify-between items-center">
+                    <div><p class="font-bold text-sm text-gray-900">Produit Disponible</p><p class="text-[10px] text-gray-500 font-semibold">Activer/désactiver la vente</p></div>
+                    <input type="checkbox" id="p-active" class="toggle-switch" checked>
+                </div>
             </div>
+            
+            <div class="h-10"></div>
         </div>
 
-        <div class="p-6 bg-white shrink-0 border-t border-gray-100 shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
-            <button onclick="saveProduct()" class="w-full bg-[#1A1A1A] text-white py-5 rounded-full font-black text-lg active:scale-95 premium-ease shadow-xl flex items-center justify-center gap-2">
-                <i data-lucide="check-circle" class="w-6 h-6"></i> Enregistrer le produit
+        <div class="p-5 bg-white shrink-0 border-t border-gray-100 rounded-t-[24px] shadow-[0_-10px_20px_rgba(0,0,0,0.02)] relative z-10">
+            <button onclick="saveProduct()" class="w-full bg-[#E85A24] text-white py-4 rounded-xl font-black text-[16px] shadow-lg shadow-orange-500/20 active:scale-95 transition">
+                Enregistrer le produit
             </button>
-        </div>
-    </div>
-
-
-    <div class="modal-overlay premium-ease" id="banner-overlay" onclick="closeBannerModal()"></div>
-    <div class="modal-panel premium-ease" id="banner-panel">
-        <div class="p-6 border-b border-gray-100 flex justify-between items-center shrink-0 relative">
-            <div class="absolute top-3 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full"></div>
-            <h2 class="text-2xl font-black text-gray-900 mt-2 tracking-tight">Gérer les Slides</h2>
-            <button onclick="closeBannerModal()" class="p-2.5 bg-gray-50 rounded-full text-gray-500 active:scale-90 premium-ease mt-2"><i data-lucide="x" class="w-5 h-5"></i></button>
-        </div>
-        <div class="p-6 overflow-y-auto flex-1 space-y-6">
-            <div class="flex gap-2">
-                <input id="banner-url" type="text" placeholder="URL de l'image (Slide)" class="input-solid flex-1">
-                <button onclick="addBanner()" class="px-5 bg-blue-600 text-white rounded-[16px] font-black hover:bg-blue-700 active:scale-95 premium-ease">+</button>
-            </div>
-            <div id="banner-list" class="grid grid-cols-2 gap-3 pb-8"></div>
         </div>
     </div>
 
 
     <script>
-        // FIREBASE SETUP
+        // 1. FIREBASE INITIALIZATION
         const firebaseConfig = { apiKey: "AIzaSyBebaGxqiNBvCqofveg1Fmztl7av3Mdoyg", authDomain: "lascotaco-67fe5.firebaseapp.com", projectId: "lascotaco-67fe5", storageBucket: "lascotaco-67fe5.firebasestorage.app", messagingSenderId: "865918381027", appId: "1:865918381027:web:abc6435df20894020c4ed6" };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
-        // GLOBALS
+        // 2. GLOBALS
+        let currentFilter = 'All';
         let dynamicSauces = [];
         let dynamicSizes = [];
+        let dynamicExtras = [];
 
-        // ==========================================
-        // UI & MODAL MANAGEMENT
-        // ==========================================
+        // 3. UI FUNCTIONS
         function showToast(msg) {
             const container = document.getElementById('toast-container');
             const t = document.createElement('div');
-            t.className = 'bg-[#1A1A1A] text-white px-5 py-4 rounded-[20px] text-[14px] font-bold shadow-2xl transition-all duration-400 translate-y-[-20px] opacity-0 flex items-center justify-between border border-gray-800 z-[9999]';
-            t.innerHTML = `<div class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[#25D366]"></i> <span>${msg}</span></div>`;
+            t.className = 'bg-[#1A1A1A] text-white px-5 py-4 rounded-[16px] text-[13px] font-bold shadow-xl transition-all duration-300 translate-y-[-20px] opacity-0 flex items-center justify-between z-[9999]';
+            t.innerHTML = `<div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#25D366]"></i> <span>${msg}</span></div>`;
             container.appendChild(t); lucide.createIcons();
             requestAnimationFrame(() => t.classList.remove('translate-y-[-20px]', 'opacity-0'));
-            setTimeout(() => { t.classList.add('translate-y-[-20px]', 'opacity-0'); setTimeout(() => t.remove(), 400); }, 2500);
+            setTimeout(() => { t.classList.add('translate-y-[-20px]', 'opacity-0'); setTimeout(() => t.remove(), 300); }, 2500);
         }
 
-        function toggleSection(id) {
+        function setFilter(type) {
+            currentFilter = type;
+            const pills = document.querySelectorAll('.cat-pill');
+            pills.forEach(p => p.classList.remove('active'));
+            event.target.classList.add('active');
+            refreshList();
+        }
+
+        function toggleUI(id, show) {
             const el = document.getElementById(id);
-            if(el.classList.contains('hidden')) { el.classList.remove('hidden'); } else { el.classList.add('hidden'); }
+            if(show) el.classList.remove('hidden'); else el.classList.add('hidden');
         }
 
-        // Product Modal
-        function openProductModal(id = null) {
-            document.getElementById('body-wrap').classList.add('modal-open');
-            if(id) { document.getElementById('modal-title').innerText = "Modifier Produit"; } 
-            else { 
+        function updateImagePreview() {
+            const url = document.getElementById('p-img').value;
+            const img = document.getElementById('img-preview');
+            const icon = document.getElementById('img-icon');
+            if(url) { img.src = url; img.classList.remove('hidden'); icon.classList.add('hidden'); }
+            else { img.classList.add('hidden'); icon.classList.remove('hidden'); }
+        }
+
+        // 4. MODAL MANAGEMENT
+        function openModal(id = null) {
+            document.getElementById('app-root').classList.add('modal-open');
+            document.body.style.overflow = 'hidden';
+            if(!id) {
                 document.getElementById('modal-title').innerText = "Nouveau Produit";
-                clearForm(); 
+                clearForm();
+            } else {
+                document.getElementById('modal-title').innerText = "Modifier Produit";
             }
         }
-        function closeProductModal() { document.getElementById('body-wrap').classList.remove('modal-open'); }
-
-        // Banner Modal
-        function openBannerModal() {
-            document.getElementById('banner-overlay').style.opacity = '1'; document.getElementById('banner-overlay').style.pointerEvents = 'auto';
-            document.getElementById('banner-panel').style.transform = 'translateY(0)'; document.getElementById('banner-panel').style.pointerEvents = 'auto';
-            loadBannersAdmin();
-        }
-        function closeBannerModal() {
-            document.getElementById('banner-overlay').style.opacity = '0'; document.getElementById('banner-overlay').style.pointerEvents = 'none';
-            document.getElementById('banner-panel').style.transform = 'translateY(100%)'; document.getElementById('banner-panel').style.pointerEvents = 'none';
+        function closeModal() { 
+            document.getElementById('app-root').classList.remove('modal-open'); 
+            document.body.style.overflow = '';
         }
 
+        function clearForm() {
+            document.getElementById('p-id').value = ""; document.getElementById('p-name').value = "";
+            document.getElementById('p-price').value = ""; document.getElementById('p-desc').value = "";
+            document.getElementById('p-img').value = ""; document.getElementById('p-top').checked = false;
+            document.getElementById('p-active').checked = true; document.getElementById('p-instructions').checked = true;
+            
+            document.getElementById('p-sauce-toggle').checked = false; toggleUI('sauce-ui', false); dynamicSauces = []; renderDynamic('sauces');
+            document.getElementById('p-size-toggle').checked = false; toggleUI('size-ui', false); dynamicSizes = []; renderDynamic('sizes');
+            document.getElementById('p-extra-toggle').checked = false; toggleUI('extra-ui', false); dynamicExtras = []; renderDynamic('extras');
+            
+            updateImagePreview();
+            syncCategories();
+        }
 
-        // ==========================================
-        // DYNAMIC ARRAYS (SAUCES & SIZES)
-        // ==========================================
-        function renderSauces() {
-            const list = document.getElementById('sauce-list');
-            list.innerHTML = dynamicSauces.map((s, idx) => `
-                <div class="flex gap-2 items-center bg-white p-2 rounded-xl border border-gray-100 shadow-sm">
-                    <input type="text" value="${s}" onchange="updateSauce(${idx}, this.value)" class="flex-1 bg-transparent font-bold text-sm outline-none px-2 text-gray-800" placeholder="Nom de la sauce">
-                    <button onclick="removeSauce(${idx})" class="w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-100"><i data-lucide="minus" class="w-4 h-4"></i></button>
-                </div>
-            `).join('');
+        // 5. DYNAMIC ARRAYS (Sauces, Tailles, Extras)
+        function renderDynamic(type) {
+            if(type === 'sauces') {
+                const list = document.getElementById('sauce-list');
+                list.innerHTML = dynamicSauces.map((s, i) => `
+                    <div class="flex gap-2 bg-white border border-gray-200 rounded-xl p-1.5 items-center">
+                        <i data-lucide="grip-vertical" class="w-4 h-4 text-gray-300 ml-1"></i>
+                        <input type="text" value="${s}" onchange="dynamicSauces[${i}]=this.value" class="flex-1 bg-transparent text-sm font-bold outline-none text-gray-800" placeholder="Ex: Algérienne">
+                        <button onclick="dynamicSauces.splice(${i},1); renderDynamic('sauces')" class="w-8 h-8 flex justify-center items-center text-red-400 hover:bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>`).join('');
+            } else if(type === 'sizes') {
+                const list = document.getElementById('size-list');
+                list.innerHTML = dynamicSizes.map((s, i) => `
+                    <div class="flex gap-2 bg-white border border-gray-200 rounded-xl p-1.5 items-center">
+                        <i data-lucide="grip-vertical" class="w-4 h-4 text-gray-300 ml-1"></i>
+                        <input type="text" value="${s.name}" onchange="dynamicSizes[${i}].name=this.value" class="w-1/2 bg-transparent text-sm font-bold outline-none text-gray-800" placeholder="Nom (Ex: Grande)">
+                        <input type="number" value="${s.price}" onchange="dynamicSizes[${i}].price=Number(this.value)" class="w-1/3 bg-transparent text-sm font-black outline-none text-[#E85A24] text-right pr-2" placeholder="Prix">
+                        <span class="text-xs font-bold text-gray-400">DH</span>
+                        <button onclick="dynamicSizes.splice(${i},1); renderDynamic('sizes')" class="w-8 h-8 flex justify-center items-center text-red-400 hover:bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>`).join('');
+            } else if(type === 'extras') {
+                const list = document.getElementById('extra-list');
+                list.innerHTML = dynamicExtras.map((e, i) => `
+                    <div class="flex gap-2 bg-white border border-gray-200 rounded-xl p-1.5 items-center">
+                        <i data-lucide="grip-vertical" class="w-4 h-4 text-gray-300 ml-1"></i>
+                        <input type="text" value="${e.name}" onchange="dynamicExtras[${i}].name=this.value" class="w-1/2 bg-transparent text-sm font-bold outline-none text-gray-800" placeholder="Option (Ex: Fromage)">
+                        <span class="text-xs font-bold text-gray-400 pl-2">+</span>
+                        <input type="number" value="${e.price}" onchange="dynamicExtras[${i}].price=Number(this.value)" class="w-1/3 bg-transparent text-sm font-black outline-none text-gray-600 text-right pr-2" placeholder="Prix">
+                        <span class="text-xs font-bold text-gray-400">DH</span>
+                        <button onclick="dynamicExtras.splice(${i},1); renderDynamic('extras')" class="w-8 h-8 flex justify-center items-center text-red-400 hover:bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>`).join('');
+            }
             lucide.createIcons();
         }
-        function addSauceField() { dynamicSauces.push(''); renderSauces(); }
-        function updateSauce(idx, val) { dynamicSauces[idx] = val; }
-        function removeSauce(idx) { dynamicSauces.splice(idx, 1); renderSauces(); }
 
-        function renderSizes() {
-            const list = document.getElementById('size-list');
-            list.innerHTML = dynamicSizes.map((s, idx) => `
-                <div class="flex gap-2 items-center bg-white p-2 rounded-xl border border-gray-100 shadow-sm">
-                    <input type="text" value="${s.name}" onchange="updateSizeName(${idx}, this.value)" class="w-1/2 bg-transparent font-bold text-sm outline-none px-2 text-gray-800" placeholder="Ex: Grande">
-                    <input type="number" value="${s.price}" onchange="updateSizePrice(${idx}, this.value)" class="w-1/3 bg-transparent font-black text-sm outline-none px-2 text-[#E85A24]" placeholder="Prix">
-                    <button onclick="removeSize(${idx})" class="w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-100"><i data-lucide="minus" class="w-4 h-4"></i></button>
-                </div>
-            `).join('');
-            lucide.createIcons();
+        function addDynamicField(type) {
+            if(type === 'sauces') { dynamicSauces.push(''); }
+            else if(type === 'sizes') { dynamicSizes.push({name: '', price: ''}); }
+            else if(type === 'extras') { dynamicExtras.push({name: '', price: ''}); }
+            renderDynamic(type);
         }
-        function addSizeField() { dynamicSizes.push({name: '', price: 0}); renderSizes(); }
-        function updateSizeName(idx, val) { dynamicSizes[idx].name = val; }
-        function updateSizePrice(idx, val) { dynamicSizes[idx].price = Number(val); }
-        function removeSize(idx) { dynamicSizes.splice(idx, 1); renderSizes(); }
 
-
-        // ==========================================
-        // CATEGORIES LOGIC
-        // ==========================================
-        async function syncLabels(defaultVal = null) {
+        // 6. CATEGORIES LOGIC
+        async function syncCategories(defaultVal = null) {
             const type = document.getElementById('p-type').value;
             const select = document.getElementById('p-label');
             select.innerHTML = "";
@@ -293,35 +323,23 @@
             if(defaultVal) select.value = defaultVal;
         }
 
-        async function addNewLabel() {
-            const name = prompt("Nom du nouveau label (ex: Tacos, Boissons...):");
-            if(name) {
+        async function addNewCat() {
+            const name = prompt("Nom de la catégorie (ex: Tacos, Boissons...):");
+            if(name && name.trim() !== '') {
                 const type = document.getElementById('p-type').value;
                 await db.collection("categories").add({ name: name, type: type });
-                syncLabels(name); showToast("Catégorie ajoutée");
+                syncCategories(name); showToast("Catégorie ajoutée");
             }
         }
 
-        // ==========================================
-        // PRODUCT CRUD LOGIC
-        // ==========================================
-        function clearForm() {
-            document.getElementById('p-id').value = ""; document.getElementById('p-name').value = "";
-            document.getElementById('p-price').value = ""; document.getElementById('p-desc').value = "";
-            document.getElementById('p-img').value = ""; document.getElementById('p-top').checked = false;
-            
-            document.getElementById('p-sauce').checked = false; document.getElementById('sauce-ui').classList.add('hidden'); dynamicSauces = []; renderSauces();
-            document.getElementById('p-sizes-toggle').checked = false; document.getElementById('size-ui').classList.add('hidden'); dynamicSizes = []; renderSizes();
-            document.getElementById('p-instructions').checked = true;
-            syncLabels();
-        }
-
+        // 7. FIREBASE CRUD
         async function saveProduct() {
             const id = document.getElementById('p-id').value;
             
-            // Clean dynamic arrays
+            // Filter empty dynamic fields
             const finalSauces = dynamicSauces.filter(s => s.trim() !== '');
             const finalSizes = dynamicSizes.filter(s => s.name.trim() !== '' && s.price > 0);
+            const finalExtras = dynamicExtras.filter(e => e.name.trim() !== '' && e.price > 0);
 
             const data = {
                 name: document.getElementById('p-name').value,
@@ -331,11 +349,14 @@
                 description: document.getElementById('p-desc').value,
                 image: document.getElementById('p-img').value,
                 isTop: document.getElementById('p-top').checked,
+                isActive: document.getElementById('p-active').checked,
                 
-                requiresSauce: document.getElementById('p-sauce').checked,
+                requiresSauce: document.getElementById('p-sauce-toggle').checked,
                 sauces: finalSauces,
-                hasSizes: document.getElementById('p-sizes-toggle').checked,
+                hasSizes: document.getElementById('p-size-toggle').checked,
                 sizes: finalSizes,
+                hasExtras: document.getElementById('p-extra-toggle').checked,
+                extras: finalExtras,
                 hasInstructions: document.getElementById('p-instructions').checked,
                 
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
@@ -346,7 +367,7 @@
             if(id) { await db.collection("products").doc(id).update(data); showToast("Produit modifié !"); } 
             else { await db.collection("products").add(data); showToast("Produit ajouté !"); }
 
-            closeProductModal(); refreshList();
+            closeModal(); refreshList();
         }
 
         async function editProduct(id) {
@@ -357,23 +378,26 @@
             document.getElementById('p-name').value = p.name;
             document.getElementById('p-price').value = p.price || '';
             document.getElementById('p-type').value = p.type || 'Restaurant';
-            await syncLabels(p.category);
+            await syncCategories(p.category);
             document.getElementById('p-desc').value = p.description || '';
             document.getElementById('p-img').value = p.image || '';
+            updateImagePreview();
+
             document.getElementById('p-top').checked = p.isTop || false;
+            document.getElementById('p-active').checked = p.isActive !== false; // default true
+            document.getElementById('p-instructions').checked = p.hasInstructions !== false;
 
-            // Options Setup
-            document.getElementById('p-sauce').checked = p.requiresSauce || false;
-            if(p.requiresSauce) { document.getElementById('sauce-ui').classList.remove('hidden'); } else { document.getElementById('sauce-ui').classList.add('hidden'); }
-            dynamicSauces = p.sauces || []; renderSauces();
+            // Toggles & Arrays
+            document.getElementById('p-sauce-toggle').checked = p.requiresSauce || false;
+            toggleUI('sauce-ui', p.requiresSauce); dynamicSauces = p.sauces || []; renderDynamic('sauces');
 
-            document.getElementById('p-sizes-toggle').checked = p.hasSizes || false;
-            if(p.hasSizes) { document.getElementById('size-ui').classList.remove('hidden'); } else { document.getElementById('size-ui').classList.add('hidden'); }
-            dynamicSizes = p.sizes || []; renderSizes();
+            document.getElementById('p-size-toggle').checked = p.hasSizes || false;
+            toggleUI('size-ui', p.hasSizes); dynamicSizes = p.sizes || []; renderDynamic('sizes');
 
-            document.getElementById('p-instructions').checked = p.hasInstructions !== false; // default true
+            document.getElementById('p-extra-toggle').checked = p.hasExtras || false;
+            toggleUI('extra-ui', p.hasExtras); dynamicExtras = p.extras || []; renderDynamic('extras');
 
-            openProductModal(id);
+            openModal(id);
         }
 
         async function deleteProd(id, name) {
@@ -385,7 +409,6 @@
 
         async function refreshList() {
             const search = document.getElementById('search-bar').value.toLowerCase();
-            const filterType = document.getElementById('filter-type').value;
             const list = document.getElementById('admin-list');
             
             const snap = await db.collection("products").orderBy("timestamp", "desc").get();
@@ -393,67 +416,37 @@
 
             snap.forEach(doc => {
                 const p = doc.data();
-                if(filterType !== "All" && p.type !== filterType) return;
+                if(currentFilter !== "All" && p.type !== currentFilter) return;
                 if(search && !p.name.toLowerCase().includes(search)) return;
 
-                // Build option badges
-                let badges = `<span class="bg-gray-100 text-gray-500 text-[9px] font-black uppercase px-2 py-1 rounded">${p.category}</span>`;
-                if(p.isTop) badges += `<span class="bg-orange-100 text-orange-600 text-[9px] font-black uppercase px-2 py-1 rounded flex items-center gap-1"><i data-lucide="zap" class="w-3 h-3"></i> Top</span>`;
-                if(p.requiresSauce) badges += `<span class="bg-green-100 text-green-600 text-[9px] font-black uppercase px-2 py-1 rounded">Sauces</span>`;
+                // Build Badges
+                let badges = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md text-gray-500 bg-gray-100 uppercase tracking-wider">${p.category}</span>`;
+                if(p.isTop) badges += `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md text-orange-600 bg-orange-100 flex items-center gap-0.5"><i data-lucide="zap" class="w-3 h-3"></i> TOP</span>`;
+                if(p.requiresSauce) badges += `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md text-green-600 bg-green-100">SAUCES</span>`;
+                if(p.hasSizes) badges += `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md text-blue-600 bg-blue-100">TAILLES</span>`;
+                if(p.hasExtras) badges += `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md text-purple-600 bg-purple-100">EXTRAS</span>`;
+
+                const opacity = p.isActive === false ? 'opacity-50' : 'opacity-100';
 
                 list.innerHTML += `
-                <div class="product-card flex flex-col premium-ease hover:shadow-md cursor-pointer group" onclick="editProduct('${doc.id}')">
-                    <div class="h-32 bg-[#FAF5F0] relative overflow-hidden">
-                        <img src="${p.image}" class="w-full h-full object-cover mix-blend-multiply premium-ease group-hover:scale-105" loading="lazy">
-                        <div class="absolute top-3 left-3 flex gap-1">${badges}</div>
+                <div class="bg-white rounded-[24px] border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] p-3 flex items-center gap-4 ${opacity}">
+                    <img src="${p.image}" class="w-20 h-20 rounded-xl object-cover bg-gray-50 shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex flex-wrap gap-1 mb-1.5">${badges}</div>
+                        <h3 class="font-bold text-[14px] text-gray-900 leading-tight truncate">${p.name}</h3>
+                        <p class="font-black mt-1 text-[15px]" style="color: var(--brand)">${p.price} DH</p>
                     </div>
-                    <div class="p-4 flex flex-col flex-1 justify-between bg-white z-10 relative">
-                        <div>
-                            <h3 class="font-bold text-[14px] text-gray-900 leading-tight line-clamp-1">${p.name}</h3>
-                            <p class="font-black mt-2 text-[18px]" style="color: var(--brand)">${p.price} DH</p>
-                        </div>
-                        <div class="flex gap-2 mt-4 pt-4 border-t border-gray-50">
-                            <button class="flex-1 bg-gray-50 py-2.5 rounded-[12px] text-gray-700 font-bold text-xs hover:bg-gray-100 flex justify-center items-center gap-2"><i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Modifier</button>
-                            <button onclick="event.stopPropagation(); deleteProd('${doc.id}', '${p.name.replace(/'/g, "\\'")}')" class="w-10 flex items-center justify-center bg-red-50 text-red-500 rounded-[12px] hover:bg-red-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                        </div>
+                    <div class="flex flex-col gap-2 shrink-0">
+                        <button onclick="editProduct('${doc.id}')" class="w-10 h-10 flex justify-center items-center bg-gray-50 text-gray-600 rounded-xl hover:bg-gray-100 active:scale-95 transition"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                        <button onclick="deleteProd('${doc.id}', '${p.name.replace(/'/g, "\\'")}')" class="w-10 h-10 flex justify-center items-center bg-red-50 text-red-500 rounded-xl hover:bg-red-100 active:scale-95 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                     </div>
                 </div>`;
             });
             lucide.createIcons();
         }
 
-        // ==========================================
-        // BANNER LOGIC
-        // ==========================================
-        async function addBanner() {
-            const url = document.getElementById('banner-url').value;
-            if(!url) return;
-            await db.collection("banners").add({ url: url, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-            document.getElementById('banner-url').value = ""; loadBannersAdmin(); showToast("Slide ajouté !");
-        }
-
-        async function loadBannersAdmin() {
-            const list = document.getElementById('banner-list');
-            list.innerHTML = "";
-            const snap = await db.collection("banners").orderBy("timestamp", "desc").get();
-            snap.forEach(doc => {
-                list.innerHTML += `
-                    <div class="relative h-24 rounded-2xl overflow-hidden group border border-gray-100 shadow-sm">
-                        <img src="${doc.data().url}" class="w-full h-full object-cover">
-                        <button onclick="deleteBanner('${doc.id}')" class="absolute inset-0 bg-red-600/80 text-white opacity-0 group-hover:opacity-100 transition flex items-center justify-center cursor-pointer">
-                            <i data-lucide="trash-2" class="w-6 h-6"></i>
-                        </button>
-                    </div>`;
-            });
-            lucide.createIcons();
-        }
-
-        async function deleteBanner(id) {
-            if(confirm("Supprimer ce slide ?")) { await db.collection("banners").doc(id).delete(); loadBannersAdmin(); showToast("Slide supprimé"); }
-        }
-
         // INIT
-        document.addEventListener('DOMContentLoaded', () => { syncLabels(); refreshList(); lucide.createIcons(); });
+        document.addEventListener('DOMContentLoaded', () => { syncCategories(); refreshList(); lucide.createIcons(); });
     </script>
 </body>
 </html>
