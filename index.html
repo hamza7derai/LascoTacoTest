@@ -12,13 +12,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --resto: #E85A24; --epi: #10B981; --bg: #FDFBFA; }
-        body { background-color: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .app-container { max-width: 500px; margin: 0 auto; width: 100%; position: relative; background: white; min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.03); overflow-x: hidden; }
+        :root { --main: #E85A24; --epi: #10B981; --bg: #FFFFFF; --card-bg: #FFF7F2; }
+        body { background-color: #F8F9FA; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .app-container { max-width: 500px; margin: 0 auto; width: 100%; position: relative; background: var(--bg); min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.05); overflow-x: hidden; }
         body.modal-open { overflow: hidden; }
 
         /* THEMES */
-        .theme-resto { --brand: var(--resto); --brand-soft: rgba(232, 90, 36, 0.1); }
+        .theme-resto { --brand: var(--main); --brand-soft: rgba(232, 90, 36, 0.1); }
         .theme-epi { --brand: var(--epi); --brand-soft: rgba(16, 185, 129, 0.1); }
 
         /* SKELETONS */
@@ -26,32 +26,58 @@
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
         /* CATEGORIES */
-        .category-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 12px 24px; scroll-padding-left: 24px; scroll-behavior: smooth;}
-        .category-pill { flex: 0 0 auto; scroll-snap-align: start; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); background: #F1F3F5; color: #6C757D; }
-        .active-label { background-color: var(--brand) !important; color: white !important; transform: scale(1.05); box-shadow: 0 8px 20px var(--brand-soft); }
+        .category-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 24px 12px 24px; scroll-padding-left: 24px; scroll-behavior: smooth;}
+        .category-pill { 
+            flex: 0 0 auto; scroll-snap-align: start; transition: all 0.3s ease; 
+            background: #F8F9FA; color: #6C757D; position: relative;
+        }
+        .category-pill:active { transform: scale(0.95); }
+        .active-label { background-color: var(--brand) !important; color: white !important; box-shadow: 0 8px 15px var(--brand-soft); }
+        /* Active Underline Indicator */
+        .active-indicator {
+            position: absolute; bottom: -10px; left: 10%; width: 80%; height: 3px;
+            background-color: var(--brand); border-radius: 4px;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .active-label .active-indicator { opacity: 1; }
 
-        /* PRODUCTS - Restored Rounded Corners */
-        .product-card { background: #FFFAF6; border-radius: 24px; border: 1px solid #FFF0E5; transition: all 0.3s ease; animation: fadeIn 0.4s ease-out forwards; }
+        /* PRODUCTS (Matching the image exactly) */
+        .product-card { 
+            background: var(--card-bg); border-radius: 24px; 
+            transition: all 0.3s ease; animation: fadeIn 0.4s ease-out forwards;
+            position: relative;
+        }
         .product-card:active { transform: scale(0.97); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .product-img-wrap { overflow: hidden; border-radius: 20px; height: 135px; background: white; width: 100%; }
-        .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; border-radius: 20px; transition: transform 0.4s ease; }
+        .product-img-wrap { overflow: hidden; border-radius: 20px 20px 0 0; height: 140px; width: 100%; display: flex; justify-content: center; align-items: center;}
+        /* mix-blend-multiply helps images with white backgrounds blend into the beige card */
+        .product-img-wrap img { width: 90%; height: 90%; object-fit: contain; transition: transform 0.4s ease; mix-blend-mode: multiply; }
         .product-card:hover img { transform: scale(1.05); }
 
-        /* BOTTOM SHEET (OPTIONS) - Ultra Smooth */
+        /* BOTTOM SHEET */
         #bottom-sheet-root { position: fixed; inset: 0; z-index: 2000; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
         #bs-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
         #bs-panel { width: 100%; max-width: 500px; background: white; border-radius: 32px 32px 0 0; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); pointer-events: auto; padding-bottom: env(safe-area-inset-bottom); max-height: 85vh; display: flex; flex-direction: column; }
         .bs-open #bs-overlay { opacity: 1; pointer-events: auto; }
         .bs-open #bs-panel { transform: translateY(0); }
 
-        /* TOGGLE SWITCH ANIMATION */
-        #store-toggle-bg { transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), background-color 0.4s ease; }
+        /* CART DRAWER */
+        #cart-drawer-root { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
+        #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
+        #cart-panel { position: absolute; right: 0; top: 0; bottom: 0; width: 88%; max-width: 420px; background: white; border-radius: 30px 0 0 30px; transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1); pointer-events: auto; display: flex; flex-direction: column; }
+        .drawer-open #cart-panel { transform: translateX(0); }
+        .drawer-closed #cart-panel { transform: translateX(100%); }
+        .drawer-closed #cart-overlay { opacity: 0; pointer-events: none; }
+        .drawer-open #cart-overlay { opacity: 1; pointer-events: auto; }
 
         /* UTILS */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
+        
+        /* STORE TOGGLE ACTIVE STATES */
+        .store-active { background-color: var(--brand) !important; color: white !important; border-color: var(--brand) !important; box-shadow: 0 8px 20px var(--brand-soft); }
+        .store-inactive { background-color: white !important; color: #1A1A1A !important; border-color: #F1F3F5 !important; }
     </style>
 </head>
 <body class="drawer-closed theme-resto" id="body-wrap">
@@ -60,46 +86,66 @@
 
     <div class="app-container" id="app-root">
         
-        <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-gray-50">
-            <h1 class="text-2xl font-black text-[#E85A24] tracking-tighter italic">LASCOTACO</h1>
-            <button onclick="toggleCart(true)" class="bg-[#1A1A1A] text-white px-5 py-2.5 rounded-2xl font-bold text-xs flex items-center gap-2 active:scale-95 transition">
+        <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-black text-[#E85A24] tracking-tighter italic uppercase">LASCOTACO</h1>
+            <button onclick="toggleCart(true)" class="relative bg-[#1A1A1A] text-white px-5 py-2.5 rounded-[14px] font-bold text-sm flex items-center gap-2 active:scale-95 transition">
                 <i data-lucide="shopping-bag" class="w-4 h-4 text-orange-400"></i>
                 <span id="nav-total">0 DH</span>
+                <span id="nav-badge" class="absolute -top-2 -right-2 bg-[#E85A24] text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black border-2 border-white shadow-sm hidden">0</span>
             </button>
         </header>
 
-        <div class="px-5 pt-4 pb-2 bg-white">
-            <div class="relative">
-                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                <input type="text" id="search-input" placeholder="Rechercher un plat, une boisson..." class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#E85A24]/50 transition-shadow">
+        <div class="px-5 pt-2 pb-4 bg-white z-40 sticky top-[70px]">
+            <div class="relative flex items-center">
+                <i data-lucide="search" class="absolute left-4 w-5 h-5 text-gray-400"></i>
+                <input type="text" id="search-input" placeholder="Rechercher un plat, une boisson..." class="w-full bg-[#F8F9FA] border border-transparent rounded-2xl py-3.5 pl-12 pr-12 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#E85A24]/20 transition-all">
+                <i data-lucide="sliders-horizontal" class="absolute right-4 w-5 h-5 text-gray-600"></i>
             </div>
         </div>
 
-        <div class="px-5 py-3 sticky top-[68px] bg-white/95 backdrop-blur-md z-40">
-            <div class="bg-gray-100 p-1.5 rounded-[2rem] flex relative w-full items-center">
-                <div id="store-toggle-bg" class="absolute left-1.5 top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-[#E85A24] rounded-[1.5rem] shadow-sm"></div>
-                
-                <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 relative z-10 py-3 rounded-[1.5rem] text-sm font-extrabold flex items-center justify-center gap-2 text-white transition-colors duration-300">
-                    <i data-lucide="utensils" class="w-4 h-4"></i> Resto
-                </button>
-                <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 relative z-10 py-3 rounded-[1.5rem] text-sm font-extrabold flex items-center justify-center gap-2 text-gray-400 transition-colors duration-300">
-                    <i data-lucide="shopping-basket" class="w-4 h-4"></i> Épicerie
-                </button>
-            </div>
+        <div class="px-5 pb-4 flex gap-3 bg-white z-40 sticky top-[138px]">
+            <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 py-3.5 rounded-2xl font-extrabold flex items-center justify-center gap-2 transition-all border store-active text-[15px]">
+                <i data-lucide="utensils" class="w-[18px] h-[18px]"></i> Resto
+            </button>
+            <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 py-3.5 rounded-2xl font-extrabold flex items-center justify-center gap-2 transition-all border store-inactive text-[15px]">
+                <i data-lucide="shopping-basket" class="w-[18px] h-[18px]"></i> Épicerie
+            </button>
         </div>
 
-        <div id="sub-nav" class="category-scroll no-scrollbar sticky top-[146px] bg-white/95 backdrop-blur-md z-30"></div>
+        <div id="sub-nav" class="category-scroll no-scrollbar sticky top-[210px] bg-white z-30 pt-2 pb-4"></div>
 
-        <main id="product-grid" class="p-5 grid grid-cols-2 gap-4 pb-40">
+        <main id="product-grid" class="px-5 pt-2 pb-48 grid grid-cols-2 gap-x-4 gap-y-5">
             </main>
 
-        <div id="checkout-bar" class="fixed bottom-0 left-0 right-0 max-w-[500px] mx-auto p-5 z-40 translate-y-full transition-transform duration-500">
-            <button onclick="toggleCart(true)" class="w-full bg-[#1A1A1A] text-white p-5 rounded-[2.2rem] flex justify-between items-center shadow-2xl active:scale-95 transition">
-                <div class="text-left pl-2 z-10">
-                    <p id="item-count" class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">0 Articles</p>
-                    <p id="final-price" class="text-xl font-black">0 DH</p>
+        <div id="delivery-banner" class="fixed bottom-[110px] left-4 right-4 max-w-[468px] mx-auto bg-[#FFF5F0] border border-[#FFE8DA] rounded-3xl p-4 flex items-center justify-between z-40 transition-transform duration-500 translate-y-[200%]">
+            <div class="flex items-center gap-4">
+                <div class="bg-[#E85A24] w-12 h-12 rounded-2xl flex items-center justify-center text-white">
+                    <i data-lucide="bike" class="w-6 h-6"></i>
                 </div>
-                <span class="font-black flex items-center gap-2 pr-2 text-sm text-orange-500">Panier <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
+                <div>
+                    <h4 class="font-bold text-gray-900 text-sm">Livraison rapide</h4>
+                    <p class="text-[11px] font-semibold text-[#E85A24]">20-35 min <span class="text-gray-500">chez vous</span></p>
+                </div>
+            </div>
+            <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+        </div>
+
+        <div id="checkout-bar" class="fixed bottom-4 left-4 right-4 max-w-[468px] mx-auto bg-[#E85A24] rounded-[28px] p-3 flex items-center justify-between text-white z-50 shadow-[0_15px_30px_rgba(232,90,36,0.3)] transition-transform duration-500 translate-y-[150%]">
+            <div class="flex items-center gap-3 pl-1">
+                <div class="relative bg-white text-[#E85A24] w-11 h-11 rounded-full flex items-center justify-center">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                    <span id="bottom-badge" class="absolute -top-1 -right-1 bg-[#E85A24] text-white border-2 border-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                </div>
+                <div class="leading-tight">
+                    <p id="bottom-count" class="font-bold text-[13px]">0 article</p>
+                    <p class="text-[10px] text-white/80 font-medium tracking-wide">Livraison : 20 DH</p>
+                </div>
+            </div>
+            
+            <div id="bottom-total" class="font-black text-lg text-center flex-1">0 DH</div>
+            
+            <button onclick="toggleCart(true)" class="bg-white text-[#E85A24] px-4 py-3 rounded-full font-bold text-xs flex items-center gap-1 active:scale-95 transition">
+                Voir le panier <i data-lucide="chevron-right" class="w-4 h-4"></i>
             </button>
         </div>
     </div>
@@ -110,7 +156,7 @@
             <div class="p-6 border-b border-gray-50 flex justify-between items-start shrink-0">
                 <div>
                     <h3 id="bs-title" class="font-black text-xl text-gray-800">Produit</h3>
-                    <p id="bs-price" class="font-bold text-[#E85A24] mt-1">0 DH</p>
+                    <p id="bs-price" class="font-bold text-[#E85A24] mt-1 text-lg">0 DH</p>
                 </div>
                 <button onclick="closeSheet()" class="p-2 bg-gray-100 rounded-full active:scale-90 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
@@ -141,13 +187,12 @@
         </div>
     </div>
 
-    <div id="cart-drawer-root" style="position: fixed; inset: 0; z-index: 1000; pointer-events: none;">
-        <div id="cart-overlay" style="position: absolute; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.4s ease; pointer-events: none;" onclick="toggleCart(false)"></div>
-        <div id="cart-panel" style="position: absolute; right: 0; top: 0; bottom: 0; width: 88%; max-width: 420px; background: white; border-radius: 30px 0 0 30px; transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1); pointer-events: auto; display: flex; flex-direction: column;">
-            
+    <div id="cart-drawer-root">
+        <div id="cart-overlay" onclick="toggleCart(false)"></div>
+        <div id="cart-panel">
             <div class="p-6 border-b flex justify-between items-center shrink-0">
                 <h2 class="text-xl font-black italic tracking-tight">Mon Panier</h2>
-                <button onclick="toggleCart(false)" class="p-3 bg-gray-100 rounded-full text-gray-500"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="toggleCart(false)" class="p-3 bg-gray-100 rounded-full text-gray-500 active:scale-90 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             
             <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar"></div>
@@ -203,10 +248,10 @@
         function renderSkeletons() {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = Array(4).fill().map(() => `
-                <div class="product-card p-3 flex flex-col gap-3 border-transparent shadow-none">
-                    <div class="skeleton h-32 w-full rounded-[20px]"></div>
-                    <div class="skeleton h-4 w-3/4 rounded mt-1"></div>
-                    <div class="flex justify-between items-center mt-auto pt-2">
+                <div class="product-card p-3 h-[240px] border-transparent shadow-none">
+                    <div class="skeleton h-[140px] w-full rounded-[20px] mb-3"></div>
+                    <div class="skeleton h-4 w-3/4 rounded mb-4"></div>
+                    <div class="flex justify-between items-center absolute bottom-3 left-3 right-3">
                         <div class="skeleton h-4 w-12 rounded"></div>
                         <div class="skeleton h-8 w-8 rounded-full"></div>
                     </div>
@@ -214,13 +259,12 @@
             `).join('');
         }
 
-        // --- REAL TOGGLE SWITCH ---
+        // --- STORE TOGGLE (Matches image exactly) ---
         function setStore(type) { 
             activeStore = type; activeCat = '🔥 Top vente';
             document.getElementById('search-input').value = '';
             
             const body = document.getElementById('body-wrap');
-            const toggleBg = document.getElementById('store-toggle-bg');
             const btnResto = document.getElementById('btn-resto');
             const btnEpi = document.getElementById('btn-epi');
             const waBtn = document.getElementById('wa-btn');
@@ -228,26 +272,19 @@
 
             if(type === 'Restaurant') {
                 body.className = "drawer-closed theme-resto";
-                toggleBg.style.transform = 'translateX(0)';
-                toggleBg.style.backgroundColor = 'var(--resto)';
-                
-                btnResto.classList.replace('text-gray-400', 'text-white');
-                btnEpi.classList.replace('text-white', 'text-gray-400');
-                
-                waBtn.style.backgroundColor = "#25D366"; bsBtn.style.backgroundColor = "#E85A24";
+                btnResto.className = "flex-1 py-3.5 rounded-2xl font-extrabold flex items-center justify-center gap-2 transition-all border store-active text-[15px]";
+                btnEpi.className = "flex-1 py-3.5 rounded-2xl font-extrabold flex items-center justify-center gap-2 transition-all border store-inactive text-[15px]";
+                waBtn.style.backgroundColor = "#25D366"; bsBtn.style.backgroundColor = "var(--resto)";
             } else {
                 body.className = "drawer-closed theme-epi";
-                toggleBg.style.transform = 'translateX(100%)';
-                toggleBg.style.backgroundColor = 'var(--epi)';
-                
-                btnEpi.classList.replace('text-gray-400', 'text-white');
-                btnResto.classList.replace('text-white', 'text-gray-400');
-                
-                waBtn.style.backgroundColor = "#10B981"; bsBtn.style.backgroundColor = "#10B981";
+                btnResto.className = "flex-1 py-3.5 rounded-2xl font-extrabold flex items-center justify-center gap-2 transition-all border store-inactive text-[15px]";
+                btnEpi.className = "flex-1 py-3.5 rounded-2xl font-extrabold flex items-center justify-center gap-2 transition-all border store-active text-[15px]";
+                waBtn.style.backgroundColor = "var(--epi)"; bsBtn.style.backgroundColor = "var(--epi)";
             }
             renderSkeletons(); renderLabels(); loadProducts(); 
         }
 
+        // --- CATEGORIES (With active underline indicator) ---
         async function renderLabels() {
             const nav = document.getElementById('sub-nav');
             const catsData = [{name: '🔥 Top vente'}];
@@ -256,8 +293,9 @@
             
             nav.innerHTML = catsData.map((cat, idx) => `
                 <button id="btn-cat-${idx}" onclick="handleCatClick('${cat.name}', 'btn-cat-${idx}')" 
-                    class="category-pill px-6 py-2.5 rounded-[1rem] font-bold whitespace-nowrap ${activeCat === cat.name ? 'active-label' : ''}">
+                    class="category-pill px-5 py-2.5 rounded-[14px] font-extrabold text-[13px] whitespace-nowrap ${activeCat === cat.name ? 'active-label' : ''}">
                     ${cat.name}
+                    <div class="active-indicator"></div>
                 </button>
             `).join('');
         }
@@ -276,12 +314,10 @@
             if(term.length > 0) {
                 const filtered = allProducts.filter(p => p.name.toLowerCase().includes(term));
                 renderProductGrid(filtered);
-            } else {
-                renderProductGrid(allProducts);
-            }
+            } else { renderProductGrid(allProducts); }
         });
 
-        // --- PRODUCTS DB ---
+        // --- PRODUCTS DB (Matches new card design exactly) ---
         function loadProducts() {
             let query = db.collection("products").where("type", "==", activeStore);
             if (activeCat === '🔥 Top vente') query = query.where("isTop", "==", true);
@@ -291,7 +327,6 @@
                 allProducts = [];
                 snap.forEach(doc => {
                     let data = doc.data();
-                    // Keep original category reference for sauce logic
                     if (!data.category) data.category = activeCat; 
                     allProducts.push(data);
                 });
@@ -304,20 +339,25 @@
             if(products.length === 0) { grid.innerHTML = '<p class="col-span-2 text-center text-gray-400 py-10 font-bold text-xs">Aucun résultat</p>'; return; }
             
             grid.innerHTML = products.map(p => `
-                <div class="product-card p-3 flex flex-col gap-3" onclick="openOptions('${p.name}', ${p.price}, '${p.image}', '${p.category}')">
-                    <div class="product-img-wrap relative">
+                <div class="product-card p-3 flex flex-col cursor-pointer" onclick="openOptions('${p.name}', ${p.price}, '${p.image}', '${p.category}')">
+                    <div class="absolute top-4 right-4 z-10"><i data-lucide="heart" class="w-5 h-5 text-gray-400"></i></div>
+                    ${p.isTop ? `<div class="absolute top-4 left-4 z-10 bg-[#E85A24] text-white text-[8px] font-black px-2 py-1 rounded-[6px] uppercase tracking-wide">Top</div>` : ''}
+                    
+                    <div class="product-img-wrap relative mb-2">
                         <img src="${p.image}" loading="lazy">
-                        ${p.isTop ? `<span class="absolute top-2 left-2 ${activeStore === 'Restaurant' ? 'bg-[#E85A24]' : 'bg-[#10B981]'} text-white text-[7px] font-black px-2 py-1 rounded-md uppercase">Top</span>` : ''}
                     </div>
-                    <h3 class="font-bold text-[11px] text-gray-800 leading-tight h-8 overflow-hidden pr-1">${p.name}</h3>
-                    <div class="flex justify-between items-center mt-auto pb-1">
-                        <span class="font-black text-[13px]" style="color: var(--brand)">${p.price} DH</span>
-                        <div class="w-7 h-7 rounded-full font-bold text-[14px] flex items-center justify-center text-white shadow-md active:scale-90 transition" style="background-color: var(--brand)">+</div>
+                    
+                    <h3 class="font-extrabold text-[12px] text-gray-900 leading-tight mb-2 pr-1">${p.name}</h3>
+                    
+                    <div class="flex justify-between items-center mt-auto pt-1">
+                        <span class="font-black text-[14px]" style="color: var(--brand)">${p.price} DH</span>
+                        <div class="w-[30px] h-[30px] rounded-full font-black text-[16px] flex items-center justify-center text-white shadow-md transition" style="background-color: var(--brand)">+</div>
                     </div>
                 </div>`).join('');
+            lucide.createIcons();
         }
 
-        // --- SMART BOTTOM SHEET (CONDITIONAL SAUCES) ---
+        // --- SMART BOTTOM SHEET ---
         function openOptions(name, price, image, category) {
             currentItemForSheet = { name, price, image };
             document.getElementById('bs-title').innerText = name;
@@ -325,19 +365,13 @@
             document.getElementById('sauce-select').value = '';
             document.getElementById('bs-notes').value = '';
             
-            // SMART LOGIC: Only show sauces for specific food types
             const foodName = name.toLowerCase();
             const foodCat = category ? category.toLowerCase() : '';
-            const needsSauce = ['tacos', 'burger', 'burgers', 'sandwich', 'panini'].some(keyword => 
-                foodName.includes(keyword) || foodCat.includes(keyword)
-            );
+            const needsSauce = ['tacos', 'burger', 'burgers', 'sandwich', 'panini'].some(k => foodName.includes(k) || foodCat.includes(k));
 
             const sauceDiv = document.getElementById('bs-sauces');
-            if(activeStore === 'Restaurant' && needsSauce) {
-                sauceDiv.classList.remove('hidden');
-            } else {
-                sauceDiv.classList.add('hidden');
-            }
+            if(activeStore === 'Restaurant' && needsSauce) sauceDiv.classList.remove('hidden');
+            else sauceDiv.classList.add('hidden');
 
             document.getElementById('body-wrap').classList.add('bs-open', 'modal-open');
         }
@@ -351,27 +385,15 @@
             if(!currentItemForSheet) return;
             const sauce = document.getElementById('sauce-select').value;
             const notes = document.getElementById('bs-notes').value.trim();
-            
             const complexId = `${currentItemForSheet.name}-${sauce}-${notes}`;
             
             const existingItem = cart.find(i => i.id === complexId);
-            if(existingItem) {
-                existingItem.qty++;
-            } else {
-                cart.push({
-                    id: complexId,
-                    name: currentItemForSheet.name,
-                    price: currentItemForSheet.price,
-                    image: currentItemForSheet.image,
-                    sauce: sauce,
-                    notes: notes,
-                    qty: 1
-                });
+            if(existingItem) existingItem.qty++;
+            else {
+                cart.push({ id: complexId, name: currentItemForSheet.name, price: currentItemForSheet.price, image: currentItemForSheet.image, sauce: sauce, notes: notes, qty: 1 });
             }
             
-            closeSheet();
-            syncUI();
-            showToast(`${currentItemForSheet.name} ajouté !`);
+            closeSheet(); syncUI(); showToast(`${currentItemForSheet.name} ajouté !`);
         });
 
         function updateCartItemQty(id, change) {
@@ -383,26 +405,43 @@
             syncUI(); renderDrawer();
         }
 
-        // --- CART ENGINE ---
+        // --- CART ENGINE (Updates exactly like the image) ---
         function syncUI() {
             let total = 0; let count = 0;
             cart.forEach(i => { total += i.qty * i.price; count += i.qty; });
             const totalWithDelivery = total > 0 ? total + livraisonFee : 0;
             
+            // Header
             document.getElementById('nav-total').innerText = total + " DH";
-            document.getElementById('final-price').innerText = total + " DH";
+            const navBadge = document.getElementById('nav-badge');
+            if (count > 0) { navBadge.classList.remove('hidden'); navBadge.innerText = count; } 
+            else { navBadge.classList.add('hidden'); }
+
+            // Bottom Bar & Banner
+            const checkoutBar = document.getElementById('checkout-bar');
+            const deliveryBanner = document.getElementById('delivery-banner');
+            document.getElementById('bottom-count').innerText = count + (count > 1 ? " articles" : " article");
+            document.getElementById('bottom-total').innerText = total + " DH";
+            document.getElementById('bottom-badge').innerText = count;
+            
+            if (count > 0) {
+                checkoutBar.style.transform = 'translateY(0)';
+                deliveryBanner.style.transform = 'translateY(0)';
+            } else {
+                checkoutBar.style.transform = 'translateY(150%)';
+                deliveryBanner.style.transform = 'translateY(200%)';
+            }
+
             document.getElementById('drawer-total').innerText = totalWithDelivery + " DH";
-            document.getElementById('item-count').innerText = count + " Articles";
-            document.getElementById('checkout-bar').style.transform = count > 0 ? 'translateY(0)' : 'translateY(150%)';
         }
 
         function renderDrawer() {
             const list = document.getElementById('cart-items');
-            if(cart.length === 0) { list.innerHTML = `<div class="py-20 text-center"><p class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-4">Panier vide 🌮</p><button onclick="toggleCart(false)" class="text-xs font-black underline underline-offset-4" style="color: var(--brand)">Retour au menu</button></div>`; return; }
+            if(cart.length === 0) { list.innerHTML = `<div class="py-20 text-center"><p class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-4">Panier vide</p><button onclick="toggleCart(false)" class="text-xs font-black underline underline-offset-4" style="color: var(--brand)">Retour au menu</button></div>`; return; }
             
             list.innerHTML = cart.map(item => `
                 <div class="flex items-start gap-4 bg-gray-50/80 p-4 rounded-3xl border border-gray-100">
-                    <img src="${item.image}" class="w-14 h-14 rounded-2xl object-cover shadow-sm shrink-0">
+                    <img src="${item.image}" class="w-14 h-14 rounded-2xl object-cover shadow-sm shrink-0 mix-blend-multiply">
                     <div class="flex-1 text-[11px]">
                         <p class="font-bold text-gray-800 leading-tight">${item.name}</p>
                         ${item.sauce ? `<p class="text-[9px] text-gray-500 mt-1 uppercase tracking-wider">Sauce: ${item.sauce}</p>` : ''}
@@ -425,8 +464,7 @@
             if(show) { 
                 body.classList.replace('drawer-closed', 'drawer-open'); body.classList.add('modal-open'); 
                 overlay.style.opacity = '1'; overlay.style.pointerEvents = 'auto';
-                panel.style.transform = 'translateX(0)';
-                renderDrawer(); 
+                panel.style.transform = 'translateX(0)'; renderDrawer(); 
             } else { 
                 body.classList.replace('drawer-open', 'drawer-closed'); body.classList.remove('modal-open'); 
                 overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none';
