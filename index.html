@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LASCOTACO | App</title>
+    <title>LASCOTACO | Premium App</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffffff">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,41 +12,87 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        :root { --resto: #E85A24; --epi: #10B981; --bg: #FFFFFF; }
-        body { background-color: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .app-container { max-width: 500px; margin: 0 auto; width: 100%; position: relative; background: white; min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.05); overflow-x: hidden; }
+        /* PREMIUM COLOR SYSTEM & GRADIENTS */
+        :root { 
+            --bg-app: #FDFBFA; 
+            --text-main: #1A1D20;
+        }
+
+        .theme-resto { 
+            --brand-light: #FF8A5C;
+            --brand: #E85A24; 
+            --brand-dark: #C64110;
+            --brand-soft: rgba(232, 90, 36, 0.15);
+            --brand-glow: rgba(232, 90, 36, 0.35);
+        }
+
+        .theme-epi { 
+            --brand-light: #34D399;
+            --brand: #10B981; 
+            --brand-dark: #059669;
+            --brand-soft: rgba(16, 185, 129, 0.15);
+            --brand-glow: rgba(16, 185, 129, 0.35);
+        }
+
+        .bg-brand-gradient { background: linear-gradient(135deg, var(--brand-light), var(--brand-dark)); }
+        .text-brand { color: var(--brand); }
+        .shadow-brand { box-shadow: 0 8px 24px var(--brand-glow); }
+        .shadow-brand-soft { box-shadow: 0 4px 16px var(--brand-soft); }
+
+        body { background-color: var(--bg-app); font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .app-container { max-width: 500px; margin: 0 auto; width: 100%; position: relative; background: #FFFFFF; min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.03); overflow-x: hidden; }
         body.modal-open { overflow: hidden; }
 
-        .theme-resto { --brand: var(--resto); --brand-soft: rgba(232, 90, 36, 0.1); }
-        .theme-epi { --brand: var(--epi); --brand-soft: rgba(16, 185, 129, 0.1); }
+        /* MICRO-ANIMATIONS */
+        .ease-premium { transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .pressable:active { transform: scale(0.95); }
+        
+        @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes bounceGlow { 0%, 100% { transform: scale(1); box-shadow: 0 4px 12px var(--brand-soft); } 50% { transform: scale(1.1); box-shadow: 0 8px 24px var(--brand-glow); } }
+        
+        .animate-pop { animation: popIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .price-bump { animation: bounceGlow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
 
+        /* SKELETONS */
         .skeleton { background: linear-gradient(90deg, #F1F3F5 25%, #E9ECEF 50%, #F1F3F5 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 20px; }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-        /* CATEGORIES (No underline) */
-        .category-scroll { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 20px 16px 20px; scroll-padding-left: 20px; scroll-behavior: smooth; }
-        .category-pill { position: relative; flex: 0 0 auto; scroll-snap-align: start; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); background: #F8F9FA; color: #495057; border-radius: 12px; }
-        .category-pill:active { transform: scale(0.95); }
-        .active-label { background-color: var(--brand) !important; color: white !important; font-weight: 800 !important; }
+        /* CATEGORIES (Soft Gradient Focus) */
+        .category-scroll { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 24px 16px 24px; scroll-padding-left: 24px; scroll-behavior: smooth; }
+        .category-pill { position: relative; flex: 0 0 auto; scroll-snap-align: start; background: #F8F9FA; color: #6C757D; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .active-label { background: linear-gradient(135deg, var(--brand-light), var(--brand-dark)) !important; color: white !important; font-weight: 800 !important; box-shadow: 0 6px 16px var(--brand-soft) !important; transform: scale(1.03); }
 
-        /* PRODUCT CARDS */
-        .product-card { background: white; border-radius: 24px; border: 1px solid #F1F3F5; transition: all 0.3s ease; animation: fadeIn 0.4s ease-out forwards; position: relative; }
-        .product-card:active { transform: scale(0.97); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* PREMIUM PRODUCT CARDS */
+        .product-card { 
+            background: linear-gradient(145deg, #FFFFFF, #FFFAF6); 
+            border-radius: 26px; border: 1px solid rgba(255, 245, 235, 0.6); 
+            box-shadow: 0 6px 16px rgba(0,0,0,0.02); position: relative; 
+        }
+        .product-img-wrap { overflow: hidden; border-radius: 24px 24px 8px 8px; height: 160px; width: 100%; position: relative; background: transparent; }
+        .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; filter: drop-shadow(0px 10px 10px rgba(0,0,0,0.05)); }
+        .product-card:hover img { transform: scale(1.04); }
         
-        .product-img-wrap { overflow: hidden; border-radius: 20px 20px 6px 6px; height: 150px; background: #FAF5F0; width: 100%; position: relative; }
-        .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; mix-blend-mode: multiply; }
-        .product-card:hover img { transform: scale(1.05); }
+        /* FLOATING ADD BUTTON */
+        .btn-floating { position: absolute; bottom: 12px; right: 12px; width: 38px; height: 38px; border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 10; color: white; }
 
         /* BOTTOM SHEET */
         #bottom-sheet-root { position: fixed; inset: 0; z-index: 2000; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
-        #bs-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
-        #bs-panel { width: 100%; max-width: 500px; background: white; border-radius: 32px 32px 0 0; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); pointer-events: auto; padding-bottom: env(safe-area-inset-bottom); max-height: 85vh; display: flex; flex-direction: column; }
+        #bs-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; }
+        #bs-panel { width: 100%; max-width: 500px; background: white; border-radius: 36px 36px 0 0; transform: translateY(100%); pointer-events: auto; padding-bottom: env(safe-area-inset-bottom); max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 -20px 40px rgba(0,0,0,0.08); }
         .bs-open #bs-overlay { opacity: 1; pointer-events: auto; }
         .bs-open #bs-panel { transform: translateY(0); }
 
+        /* CART DRAWER (Vertical Pills) */
+        #cart-drawer-root { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
+        #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); opacity: 0; pointer-events: none; }
+        #cart-panel { position: absolute; right: 0; top: 0; bottom: 0; width: 88%; max-width: 420px; background: #FDFBFA; border-radius: 36px 0 0 36px; transform: translateX(100%); pointer-events: auto; display: flex; flex-direction: column; box-shadow: -10px 0 40px rgba(0,0,0,0.05); }
+        .drawer-open #cart-overlay { opacity: 1; pointer-events: auto; }
+        .drawer-open #cart-panel { transform: translateX(0); }
+        
+        .qty-pill-vertical { display: flex; flex-direction: column; align-items: center; justify-content: space-between; background: white; border-radius: 30px; height: 86px; width: 36px; padding: 6px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid #F8F9FA; }
+
         /* TOGGLE ANIMATION */
-        #store-toggle-bg { transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), background-color 0.4s ease; }
+        #store-toggle-bg { transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
@@ -58,30 +104,30 @@
 
     <div class="app-container" id="app-root">
         
-        <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md px-5 py-4 flex justify-between items-center">
-            <h1 class="text-[26px] font-black text-[#E85A24] tracking-tighter italic">LASCOTACO</h1>
-            <button onclick="toggleCart(true)" class="relative bg-[#1A1A1A] text-white px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 active:scale-95 transition">
-                <i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-orange-400"></i>
+        <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl px-5 py-4 flex justify-between items-center border-b border-gray-50/50">
+            <h1 class="text-[26px] font-black text-brand tracking-tighter italic ease-premium">LASCOTACO</h1>
+            <button onclick="toggleCart(true)" class="relative bg-[#1A1D20] text-white px-4 py-2.5 rounded-[14px] font-bold text-xs flex items-center gap-2 pressable ease-premium shadow-lg shadow-gray-200">
+                <i data-lucide="shopping-bag" class="w-4 h-4 text-white/90"></i>
                 <span id="nav-total">0 DH</span>
-                <span id="nav-badge" class="absolute -top-2 -right-2 bg-[#E85A24] text-white text-[9px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm scale-0 transition-transform">0</span>
+                <span id="nav-badge" class="absolute -top-2 -right-2 bg-brand-gradient text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-md scale-0 transition-transform duration-300">0</span>
             </button>
         </header>
 
-        <div class="px-5 pb-4 bg-white/95 backdrop-blur-md sticky top-[68px] z-40">
-            <div class="relative flex items-center">
+        <div class="px-5 pb-4 bg-white/80 backdrop-blur-xl sticky top-[68px] z-40">
+            <div class="relative flex items-center shadow-sm rounded-[18px]">
                 <i data-lucide="search" class="absolute left-4 w-4 h-4 text-gray-400"></i>
-                <input type="text" id="search-input" placeholder="Rechercher un plat, une boisson..." class="w-full bg-[#F8F9FA] border border-gray-100 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#E85A24]/30 transition-shadow">
+                <input type="text" id="search-input" placeholder="Rechercher..." class="w-full bg-[#F8F9FA] border border-transparent focus:border-gray-200 rounded-[18px] py-4 pl-11 pr-4 text-sm font-bold focus:outline-none transition-all ease-premium">
             </div>
         </div>
 
-        <div class="px-5 pb-4 bg-white sticky top-[132px] z-30">
-            <div class="bg-gray-50 p-1.5 rounded-2xl flex relative w-full items-center border border-gray-100">
-                <div id="store-toggle-bg" class="absolute left-1.5 top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-[#E85A24] rounded-xl shadow-sm"></div>
+        <div class="px-5 pb-4 bg-white sticky top-[138px] z-30">
+            <div class="bg-[#F8F9FA] p-1.5 rounded-[20px] flex relative w-full items-center border border-gray-100 shadow-inner">
+                <div id="store-toggle-bg" class="absolute left-1.5 top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-brand-gradient rounded-[16px] shadow-md"></div>
                 
-                <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 relative z-10 py-3 rounded-xl text-[15px] font-extrabold flex items-center justify-center gap-2 text-white transition-colors duration-300">
+                <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 relative z-10 py-3.5 rounded-[16px] text-[15px] font-black flex items-center justify-center gap-2 text-white ease-premium">
                     <i data-lucide="utensils" class="w-4 h-4"></i> Resto
                 </button>
-                <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 relative z-10 py-3 rounded-xl text-[15px] font-extrabold flex items-center justify-center gap-2 text-gray-500 transition-colors duration-300">
+                <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 relative z-10 py-3.5 rounded-[16px] text-[15px] font-black flex items-center justify-center gap-2 text-gray-500 ease-premium">
                     <i data-lucide="shopping-basket" class="w-4 h-4"></i> Épicerie
                 </button>
             </div>
@@ -89,54 +135,56 @@
 
         <div id="sub-nav" class="category-scroll no-scrollbar bg-white relative z-20"></div>
 
-        <main id="product-grid" class="p-5 grid grid-cols-2 gap-4 pb-6"></main>
+        <main id="product-grid" class="p-5 grid grid-cols-2 gap-5 pb-6"></main>
 
-        <div class="mx-5 mb-32 bg-orange-50 rounded-2xl p-4 flex items-center justify-between border border-orange-100 shadow-sm">
+        <div class="mx-5 mb-36 bg-orange-50/80 rounded-[24px] p-5 flex items-center justify-between border border-orange-100 shadow-sm">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-[#E85A24] rounded-2xl flex items-center justify-center shadow-md">
-                    <i data-lucide="bike" class="w-6 h-6 text-white"></i>
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm">
+                    <i data-lucide="bike" class="w-6 h-6 text-brand"></i>
                 </div>
                 <div>
-                    <h4 class="font-black text-gray-800 text-sm">Livraison rapide</h4>
-                    <p class="text-xs font-bold"><span class="text-[#E85A24]">20-35 min</span> <span class="text-gray-500">chez vous</span></p>
+                    <h4 class="font-black text-gray-800 text-sm">Livraison Rapide</h4>
+                    <p class="text-xs font-bold text-gray-500 mt-0.5"><span class="text-brand">20-35 min</span> chez vous</p>
                 </div>
             </div>
-            <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+            <div class="bg-white p-2 rounded-full shadow-sm"><i data-lucide="chevron-right" class="w-4 h-4 text-brand"></i></div>
         </div>
 
-        <div id="checkout-bar" class="fixed bottom-0 left-0 right-0 max-w-[500px] mx-auto p-4 z-50 translate-y-full transition-transform duration-500 cubic-bezier(0.2, 0.9, 0.3, 1)">
-            <button onclick="toggleCart(true)" class="w-full bg-[#E85A24] text-white p-3.5 rounded-[2rem] flex justify-between items-center shadow-2xl shadow-orange-500/40 active:scale-95 transition-transform duration-300">
-                <div class="flex items-center gap-3">
-                    <div class="relative bg-white w-11 h-11 rounded-full flex items-center justify-center text-[#E85A24] shadow-inner">
+        <div id="checkout-bar" class="fixed bottom-0 left-0 right-0 max-w-[500px] mx-auto p-5 z-50 translate-y-full ease-premium before:absolute before:inset-0 before:bg-white/40 before:backdrop-blur-md before:-z-10">
+            <button onclick="toggleCart(true)" class="w-full bg-brand-gradient text-white p-4 rounded-[28px] flex justify-between items-center shadow-brand pressable ease-premium relative overflow-hidden group">
+                <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="flex items-center gap-4 z-10">
+                    <div id="cart-icon-wrap" class="relative bg-white w-12 h-12 rounded-full flex items-center justify-center text-brand shadow-sm ease-premium">
                         <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-                        <span id="floating-badge" class="absolute -top-1 -right-1 bg-[#E85A24] text-white text-[9px] w-4 h-4 rounded-full border-2 border-white flex justify-center items-center font-black shadow-sm">0</span>
                     </div>
                     <div class="text-left">
-                        <p id="item-count-text" class="text-xs font-bold leading-tight">0 article</p>
-                        <p class="text-[9px] font-semibold text-white/80">Livraison : 20 DH</p>
+                        <p id="item-count-text" class="text-xs font-bold leading-tight text-white/90">0 article</p>
+                        <p class="text-[10px] font-bold text-white/70 mt-0.5">Livraison: 20 DH</p>
                     </div>
                 </div>
-                <div class="font-black text-[17px] mr-2 tracking-tight" id="final-price-bottom">0 DH</div>
-                <div class="bg-white text-[#E85A24] px-4 py-3 rounded-full text-[11px] font-extrabold flex items-center gap-1.5 shadow-sm">Voir le panier <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></div>
+                <div class="flex items-center gap-4 z-10">
+                    <div class="font-black text-xl tracking-tight" id="final-price-bottom">0 DH</div>
+                    <div class="bg-white/20 backdrop-blur-sm text-white w-10 h-10 rounded-full flex items-center justify-center shadow-inner"><i data-lucide="arrow-right" class="w-5 h-5"></i></div>
+                </div>
             </button>
         </div>
     </div>
 
     <div id="bottom-sheet-root">
-        <div id="bs-overlay" onclick="closeSheet()"></div>
-        <div id="bs-panel">
-            <div class="p-6 border-b border-gray-50 flex justify-between items-start shrink-0">
+        <div id="bs-overlay" class="ease-premium" onclick="closeSheet()"></div>
+        <div id="bs-panel" class="ease-premium">
+            <div class="p-8 border-b border-gray-50 flex justify-between items-start shrink-0">
                 <div>
-                    <h3 id="bs-title" class="font-black text-xl text-gray-800">Produit</h3>
-                    <p id="bs-price" class="font-bold text-[#E85A24] mt-1 text-lg">0 DH</p>
+                    <h3 id="bs-title" class="font-black text-2xl text-gray-800 tracking-tight">Produit</h3>
+                    <p id="bs-price" class="font-black text-brand mt-2 text-xl">0 DH</p>
                 </div>
-                <button onclick="closeSheet()" class="p-2.5 bg-gray-100 rounded-full active:scale-90 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="closeSheet()" class="p-3 bg-gray-50 rounded-full pressable ease-premium text-gray-500 hover:bg-gray-100"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             
-            <div class="p-6 overflow-y-auto no-scrollbar flex-1 space-y-6">
-                <div id="bs-sauces" class="space-y-3 hidden">
-                    <h4 class="font-bold text-sm text-gray-500 uppercase tracking-widest">Choix de Sauce</h4>
-                    <select id="sauce-select" class="w-full p-4 bg-gray-50 rounded-2xl font-bold text-sm border border-gray-100 outline-none focus:border-[#E85A24] transition-colors appearance-none">
+            <div class="p-8 overflow-y-auto no-scrollbar flex-1 space-y-8">
+                <div id="bs-sauces" class="space-y-4 hidden">
+                    <h4 class="font-black text-xs text-gray-400 uppercase tracking-widest">Choix de Sauce</h4>
+                    <select id="sauce-select" class="w-full p-4 bg-[#F8F9FA] rounded-[20px] font-bold text-sm border-2 border-transparent outline-none transition-all appearance-none focus:border-brand/30 focus:bg-white shadow-sm">
                         <option value="">Sans sauce</option>
                         <option value="Algérienne">Algérienne</option>
                         <option value="Big Mac">Big Mac</option>
@@ -145,164 +193,117 @@
                     </select>
                 </div>
                 
-                <div class="space-y-3">
-                    <h4 class="font-bold text-sm text-gray-500 uppercase tracking-widest">Instructions spéciales</h4>
-                    <textarea id="bs-notes" placeholder="Ex: Sans oignons, bien cuit..." class="w-full p-4 bg-gray-50 rounded-2xl font-semibold text-sm border border-gray-100 outline-none focus:border-[#E85A24] resize-none h-24 transition-colors"></textarea>
+                <div class="space-y-4">
+                    <h4 class="font-black text-xs text-gray-400 uppercase tracking-widest">Instructions Spéciales</h4>
+                    <textarea id="bs-notes" placeholder="Ex: Sans oignons, bien cuit..." class="w-full p-4 bg-[#F8F9FA] rounded-[20px] font-semibold text-sm border-2 border-transparent outline-none resize-none h-28 transition-all focus:border-brand/30 focus:bg-white shadow-sm"></textarea>
                 </div>
             </div>
 
-            <div class="p-6 bg-white shrink-0 border-t border-gray-50 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
-                <button id="bs-add-btn" class="w-full bg-[#E85A24] text-white py-5 rounded-full font-black text-lg active:scale-95 transition shadow-xl shadow-orange-500/20">
-                    Ajouter au panier
+            <div class="p-6 bg-white shrink-0 border-t border-gray-50">
+                <button id="bs-add-btn" class="w-full bg-brand-gradient text-white py-5 rounded-full font-black text-lg pressable ease-premium shadow-brand flex justify-center items-center gap-2">
+                    Ajouter <i data-lucide="plus" class="w-5 h-5"></i>
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="cart-drawer-root" style="position: fixed; inset: 0; z-index: 1000; pointer-events: none;">
-        <div id="cart-overlay" style="position: absolute; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(3px); opacity: 0; transition: opacity 0.4s ease; pointer-events: none;" onclick="toggleCart(false)"></div>
-        <div id="cart-panel" style="position: absolute; right: 0; top: 0; bottom: 0; width: 88%; max-width: 420px; background: white; border-radius: 30px 0 0 30px; transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1); pointer-events: auto; display: flex; flex-direction: column;">
+    <div id="cart-drawer-root">
+        <div id="cart-overlay" class="ease-premium" onclick="toggleCart(false)"></div>
+        <div id="cart-panel" class="ease-premium">
             
-            <div class="p-6 border-b flex justify-between items-center shrink-0">
-                <h2 class="text-xl font-black italic tracking-tight">Mon Panier</h2>
-                <button onclick="toggleCart(false)" class="p-3 bg-gray-100 rounded-full text-gray-500"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div class="p-8 pb-6 flex justify-between items-center shrink-0">
+                <h2 class="text-2xl font-black tracking-tight text-gray-900">Mon Panier</h2>
+                <button onclick="toggleCart(false)" class="p-3 bg-white rounded-full text-gray-500 shadow-sm border border-gray-50 pressable ease-premium"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             
-            <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar"></div>
+            <div id="cart-items" class="flex-1 overflow-y-auto px-6 space-y-4 no-scrollbar"></div>
             
-            <div id="upsell-container" class="px-6 pb-4 shrink-0 border-t border-gray-50 pt-4">
-                <p class="font-black text-sm text-gray-800 tracking-tight mb-3">N'oubliez pas ! 🥤</p>
+            <div id="upsell-container" class="px-6 pb-6 pt-6 shrink-0 border-t border-gray-100/50 mt-4 bg-white/50">
+                <p class="font-black text-[13px] text-gray-800 tracking-tight mb-4">Complétez votre commande 🥤</p>
                 <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
-                    
-                    <div class="min-w-[150px] bg-white p-2 rounded-2xl flex items-center gap-3 border border-gray-100 shadow-sm active:scale-95 transition cursor-pointer" onclick="quickAdd('Coca Cola', 15, 'https://cdn-icons-png.flaticon.com/512/3075/3075977.png')">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" class="w-10 h-10 object-contain bg-gray-50 rounded-xl p-1">
+                    <div class="min-w-[160px] bg-white p-2.5 rounded-[20px] flex items-center gap-3 border border-gray-100 shadow-sm pressable ease-premium cursor-pointer" onclick="quickAdd('Coca Cola', 15, 'https://cdn-icons-png.flaticon.com/512/3075/3075977.png')">
+                        <div class="w-12 h-12 bg-[#F8F9FA] rounded-[14px] p-2 shrink-0"><img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" class="w-full h-full object-contain"></div>
                         <div class="flex-1">
-                            <p class="font-bold text-[11px] text-gray-800 leading-tight">Coca Cola</p>
-                            <p class="font-black text-[10px]" style="color: var(--brand)">15 DH</p>
+                            <p class="font-extrabold text-[12px] text-gray-900 leading-tight">Coca Cola</p>
+                            <p class="font-black text-[11px] text-brand mt-0.5">15 DH</p>
                         </div>
                     </div>
-
-                    <div class="min-w-[150px] bg-white p-2 rounded-2xl flex items-center gap-3 border border-gray-100 shadow-sm active:scale-95 transition cursor-pointer" onclick="quickAdd('Sprite', 15, 'https://cdn-icons-png.flaticon.com/512/3075/3075977.png')">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" class="w-10 h-10 object-contain bg-gray-50 rounded-xl p-1" style="filter: hue-rotate(90deg);">
+                    <div class="min-w-[160px] bg-white p-2.5 rounded-[20px] flex items-center gap-3 border border-gray-100 shadow-sm pressable ease-premium cursor-pointer" onclick="quickAdd('Sprite', 15, 'https://cdn-icons-png.flaticon.com/512/3075/3075977.png')">
+                        <div class="w-12 h-12 bg-[#F8F9FA] rounded-[14px] p-2 shrink-0"><img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" class="w-full h-full object-contain" style="filter: hue-rotate(90deg);"></div>
                         <div class="flex-1">
-                            <p class="font-bold text-[11px] text-gray-800 leading-tight">Sprite</p>
-                            <p class="font-black text-[10px]" style="color: var(--brand)">15 DH</p>
+                            <p class="font-extrabold text-[12px] text-gray-900 leading-tight">Sprite</p>
+                            <p class="font-black text-[11px] text-brand mt-0.5">15 DH</p>
                         </div>
                     </div>
-
                 </div>
             </div>
 
-            <div class="p-8 bg-gray-50/80 border-t border-gray-100 space-y-4 shrink-0">
-                <div class="flex justify-between items-center px-2">
-                    <span class="font-bold text-gray-400 uppercase text-[10px]">Livraison</span>
-                    <span class="font-bold text-gray-800 text-sm">20 DH</span>
+            <div class="p-8 bg-white rounded-tl-[36px] shadow-[0_-10px_30px_rgba(0,0,0,0.03)] shrink-0 space-y-5">
+                <div class="flex justify-between items-center px-1">
+                    <span class="font-bold text-gray-400 text-xs">Frais de livraison</span>
+                    <span class="font-black text-gray-800 text-sm">20 DH</span>
                 </div>
-                <div class="flex justify-between items-center px-2">
-                    <span class="font-bold text-gray-400 uppercase text-[10px]">Total à payer</span>
-                    <span id="drawer-total" class="text-3xl font-black text-[#E85A24]">0 DH</span>
+                <div class="flex justify-between items-end px-1 pt-2 border-t border-gray-50">
+                    <span class="font-black text-gray-900 text-sm">Total</span>
+                    <span id="drawer-total" class="text-[32px] leading-none font-black text-brand">0 DH</span>
                 </div>
-                <button onclick="sendToWhatsApp()" id="wa-btn" class="w-full bg-[#25D366] text-white py-5 rounded-full font-black text-lg flex justify-center items-center gap-3 shadow-xl active:scale-95 transition">
-                    <i data-lucide="message-circle" class="w-6 h-6"></i> Commander
+                <button onclick="sendToWhatsApp()" class="w-full bg-[#1A1D20] text-white py-5 rounded-[24px] font-black text-[17px] flex justify-center items-center gap-3 shadow-xl shadow-gray-200 pressable ease-premium mt-2">
+                    <i data-lucide="message-circle" class="w-5 h-5 text-[#25D366]"></i> Commander
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- PWA INSTALLATION LOGIC ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW setup failed'));
-            });
-        }
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); }); }
 
-        // --- FIREBASE ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyBebaGxqiNBvCqofveg1Fmztl7av3Mdoyg",
-            authDomain: "lascotaco-67fe5.firebaseapp.com",
-            projectId: "lascotaco-67fe5",
-            storageBucket: "lascotaco-67fe5.firebasestorage.app",
-            messagingSenderId: "865918381027",
-            appId: "1:865918381027:web:abc6435df20894020c4ed6"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        const firebaseConfig = { apiKey: "AIzaSyBebaGxqiNBvCqofveg1Fmztl7av3Mdoyg", authDomain: "lascotaco-67fe5.firebaseapp.com", projectId: "lascotaco-67fe5", storageBucket: "lascotaco-67fe5.firebasestorage.app", messagingSenderId: "865918381027", appId: "1:865918381027:web:abc6435df20894020c4ed6" };
+        firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
-        let cart = []; 
-        let activeStore = 'Restaurant'; let activeCat = '🔥 Top vente';
-        let livraisonFee = 20;
-        let allProducts = []; 
-        let currentItemForSheet = null;
+        let cart = []; let activeStore = 'Restaurant'; let activeCat = '🔥 Top vente'; let livraisonFee = 20; let allProducts = []; let currentItemForSheet = null;
 
         function showToast(message) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = 'bg-[#1A1A1A] text-white px-5 py-4 rounded-2xl text-[13px] font-bold shadow-2xl transition-all duration-300 translate-y-[-20px] opacity-0 flex items-center justify-between border border-gray-800';
-            toast.innerHTML = `<div class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[#25D366]"></i> <span>${message}</span></div>`;
-            container.appendChild(toast);
-            lucide.createIcons();
+            toast.className = 'bg-[#1A1D20] text-white px-5 py-3.5 rounded-[18px] text-[13px] font-bold shadow-2xl transition-all duration-400 cubic-bezier(0.2, 0.8, 0.2, 1) translate-y-[-20px] opacity-0 flex items-center justify-between';
+            toast.innerHTML = `<div class="flex items-center gap-3"><div class="w-6 h-6 rounded-full bg-[#25D366]/20 flex items-center justify-center"><i data-lucide="check" class="w-3.5 h-3.5 text-[#25D366]"></i></div> <span>${message}</span></div>`;
+            container.appendChild(toast); lucide.createIcons();
             requestAnimationFrame(() => { toast.classList.remove('translate-y-[-20px]', 'opacity-0'); });
-            setTimeout(() => { toast.classList.add('translate-y-[-20px]', 'opacity-0'); setTimeout(() => toast.remove(), 300); }, 2500);
+            setTimeout(() => { toast.classList.add('translate-y-[-20px]', 'opacity-0'); setTimeout(() => toast.remove(), 400); }, 2500);
         }
 
         function renderSkeletons() {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = Array(4).fill().map(() => `
-                <div class="product-card p-3 flex flex-col gap-3 shadow-none border-gray-100">
-                    <div class="skeleton h-32 w-full rounded-[18px]"></div>
-                    <div class="skeleton h-4 w-3/4 rounded mt-1"></div>
-                    <div class="flex justify-between items-center mt-auto pt-2">
-                        <div class="skeleton h-4 w-12 rounded"></div>
-                        <div class="skeleton h-8 w-8 rounded-full"></div>
-                    </div>
+                <div class="product-card p-3 flex flex-col gap-3 shadow-none border-gray-50">
+                    <div class="skeleton h-[160px] w-full rounded-[20px]"></div>
+                    <div class="skeleton h-4 w-2/3 rounded mt-2"></div>
+                    <div class="skeleton h-5 w-16 rounded mt-1"></div>
                 </div>
             `).join('');
         }
 
-        // --- NEW RECTANGULAR TOGGLE SWITCH ---
         function setStore(type) { 
-            activeStore = type; activeCat = '🔥 Top vente';
-            document.getElementById('search-input').value = '';
-            
-            const body = document.getElementById('body-wrap');
-            const toggleBg = document.getElementById('store-toggle-bg');
-            const btnResto = document.getElementById('btn-resto');
-            const btnEpi = document.getElementById('btn-epi');
-            const waBtn = document.getElementById('wa-btn');
-            const bsBtn = document.getElementById('bs-add-btn');
-
+            activeStore = type; activeCat = '🔥 Top vente'; document.getElementById('search-input').value = '';
+            const body = document.getElementById('body-wrap'); const toggleBg = document.getElementById('store-toggle-bg');
+            const btnResto = document.getElementById('btn-resto'); const btnEpi = document.getElementById('btn-epi');
             if(type === 'Restaurant') {
-                body.className = "drawer-closed theme-resto";
-                toggleBg.style.transform = 'translateX(0)';
-                toggleBg.style.backgroundColor = '#E85A24';
-                
-                btnResto.classList.replace('text-gray-500', 'text-white');
-                btnEpi.classList.replace('text-white', 'text-gray-500');
-                
-                waBtn.style.backgroundColor = "#25D366"; bsBtn.style.backgroundColor = "#E85A24";
+                body.className = "drawer-closed theme-resto"; toggleBg.style.transform = 'translateX(0)';
+                btnResto.classList.replace('text-gray-500', 'text-white'); btnEpi.classList.replace('text-white', 'text-gray-500');
             } else {
-                body.className = "drawer-closed theme-epi";
-                toggleBg.style.transform = 'translateX(100%)';
-                toggleBg.style.backgroundColor = '#10B981';
-                
-                btnEpi.classList.replace('text-gray-500', 'text-white');
-                btnResto.classList.replace('text-white', 'text-gray-500');
-                
-                waBtn.style.backgroundColor = "#10B981"; bsBtn.style.backgroundColor = "#10B981";
+                body.className = "drawer-closed theme-epi"; toggleBg.style.transform = 'translateX(100%)';
+                btnEpi.classList.replace('text-gray-500', 'text-white'); btnResto.classList.replace('text-white', 'text-gray-500');
             }
             renderSkeletons(); renderLabels(); loadProducts(); 
         }
 
         async function renderLabels() {
-            const nav = document.getElementById('sub-nav');
-            const catsData = [{name: '🔥 Top vente'}];
+            const nav = document.getElementById('sub-nav'); const catsData = [{name: '🔥 Top vente'}];
             const snap = await db.collection("categories").where("type", "==", activeStore).get();
             snap.forEach(doc => catsData.push(doc.data()));
-            
             nav.innerHTML = catsData.map((cat, idx) => `
                 <button id="btn-cat-${idx}" onclick="handleCatClick('${cat.name}', 'btn-cat-${idx}')" 
-                    class="category-pill px-5 py-2.5 text-[13px] font-bold whitespace-nowrap ${activeCat === cat.name ? 'active-label' : ''}">
+                    class="category-pill pressable px-6 py-3 text-[14px] font-bold whitespace-nowrap ease-premium ${activeCat === cat.name ? 'active-label' : ''}">
                     ${cat.name}
                 </button>
             `).join('');
@@ -311,163 +312,112 @@
         function handleCatClick(catName, elementId) {
             activeCat = catName; document.getElementById('search-input').value = '';
             renderLabels(); renderSkeletons(); loadProducts();
-            const nav = document.getElementById('sub-nav');
-            const scrollTarget = document.getElementById(elementId).offsetLeft - 20;
-            nav.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+            const scrollTarget = document.getElementById(elementId).offsetLeft - 24;
+            document.getElementById('sub-nav').scrollTo({ left: scrollTarget, behavior: 'smooth' });
         }
 
         document.getElementById('search-input').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
-            if(term.length > 0) {
-                const filtered = allProducts.filter(p => p.name.toLowerCase().includes(term));
-                renderProductGrid(filtered);
-            } else {
-                renderProductGrid(allProducts);
-            }
+            renderProductGrid(term.length > 0 ? allProducts.filter(p => p.name.toLowerCase().includes(term)) : allProducts);
         });
 
         function loadProducts() {
-            let query = db.collection("products").where("type", "==", activeStore);
-            if (activeCat === '🔥 Top vente') query = query.where("isTop", "==", true);
-            else query = query.where("category", "==", activeCat);
-            
-            query.onSnapshot(snap => {
-                allProducts = [];
-                snap.forEach(doc => {
-                    let data = doc.data();
-                    if (!data.category) data.category = activeCat; 
-                    allProducts.push(data);
-                });
-                renderProductGrid(allProducts);
-            });
+            let q = db.collection("products").where("type", "==", activeStore);
+            if (activeCat === '🔥 Top vente') q = q.where("isTop", "==", true); else q = q.where("category", "==", activeCat);
+            q.onSnapshot(snap => { allProducts = []; snap.forEach(doc => { let d = doc.data(); if(!d.category) d.category = activeCat; allProducts.push(d); }); renderProductGrid(allProducts); });
         }
 
         function renderProductGrid(products) {
             const grid = document.getElementById('product-grid');
-            if(products.length === 0) { grid.innerHTML = '<p class="col-span-2 text-center text-gray-400 py-10 font-bold text-xs">Aucun résultat</p>'; return; }
-            
+            if(products.length === 0) { grid.innerHTML = '<p class="col-span-2 text-center text-gray-400 py-10 font-bold text-sm">Aucun résultat</p>'; return; }
             grid.innerHTML = products.map(p => `
-                <div class="product-card p-2.5 flex flex-col gap-3 shadow-sm hover:shadow-md cursor-pointer" onclick="openOptions('${p.name}', ${p.price}, '${p.image}', '${p.category}')">
-                    <div class="product-img-wrap relative">
-                        <img src="${p.image}" loading="lazy">
-                        ${p.isTop ? `<span class="absolute top-2 left-2 ${activeStore === 'Restaurant' ? 'bg-[#E85A24]' : 'bg-[#10B981]'} text-white text-[8px] font-black px-2 py-0.5 rounded uppercase shadow-sm">Top</span>` : ''}
+                <div class="product-card p-2.5 flex flex-col gap-3 animate-pop pressable cursor-pointer group" onclick="openOptions('${p.name}', ${p.price}, '${p.image}', '${p.category}')">
+                    <div class="product-img-wrap ease-premium">
+                        <img src="${p.image}" class="ease-premium" loading="lazy">
+                        ${p.isTop ? `<span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-brand text-[9px] font-black px-2.5 py-1 rounded-full shadow-sm uppercase tracking-wide">Top</span>` : ''}
                     </div>
-                    <h3 class="font-bold text-[12px] text-gray-900 leading-tight h-8 overflow-hidden px-1">${p.name}</h3>
-                    <div class="flex justify-between items-center mt-auto pb-1 px-1">
-                        <span class="font-black text-[14px]" style="color: var(--brand)">${p.price} DH</span>
-                        <div class="w-7 h-7 rounded-full font-bold text-[16px] flex items-center justify-center text-white shadow-md active:scale-90 transition" style="background-color: var(--brand)">+</div>
+                    <div class="px-1.5 pb-2 flex-1 flex flex-col">
+                        <h3 class="font-extrabold text-[13px] text-gray-900 leading-tight mb-1 line-clamp-2">${p.name}</h3>
+                        <div class="mt-auto pt-2 flex justify-between items-end relative">
+                            <span class="font-black text-[16px] text-brand tracking-tight drop-shadow-sm">${p.price} DH</span>
+                        </div>
                     </div>
+                    <button class="btn-floating bg-brand-gradient shadow-brand-soft ease-premium pressable" onclick="event.stopPropagation(); openOptions('${p.name}', ${p.price}, '${p.image}', '${p.category}')">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                    </button>
                 </div>`).join('');
             lucide.createIcons();
         }
 
-        // --- SMART CONDITIONAL SAUCES ---
         function openOptions(name, price, image, category) {
             currentItemForSheet = { name, price, image };
-            document.getElementById('bs-title').innerText = name;
-            document.getElementById('bs-price').innerText = price + ' DH';
-            document.getElementById('sauce-select').value = '';
-            document.getElementById('bs-notes').value = '';
+            document.getElementById('bs-title').innerText = name; document.getElementById('bs-price').innerText = price + ' DH';
+            document.getElementById('sauce-select').value = ''; document.getElementById('bs-notes').value = '';
             
-            const foodName = name.toLowerCase();
-            const foodCat = category ? category.toLowerCase() : '';
-            const needsSauce = ['tacos', 'burger', 'burgers', 'sandwich', 'panini'].some(keyword => 
-                foodName.includes(keyword) || foodCat.includes(keyword)
-            );
-
-            const sauceDiv = document.getElementById('bs-sauces');
-            if(activeStore === 'Restaurant' && needsSauce) {
-                sauceDiv.classList.remove('hidden');
-            } else {
-                sauceDiv.classList.add('hidden');
-            }
-
+            const needsSauce = ['tacos', 'burger', 'burgers', 'sandwich', 'panini'].some(k => name.toLowerCase().includes(k) || (category && category.toLowerCase().includes(k)));
+            const sDiv = document.getElementById('bs-sauces'); activeStore === 'Restaurant' && needsSauce ? sDiv.classList.remove('hidden') : sDiv.classList.add('hidden');
             document.getElementById('body-wrap').classList.add('bs-open', 'modal-open');
         }
 
-        function closeSheet() {
-            document.getElementById('body-wrap').classList.remove('bs-open', 'modal-open');
-            currentItemForSheet = null;
-        }
+        function closeSheet() { document.getElementById('body-wrap').classList.remove('bs-open', 'modal-open'); currentItemForSheet = null; }
 
         document.getElementById('bs-add-btn').addEventListener('click', () => {
             if(!currentItemForSheet) return;
-            const sauce = document.getElementById('sauce-select').value;
-            const notes = document.getElementById('bs-notes').value.trim();
-            const complexId = `${currentItemForSheet.name}-${sauce}-${notes}`;
-            
-            const existingItem = cart.find(i => i.id === complexId);
-            if(existingItem) {
-                existingItem.qty++;
-            } else {
-                cart.push({ id: complexId, name: currentItemForSheet.name, price: currentItemForSheet.price, image: currentItemForSheet.image, sauce: sauce, notes: notes, qty: 1 });
-            }
-            
-            closeSheet(); syncUI(); showToast(`${currentItemForSheet.name} ajouté !`);
+            const sauce = document.getElementById('sauce-select').value; const notes = document.getElementById('bs-notes').value.trim();
+            const id = `${currentItemForSheet.name}-${sauce}-${notes}`;
+            const item = cart.find(i => i.id === id); item ? item.qty++ : cart.push({ id, name: currentItemForSheet.name, price: currentItemForSheet.price, image: currentItemForSheet.image, sauce, notes, qty: 1 });
+            closeSheet(); syncUI(); showToast(`1x ${currentItemForSheet.name}`);
         });
 
-        // Upsell add
         function quickAdd(name, price, image) {
-            const complexId = `${name}--`;
-            const existingItem = cart.find(i => i.id === complexId);
-            if(existingItem) existingItem.qty++;
-            else cart.push({ id: complexId, name: name, price: price, image: image, sauce: '', notes: '', qty: 1 });
-            syncUI(); renderDrawer(); showToast(`${name} ajouté !`);
+            const id = `${name}--`; const item = cart.find(i => i.id === id); item ? item.qty++ : cart.push({ id, name, price, image, sauce: '', notes: '', qty: 1 });
+            syncUI(); renderDrawer(); showToast(`1x ${name}`);
         }
 
         function updateCartItemQty(id, change) {
-            const index = cart.findIndex(i => i.id === id);
-            if(index !== -1) {
-                cart[index].qty += change;
-                if(cart[index].qty <= 0) cart.splice(index, 1);
-            }
+            const idx = cart.findIndex(i => i.id === id); if(idx !== -1) { cart[idx].qty += change; if(cart[idx].qty <= 0) cart.splice(idx, 1); }
             syncUI(); renderDrawer();
         }
 
-        // --- EXACT CART UI ENGINE ---
         function syncUI() {
-            let total = 0; let count = 0;
-            cart.forEach(i => { total += i.qty * i.price; count += i.qty; });
-            const totalWithDelivery = total > 0 ? total + livraisonFee : 0;
+            let total = 0; let count = 0; cart.forEach(i => { total += i.qty * i.price; count += i.qty; });
+            const totalWD = total > 0 ? total + livraisonFee : 0;
             
-            // Header Sync
             document.getElementById('nav-total').innerText = total + " DH";
-            const navBadge = document.getElementById('nav-badge');
-            if (count > 0) {
-                navBadge.innerText = count;
-                navBadge.classList.replace('scale-0', 'scale-100');
-            } else {
-                navBadge.classList.replace('scale-100', 'scale-0');
-            }
+            const badge = document.getElementById('nav-badge');
+            if (count > 0) { badge.innerText = count; badge.classList.replace('scale-0', 'scale-100'); } else badge.classList.replace('scale-100', 'scale-0');
             
-            // Bottom Bar Sync
             document.getElementById('floating-badge').innerText = count;
             document.getElementById('item-count-text').innerText = count + (count > 1 ? " articles" : " article");
-            document.getElementById('final-price-bottom').innerText = total + " DH";
             
-            // Drawer Sync
-            document.getElementById('drawer-total').innerText = totalWithDelivery + " DH";
+            const fp = document.getElementById('final-price-bottom');
+            fp.innerText = total + " DH";
+            fp.classList.remove('price-bump'); void fp.offsetWidth; fp.classList.add('price-bump'); // Retrigger animation
             
+            const cartIcon = document.getElementById('cart-icon-wrap');
+            cartIcon.classList.remove('price-bump'); void cartIcon.offsetWidth; cartIcon.classList.add('price-bump');
+            
+            document.getElementById('drawer-total').innerText = totalWD + " DH";
             document.getElementById('checkout-bar').style.transform = count > 0 ? 'translateY(0)' : 'translateY(150%)';
         }
 
         function renderDrawer() {
             const list = document.getElementById('cart-items');
-            if(cart.length === 0) { list.innerHTML = `<div class="py-20 text-center"><p class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-4">Panier vide 🌮</p><button onclick="toggleCart(false)" class="text-xs font-black underline underline-offset-4" style="color: var(--brand)">Retour au menu</button></div>`; return; }
+            if(cart.length === 0) { list.innerHTML = `<div class="py-24 flex flex-col items-center"><div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm"><i data-lucide="shopping-cart" class="w-6 h-6 text-gray-300"></i></div><p class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-4">Panier vide</p></div>`; lucide.createIcons(); return; }
             
             list.innerHTML = cart.map(item => `
-                <div class="flex items-start gap-4 bg-gray-50/80 p-4 rounded-3xl border border-gray-100">
-                    <img src="${item.image}" class="w-14 h-14 rounded-2xl object-cover shadow-sm shrink-0">
-                    <div class="flex-1 text-[11px]">
-                        <p class="font-bold text-gray-800 leading-tight">${item.name}</p>
-                        ${item.sauce ? `<p class="text-[9px] text-gray-500 mt-1 uppercase tracking-wider">Sauce: ${item.sauce}</p>` : ''}
-                        ${item.notes ? `<p class="text-[9px] text-orange-500 italic mt-0.5">"${item.notes}"</p>` : ''}
-                        <p class="font-black mt-2 text-sm" style="color: var(--brand)">${item.price} DH</p>
+                <div class="flex items-center gap-4 bg-white p-3.5 rounded-[24px] border border-gray-50 shadow-[0_4px_16px_rgba(0,0,0,0.02)] ease-premium">
+                    <img src="${item.image}" class="w-16 h-16 rounded-[18px] object-cover bg-gray-50 p-0.5 shrink-0">
+                    <div class="flex-1">
+                        <p class="font-extrabold text-[13px] text-gray-900 leading-tight">${item.name}</p>
+                        ${item.sauce ? `<p class="text-[10px] text-gray-500 font-bold mt-1">Sauce: <span class="text-gray-800">${item.sauce}</span></p>` : ''}
+                        ${item.notes ? `<p class="text-[10px] text-orange-500 font-bold mt-0.5 line-clamp-1">"${item.notes}"</p>` : ''}
+                        <p class="font-black mt-2 text-[15px] text-brand tracking-tight">${item.price} DH</p>
                     </div>
-                    <div class="flex flex-col items-center gap-2 bg-white rounded-xl p-1 shadow-sm border border-gray-50">
-                        <button onclick="updateCartItemQty('${item.id}', 1)" class="w-7 h-7 flex items-center justify-center font-black active:scale-75 transition">+</button>
-                        <span class="font-black text-xs">${item.qty}</span>
-                        <button onclick="updateCartItemQty('${item.id}', -1)" class="w-7 h-7 flex items-center justify-center font-black text-gray-400 active:scale-75 transition">-</button>
+                    <div class="qty-pill-vertical">
+                        <button onclick="updateCartItemQty('${item.id}', 1)" class="w-full flex-1 flex items-center justify-center font-black text-brand text-lg pressable ease-premium">+</button>
+                        <span class="font-black text-xs text-gray-800">${item.qty}</span>
+                        <button onclick="updateCartItemQty('${item.id}', -1)" class="w-full flex-1 flex items-center justify-center font-black text-gray-400 text-lg pressable ease-premium">-</button>
                     </div>
                 </div>
             `).join('');
@@ -475,31 +425,14 @@
 
         function toggleCart(show) {
             const body = document.getElementById('body-wrap');
-            const overlay = document.getElementById('cart-overlay');
-            const panel = document.getElementById('cart-panel');
-            if(show) { 
-                body.classList.replace('drawer-closed', 'drawer-open'); body.classList.add('modal-open'); 
-                overlay.style.opacity = '1'; overlay.style.pointerEvents = 'auto';
-                panel.style.transform = 'translateX(0)';
-                renderDrawer(); 
-            } else { 
-                body.classList.replace('drawer-open', 'drawer-closed'); body.classList.remove('modal-open'); 
-                overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none';
-                panel.style.transform = 'translateX(100%)';
-            }
+            if(show) { body.classList.replace('drawer-closed', 'drawer-open'); body.classList.add('modal-open'); renderDrawer(); } 
+            else { body.classList.replace('drawer-open', 'drawer-closed'); body.classList.remove('modal-open'); }
         }
 
         function sendToWhatsApp() {
             if(cart.length === 0) return;
-            let msg = `🛒 *Nouvelle Commande LASCOTACO*\n\n`;
-            let sub = 0; 
-            cart.forEach(i => { 
-                msg += `• *${i.qty}x* ${i.name}`;
-                if(i.sauce) msg += `\n  ↳ _Sauce: ${i.sauce}_`;
-                if(i.notes) msg += `\n  ↳ _Note: ${i.notes}_`;
-                msg += `\n  = ${i.qty * i.price} DH\n\n`;
-                sub += i.qty * i.price; 
-            });
+            let msg = `🛒 *Nouvelle Commande LASCOTACO*\n\n`; let sub = 0; 
+            cart.forEach(i => { msg += `• *${i.qty}x* ${i.name}`; if(i.sauce) msg += `\n  ↳ _Sauce: ${i.sauce}_`; if(i.notes) msg += `\n  ↳ _Note: ${i.notes}_`; msg += `\n  = ${i.qty * i.price} DH\n\n`; sub += i.qty * i.price; });
             msg += `🛵 *Livraison:* ${livraisonFee} DH\n💰 *TOTAL:* ${sub + livraisonFee} DH`;
             window.open(`https://wa.me/212708006088?text=${encodeURIComponent(msg)}`);
         }
