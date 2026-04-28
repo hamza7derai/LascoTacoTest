@@ -26,13 +26,11 @@
         .skeleton { background: linear-gradient(90deg, #F1F3F5 25%, #E9ECEF 50%, #F1F3F5 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 20px; }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-        /* CATEGORIES */
         .category-scroll { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 20px 16px 20px; scroll-padding-left: 20px; scroll-behavior: smooth; }
         .category-pill { position: relative; flex: 0 0 auto; scroll-snap-align: start; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); background: #F8F9FA; color: #495057; border-radius: 12px; }
         .category-pill:active { transform: scale(0.95); }
         .active-label { background-color: var(--brand) !important; color: white !important; font-weight: 800 !important; }
 
-        /* PRODUCT CARDS */
         .product-card { background: white; border-radius: 24px; border: 1px solid #F1F3F5; transition: all 0.3s ease; animation: fadeIn 0.4s ease-out forwards; position: relative; }
         .product-card:active { transform: scale(0.97); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -44,7 +42,6 @@
         .animate-pop { animation: popBounce 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); }
         @keyframes popBounce { 0% { transform: scale(1); } 40% { transform: scale(0.85); background: white; color: var(--brand); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
-        /* BOTTOM SHEETS */
         #bottom-sheet-root, #cart-drawer-root { position: fixed; inset: 0; z-index: 2000; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
         #bs-overlay, #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
         
@@ -57,6 +54,10 @@
         .drawer-open #cart-panel { transform: translateY(0); }
 
         #store-toggle-bg { transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), background-color 0.4s ease; }
+
+        /* Custom Radio Button for Sizes */
+        .size-radio:checked + label { border-color: var(--brand); background-color: rgba(232, 90, 36, 0.05); }
+        .size-radio:checked + label .check-icon { opacity: 1; color: var(--brand); }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
@@ -87,7 +88,6 @@
         <div class="px-5 pb-4 bg-white sticky top-[138px] z-30">
             <div class="bg-gray-50 p-1.5 rounded-2xl flex relative w-full items-center border border-gray-100">
                 <div id="store-toggle-bg" class="absolute left-1.5 top-1.5 bottom-1.5 w-[calc(50%-6px)] rounded-xl shadow-sm" style="background-color: var(--brand)"></div>
-                
                 <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 relative z-10 py-3 rounded-xl text-[15px] font-extrabold flex items-center justify-center gap-2 text-white transition-colors duration-300">
                     <i data-lucide="utensils" class="w-4 h-4"></i> Resto
                 </button>
@@ -103,7 +103,6 @@
 
         <div id="checkout-bar" class="fixed bottom-4 left-4 right-4 max-w-[468px] mx-auto z-50 translate-y-[150%] premium-ease">
             <button onclick="toggleCart(true)" class="w-full text-white p-2.5 rounded-[2rem] flex justify-between items-center shadow-[0_12px_24px_rgba(0,0,0,0.15)] active:scale-95 premium-ease relative overflow-hidden" style="background-color: var(--brand)">
-                
                 <div class="flex items-center gap-3 pl-1 z-10">
                     <div class="relative bg-white w-[44px] h-[44px] rounded-full flex items-center justify-center shadow-inner">
                         <i data-lucide="shopping-bag" class="w-[22px] h-[22px]" style="color: var(--brand)"></i>
@@ -114,9 +113,7 @@
                         <p class="text-[11px] font-medium text-white/90 mt-0.5">Livraison : 20 DH</p>
                     </div>
                 </div>
-
                 <div class="font-black text-[18px] absolute left-1/2 -translate-x-1/2 z-10 tracking-tight" id="final-price-bottom">0 DH</div>
-                
                 <div class="bg-white px-4 py-3 rounded-[1.5rem] text-[13px] font-bold flex items-center gap-1.5 z-10 shadow-sm mr-1" style="color: var(--brand)">
                     Voir le panier <i data-lucide="chevron-right" class="w-4 h-4"></i>
                 </div>
@@ -129,26 +126,28 @@
         <div id="bs-panel">
             <div class="p-6 border-b border-gray-50 flex justify-between items-start shrink-0 relative">
                 <div class="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1 bg-gray-200 rounded-full"></div>
-                <div class="mt-2">
-                    <h3 id="bs-title" class="font-black text-xl text-gray-800">Produit</h3>
-                    <p id="bs-price" class="font-bold mt-1 text-lg" style="color: var(--brand)">0 DH</p>
+                <div class="mt-2 pr-4 w-full">
+                    <h3 id="bs-title" class="font-black text-xl text-gray-800 leading-tight">Produit</h3>
+                    <p id="bs-description" class="text-xs text-gray-500 font-semibold mt-2 leading-relaxed hidden"></p>
+                    <p id="bs-price" class="font-bold mt-2 text-lg" style="color: var(--brand)">0 DH</p>
                 </div>
-                <button onclick="closeSheet()" class="p-2.5 bg-gray-100 rounded-full active:scale-90 transition mt-2"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="closeSheet()" class="p-2.5 bg-gray-100 rounded-full active:scale-90 transition mt-2 shrink-0"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             
-            <div class="p-6 overflow-y-auto no-scrollbar flex-1 space-y-6">
+            <div class="p-6 overflow-y-auto no-scrollbar flex-1 space-y-6" id="bs-content-scroll">
+                
+                <div id="bs-sizes" class="space-y-3 hidden">
+                    <h4 class="font-bold text-sm text-gray-500 uppercase tracking-widest">Choix de la taille</h4>
+                    <div id="size-options-container" class="space-y-2"></div>
+                </div>
+
                 <div id="bs-sauces" class="space-y-3 hidden">
                     <h4 class="font-bold text-sm text-gray-500 uppercase tracking-widest">Choix de Sauce</h4>
                     <select id="sauce-select" class="w-full p-4 bg-gray-50 rounded-2xl font-bold text-sm border border-gray-100 outline-none transition-colors appearance-none" style="focus:border-color: var(--brand)">
-                        <option value="">Sans sauce</option>
-                        <option value="Algérienne">Algérienne</option>
-                        <option value="Big Mac">Big Mac</option>
-                        <option value="Fromagère">Fromagère</option>
-                        <option value="Andalouse">Andalouse</option>
-                    </select>
+                        </select>
                 </div>
                 
-                <div class="space-y-3">
+                <div id="bs-instructions" class="space-y-3 hidden">
                     <h4 class="font-bold text-sm text-gray-500 uppercase tracking-widest">Instructions spéciales</h4>
                     <textarea id="bs-notes" placeholder="Ex: Sans oignons, bien cuit..." class="w-full p-4 bg-gray-50 rounded-2xl font-semibold text-sm border border-gray-100 outline-none resize-none h-24 transition-colors"></textarea>
                 </div>
@@ -165,7 +164,6 @@
     <div id="cart-drawer-root" class="premium-ease">
         <div id="cart-overlay" onclick="toggleCart(false)" class="premium-ease"></div>
         <div id="cart-panel" class="premium-ease">
-            
             <div class="p-5 flex justify-between items-start shrink-0 bg-white rounded-t-[28px] relative border-b border-gray-100">
                 <div class="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1.5 bg-gray-200 rounded-full"></div>
                 <div class="mt-3">
@@ -204,7 +202,6 @@
                 <button onclick="sendToWhatsApp()" id="wa-btn" class="w-full bg-[#25D366] text-white py-4 rounded-xl font-black text-[16px] flex justify-center items-center gap-2 mt-6 shadow-md shadow-green-500/20 active:scale-95 premium-ease">
                     <i data-lucide="message-circle" class="w-5 h-5 fill-current"></i> Commander via WhatsApp
                 </button>
-                
                 <p class="text-center text-gray-400 text-[10px] font-semibold mt-4 flex items-center justify-center gap-1.5">
                     <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Paiement à la livraison
                 </p>
@@ -213,7 +210,7 @@
     </div>
 
     <script>
-        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
 
         const firebaseConfig = { apiKey: "AIzaSyBebaGxqiNBvCqofveg1Fmztl7av3Mdoyg", authDomain: "lascotaco-67fe5.firebaseapp.com", projectId: "lascotaco-67fe5", storageBucket: "lascotaco-67fe5.firebasestorage.app", messagingSenderId: "865918381027", appId: "1:865918381027:web:abc6435df20894020c4ed6" };
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
@@ -223,7 +220,7 @@
         let livraisonFee = 20;
         let globalProducts = []; 
         let currentItemForSheet = null;
-        let lastTotal = 0; // State for counting animation
+        let lastTotal = 0; 
 
         function saveCart() { localStorage.setItem('lasco_cart_v2', JSON.stringify(cart)); }
 
@@ -239,21 +236,11 @@
         function showToast(message) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = 'bg-[#1A1A1A] text-white px-5 py-4 rounded-[20px] text-[14px] font-bold shadow-2xl transition-all duration-400 translate-y-[-20px] opacity-0 flex items-center justify-between border border-gray-800';
+            toast.className = 'bg-[#1A1A1A] text-white px-5 py-4 rounded-[20px] text-[14px] font-bold shadow-2xl transition-all duration-400 translate-y-[-20px] opacity-0 flex items-center justify-between border border-gray-800 z-[9999]';
             toast.innerHTML = `<div class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[#25D366]"></i> <span>${message}</span></div>`;
             container.appendChild(toast); lucide.createIcons();
             requestAnimationFrame(() => { toast.classList.remove('translate-y-[-20px]', 'opacity-0'); });
             setTimeout(() => { toast.classList.add('translate-y-[-20px]', 'opacity-0'); setTimeout(() => toast.remove(), 400); }, 2500);
-        }
-
-        function renderSkeletons() {
-            const grid = document.getElementById('product-grid');
-            grid.innerHTML = Array(4).fill().map(() => `
-                <div class="product-card p-2.5 flex flex-col gap-3 border-transparent shadow-none">
-                    <div class="skeleton h-[150px] w-full rounded-[20px]"></div>
-                    <div class="skeleton h-4 w-3/4 rounded mt-1"></div>
-                    <div class="skeleton h-6 w-1/3 rounded mt-auto"></div>
-                </div>`).join('');
         }
 
         function setStore(type) { 
@@ -272,7 +259,7 @@
                 toggleBg.style.transform = 'translateX(100%)';
                 btnEpi.classList.replace('text-gray-500', 'text-white'); btnResto.classList.replace('text-white', 'text-gray-500');
             }
-            renderSkeletons(); renderLabels(); loadProducts(); renderUpsells();
+            renderLabels(); loadProducts(); renderUpsells();
         }
 
         async function renderLabels() {
@@ -289,7 +276,7 @@
 
         function handleCatClick(catName, elementId) {
             activeCat = catName; document.getElementById('search-input').value = '';
-            renderLabels(); renderSkeletons(); loadProducts();
+            renderLabels(); loadProducts();
             const nav = document.getElementById('sub-nav');
             const scrollTarget = document.getElementById(elementId).offsetLeft - 20;
             nav.scrollTo({ left: scrollTarget, behavior: 'smooth' });
@@ -314,8 +301,8 @@
             const grid = document.getElementById('product-grid');
             if(products.length === 0) { grid.innerHTML = '<p class="col-span-2 text-center text-gray-400 py-10 font-bold text-sm">Aucun résultat trouvé</p>'; return; }
             
-            grid.innerHTML = products.map(p => `
-                <div class="product-card cursor-pointer p-2.5 flex flex-col" onclick="openOptions('${p.name}', ${p.price}, '${p.image}', '${p.category}')">
+            grid.innerHTML = products.map((p) => `
+                <div class="product-card cursor-pointer p-2.5 flex flex-col" onclick="openProductByName('${p.name.replace(/'/g, "\\'")}')">
                     <div class="product-img-wrap">
                         <img src="${p.image}" loading="lazy">
                         ${p.isTop ? `<span class="absolute top-2 left-2 text-white text-[8px] font-black px-2 py-0.5 rounded uppercase shadow-sm" style="background-color: var(--brand)">Top</span>` : ''}
@@ -323,8 +310,8 @@
                     <div class="pt-2 px-1 flex flex-col flex-1 justify-between">
                         <h3 class="font-bold text-[13px] text-gray-900 leading-tight line-clamp-2">${p.name}</h3>
                         <div class="flex justify-between items-center mt-3">
-                            <span class="font-black text-[15px]" style="color: var(--brand)">${p.price} DH</span>
-                            <button class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-[18px] shadow-sm active:scale-90 transition-transform" style="background-color: var(--brand)" onclick="event.stopPropagation(); openOptions('${p.name}', ${p.price}, '${p.image}', '${p.category}');" id="add-btn-${p.name.replace(/\s+/g, '')}">
+                            <span class="font-black text-[15px]" style="color: var(--brand)">${p.hasSizes ? 'Dès ' : ''}${p.price} DH</span>
+                            <button class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-[18px] shadow-sm active:scale-90 transition-transform" style="background-color: var(--brand)" onclick="event.stopPropagation(); openProductByName('${p.name.replace(/'/g, "\\'")}', true);" id="add-btn-${p.name.replace(/\s+/g, '')}">
                                 +
                             </button>
                         </div>
@@ -333,41 +320,122 @@
             lucide.createIcons();
         }
 
-        function openOptions(name, price, image, category) {
-            currentItemForSheet = { name, price, image };
-            document.getElementById('bs-title').innerText = name;
-            document.getElementById('bs-price').innerText = price + ' DH';
-            document.getElementById('sauce-select').value = '';
-            document.getElementById('bs-notes').value = '';
+        // --- NEW DYNAMIC OPEN FUNCTION ---
+        function openProductByName(productName, animateBtn = false) {
+            const p = globalProducts.find(item => item.name === productName);
+            if(!p) return;
             
-            const foodName = name.toLowerCase(); const foodCat = category ? category.toLowerCase() : '';
-            const needsSauce = ['tacos', 'burger', 'burgers', 'sandwich', 'panini'].some(k => foodName.includes(k) || foodCat.includes(k));
-
+            currentItemForSheet = p;
+            document.getElementById('bs-content-scroll').scrollTo(0,0); // reset scroll
+            
+            // 1. Basic Info
+            document.getElementById('bs-title').innerText = p.name;
+            
+            const descEl = document.getElementById('bs-description');
+            if(p.description && p.description.trim() !== "") {
+                descEl.innerText = p.description; descEl.classList.remove('hidden');
+            } else { descEl.classList.add('hidden'); }
+            
+            // 2. Sizes Logic
+            const sizeDiv = document.getElementById('bs-sizes');
+            const sizeContainer = document.getElementById('size-options-container');
+            if(p.hasSizes && p.sizes && p.sizes.length > 0) {
+                sizeContainer.innerHTML = p.sizes.map((s, idx) => `
+                    <div class="relative">
+                        <input type="radio" name="size-choice" id="size-${idx}" value="${s.price}" data-name="${s.name}" class="peer size-radio hidden" ${idx === 0 ? 'checked' : ''} onchange="updateModalPrice(this.value)">
+                        <label for="size-${idx}" class="flex justify-between items-center p-4 rounded-xl border border-gray-100 bg-white cursor-pointer transition-all">
+                            <span class="font-bold text-gray-800 text-[14px]">${s.name}</span>
+                            <div class="flex items-center gap-3">
+                                <span class="font-black text-[14px] text-gray-800">${s.price} DH</span>
+                                <i data-lucide="check-circle-2" class="w-5 h-5 check-icon opacity-0 transition-opacity"></i>
+                            </div>
+                        </label>
+                    </div>
+                `).join('');
+                sizeDiv.classList.remove('hidden');
+                document.getElementById('bs-price').innerText = p.sizes[0].price + ' DH'; // Default to first size
+                lucide.createIcons();
+            } else {
+                sizeDiv.classList.add('hidden');
+                document.getElementById('bs-price').innerText = p.price + ' DH';
+            }
+            
+            // 3. Sauces Logic
             const sauceDiv = document.getElementById('bs-sauces');
-            if(activeStore === 'Restaurant' && needsSauce) { sauceDiv.classList.remove('hidden'); } else { sauceDiv.classList.add('hidden'); }
+            const sauceSelect = document.getElementById('sauce-select');
+            if(p.requiresSauce && p.sauces && p.sauces.length > 0) {
+                sauceSelect.innerHTML = '<option value="">Sans sauce</option>' + p.sauces.map(s => `<option value="${s}">${s}</option>`).join('');
+                sauceDiv.classList.remove('hidden');
+            } else {
+                sauceSelect.innerHTML = '';
+                sauceDiv.classList.add('hidden');
+            }
+            
+            // 4. Instructions Logic
+            const notesDiv = document.getElementById('bs-instructions');
+            document.getElementById('bs-notes').value = '';
+            if(p.hasInstructions !== false) { // true or undefined
+                notesDiv.classList.remove('hidden');
+            } else {
+                notesDiv.classList.add('hidden');
+            }
+            
             document.getElementById('body-wrap').classList.add('bs-open', 'modal-open');
+        }
+
+        function updateModalPrice(price) {
+            document.getElementById('bs-price').innerText = price + ' DH';
         }
 
         function closeSheet() { document.getElementById('body-wrap').classList.remove('bs-open', 'modal-open'); currentItemForSheet = null; }
 
         document.getElementById('bs-add-btn').addEventListener('click', () => {
             if(!currentItemForSheet) return;
-            const sauce = document.getElementById('sauce-select').value;
-            const notes = document.getElementById('bs-notes').value.trim();
-            const complexId = `${currentItemForSheet.name}-${sauce}-${notes}`;
+            const p = currentItemForSheet;
+            
+            // Get selected size if applicable
+            let finalPrice = p.price;
+            let finalSizeName = "";
+            if (p.hasSizes && p.sizes && p.sizes.length > 0) {
+                const checkedSize = document.querySelector('input[name="size-choice"]:checked');
+                if (checkedSize) {
+                    finalPrice = Number(checkedSize.value);
+                    finalSizeName = checkedSize.dataset.name;
+                }
+            }
+
+            const sauceEl = document.getElementById('sauce-select');
+            const sauce = sauceEl ? sauceEl.value : '';
+            const notesEl = document.getElementById('bs-notes');
+            const notes = notesEl ? notesEl.value.trim() : '';
+            
+            // Complex ID accounts for Size, Sauce, and Notes
+            const complexId = `${p.name}-${finalSizeName}-${sauce}-${notes}`;
             
             const existing = cart.find(i => i.id === complexId);
-            if(existing) { existing.qty++; } else {
-                cart.push({ id: complexId, name: currentItemForSheet.name, price: currentItemForSheet.price, image: currentItemForSheet.image, sauce: sauce, notes: notes, qty: 1 });
+            if(existing) { 
+                existing.qty++; 
+            } else {
+                cart.push({ 
+                    id: complexId, 
+                    name: p.name, 
+                    price: finalPrice, 
+                    image: p.image, 
+                    sizeName: finalSizeName,
+                    sauce: sauce, 
+                    notes: notes, 
+                    qty: 1 
+                });
             }
             
-            closeSheet(); saveCart(); syncUI(); showToast(`${currentItemForSheet.name} ajouté !`);
+            closeSheet(); saveCart(); syncUI(); showToast(`${p.name} ajouté !`);
             
-            const btnId = `add-btn-${currentItemForSheet.name.replace(/\s+/g, '')}`;
+            const btnId = `add-btn-${p.name.replace(/\s+/g, '')}`;
             const btn = document.getElementById(btnId);
             if(btn) { btn.classList.add('animate-pop'); setTimeout(() => btn.classList.remove('animate-pop'), 400); }
         });
 
+        // UPSELLS
         function renderUpsells() {
             const drinks = globalProducts.filter(p => {
                 const cat = (p.category || '').toLowerCase();
@@ -376,7 +444,6 @@
 
             const container = document.getElementById('upsell-container');
             const list = document.getElementById('upsell-list');
-            
             if(drinks.length === 0) { container.classList.add('hidden'); return; }
             
             container.classList.remove('hidden');
@@ -385,9 +452,8 @@
             list.innerHTML = drinks.map((d, index) => {
                 const tag = tags[index % tags.length];
                 const tagColor = tag === 'POPULAIRE' ? 'bg-red-500' : (tag === 'FRAIS' ? 'bg-green-500' : 'bg-orange-500');
-                
                 return `
-                <div class="min-w-[130px] bg-white border border-gray-100 rounded-2xl p-2 relative shadow-sm cursor-pointer active:scale-95 transition" onclick="quickAdd('${d.name}', ${d.price}, '${d.image}')">
+                <div class="min-w-[130px] bg-white border border-gray-100 rounded-2xl p-2 relative shadow-sm cursor-pointer active:scale-95 transition" onclick="quickAdd('${d.name.replace(/'/g, "\\'")}')">
                     <span class="absolute top-0 left-2 ${tagColor} text-white text-[7px] font-black px-1.5 py-0.5 rounded-b-md tracking-widest">${tag}</span>
                     <div class="flex items-center gap-2 mt-3">
                         <img src="${d.image}" class="w-8 h-8 object-contain">
@@ -401,27 +467,28 @@
             }).join('');
         }
 
-        function quickAdd(name, price, image) {
-            const complexId = `${name}--`;
+        function quickAdd(productName) {
+            const p = globalProducts.find(item => item.name === productName);
+            if(!p) return;
+            const complexId = `${p.name}---`;
             const existing = cart.find(i => i.id === complexId);
             if(existing) existing.qty++;
-            else cart.push({ id: complexId, name: name, price: price, image: image, sauce: '', notes: '', qty: 1 });
-            saveCart(); syncUI(); renderDrawer(); showToast(`${name} ajouté !`);
+            else cart.push({ id: complexId, name: p.name, price: p.price, image: p.image, sizeName: '', sauce: '', notes: '', qty: 1 });
+            saveCart(); syncUI(); renderDrawer(); showToast(`${p.name} ajouté !`);
         }
 
+        // CART LOGIC
         function updateCartItemQty(id, change) {
             const index = cart.findIndex(i => i.id === id);
             if(index !== -1) { cart[index].qty += change; if(cart[index].qty <= 0) cart.splice(index, 1); }
             saveCart(); syncUI(); renderDrawer();
         }
-        
         function removeCartItem(id) {
             const index = cart.findIndex(i => i.id === id);
             if(index !== -1) { cart.splice(index, 1); }
             saveCart(); syncUI(); renderDrawer();
         }
 
-        // PRICE ANIMATION FUNCTION
         function animateValue(obj, start, end, duration) {
             let startTimestamp = null;
             const step = (timestamp) => {
@@ -447,14 +514,11 @@
             document.getElementById('floating-badge').innerText = count;
             document.getElementById('item-count-text').innerText = count + (count > 1 ? " articles" : " article");
             
-            // Animation Trigger
             const bottomPriceEl = document.getElementById('final-price-bottom');
             if (total !== lastTotal) {
                 animateValue(bottomPriceEl, lastTotal, total, 400);
                 lastTotal = total;
-            } else {
-                bottomPriceEl.innerText = total + " DH";
-            }
+            } else { bottomPriceEl.innerText = total + " DH"; }
             
             document.getElementById('cart-header-count').innerText = count + (count > 1 ? " articles" : " article");
             document.getElementById('drawer-subtotal').innerText = total + " DH";
@@ -472,6 +536,7 @@
                     <img src="${item.image}" class="w-16 h-16 rounded-[14px] object-cover bg-[#FAF5F0] shrink-0" style="mix-blend-mode: multiply;">
                     <div class="flex-1 pr-1">
                         <p class="font-bold text-[14px] text-gray-900 leading-tight">${item.name}</p>
+                        ${item.sizeName ? `<p class="text-[10px] text-gray-500 font-bold mt-0.5">Taille: ${item.sizeName}</p>` : ''}
                         ${item.sauce ? `<p class="text-[10px] text-gray-500 mt-0.5">Sauce: ${item.sauce}</p>` : ''}
                         ${item.notes ? `<p class="text-[10px] text-orange-500 italic mt-0.5">"${item.notes}"</p>` : ''}
                         <p class="font-black mt-1 text-[15px]" style="color: var(--brand)">${item.price} DH</p>
@@ -499,6 +564,7 @@
             let sub = 0; 
             cart.forEach(i => { 
                 msg += `• *${i.qty}x* ${i.name}`;
+                if(i.sizeName) msg += ` _(Taille: ${i.sizeName})_`;
                 if(i.sauce) msg += `\n  ↳ _Sauce: ${i.sauce}_`;
                 if(i.notes) msg += `\n  ↳ _Note: ${i.notes}_`;
                 msg += `\n  = ${i.qty * i.price} DH\n\n`;
