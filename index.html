@@ -24,39 +24,32 @@
         .premium-ease { transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* SKELETON SHIMMER */
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
         .skeleton { background: linear-gradient(90deg, #F4F5F7 25%, #E9ECEF 50%, #F4F5F7 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; }
         .skeleton-fade-out { animation: fadeOut 0.3s ease-out forwards; }
         @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-        /* MICRO-INTERACTIONS */
         @keyframes tabBounce { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
         .tab-bounce { animation: tabBounce 0.2s cubic-bezier(0.2, 0.9, 0.3, 1); }
 
         @keyframes cartBump { 0% { transform: scale(1); } 40% { transform: scale(1.1) rotate(-4deg); } 70% { transform: scale(0.95) rotate(2deg); } 100% { transform: scale(1) rotate(0); } }
         .cart-bump { animation: cartBump 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.5); }
         
-        /* CATEGORY SCROLL */
         .category-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 8px 20px 20px 20px; scroll-padding-left: 20px; scroll-behavior: smooth; }
         .category-pill { position: relative; flex: 0 0 auto; scroll-snap-align: start; transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease; border: 2px solid transparent; }
         .category-pill:active { transform: scale(0.95); }
         
-        /* PRODUCT CARDS */
         .product-card { background: white; border-radius: 20px; transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.2s ease; animation: fadeIn 0.4s ease-out forwards; border: 1px solid transparent; box-shadow: 0 4px 16px rgba(0,0,0,0.03); }
         .product-card:active { transform: scale(0.97); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .product-img-wrap { overflow: hidden; border-radius: 16px 16px 6px 6px; height: 160px; background: #F4F5F7; width: 100%; position: relative; }
         
-        /* UNIFIED ADD BUTTON */
         .btn-add-unified { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; background-color: var(--brand); box-shadow: 0 4px 12px var(--brand-soft); transition: transform 0.15s ease, box-shadow 0.15s ease; flex-shrink: 0; }
         .btn-add-unified:active { transform: scale(0.9); box-shadow: 0 2px 6px var(--brand-soft); }
 
-        /* UPSELL ANIMATION */
         @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .upsell-animate { opacity: 0; animation: slideUpFade 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) forwards; }
 
-        /* MODALS */
         #bottom-sheet-root, #cart-drawer-root { position: fixed; inset: 0; z-index: 2000; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
         #bs-overlay, #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
         
@@ -67,10 +60,8 @@
         .bs-open #bs-overlay, .drawer-open #cart-overlay { opacity: 1; pointer-events: auto; }
         .bs-open #bs-panel, .drawer-open #cart-panel { transform: translateY(0); }
 
-        /* TOAST */
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
 
-        /* MODAL SPECIFIC STYLES */
         .modal-radio-indicator { transition: border-color 0.2s ease; }
         .modal-radio-dot { opacity: 0; transform: scale(0.5); transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1); }
         .peer:checked + label .modal-radio-indicator { border-color: var(--brand); }
@@ -81,7 +72,6 @@
         .peer:checked + label .modal-cb-indicator { background-color: var(--brand); border-color: var(--brand); }
         .peer:checked + label .modal-cb-icon { opacity: 1; transform: scale(1); }
 
-        /* Textarea scrollbar hiding */
         #bs-notes::-webkit-scrollbar { display: none; }
     </style>
 </head>
@@ -103,8 +93,7 @@
         <div class="px-5 pt-3 pb-3 bg-white/95 backdrop-blur-xl sticky top-[76px] z-40">
             <div class="relative flex items-center group">
                 <i data-lucide="search" class="absolute left-4 w-5 h-5 text-gray-400 group-focus-within:text-[var(--brand)] transition-colors"></i>
-                <input type="text" id="search-input" placeholder="Rechercher un plat, une boisson..." class="w-full bg-[#F4F5F7] border-2 border-transparent rounded-[20px] py-4 pl-12 pr-12 text-[15px] font-semibold focus:outline-none focus:bg-white focus:border-[var(--brand)] transition-all">
-                <i data-lucide="sliders-horizontal" class="absolute right-4 w-5 h-5 text-gray-500 cursor-pointer"></i>
+                <input type="text" id="search-input" placeholder="Rechercher un plat, une boisson..." class="w-full bg-[#F4F5F7] border-2 border-transparent rounded-[20px] py-4 pl-12 pr-4 text-[15px] font-semibold focus:outline-none focus:bg-white focus:border-[var(--brand)] transition-all">
             </div>
         </div>
 
@@ -330,7 +319,9 @@
             activeCat = catName; document.getElementById('search-input').value = '';
             renderLabels(); loadProducts(true);
             const nav = document.getElementById('sub-nav');
-            nav.scrollTo({ left: document.getElementById(elementId).offsetLeft - 20, behavior: 'smooth' });
+            if (document.getElementById(elementId)) {
+                nav.scrollTo({ left: document.getElementById(elementId).offsetLeft - 20, behavior: 'smooth' });
+            }
         }
 
         document.getElementById('search-input').addEventListener('input', (e) => {
@@ -447,12 +438,12 @@
         });
 
         function renderUpsells() {
-            const drinks = globalProducts.filter(p => p.category?.toLowerCase().includes('boisson')).slice(0, 5); 
+            const addOns = globalProducts.filter(p => p.category?.toLowerCase() === 'addons' || p.category?.toLowerCase() === 'add-ons').slice(0, 5); 
             const container = document.getElementById('upsell-container');
             const list = document.getElementById('upsell-list');
-            if(drinks.length === 0) { container.classList.add('hidden'); return; }
+            if(addOns.length === 0) { container.classList.add('hidden'); return; }
             container.classList.remove('hidden');
-            list.innerHTML = drinks.map((d, index) => `
+            list.innerHTML = addOns.map((d, index) => `
                 <div class="upsell-animate snap-start min-w-[250px] h-[72px] bg-white border border-[#F4F5F7] rounded-[16px] p-3 flex items-center gap-3 relative shadow-sm cursor-pointer active:scale-[0.97] transition-transform" style="animation-delay: ${index * 60}ms" onclick="quickAdd('${d.name.replace(/'/g, "\\'")}')">
                     <span class="absolute -top-2 left-3 ${index % 2 ? 'bg-[#10B981]' : 'bg-red-500'} text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow-sm z-20">${index % 2 ? 'FRAIS' : 'POPULAIRE'}</span>
                     <div class="w-[48px] h-[48px] rounded-[12px] bg-[#F4F5F7] overflow-hidden shrink-0 relative"><div class="absolute inset-0 skeleton z-10 pointer-events-none"></div><img src="${d.image}" loading="lazy" class="w-full h-full object-cover opacity-0 blur-[4px] transition-all duration-500" onload="this.classList.remove('opacity-0', 'blur-[4px]'); this.previousElementSibling?.classList.add('skeleton-fade-out');"></div>
