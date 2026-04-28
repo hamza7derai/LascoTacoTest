@@ -8,7 +8,7 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://i.postimg.cc/bw1m3LRk/file-00000000988871f8850c48867762321e(1).png",
+      "src": "./applogo.png",
       "sizes": "512x512",
       "type": "image/png"
     }
