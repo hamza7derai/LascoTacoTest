@@ -119,20 +119,26 @@
                         <input id="p-price" type="number" placeholder="0.00" class="input-premium font-black text-[#E85A24]">
                     </div>
                     <div>
+                        <label class="label-text">Prix de revient (DH)</label>
+                        <input id="p-cost-price" type="number" placeholder="Caché (Ex: 25)" class="input-premium font-black text-gray-500 bg-gray-50">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
                         <label class="label-text">Type</label>
                         <select id="p-type" class="input-premium appearance-none cursor-pointer" onchange="syncCategories()">
                             <option value="Restaurant">Restaurant</option>
                             <option value="Épicerie">Épicerie</option>
                         </select>
                     </div>
-                </div>
-
-                <div>
-                    <label class="label-text flex justify-between items-center">
-                        Catégorie 
-                        <button onclick="addNewCat()" class="text-orange-500 hover:text-orange-600 bg-orange-50 px-3 py-1 rounded-full text-[10px]">+ Ajouter</button>
-                    </label>
-                    <select id="p-label" class="input-premium appearance-none cursor-pointer"></select>
+                    <div>
+                        <label class="label-text flex justify-between items-center">
+                            Catégorie 
+                            <button onclick="addNewCat()" class="text-orange-500 hover:text-orange-600 bg-orange-50 px-3 py-1 rounded-full text-[10px]">+ Ajouter</button>
+                        </label>
+                        <select id="p-label" class="input-premium appearance-none cursor-pointer"></select>
+                    </div>
                 </div>
 
                 <div>
@@ -279,7 +285,8 @@
 
         function clearForm() {
             document.getElementById('p-id').value = ""; document.getElementById('p-name').value = "";
-            document.getElementById('p-price').value = ""; document.getElementById('p-desc').value = "";
+            document.getElementById('p-price').value = ""; document.getElementById('p-cost-price').value = "";
+            document.getElementById('p-desc').value = "";
             document.getElementById('p-img').value = ""; document.getElementById('p-top').checked = false;
             document.getElementById('p-active').checked = true; document.getElementById('p-instructions').checked = true;
             
@@ -357,6 +364,9 @@
         async function saveProduct() {
             const id = document.getElementById('p-id').value;
             
+            const costPriceInput = document.getElementById('p-cost-price').value;
+            const costPriceNumber = costPriceInput ? Number(costPriceInput) : 0;
+
             const finalSauces = dynamicSauces.filter(s => s.trim() !== '');
             const finalSizes = dynamicSizes.filter(s => s.name.trim() !== '' && s.price > 0);
             const finalExtras = dynamicExtras.filter(e => e.name.trim() !== '' && e.price > 0);
@@ -364,6 +374,7 @@
             const data = {
                 name: document.getElementById('p-name').value,
                 price: Number(document.getElementById('p-price').value),
+                costPrice: costPriceNumber,
                 type: document.getElementById('p-type').value,
                 category: document.getElementById('p-label').value,
                 description: document.getElementById('p-desc').value,
@@ -397,6 +408,7 @@
             document.getElementById('p-id').value = id;
             document.getElementById('p-name').value = p.name;
             document.getElementById('p-price').value = p.price || '';
+            document.getElementById('p-cost-price').value = p.costPrice || '';
             document.getElementById('p-type').value = p.type || 'Restaurant';
             await syncCategories(p.category);
             document.getElementById('p-desc').value = p.description || '';
@@ -491,4 +503,3 @@
     </script>
 </body>
 </html>
-
