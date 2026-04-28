@@ -21,37 +21,44 @@
         .theme-resto { --brand: var(--resto); --brand-soft: rgba(232, 90, 36, 0.1); --brand-medium: rgba(232, 90, 36, 0.15); }
         .theme-epi { --brand: var(--epi); --brand-soft: rgba(16, 185, 129, 0.1); --brand-medium: rgba(16, 185, 129, 0.15); }
 
-        .premium-ease { transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); }
+        .premium-ease { transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
         /* SKELETON SHIMMER */
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
         .skeleton { background: linear-gradient(90deg, #F4F5F7 25%, #E9ECEF 50%, #F4F5F7 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; }
+        .skeleton-fade-out { animation: fadeOut 0.3s ease-out forwards; }
+        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
         /* MICRO-INTERACTIONS */
-        @keyframes tabBounce { 0% { transform: scale(1); } 40% { transform: scale(0.94); } 70% { transform: scale(1.02); } 100% { transform: scale(1); } }
-        .tab-bounce { animation: tabBounce 0.25s cubic-bezier(0.2, 0.9, 0.3, 1); }
+        @keyframes tabBounce { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
+        .tab-bounce { animation: tabBounce 0.2s cubic-bezier(0.2, 0.9, 0.3, 1); }
 
         @keyframes cartBump { 0% { transform: scale(1); } 40% { transform: scale(1.1) rotate(-4deg); } 70% { transform: scale(0.95) rotate(2deg); } 100% { transform: scale(1) rotate(0); } }
         .cart-bump { animation: cartBump 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.5); }
         
         /* CATEGORY SCROLL */
         .category-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 8px 20px 20px 20px; scroll-padding-left: 20px; scroll-behavior: smooth; }
-        .category-pill { position: relative; flex: 0 0 auto; scroll-snap-align: start; transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease; border: 2px solid transparent; }
+        .category-pill { position: relative; flex: 0 0 auto; scroll-snap-align: start; transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease; border: 2px solid transparent; }
+        .category-pill:active { transform: scale(0.95); }
         
         /* PRODUCT CARDS */
-        .product-card { background: white; border-radius: 20px; transition: transform 0.2s ease, box-shadow 0.2s ease; animation: fadeIn 0.4s ease-out forwards; border: 1px solid transparent; box-shadow: 0 4px 16px rgba(0,0,0,0.03); }
-        .product-card:active { transform: translateY(2px) scale(0.97); box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .product-card { background: white; border-radius: 20px; transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.2s ease; animation: fadeIn 0.4s ease-out forwards; border: 1px solid transparent; box-shadow: 0 4px 16px rgba(0,0,0,0.03); }
+        .product-card:active { transform: scale(0.97); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .product-img-wrap { overflow: hidden; border-radius: 16px 16px 6px 6px; height: 160px; background: #F4F5F7; width: 100%; position: relative; }
         
+        /* UNIFIED ADD BUTTON */
+        .btn-add-unified { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; background-color: var(--brand); box-shadow: 0 4px 12px var(--brand-soft); transition: transform 0.15s ease, box-shadow 0.15s ease; flex-shrink: 0; }
+        .btn-add-unified:active { transform: scale(0.9); box-shadow: 0 2px 6px var(--brand-soft); }
+
         /* UPSELL ANIMATION */
         @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .upsell-animate { opacity: 0; animation: slideUpFade 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) forwards; }
 
         /* MODALS */
         #bottom-sheet-root, #cart-drawer-root { position: fixed; inset: 0; z-index: 2000; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
-        #bs-overlay, #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
+        #bs-overlay, #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
         
         #bs-panel, #cart-panel { width: 100%; max-width: 500px; border-radius: 32px 32px 0 0; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); pointer-events: auto; display: flex; flex-direction: column; max-height: 92vh; box-shadow: 0 -20px 40px rgba(0,0,0,0.1); }
         #bs-panel { background: #FDFBFA; padding-bottom: env(safe-area-inset-bottom); }
@@ -170,7 +177,7 @@
                         <h4 class="font-black text-[15px] text-gray-900">Instructions spéciales</h4>
                         <span class="text-gray-400 text-[11px] font-bold uppercase tracking-wider">Optionnel</span>
                     </div>
-                    <textarea id="bs-notes" placeholder="Ex: Sans oignons, sauce à part..." class="w-full p-4 bg-white rounded-[20px] font-semibold text-[14px] text-gray-800 border-2 border-[#F4F5F7] outline-none resize-none h-28 transition-colors focus:border-[var(--brand)] shadow-sm"></textarea>
+                    <textarea id="bs-notes" placeholder="Ex: Sans oignons, sauce à part..." class="w-full p-4 bg-white rounded-[16px] font-semibold text-[14px] text-gray-800 border-2 border-[#F4F5F7] outline-none resize-none h-28 transition-colors focus:border-[var(--brand)] shadow-sm"></textarea>
                 </div>
             </div>
 
@@ -207,14 +214,14 @@
             </div>
 
             <div class="p-6 bg-white shrink-0 rounded-t-[32px] shadow-[0_-20px_40px_rgba(0,0,0,0.06)] z-20">
-                <div class="space-y-4">
+                <div class="space-y-3.5">
                     <div class="flex justify-between items-center">
-                        <span class="font-bold text-gray-500 text-[14px]">Sous-total</span>
-                        <span id="drawer-subtotal" class="font-black text-gray-900 text-[15px]">0 DH</span>
+                        <span class="font-bold text-gray-400 text-[14px]">Sous-total</span>
+                        <span id="drawer-subtotal" class="font-bold text-gray-600 text-[15px]">0 DH</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="font-bold text-gray-500 text-[14px]">Frais de livraison</span>
-                        <span class="font-black text-gray-900 text-[15px]">20 DH</span>
+                        <span class="font-bold text-gray-400 text-[14px]">Frais de livraison</span>
+                        <span class="font-bold text-gray-600 text-[15px]">20 DH</span>
                     </div>
                     
                     <div class="border-t border-gray-100 pt-4 mt-2 flex justify-between items-end">
@@ -246,27 +253,28 @@
         let currentItemForSheet = null;
         let lastTotal = 0; 
 
-        // --- PRE-LOAD SKELETONS UI ---
+        // --- FULL GRID SKELETON LOAD ---
         function renderSkeletons() {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = Array(6).fill().map(() => `
-                <div class="product-card p-2.5 flex flex-col h-[270px] border-transparent shadow-sm">
-                    <div class="skeleton w-full h-[150px] rounded-[16px] mb-3 shrink-0"></div>
-                    <div class="skeleton w-3/4 h-4 rounded mb-2"></div>
-                    <div class="skeleton w-1/2 h-4 rounded mt-auto"></div>
-                    <div class="flex justify-between items-center mt-4">
-                        <div class="skeleton w-1/3 h-5 rounded"></div>
-                        <div class="skeleton w-[44px] h-[44px] rounded-full"></div>
+                <div class="product-card p-2 flex flex-col h-[260px] border-transparent shadow-sm">
+                    <div class="skeleton w-full h-[160px] rounded-[16px] mb-3 shrink-0"></div>
+                    <div class="px-1.5 flex flex-col flex-1">
+                        <div class="skeleton w-3/4 h-4 rounded mb-2"></div>
+                        <div class="skeleton w-1/2 h-4 rounded mt-auto mb-1"></div>
+                        <div class="flex justify-between items-end mt-2">
+                            <div class="skeleton w-1/3 h-5 rounded mb-1"></div>
+                            <div class="skeleton w-[40px] h-[40px] rounded-full shrink-0"></div>
+                        </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        renderSkeletons();
-
         function saveCart() { localStorage.setItem('lasco_cart_v2', JSON.stringify(cart)); }
 
-        // FETCH PRODUCTS
+        // INITIAL FETCH & SKELETON TIMING
+        renderSkeletons();
         db.collection("products").get().then(snap => {
             snap.forEach(doc => {
                 let data = doc.data();
@@ -274,25 +282,29 @@
                 if (!data.category) data.category = '🔥 Top vente'; 
                 globalProducts.push(data);
             });
-            renderUpsells(); loadProducts(); syncUI(); 
+            // Force skeleton to show for exactly 500ms to guarantee smooth feedback
+            setTimeout(() => {
+                renderUpsells(); loadProducts(false); syncUI(); 
+            }, 500);
         });
 
         function showToast(message) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = 'bg-[#1A1A1A] text-white px-5 py-4 rounded-[18px] text-[14px] font-bold shadow-[0_10px_30px_rgba(0,0,0,0.15)] transition-all duration-400 translate-y-[-20px] opacity-0 flex items-center gap-3 z-[9999]';
+            toast.className = 'bg-[#1A1A1A] text-white px-5 py-4 rounded-[16px] text-[14px] font-bold shadow-[0_10px_30px_rgba(0,0,0,0.15)] transition-all duration-300 translate-y-[-20px] opacity-0 flex items-center gap-3 z-[9999]';
             toast.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5 text-[#25D366]"></i> <span>${message}</span>`;
             container.appendChild(toast); lucide.createIcons();
             requestAnimationFrame(() => { toast.classList.remove('translate-y-[-20px]', 'opacity-0'); });
             setTimeout(() => { toast.classList.add('translate-y-[-20px]', 'opacity-0'); setTimeout(() => toast.remove(), 400); }, 2500);
         }
 
-        // --- ADD CART BUMP ANIMATION ---
+        // --- CART BUMP ANIMATION ---
         function triggerCartPulse() {
             const btn = document.getElementById('nav-cart-btn');
             if(btn) {
+                btn.classList.remove('cart-bump');
+                void btn.offsetWidth; // trigger reflow
                 btn.classList.add('cart-bump');
-                setTimeout(() => btn.classList.remove('cart-bump'), 400);
             }
         }
 
@@ -312,7 +324,7 @@
                 toggleBg.style.transform = 'translateX(100%)';
                 btnEpi.classList.replace('text-gray-500', 'text-white'); btnResto.classList.replace('text-white', 'text-gray-500');
             }
-            renderLabels(); loadProducts(); renderUpsells();
+            renderLabels(); loadProducts(true); renderUpsells();
         }
 
         async function renderLabels() {
@@ -326,12 +338,12 @@
                 let displayName = isTop ? 'Top vente' : cat.name;
                 let isActive = activeCat === cat.name;
                 
-                let iconClass = isActive ? 'text-white' : 'text-[#E85A24]';
+                let iconClass = isActive ? 'text-white' : 'text-[var(--brand)]';
                 let iconHtml = isTop ? `<i data-lucide="flame" class="w-4 h-4 ${iconClass}"></i>` : '';
 
                 return `
                 <button id="btn-cat-${idx}" onclick="handleCatClick('${cat.name}', 'btn-cat-${idx}')" 
-                    class="category-pill flex items-center gap-1.5 px-5 py-2.5 text-[14px] font-bold whitespace-nowrap rounded-[14px] transition-all duration-200 active:scale-95 ${isActive ? 'bg-[var(--brand)] text-white shadow-[0_4px_16px_var(--brand-soft)]' : 'bg-[#F4F5F7] text-[#4A5568] hover:bg-gray-100'}">
+                    class="category-pill flex items-center gap-1.5 px-5 py-2.5 text-[14px] font-bold whitespace-nowrap rounded-[14px] transition-all duration-200 ${isActive ? 'bg-[var(--brand)] text-white shadow-[0_4px_16px_var(--brand-soft)] scale-100' : 'bg-[#F4F5F7] text-[#4A5568] hover:bg-gray-100'}">
                     ${iconHtml} ${displayName}
                 </button>`;
             }).join('');
@@ -342,7 +354,7 @@
             const el = document.getElementById(elementId);
             if(el) { el.classList.add('tab-bounce'); setTimeout(() => el.classList.remove('tab-bounce'), 250); }
             activeCat = catName; document.getElementById('search-input').value = '';
-            renderLabels(); loadProducts();
+            renderLabels(); loadProducts(true);
             
             const nav = document.getElementById('sub-nav');
             const scrollTarget = document.getElementById(elementId).offsetLeft - 20;
@@ -354,19 +366,26 @@
             if(term.length > 0) {
                 const filtered = globalProducts.filter(p => p.type === activeStore && p.name.toLowerCase().includes(term));
                 renderProductGrid(filtered);
-            } else { loadProducts(); }
+            } else { loadProducts(false); }
         });
 
-        function loadProducts() {
+        // Added withSkeleton logic to ensure 500ms feedback on category change
+        function loadProducts(withSkeleton = false) {
             let filtered = [];
             if (activeCat === '🔥 Top vente') { filtered = globalProducts.filter(p => p.type === activeStore && p.isTop === true); } 
             else { filtered = globalProducts.filter(p => p.type === activeStore && p.category === activeCat); }
-            renderProductGrid(filtered);
+            
+            if(withSkeleton) {
+                renderSkeletons();
+                setTimeout(() => renderProductGrid(filtered), 400);
+            } else {
+                renderProductGrid(filtered);
+            }
         }
 
         function renderProductGrid(products) {
             const grid = document.getElementById('product-grid');
-            if(products.length === 0) { grid.innerHTML = '<p class="col-span-2 text-center text-gray-400 py-12 font-bold text-[15px]">Aucun résultat trouvé 🌮</p>'; return; }
+            if(products.length === 0) { grid.innerHTML = '<div class="col-span-2 text-center text-gray-400 py-12"><i data-lucide="search-x" class="w-10 h-10 mx-auto mb-3 opacity-50"></i><p class="font-bold text-[15px]">Aucun résultat trouvé</p></div>'; lucide.createIcons(); return; }
             
             grid.innerHTML = products.map((p, index) => {
                 const lazyHtml = index >= 4 ? 'loading="lazy"' : '';
@@ -374,14 +393,14 @@
                 <div class="product-card cursor-pointer p-2 flex flex-col" onclick="openProductByName('${p.name.replace(/'/g, "\\'")}')">
                     <div class="product-img-wrap group">
                         <div class="absolute inset-0 skeleton z-10 pointer-events-none"></div>
-                        <img src="${p.image}" ${lazyHtml} onerror="this.onerror=null; this.src='https://placehold.co/400x300/F4F5F7/A0AEC0?text=Image+Indisponible'" class="w-full h-full object-cover opacity-0 blur-[4px] transition-all duration-700 ease-out group-active:scale-105" onload="this.classList.remove('opacity-0', 'blur-[4px]'); this.previousElementSibling?.remove()">
+                        <img src="${p.image}" ${lazyHtml} onerror="this.onerror=null; this.src='https://placehold.co/400x300/F4F5F7/A0AEC0?text=--'" class="w-full h-full object-cover opacity-0 blur-[4px] transition-all duration-500 ease-out group-active:scale-105" onload="this.classList.remove('opacity-0', 'blur-[4px]'); this.previousElementSibling?.classList.add('skeleton-fade-out');">
                         ${p.isTop ? `<span class="absolute top-2 left-2 text-[var(--brand)] bg-white/95 backdrop-blur-sm text-[9px] font-black px-2 py-1 rounded-[6px] uppercase shadow-sm z-20">Top</span>` : ''}
                     </div>
                     <div class="pt-3 px-1.5 flex flex-col flex-1 justify-between pb-1">
                         <h3 class="font-bold text-[14px] text-gray-900 leading-snug line-clamp-2">${p.name}</h3>
                         <div class="flex justify-between items-end mt-3">
-                            <span class="font-black text-[16px] text-gray-900 mb-1">${p.hasSizes ? 'Dès ' : ''}${p.price} DH</span>
-                            <button class="w-[44px] h-[44px] rounded-full flex items-center justify-center text-white shadow-[0_4px_12px_var(--brand-soft)] hover:brightness-95 active:scale-90 transition-transform duration-150 ease-out bg-[var(--brand)] shrink-0" onclick="event.stopPropagation(); openProductByName('${p.name.replace(/'/g, "\\'")}', true);" id="add-btn-${p.name.replace(/\s+/g, '')}">
+                            <span class="font-black text-[16px] text-[var(--brand)] mb-1">${p.hasSizes ? 'Dès ' : ''}${p.price} DH</span>
+                            <button class="btn-add-unified" onclick="event.stopPropagation(); openProductByName('${p.name.replace(/'/g, "\\'")}', true);" id="add-btn-${p.name.replace(/\s+/g, '')}">
                                 <i data-lucide="plus" class="w-5 h-5"></i>
                             </button>
                         </div>
@@ -538,10 +557,10 @@
             }
             
             closeSheet(); saveCart(); syncUI(); showToast(`${p.name} ajouté !`);
-            triggerCartPulse(); // Visual feedback
+            triggerCartPulse();
         });
 
-        // --- UPGRADED HORIZONTAL UPSELLS ---
+        // --- UPGRADED HORIZONTAL UPSELLS (MINI-CARDS) ---
         function renderUpsells() {
             const drinks = globalProducts.filter(p => {
                 const cat = (p.category || '').toLowerCase();
@@ -559,12 +578,12 @@
                 const tag = tags[index % tags.length];
                 const tagColor = tag === 'POPULAIRE' ? 'bg-red-500' : (tag === 'FRAIS' ? 'bg-[#10B981]' : 'bg-[var(--brand)]');
                 return `
-                <div class="upsell-animate snap-start min-w-[240px] h-[72px] bg-white border border-[#F4F5F7] rounded-[16px] p-3 flex items-center gap-3 relative shadow-sm cursor-pointer active:scale-[0.98] transition-transform" style="animation-delay: ${index * 60}ms" onclick="quickAdd('${d.name.replace(/'/g, "\\'")}')">
+                <div class="upsell-animate snap-start min-w-[250px] h-[72px] bg-white border border-[#F4F5F7] rounded-[16px] p-3 flex items-center gap-3 relative shadow-sm cursor-pointer active:scale-[0.97] transition-transform" style="animation-delay: ${index * 60}ms" onclick="quickAdd('${d.name.replace(/'/g, "\\'")}')">
                     <span class="absolute -top-2 left-3 ${tagColor} text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow-sm z-20">${tag}</span>
                     
                     <div class="w-[48px] h-[48px] rounded-[12px] bg-[#F4F5F7] overflow-hidden shrink-0 relative">
                         <div class="absolute inset-0 skeleton z-10 pointer-events-none"></div>
-                        <img src="${d.image}" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/100x100/F4F5F7/A0AEC0?text=--'" class="w-full h-full object-cover opacity-0 blur-[4px] transition-all duration-500 ease-out" onload="this.classList.remove('opacity-0', 'blur-[4px]'); this.previousElementSibling?.remove()">
+                        <img src="${d.image}" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/100x100/F4F5F7/A0AEC0?text=--'" class="w-full h-full object-cover opacity-0 blur-[4px] transition-all duration-500 ease-out" onload="this.classList.remove('opacity-0', 'blur-[4px]'); this.previousElementSibling?.classList.add('skeleton-fade-out');">
                     </div>
                     
                     <div class="flex-1 min-w-0 flex flex-col justify-center">
@@ -572,8 +591,8 @@
                         <p class="font-black text-[14px] text-[var(--brand)] mt-0.5">${d.price} DH</p>
                     </div>
                     
-                    <button class="w-[34px] h-[34px] bg-[#F4F5F7] rounded-full flex items-center justify-center text-gray-600 active:scale-90 transition-transform shrink-0 hover:bg-gray-200">
-                        <i data-lucide="plus" class="w-4 h-4"></i>
+                    <button class="btn-add-unified" onclick="event.stopPropagation(); quickAdd('${d.name.replace(/'/g, "\\'")}')">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
                     </button>
                 </div>`;
             }).join('');
@@ -588,7 +607,7 @@
             if(existing) existing.qty++;
             else cart.push({ id: complexId, name: p.name, price: p.price, image: p.image, sizeName: '', extras: [], sauce: '', notes: '', qty: 1 });
             saveCart(); syncUI(); renderDrawer(); showToast(`${p.name} ajouté !`);
-            triggerCartPulse(); // Visual feedback
+            triggerCartPulse();
         }
 
         // CART LOGIC
@@ -628,7 +647,7 @@
             document.getElementById('item-count-text').innerText = count + (count > 1 ? " articles" : " article");
             
             const bottomPriceEl = document.getElementById('final-price-bottom');
-            if (total !== lastTotal) { animateValue(bottomPriceEl, lastTotal, total, 400); lastTotal = total; } 
+            if (total !== lastTotal) { animateValue(bottomPriceEl, lastTotal, total, 300); lastTotal = total; } 
             else { bottomPriceEl.innerText = total + " DH"; }
             
             document.getElementById('cart-header-count').innerText = count + (count > 1 ? " articles" : " article");
@@ -643,21 +662,21 @@
             if(cart.length === 0) { list.innerHTML = `<div class="py-24 text-center"><p class="text-gray-400 font-bold text-[14px] uppercase tracking-widest mb-4">Panier vide 🌮</p><button onclick="toggleCart(false)" class="text-[15px] font-black underline underline-offset-4 text-[var(--brand)] active:scale-95 transition-transform">Retour au menu</button></div>`; lucide.createIcons(); return; }
             
             list.innerHTML = cart.map(item => `
-                <div class="flex items-center gap-4 bg-white p-4 rounded-[20px] shadow-[0_4px_16px_rgba(0,0,0,0.03)] border border-gray-50/50">
-                    <img src="${item.image}" onerror="this.onerror=null; this.src='https://placehold.co/100x100/F4F5F7/A0AEC0?text=--'" class="w-16 h-16 rounded-[14px] object-cover bg-[#F8F9FA] shrink-0" style="mix-blend-mode: multiply;">
-                    <div class="flex-1 pr-1 min-w-0">
-                        <p class="font-bold text-[15px] text-gray-900 leading-tight truncate">${item.name}</p>
-                        ${item.sizeName ? `<p class="text-[11px] text-gray-500 font-bold mt-1">Taille: ${item.sizeName}</p>` : ''}
-                        ${item.extras && item.extras.length > 0 ? `<p class="text-[11px] text-gray-500 font-bold mt-0.5 truncate">Extras: ${item.extras.map(e=>e.name).join(', ')}</p>` : ''}
-                        ${item.sauce ? `<p class="text-[11px] text-gray-500 mt-0.5">Sauce: ${item.sauce}</p>` : ''}
-                        ${item.notes ? `<p class="text-[11px] text-orange-500 italic mt-0.5 truncate">"${item.notes}"</p>` : ''}
-                        <p class="font-black mt-2.5 text-[16px] text-gray-900">${item.price} DH</p>
-                        <button onclick="removeCartItem('${item.id}')" class="text-gray-400 text-[11px] font-bold mt-2.5 flex items-center gap-1 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Supprimer</button>
+                <div class="flex items-center gap-4 bg-white p-5 rounded-[20px] shadow-[0_4px_16px_rgba(0,0,0,0.03)] border border-gray-50/50">
+                    <img src="${item.image}" onerror="this.onerror=null; this.src='https://placehold.co/100x100/F4F5F7/A0AEC0?text=--'" class="w-[72px] h-[72px] rounded-[16px] object-cover bg-[#F8F9FA] shrink-0" style="mix-blend-mode: multiply;">
+                    <div class="flex-1 pr-2 min-w-0">
+                        <p class="font-bold text-[16px] text-gray-900 leading-tight truncate">${item.name}</p>
+                        ${item.sizeName ? `<p class="text-[12px] text-gray-500 font-bold mt-1">Taille: ${item.sizeName}</p>` : ''}
+                        ${item.extras && item.extras.length > 0 ? `<p class="text-[12px] text-gray-500 font-bold mt-0.5 truncate">Extras: ${item.extras.map(e=>e.name).join(', ')}</p>` : ''}
+                        ${item.sauce ? `<p class="text-[12px] text-gray-500 mt-0.5">Sauce: ${item.sauce}</p>` : ''}
+                        ${item.notes ? `<p class="text-[12px] text-orange-500 italic mt-0.5 truncate">"${item.notes}"</p>` : ''}
+                        <p class="font-black mt-2 text-[17px] text-[var(--brand)]">${item.price} DH</p>
+                        <button onclick="removeCartItem('${item.id}')" class="text-gray-400 text-[11px] font-bold mt-2 flex items-center gap-1.5 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Supprimer</button>
                     </div>
                     
-                    <div class="flex flex-col items-center justify-between bg-[#F4F5F7] rounded-full p-1 h-[104px] w-[42px] shrink-0 shadow-inner">
+                    <div class="flex flex-col items-center justify-between bg-[#F4F5F7] rounded-full p-1.5 h-[112px] w-[46px] shrink-0 shadow-inner ml-1">
                         <button onclick="updateCartItemQty('${item.id}', 1)" class="w-[34px] h-[34px] bg-white rounded-full shadow-sm flex items-center justify-center active:scale-90 transition-transform"><i data-lucide="plus" class="w-4 h-4 text-gray-800"></i></button>
-                        <span class="font-bold text-[14px] text-gray-900">${item.qty}</span>
+                        <span class="font-bold text-[15px] text-gray-900">${item.qty}</span>
                         <button onclick="updateCartItemQty('${item.id}', -1)" class="w-[34px] h-[34px] bg-white rounded-full shadow-sm flex items-center justify-center active:scale-90 transition-transform"><i data-lucide="minus" class="w-4 h-4 text-gray-800"></i></button>
                     </div>
                 </div>
