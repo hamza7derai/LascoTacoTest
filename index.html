@@ -24,19 +24,16 @@
         .premium-ease { transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* LOADING SKELETON */
-        @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
-        .skeleton { background: linear-gradient(to right, #F4F5F7 8%, #E9ECEF 18%, #F4F5F7 33%); background-size: 1000px 100%; animation: shimmer 2s infinite linear; border-radius: 12px; }
+        /* UPGRADED SKELETON SHIMMER */
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .skeleton { background: linear-gradient(90deg, #F4F5F7 25%, #E9ECEF 50%, #F4F5F7 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite linear; }
 
         /* CATEGORY SCROLL & ANIMATION */
         .category-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 8px 20px 20px 20px; scroll-padding-left: 20px; scroll-behavior: smooth; }
         .category-pill { position: relative; flex: 0 0 auto; scroll-snap-align: start; transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease; border: 2px solid transparent; }
         
         @keyframes tabBounce {
-            0% { transform: scale(1); }
-            40% { transform: scale(0.92); }
-            70% { transform: scale(1.03); }
-            100% { transform: scale(1); }
+            0% { transform: scale(1); } 40% { transform: scale(0.92); } 70% { transform: scale(1.03); } 100% { transform: scale(1); }
         }
         .tab-bounce { animation: tabBounce 0.25s cubic-bezier(0.2, 0.9, 0.3, 1); }
         
@@ -45,8 +42,11 @@
         .product-card:active { transform: translateY(2px) scale(0.98); box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .product-img-wrap { overflow: hidden; border-radius: 16px 16px 6px 6px; height: 160px; background: #F8F9FA; width: 100%; position: relative; }
-        .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; mix-blend-mode: multiply; }
+        .product-img-wrap { overflow: hidden; border-radius: 16px 16px 6px 6px; height: 160px; background: #F4F5F7; width: 100%; position: relative; }
+        
+        /* UPSELL ANIMATION */
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .upsell-animate { opacity: 0; animation: slideUpFade 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) forwards; }
 
         /* MODALS */
         #bottom-sheet-root, #cart-drawer-root { position: fixed; inset: 0; z-index: 2000; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
@@ -198,9 +198,11 @@
             
             <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-4 no-scrollbar bg-[#FDFBFA] z-10"></div>
             
-            <div id="upsell-container" class="px-5 pb-5 shrink-0 bg-[#FDFBFA] hidden z-10">
-                <p class="font-black text-[16px] text-gray-900 tracking-tight mb-3">À ne pas manquer ! 🥤</p>
-                <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2" id="upsell-list"></div>
+            <div id="upsell-container" class="pb-5 shrink-0 bg-[#FDFBFA] hidden z-10 border-t border-gray-100">
+                <div class="px-5 pt-5 pb-2">
+                    <p class="font-black text-[16px] text-gray-900 tracking-tight">À ne pas manquer ! 🥤</p>
+                </div>
+                <div class="flex gap-3 overflow-x-auto no-scrollbar px-5 pb-3 pt-1" style="scroll-snap-type: x mandatory;" id="upsell-list"></div>
             </div>
 
             <div class="p-6 bg-white shrink-0 rounded-t-[32px] shadow-[0_-20px_40px_rgba(0,0,0,0.06)] z-20">
@@ -243,7 +245,7 @@
         let currentItemForSheet = null;
         let lastTotal = 0; 
 
-        // --- SKELETON LOADING UI ---
+        // --- PRE-LOAD SKELETONS UI ---
         function renderSkeletons() {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = Array(6).fill().map(() => `
@@ -314,7 +316,6 @@
                 let displayName = isTop ? 'Top vente' : cat.name;
                 let isActive = activeCat === cat.name;
                 
-                // SVG logic for Top Vente
                 let iconClass = isActive ? 'text-white' : 'text-[#E85A24]';
                 let iconHtml = isTop ? `<i data-lucide="flame" class="w-4 h-4 ${iconClass}"></i>` : '';
 
@@ -329,10 +330,7 @@
 
         function handleCatClick(catName, elementId) {
             const el = document.getElementById(elementId);
-            if(el) {
-                el.classList.add('tab-bounce');
-                setTimeout(() => el.classList.remove('tab-bounce'), 250);
-            }
+            if(el) { el.classList.add('tab-bounce'); setTimeout(() => el.classList.remove('tab-bounce'), 250); }
             activeCat = catName; document.getElementById('search-input').value = '';
             renderLabels(); loadProducts();
             
@@ -360,22 +358,26 @@
             const grid = document.getElementById('product-grid');
             if(products.length === 0) { grid.innerHTML = '<p class="col-span-2 text-center text-gray-400 py-12 font-bold text-[15px]">Aucun résultat trouvé 🌮</p>'; return; }
             
-            grid.innerHTML = products.map((p) => `
+            grid.innerHTML = products.map((p, index) => {
+                const lazyHtml = index >= 4 ? 'loading="lazy"' : '';
+                return `
                 <div class="product-card cursor-pointer p-2 flex flex-col" onclick="openProductByName('${p.name.replace(/'/g, "\\'")}')">
                     <div class="product-img-wrap">
-                        <img src="${p.image}" loading="lazy">
-                        ${p.isTop ? `<span class="absolute top-2 left-2 text-[var(--brand)] bg-white text-[9px] font-black px-2 py-1 rounded-[6px] uppercase shadow-sm">Top</span>` : ''}
+                        <div class="absolute inset-0 skeleton z-10 pointer-events-none"></div>
+                        <img src="${p.image}" ${lazyHtml} class="w-full h-full object-cover opacity-0 blur-sm transition-all duration-700 ease-out" onload="this.classList.remove('opacity-0', 'blur-sm'); this.previousElementSibling?.remove()">
+                        ${p.isTop ? `<span class="absolute top-2 left-2 text-[var(--brand)] bg-white/95 backdrop-blur-sm text-[9px] font-black px-2 py-1 rounded-[6px] uppercase shadow-sm z-20">Top</span>` : ''}
                     </div>
                     <div class="pt-3 px-1.5 flex flex-col flex-1 justify-between pb-1">
                         <h3 class="font-bold text-[14px] text-gray-900 leading-snug line-clamp-2">${p.name}</h3>
                         <div class="flex justify-between items-end mt-3">
                             <span class="font-black text-[16px] text-gray-900 mb-1">${p.hasSizes ? 'Dès ' : ''}${p.price} DH</span>
-                            <button class="w-[44px] h-[44px] rounded-full flex items-center justify-center text-white shadow-[0_4px_12px_var(--brand-soft)] hover:brightness-95 active:scale-90 transition-transform duration-150 ease-out bg-[var(--brand)]" onclick="event.stopPropagation(); openProductByName('${p.name.replace(/'/g, "\\'")}', true);" id="add-btn-${p.name.replace(/\s+/g, '')}">
+                            <button class="w-[44px] h-[44px] rounded-full flex items-center justify-center text-white shadow-[0_4px_12px_var(--brand-soft)] hover:brightness-95 active:scale-90 transition-transform duration-150 ease-out bg-[var(--brand)] shrink-0" onclick="event.stopPropagation(); openProductByName('${p.name.replace(/'/g, "\\'")}', true);" id="add-btn-${p.name.replace(/\s+/g, '')}">
                                 <i data-lucide="plus" class="w-5 h-5"></i>
                             </button>
                         </div>
                     </div>
-                </div>`).join('');
+                </div>`
+            }).join('');
             lucide.createIcons();
         }
 
@@ -488,7 +490,6 @@
             if(!currentItemForSheet) return;
             const p = currentItemForSheet;
             
-            // Sizes
             let finalPrice = p.price;
             let finalSizeName = "";
             if (p.hasSizes && p.sizes && p.sizes.length > 0) {
@@ -496,7 +497,6 @@
                 if (checkedSize) { finalPrice = Number(checkedSize.value); finalSizeName = checkedSize.dataset.name; }
             }
 
-            // Extras
             let selectedExtras = [];
             let extrasTotal = 0;
             if(p.hasExtras && p.extras && p.extras.length > 0) {
@@ -508,7 +508,6 @@
             }
             finalPrice += extrasTotal;
 
-            // Sauces & Notes
             const checkedSauce = document.querySelector('input[name="sauce-choice"]:checked');
             const sauceContainer = document.getElementById('sauce-options-container');
             const sauce = sauceContainer && !sauceContainer.parentElement.classList.contains('hidden') && checkedSauce ? checkedSauce.value : '';
@@ -531,7 +530,7 @@
             closeSheet(); saveCart(); syncUI(); showToast(`${p.name} ajouté !`);
         });
 
-        // UPSELLS
+        // --- UPGRADED HORIZONTAL UPSELLS ---
         function renderUpsells() {
             const drinks = globalProducts.filter(p => {
                 const cat = (p.category || '').toLowerCase();
@@ -549,18 +548,25 @@
                 const tag = tags[index % tags.length];
                 const tagColor = tag === 'POPULAIRE' ? 'bg-red-500' : (tag === 'FRAIS' ? 'bg-[#10B981]' : 'bg-[var(--brand)]');
                 return `
-                <div class="min-w-[140px] bg-white border border-[#F4F5F7] rounded-[20px] p-2 relative shadow-sm cursor-pointer active:scale-95 transition" onclick="quickAdd('${d.name.replace(/'/g, "\\'")}')">
-                    <span class="absolute top-0 left-2 ${tagColor} text-white text-[8px] font-black px-2 py-0.5 rounded-b-md tracking-widest">${tag}</span>
-                    <div class="flex items-center gap-3 mt-4">
-                        <img src="${d.image}" class="w-10 h-10 object-contain">
-                        <div>
-                            <p class="font-bold text-[11px] text-gray-800 leading-tight line-clamp-1">${d.name}</p>
-                            <p class="font-black text-[12px] text-[var(--brand)] mt-0.5">${d.price} DH</p>
-                        </div>
+                <div class="upsell-animate snap-start min-w-[260px] bg-white border border-[#F4F5F7] rounded-[16px] p-3 flex items-center gap-3 relative shadow-sm cursor-pointer active:scale-[0.98] transition-transform" style="animation-delay: ${index * 60}ms" onclick="quickAdd('${d.name.replace(/'/g, "\\'")}')">
+                    <span class="absolute -top-2 left-3 ${tagColor} text-white text-[8px] font-black px-2 py-0.5 rounded-md tracking-widest shadow-sm z-20">${tag}</span>
+                    
+                    <div class="w-[56px] h-[56px] rounded-[12px] bg-[#F4F5F7] overflow-hidden shrink-0 relative">
+                        <div class="absolute inset-0 skeleton z-10 pointer-events-none"></div>
+                        <img src="${d.image}" loading="lazy" class="w-full h-full object-cover opacity-0 blur-sm transition-all duration-500 ease-out" onload="this.classList.remove('opacity-0', 'blur-sm'); this.previousElementSibling?.remove()">
                     </div>
-                    <button class="absolute bottom-2 right-2 w-7 h-7 bg-[#F4F5F7] rounded-full flex items-center justify-center font-bold text-gray-600">+</button>
+                    
+                    <div class="flex-1 min-w-0 flex flex-col justify-center">
+                        <p class="font-bold text-[14px] text-gray-900 leading-tight truncate">${d.name}</p>
+                        <p class="font-black text-[14px] text-[var(--brand)] mt-0.5">${d.price} DH</p>
+                    </div>
+                    
+                    <button class="w-[36px] h-[36px] bg-[#F4F5F7] rounded-full flex items-center justify-center font-bold text-gray-600 active:scale-90 transition-transform shrink-0 hover:bg-gray-200">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                    </button>
                 </div>`;
             }).join('');
+            lucide.createIcons();
         }
 
         function quickAdd(productName) {
