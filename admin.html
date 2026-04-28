@@ -35,8 +35,10 @@
         /* BOTTOM SHEET MODAL */
         #modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; z-index: 1000; }
         #modal-panel { position: fixed; bottom: 0; left: 50%; width: 100%; max-width: 500px; transform: translate(-50%, 100%); background: #F8F9FA; border-radius: 32px 32px 0 0; pointer-events: none; z-index: 1001; max-height: 92vh; display: flex; flex-direction: column; box-shadow: 0 -20px 40px rgba(0,0,0,0.1); }
-        .modal-open #modal-overlay { opacity: 1; pointer-events: auto; }
-        .modal-open #modal-panel { transform: translate(-50%, 0); pointer-events: auto; }
+        
+        /* THE FIX: Apply classes based on body being modal-open */
+        body.modal-open #modal-overlay { opacity: 1; pointer-events: auto; }
+        body.modal-open #modal-panel { transform: translate(-50%, 0); pointer-events: auto; }
 
         /* TOAST */
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
@@ -241,9 +243,10 @@
             else { img.classList.add('hidden'); icon.classList.remove('hidden'); }
         }
 
-        // 4. MODAL MANAGEMENT
+        // 4. MODAL MANAGEMENT - FIXED HERE
         function openModal(id = null) {
-            document.getElementById('app-root').classList.add('modal-open');
+            // Target document.body instead of 'app-root'
+            document.body.classList.add('modal-open');
             document.body.style.overflow = 'hidden';
             if(!id) {
                 document.getElementById('modal-title').innerText = "Nouveau Produit";
@@ -253,7 +256,8 @@
             }
         }
         function closeModal() { 
-            document.getElementById('app-root').classList.remove('modal-open'); 
+            // Target document.body instead of 'app-root'
+            document.body.classList.remove('modal-open'); 
             document.body.style.overflow = '';
         }
 
