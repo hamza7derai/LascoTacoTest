@@ -41,29 +41,21 @@
         .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; mix-blend-mode: multiply; }
         .product-card:hover img { transform: scale(1.05); }
 
-        /* FLOATING ACTION BUTTON (Card) */
-        .fab-add { 
-            width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 900; font-size: 18px; box-shadow: 0 4px 10px var(--brand-soft);
-        }
         .animate-pop { animation: popBounce 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); }
         @keyframes popBounce { 0% { transform: scale(1); } 40% { transform: scale(0.85); background: white; color: var(--brand); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
-        /* BOTTOM SHEET (OPTIONS) */
-        #bottom-sheet-root { position: fixed; inset: 0; z-index: 2000; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
-        #bs-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+        /* BOTTOM SHEETS */
+        #bottom-sheet-root, #cart-drawer-root { position: fixed; inset: 0; z-index: 2000; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
+        #bs-overlay, #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
+        
         #bs-panel { width: 100%; max-width: 500px; background: white; border-radius: 32px 32px 0 0; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); pointer-events: auto; padding-bottom: env(safe-area-inset-bottom); max-height: 85vh; display: flex; flex-direction: column; }
         .bs-open #bs-overlay { opacity: 1; pointer-events: auto; }
         .bs-open #bs-panel { transform: translateY(0); }
 
-        /* CART BOTTOM SHEET */
-        #cart-drawer-root { position: fixed; inset: 0; z-index: 1000; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
-        #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
         #cart-panel { width: 100%; max-width: 500px; background: #F8F9FA; border-radius: 28px 28px 0 0; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1); pointer-events: auto; display: flex; flex-direction: column; max-height: 92vh; }
         .drawer-open #cart-overlay { opacity: 1; pointer-events: auto; }
         .drawer-open #cart-panel { transform: translateY(0); }
 
-        /* TOGGLE ANIMATION */
         #store-toggle-bg { transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), background-color 0.4s ease; }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -110,20 +102,22 @@
         <main id="product-grid" class="p-5 grid grid-cols-2 gap-4 pb-40"></main>
 
         <div id="checkout-bar" class="fixed bottom-4 left-4 right-4 max-w-[468px] mx-auto z-50 translate-y-[150%] premium-ease">
-            <button onclick="toggleCart(true)" class="w-full text-white p-3 rounded-full flex justify-between items-center shadow-xl active:scale-95 premium-ease relative overflow-hidden" style="background-color: var(--brand)">
+            <button onclick="toggleCart(true)" class="w-full text-white p-2.5 rounded-[2rem] flex justify-between items-center shadow-[0_12px_24px_rgba(0,0,0,0.15)] active:scale-95 premium-ease relative overflow-hidden" style="background-color: var(--brand)">
+                
                 <div class="flex items-center gap-3 pl-1 z-10">
-                    <div class="relative bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-sm">
-                        <i data-lucide="shopping-bag" class="w-5 h-5" style="color: var(--brand)"></i>
-                        <span id="floating-badge" class="absolute -top-1 -right-1 text-white text-[10px] w-[20px] h-[20px] rounded-full border-2 border-[#E85A24] flex justify-center items-center font-black" style="background-color: var(--brand); border-color: var(--brand);">0</span>
+                    <div class="relative bg-white w-[44px] h-[44px] rounded-full flex items-center justify-center shadow-inner">
+                        <i data-lucide="shopping-bag" class="w-[22px] h-[22px]" style="color: var(--brand)"></i>
+                        <span id="floating-badge" class="absolute -top-1 -right-1 text-gray-800 text-[10px] w-5 h-5 rounded-full flex justify-center items-center font-black bg-white shadow-md border border-gray-100">0</span>
                     </div>
                     <div class="text-left">
                         <p id="item-count-text" class="text-[14px] font-bold leading-tight">0 article</p>
-                        <p class="text-[10px] font-medium text-white/80">Livraison : 20 DH</p>
+                        <p class="text-[11px] font-medium text-white/90 mt-0.5">Livraison : 20 DH</p>
                     </div>
                 </div>
-                <div class="font-black text-[20px] absolute left-1/2 -translate-x-1/2 z-10" id="final-price-bottom">0 DH</div>
+
+                <div class="font-black text-[18px] absolute left-1/2 -translate-x-1/2 z-10 tracking-tight" id="final-price-bottom">0 DH</div>
                 
-                <div class="bg-white px-4 py-3.5 rounded-full text-[13px] font-black flex items-center gap-1 z-10 shadow-sm" style="color: var(--brand)">
+                <div class="bg-white px-4 py-3 rounded-[1.5rem] text-[13px] font-bold flex items-center gap-1.5 z-10 shadow-sm mr-1" style="color: var(--brand)">
                     Voir le panier <i data-lucide="chevron-right" class="w-4 h-4"></i>
                 </div>
             </button>
@@ -187,8 +181,7 @@
             
             <div id="upsell-container" class="px-5 pb-5 shrink-0 bg-[#F8F9FA] hidden">
                 <p class="font-black text-[15px] text-gray-900 tracking-tight mb-3">À ne pas manquer ! 🥤</p>
-                <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2" id="upsell-list">
-                    </div>
+                <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2" id="upsell-list"></div>
             </div>
 
             <div class="p-6 bg-white shrink-0 rounded-t-[24px] shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
@@ -220,32 +213,27 @@
     </div>
 
     <script>
-        // PWA SETUP
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
 
-        // FIREBASE SETUP
         const firebaseConfig = { apiKey: "AIzaSyBebaGxqiNBvCqofveg1Fmztl7av3Mdoyg", authDomain: "lascotaco-67fe5.firebaseapp.com", projectId: "lascotaco-67fe5", storageBucket: "lascotaco-67fe5.firebasestorage.app", messagingSenderId: "865918381027", appId: "1:865918381027:web:abc6435df20894020c4ed6" };
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
-        // GLOBALS
         let cart = JSON.parse(localStorage.getItem('lasco_cart_v2')) || []; 
         let activeStore = 'Restaurant'; let activeCat = '🔥 Top vente';
         let livraisonFee = 20;
         let globalProducts = []; 
         let currentItemForSheet = null;
+        let lastTotal = 0; // State for counting animation
 
         function saveCart() { localStorage.setItem('lasco_cart_v2', JSON.stringify(cart)); }
 
-        // INITIAL FETCH
         db.collection("products").get().then(snap => {
             snap.forEach(doc => {
                 let data = doc.data();
                 if (!data.category) data.category = '🔥 Top vente'; 
                 globalProducts.push(data);
             });
-            renderUpsells();
-            loadProducts(); 
-            syncUI(); 
+            renderUpsells(); loadProducts(); syncUI(); 
         });
 
         function showToast(message) {
@@ -268,7 +256,6 @@
                 </div>`).join('');
         }
 
-        // TOGGLE SWITCH
         function setStore(type) { 
             activeStore = type; activeCat = '🔥 Top vente'; document.getElementById('search-input').value = '';
             
@@ -308,7 +295,6 @@
             nav.scrollTo({ left: scrollTarget, behavior: 'smooth' });
         }
 
-        // GLOBAL SEARCH
         document.getElementById('search-input').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             if(term.length > 0) {
@@ -317,7 +303,6 @@
             } else { loadProducts(); }
         });
 
-        // LOAD GRID
         function loadProducts() {
             let filtered = [];
             if (activeCat === '🔥 Top vente') { filtered = globalProducts.filter(p => p.type === activeStore && p.isTop === true); } 
@@ -330,23 +315,24 @@
             if(products.length === 0) { grid.innerHTML = '<p class="col-span-2 text-center text-gray-400 py-10 font-bold text-sm">Aucun résultat trouvé</p>'; return; }
             
             grid.innerHTML = products.map(p => `
-                <div class="product-card cursor-pointer p-2.5" onclick="openOptions('${p.name}', ${p.price}, '${p.image}', '${p.category}')">
+                <div class="product-card cursor-pointer p-2.5 flex flex-col" onclick="openOptions('${p.name}', ${p.price}, '${p.image}', '${p.category}')">
                     <div class="product-img-wrap">
                         <img src="${p.image}" loading="lazy">
                         ${p.isTop ? `<span class="absolute top-2 left-2 text-white text-[8px] font-black px-2 py-0.5 rounded uppercase shadow-sm" style="background-color: var(--brand)">Top</span>` : ''}
                     </div>
-                    <div class="pt-2 pb-1 px-1">
-                        <h3 class="font-bold text-[12px] text-gray-900 leading-tight h-8 overflow-hidden line-clamp-2">${p.name}</h3>
-                        <div class="mt-1 font-black text-[15px] tracking-tight" style="color: var(--brand)">${p.price} DH</div>
+                    <div class="pt-2 px-1 flex flex-col flex-1 justify-between">
+                        <h3 class="font-bold text-[13px] text-gray-900 leading-tight line-clamp-2">${p.name}</h3>
+                        <div class="flex justify-between items-center mt-3">
+                            <span class="font-black text-[15px]" style="color: var(--brand)">${p.price} DH</span>
+                            <button class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-[18px] shadow-sm active:scale-90 transition-transform" style="background-color: var(--brand)" onclick="event.stopPropagation(); openOptions('${p.name}', ${p.price}, '${p.image}', '${p.category}');" id="add-btn-${p.name.replace(/\s+/g, '')}">
+                                +
+                            </button>
+                        </div>
                     </div>
-                    <button class="fab-add" onclick="event.stopPropagation(); openOptions('${p.name}', ${p.price}, '${p.image}', '${p.category}');" id="add-btn-${p.name.replace(/\s+/g, '')}" style="background-color: var(--brand)">
-                        +
-                    </button>
                 </div>`).join('');
             lucide.createIcons();
         }
 
-        // SMART BOTTOM SHEET
         function openOptions(name, price, image, category) {
             currentItemForSheet = { name, price, image };
             document.getElementById('bs-title').innerText = name;
@@ -382,7 +368,6 @@
             if(btn) { btn.classList.add('animate-pop'); setTimeout(() => btn.classList.remove('animate-pop'), 400); }
         });
 
-        // EXACT MATCH UPSELLS
         function renderUpsells() {
             const drinks = globalProducts.filter(p => {
                 const cat = (p.category || '').toLowerCase();
@@ -436,24 +421,41 @@
             saveCart(); syncUI(); renderDrawer();
         }
 
-        // EXACT MATCH SYNC & UI
+        // PRICE ANIMATION FUNCTION
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start) + " DH";
+                if (progress < 1) window.requestAnimationFrame(step);
+                else obj.innerHTML = end + " DH";
+            };
+            window.requestAnimationFrame(step);
+        }
+
         function syncUI() {
             let total = 0; let count = 0;
             cart.forEach(i => { total += i.qty * i.price; count += i.qty; });
             const totalWithDelivery = total > 0 ? total + livraisonFee : 0;
             
-            // Header Sync
             document.getElementById('nav-total').innerText = total + " DH";
             const navBadge = document.getElementById('nav-badge');
             if (count > 0) { navBadge.innerText = count; navBadge.classList.replace('scale-0', 'scale-100'); } 
             else { navBadge.classList.replace('scale-100', 'scale-0'); }
             
-            // Bottom Bar Sync
             document.getElementById('floating-badge').innerText = count;
             document.getElementById('item-count-text').innerText = count + (count > 1 ? " articles" : " article");
-            document.getElementById('final-price-bottom').innerText = total + " DH";
             
-            // Drawer Headers Sync
+            // Animation Trigger
+            const bottomPriceEl = document.getElementById('final-price-bottom');
+            if (total !== lastTotal) {
+                animateValue(bottomPriceEl, lastTotal, total, 400);
+                lastTotal = total;
+            } else {
+                bottomPriceEl.innerText = total + " DH";
+            }
+            
             document.getElementById('cart-header-count').innerText = count + (count > 1 ? " articles" : " article");
             document.getElementById('drawer-subtotal').innerText = total + " DH";
             document.getElementById('drawer-total').innerText = totalWithDelivery + " DH";
@@ -461,7 +463,6 @@
             document.getElementById('checkout-bar').style.transform = count > 0 ? 'translateY(0)' : 'translateY(150%)';
         }
 
-        // EXACT MATCH CART CARDS
         function renderDrawer() {
             const list = document.getElementById('cart-items');
             if(cart.length === 0) { list.innerHTML = `<div class="py-20 text-center"><p class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-4">Panier vide 🌮</p><button onclick="toggleCart(false)" class="text-[14px] font-black underline underline-offset-4" style="color: var(--brand)">Retour au menu</button></div>`; lucide.createIcons(); return; }
