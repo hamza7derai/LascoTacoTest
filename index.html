@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LASCOTACO | Pro Shop</title>
+    <title>LASCOTACO | Shop Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --main: #E85A24; } /* Dynamic Variable */
+        :root { --main: #E85A24; --green: #10B981; }
         body { background-color: #F8F9FA; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         /* SCROLL LOCK */
-        body.no-scroll { overflow: hidden; height: 100vh; }
+        body.cart-open { overflow: hidden; }
 
         .app-container { 
             max-width: 500px; margin: 0 auto; width: 100%; position: relative; 
@@ -22,37 +22,33 @@
             overflow-x: hidden; 
         }
         
-        /* CATEGORY PILLS */
-        .category-scroll { 
-            display: flex; gap: 12px; overflow-x: auto; scroll-behavior: smooth;
-            scroll-snap-type: x mandatory; padding: 10px 24px;
-            scroll-padding-left: 20px;
-        }
+        /* THEMES */
+        .theme-resto { --brand: var(--main); }
+        .theme-epi { --brand: var(--green); }
+
         .category-pill { 
             flex: 0 0 auto; scroll-snap-align: start;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             opacity: 0.6;
         }
         .active-label { 
-            background-color: var(--main) !important; color: white !important; border-color: var(--main) !important;
+            background-color: var(--brand) !important; color: white !important; 
             opacity: 1 !important; transform: scale(1.05); box-shadow: 0 8px 15px rgba(0,0,0,0.1); 
         }
 
-        /* SLIDER */
+        .active-main-resto { background-color: var(--main) !important; color: white !important; }
+        .active-main-epi { background-color: var(--green) !important; color: white !important; }
+
+        /* INFINITE SLIDER */
         .slider-viewport { width: 100%; overflow: hidden; border-radius: 28px; position: relative; }
-        .slider-wrapper { display: flex; transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1); will-change: transform; }
+        .slider-wrapper { display: flex; transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1); }
         .slide-box { min-width: 100%; height: 220px; padding: 0 4px; }
         .slide-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 24px; }
 
         .glass-card { background: white; border-radius: 20px; border: 1px solid #F1F3F5; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
-        
-        /* DYNAMIC ACTIVE STORE COLORS */
-        .active-main-resto { background-color: #E85A24 !important; color: white !important; }
-        .active-main-epi { background-color: #2D6A4F !important; color: white !important; }
-        
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* FIXED CART DRAWER */
+        /* FIXED CART */
         #cart-drawer-root { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
         #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); transition: opacity 0.4s ease; }
         #cart-panel { 
@@ -68,10 +64,9 @@
         .sticky-footer-wrap { position: fixed; bottom: 0; width: 100%; max-width: 500px; padding: 20px; z-index: 60; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     </style>
 </head>
-<body class="drawer-closed" id="body-wrap">
+<body class="drawer-closed theme-resto" id="body-wrap">
 
-    <div class="app-container" id="app-root">
-        
+    <div class="app-container">
         <nav class="sticky top-0 bg-white/80 backdrop-blur-md p-5 z-50 flex justify-between items-center px-6 border-b border-gray-50">
             <h1 class="text-2xl font-extrabold text-[#E85A24] tracking-tighter italic">LASCOTACO</h1>
             <button onclick="toggleCart(true)" class="bg-[#1B1B1B] text-white px-5 py-2.5 rounded-2xl font-black text-sm flex items-center gap-2 shadow-xl active:scale-95 transition">
@@ -88,7 +83,7 @@
         </div>
 
         <div class="p-4 flex gap-3 sticky top-[73px] bg-white/95 backdrop-blur-sm z-40">
-            <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border active-main-resto shadow-lg">
+            <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border active-main-resto">
                 <i data-lucide="utensils" class="w-4 h-4"></i> Resto
             </button>
             <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border">
@@ -96,12 +91,12 @@
             </button>
         </div>
 
-        <div id="sub-nav" class="category-scroll no-scrollbar sticky top-[155px] bg-white/95 backdrop-blur-sm z-30"></div>
+        <div id="sub-nav" class="flex gap-3 overflow-x-auto no-scrollbar py-2 px-6 sticky top-[155px] bg-white/95 backdrop-blur-sm z-30 scroll-smooth"></div>
 
         <main id="product-grid" class="p-6 grid grid-cols-2 gap-4 pb-48"></main>
 
         <div id="checkout-bar" class="sticky-footer-wrap translate-y-full">
-            <button onclick="toggleCart(true)" id="main-order-btn" class="w-full bg-[#1A1A1A] text-white p-5 rounded-[2.2rem] flex justify-between items-center shadow-2xl active:scale-95 transition">
+            <button onclick="toggleCart(true)" class="w-full bg-[#1A1A1A] text-white p-5 rounded-[2.2rem] flex justify-between items-center shadow-2xl active:scale-95 transition">
                 <div class="text-left pl-2">
                     <p id="item-count" class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">0 Articles</p>
                     <p id="final-price" class="text-xl font-black">0 DH</p>
@@ -128,7 +123,7 @@
                     <span class="font-bold text-gray-400 uppercase text-[9px]">Total</span>
                     <span id="drawer-total" class="text-2xl font-black text-[#E85A24]">0 DH</span>
                 </div>
-                <button onclick="sendToWhatsApp()" id="whatsapp-btn" class="w-full bg-[#25D366] text-white py-5 rounded-[1.8rem] font-black text-lg flex justify-center items-center gap-3 shadow-xl active:scale-95 transition">
+                <button id="wa-btn" onclick="sendToWhatsApp()" class="w-full bg-[#25D366] text-white py-5 rounded-[1.8rem] font-black text-lg flex justify-center items-center gap-3 shadow-xl transition">
                     <i data-lucide="message-circle" class="w-6 h-6"></i> WhatsApp
                 </button>
             </div>
@@ -150,7 +145,7 @@
         let cart = {}; let activeStore = 'Restaurant'; let activeCat = '🔥 Top vente';
         let livraisonFee = 20;
 
-        // INFINITE SLIDER
+        // --- INFINITE FORWARD SLIDER ---
         async function loadSlides() {
             const slider = document.getElementById('slider');
             const dots = document.getElementById('slider-dots');
@@ -159,10 +154,9 @@
             const bannerArray = [];
             snap.forEach(doc => bannerArray.push(doc.data().url));
             slider.innerHTML = bannerArray.map(url => `<div class="slide-box"><img src="${url}"></div>`).join('');
-            slider.innerHTML += `<div class="slide-box"><img src="${bannerArray[0]}"></div>`;
+            slider.innerHTML += `<div class="slide-box"><img src="${bannerArray[0]}"></div>`; 
             dots.innerHTML = bannerArray.map((_, i) => `<div class="w-1.5 h-1.5 rounded-full bg-white transition-all duration-500 ${i === 0 ? 'w-6' : 'opacity-30'}"></div>`).join('');
-            let index = 0;
-            const totalSlides = bannerArray.length;
+            let index = 0; const totalSlides = bannerArray.length;
             setInterval(() => {
                 index++;
                 slider.style.transition = 'transform 0.7s cubic-bezier(0.65, 0, 0.35, 1)';
@@ -170,8 +164,7 @@
                 if (index === totalSlides) {
                     setTimeout(() => {
                         slider.style.transition = 'none';
-                        index = 0;
-                        slider.style.transform = `translateX(0)`;
+                        index = 0; slider.style.transform = `translateX(0)`;
                     }, 700);
                 }
                 const dotIdx = index === totalSlides ? 0 : index;
@@ -181,27 +174,26 @@
             }, 5000);
         }
 
-        // STORE TOGGLE LOGIC
+        // --- STORE TOGGLE & THEME ---
         function setStore(type) { 
-            activeStore = type; 
-            activeCat = '🔥 Top vente';
-            
-            const root = document.documentElement;
+            activeStore = type; activeCat = '🔥 Top vente'; 
+            const body = document.getElementById('body-wrap');
             const btnResto = document.getElementById('btn-resto');
             const btnEpi = document.getElementById('btn-epi');
+            const waBtn = document.getElementById('wa-btn');
 
             if(type === 'Restaurant') {
-                root.style.setProperty('--main', '#E85A24');
-                btnResto.className = "flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border active-main-resto shadow-lg";
+                body.className = "drawer-closed theme-resto";
+                btnResto.className = "flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border active-main-resto";
                 btnEpi.className = "flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border";
+                waBtn.style.backgroundColor = "#25D366";
             } else {
-                root.style.setProperty('--main', '#2D6A4F'); // Green for Epicerie
-                btnEpi.className = "flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border active-main-epi shadow-lg";
+                body.className = "drawer-closed theme-epi";
                 btnResto.className = "flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border";
+                btnEpi.className = "flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border active-main-epi";
+                waBtn.style.backgroundColor = "#10B981"; // Epicerie Green
             }
-            
-            renderLabels(); 
-            loadProducts(); 
+            renderLabels(); loadProducts(); 
         }
 
         async function renderLabels() {
@@ -220,13 +212,11 @@
 
         function handleCatClick(catName, elementId) {
             activeCat = catName;
-            renderLabels();
+            renderLabels(); loadProducts();
             const nav = document.getElementById('sub-nav');
-            setTimeout(() => {
-                const activePill = document.getElementById(elementId);
-                if(activePill) nav.scrollTo({ left: activePill.offsetLeft - 24, behavior: 'smooth' });
-            }, 10);
-            loadProducts();
+            const activePill = document.getElementById(elementId);
+            const scrollTarget = activePill.offsetLeft - 24;
+            nav.scrollTo({ left: scrollTarget, behavior: 'smooth' });
         }
 
         function loadProducts() {
@@ -237,21 +227,20 @@
                 const grid = document.getElementById('product-grid');
                 grid.innerHTML = "";
                 snap.forEach(doc => {
-                    const p = doc.data();
-                    const qty = cart[p.name]?.qty || 0;
+                    const p = doc.data(); const qty = cart[p.name]?.qty || 0;
                     grid.innerHTML += `
                         <div class="glass-card p-3 flex flex-col gap-3">
-                            <div class="h-32 bg-gray-50 rounded-2xl overflow-hidden relative shadow-inner">
+                            <div class="h-32 bg-gray-50 rounded-2xl overflow-hidden relative">
                                 <img src="${p.image}" class="w-full h-full object-cover">
-                                ${p.isTop ? '<span class="absolute top-2 left-2 bg-orange-600 text-white text-[8px] font-black px-2 py-1 rounded-md" style="background-color: var(--main)">TOP</span>' : ''}
+                                ${p.isTop ? `<span class="absolute top-2 left-2 ${activeStore === 'Restaurant' ? 'bg-orange-600' : 'bg-emerald-600'} text-white text-[8px] font-black px-2 py-1 rounded-md uppercase">Top</span>` : ''}
                             </div>
-                            <h3 class="font-bold text-[11px] text-gray-800 leading-tight">${p.name}</h3>
+                            <h3 class="font-bold text-[10px] text-gray-800 leading-tight">${p.name}</h3>
                             <div class="flex justify-between items-center mt-auto">
-                                <span class="font-black text-xs" style="color: var(--main)">${p.price} DH</span>
-                                <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1 border border-gray-100">
-                                    <button onclick="updateQty('${p.name}', ${p.price}, -1, '${p.image}')" class="w-6 h-6 bg-white rounded shadow-sm font-bold text-xs">-</button>
+                                <span class="font-black text-xs" style="color: var(--brand)">${p.price} DH</span>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="updateQty('${p.name}', ${p.price}, -1, '${p.image}')" class="w-7 h-7 bg-gray-100 rounded-lg font-bold text-xs">-</button>
                                     <span class="font-bold text-[10px] w-3 text-center">${qty}</span>
-                                    <button onclick="updateQty('${p.name}', ${p.price}, 1, '${p.image}')" class="w-6 h-6 text-white rounded shadow-sm font-bold text-xs" style="background-color: var(--main)">+</button>
+                                    <button onclick="updateQty('${p.name}', ${p.price}, 1, '${p.image}')" class="w-7 h-7 text-white rounded-lg font-bold text-xs" style="background-color: var(--brand)">+</button>
                                 </div>
                             </div>
                         </div>`;
@@ -262,10 +251,8 @@
 
         function updateQty(name, price, change, img) {
             if (!cart[name]) cart[name] = { qty: 0, price: price, image: img };
-            cart[name].qty += change;
-            if (cart[name].qty <= 0) delete cart[name];
-            syncUI();
-            if(!document.getElementById('body-wrap').classList.contains('drawer-closed')) renderDrawer();
+            cart[name].qty += change; if (cart[name].qty <= 0) delete cart[name];
+            syncUI(); if(!document.getElementById('body-wrap').classList.contains('drawer-closed')) renderDrawer();
         }
 
         function syncUI() {
@@ -289,14 +276,14 @@
             itemsList.innerHTML = cartKeys.map(name => `
                 <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-2xl border border-gray-100">
                     <img src="${cart[name].image}" class="w-10 h-10 rounded-xl object-cover shadow-sm">
-                    <div class="flex-1">
-                        <p class="font-bold text-[10px] text-gray-800 leading-tight">${name}</p>
-                        <p class="text-[9px] font-black text-[#E85A24]">${cart[name].price} DH</p>
+                    <div class="flex-1 text-[10px]">
+                        <p class="font-bold text-gray-800">${name}</p>
+                        <p class="font-black" style="color: var(--brand)">${cart[name].price} DH</p>
                     </div>
                     <div class="flex items-center gap-3">
                         <button onclick="updateQty('${name}', ${cart[name].price}, -1, '${cart[name].image}')" class="w-6 h-6 bg-white rounded shadow-sm font-black">-</button>
-                        <span class="font-bold text-[10px]">${cart[name].qty}</span>
-                        <button onclick="updateQty('${name}', ${cart[name].price}, 1, '${cart[name].image}')" class="w-6 h-6 text-white rounded shadow-sm font-black" style="background-color: var(--main)">+</button>
+                        <span class="font-bold">${cart[name].qty}</span>
+                        <button onclick="updateQty('${name}', ${cart[name].price}, 1, '${cart[name].image}')" class="w-6 h-6 text-white rounded shadow-sm font-black" style="background-color: var(--brand)">+</button>
                     </div>
                 </div>
             `).join('');
@@ -304,23 +291,20 @@
 
         function toggleCart(show) {
             const body = document.getElementById('body-wrap');
-            if(show) { 
-                body.classList.replace('drawer-closed', 'drawer-open'); 
-                body.classList.add('no-scroll'); // LOCK SCROLL
-                renderDrawer(); 
-            } else { 
-                body.classList.replace('drawer-open', 'drawer-closed'); 
-                body.classList.remove('no-scroll'); // UNLOCK SCROLL
+            if(show) {
+                body.classList.replace('drawer-closed', 'drawer-open');
+                body.classList.add('cart-open'); // Lock Scroll
+                renderDrawer();
+            } else {
+                body.classList.replace('drawer-open', 'drawer-closed');
+                body.classList.remove('cart-open'); // Unlock Scroll
             }
         }
 
         function sendToWhatsApp() {
             let msg = `🛒 *Nouvelle Commande LASCOTACO*\n\n`;
             let subtotal = 0;
-            for (let id in cart) { 
-                msg += `• ${cart[id].qty}x ${id} (${cart[id].qty * cart[id].price} DH)\n`;
-                subtotal += cart[id].qty * cart[id].price;
-            }
+            for (let id in cart) { msg += `• ${cart[id].qty}x ${id} (${cart[id].qty * cart[id].price} DH)\n`; subtotal += cart[id].qty * cart[id].price; }
             msg += `\n💰 *Total:* ${subtotal + livraisonFee} DH`;
             window.open(`https://wa.me/212708006088?text=${encodeURIComponent(msg)}`);
         }
