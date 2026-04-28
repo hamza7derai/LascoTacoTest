@@ -69,6 +69,20 @@
 
         /* TOAST */
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
+
+        /* MODAL SPECIFIC STYLES */
+        .modal-radio-indicator { transition: border-color 0.2s ease; }
+        .modal-radio-dot { opacity: 0; transform: scale(0.5); transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1); }
+        .peer:checked + label .modal-radio-indicator { border-color: var(--brand); }
+        .peer:checked + label .modal-radio-dot { opacity: 1; transform: scale(1); }
+
+        .modal-cb-indicator { transition: all 0.2s ease; }
+        .modal-cb-icon { opacity: 0; transform: scale(0.5); transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1); }
+        .peer:checked + label .modal-cb-indicator { background-color: var(--brand); border-color: var(--brand); }
+        .peer:checked + label .modal-cb-icon { opacity: 1; transform: scale(1); }
+
+        /* Textarea scrollbar hiding */
+        #bs-notes::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="drawer-closed theme-resto" id="body-wrap">
@@ -136,54 +150,75 @@
         <div id="bs-overlay" onclick="closeSheet()"></div>
         <div id="bs-panel">
             
-            <div class="p-6 bg-white flex justify-between items-start shrink-0 relative rounded-t-[32px] shadow-[0_4px_16px_rgba(0,0,0,0.02)] z-20">
+            <div class="p-5 bg-white flex items-start gap-4 shrink-0 relative rounded-t-[32px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] z-20">
                 <div class="absolute top-2.5 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full"></div>
-                <div class="mt-3 pr-4 w-full">
-                    <h3 id="bs-title" class="font-black text-[22px] text-gray-900 leading-tight tracking-tight">Produit</h3>
-                    <p id="bs-description" class="text-[13px] text-gray-500 font-medium mt-2 leading-relaxed hidden"></p>
-                    <p id="bs-price" class="font-black mt-3 text-[22px] text-[var(--brand)]">0 DH</p>
+                
+                <img id="bs-image" src="" class="w-20 h-20 rounded-[16px] object-cover bg-[#F4F5F7] mt-2 shrink-0 shadow-sm border border-gray-100">
+                
+                <div class="mt-2 pr-2 w-full flex-1 min-w-0">
+                    <h3 id="bs-title" class="font-black text-[18px] text-gray-900 leading-tight tracking-tight truncate">Produit</h3>
+                    <p id="bs-description" class="text-[12px] text-gray-500 font-medium mt-1 leading-snug hidden line-clamp-2"></p>
+                    <p id="bs-price" class="font-black mt-2 text-[18px] text-[var(--brand)]">0 DH</p>
                 </div>
-                <button onclick="closeSheet()" class="p-2.5 bg-[#F4F5F7] rounded-full text-gray-500 hover:bg-gray-200 active:scale-90 transition-transform duration-200 mt-3 shrink-0"><i data-lucide="x" class="w-5 h-5"></i></button>
+                
+                <button onclick="closeSheet()" class="w-8 h-8 flex items-center justify-center bg-[#F4F5F7] rounded-full text-gray-500 hover:bg-gray-200 active:scale-90 transition-transform duration-200 mt-2 shrink-0">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
             </div>
             
-            <div class="p-6 overflow-y-auto no-scrollbar flex-1 space-y-8 relative z-10" id="bs-content-scroll">
+            <div class="p-5 overflow-y-auto no-scrollbar flex-1 space-y-8 relative z-10" id="bs-content-scroll">
                 
                 <div id="bs-sizes" class="space-y-3 hidden">
-                    <div class="flex items-center justify-between mb-1">
-                        <h4 class="font-black text-[15px] text-gray-900">Choisissez une taille</h4>
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-black text-[15px] text-gray-900 flex items-center gap-2">
+                            <i data-lucide="users" class="w-4 h-4 text-gray-400"></i> Choisissez une taille
+                        </h4>
                         <span class="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">Requis</span>
                     </div>
-                    <div id="size-options-container" class="space-y-2.5"></div>
+                    <div id="size-options-container" class="space-y-2"></div>
                 </div>
 
                 <div id="bs-sauces" class="space-y-3 hidden">
-                    <div class="flex items-center justify-between mb-1">
-                        <h4 class="font-black text-[15px] text-gray-900">Choix de sauce</h4>
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-black text-[15px] text-gray-900 flex items-center gap-2">
+                            <i data-lucide="droplet" class="w-4 h-4 text-gray-400"></i> Choix de sauce
+                        </h4>
                         <span class="bg-[var(--brand-soft)] text-[var(--brand)] text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">Requis</span>
                     </div>
-                    <div id="sauce-options-container" class="space-y-2.5"></div>
+                    <div id="sauce-options-container" class="space-y-2"></div>
                 </div>
 
                 <div id="bs-extras" class="space-y-3 hidden">
-                    <div class="flex items-center justify-between mb-1">
-                        <h4 class="font-black text-[15px] text-gray-900">Extras</h4>
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-black text-[15px] text-gray-900 flex items-center gap-2">
+                            <i data-lucide="gift" class="w-4 h-4 text-gray-400"></i> Extras
+                        </h4>
                         <span class="text-gray-400 text-[11px] font-bold uppercase tracking-wider">Optionnel</span>
                     </div>
-                    <div id="extras-options-container" class="space-y-2.5"></div>
+                    <div id="extras-options-container" class="space-y-2"></div>
                 </div>
                 
                 <div id="bs-instructions" class="space-y-3 hidden pb-4">
-                    <div class="flex items-center justify-between mb-1">
-                        <h4 class="font-black text-[15px] text-gray-900">Instructions spéciales</h4>
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-black text-[15px] text-gray-900 flex items-center gap-2">
+                            <i data-lucide="file-text" class="w-4 h-4 text-gray-400"></i> Instructions
+                        </h4>
                         <span class="text-gray-400 text-[11px] font-bold uppercase tracking-wider">Optionnel</span>
                     </div>
-                    <textarea id="bs-notes" placeholder="Ex: Sans oignons, sauce à part..." class="w-full p-4 bg-white rounded-[16px] font-semibold text-[14px] text-gray-800 border-2 border-[#F4F5F7] outline-none resize-none h-28 transition-colors focus:border-[var(--brand)] shadow-sm"></textarea>
+                    <div class="relative">
+                        <textarea id="bs-notes" maxlength="150" oninput="document.getElementById('char-count').innerText = this.value.length" placeholder="Ex: Sans oignons, sauce à part..." class="w-full p-4 bg-[#F8F9FA] rounded-[16px] font-medium text-[14px] text-gray-800 border-2 border-transparent outline-none resize-none h-24 transition-colors focus:border-[var(--brand)] focus:bg-white placeholder-gray-400 shadow-inner"></textarea>
+                        <span class="absolute bottom-3 right-4 text-[10px] font-bold text-gray-400"><span id="char-count">0</span>/150</span>
+                    </div>
                 </div>
             </div>
 
             <div class="p-5 bg-white shrink-0 border-t border-gray-100 shadow-[0_-15px_40px_rgba(0,0,0,0.04)] z-20">
-                <button id="bs-add-btn" class="w-full text-white py-4.5 h-[60px] rounded-[20px] font-black text-[16px] active:scale-[0.98] transition-all duration-200 flex items-center justify-center shadow-[0_8px_25px_var(--brand-medium)] bg-[var(--brand)]">
-                    Ajouter au panier • <span id="bs-btn-price" class="ml-1">0 DH</span>
+                <button id="bs-add-btn" class="w-full text-white py-4 h-[60px] rounded-[20px] font-black text-[16px] active:scale-[0.97] transition-all duration-200 flex items-center justify-between px-6 shadow-[0_8px_25px_var(--brand-medium)] bg-gradient-to-r from-[var(--brand)] to-[#FF8A50]">
+                    <div class="flex items-center gap-2.5">
+                        <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        <span>Ajouter</span>
+                    </div>
+                    <span id="bs-btn-price" class="bg-white/25 px-3 py-1.5 rounded-[10px] backdrop-blur-sm tracking-wide">0 DH</span>
                 </button>
             </div>
         </div>
@@ -282,7 +317,6 @@
                 if (!data.category) data.category = '🔥 Top vente'; 
                 globalProducts.push(data);
             });
-            // Force skeleton to show for exactly 500ms to guarantee smooth feedback
             setTimeout(() => {
                 renderUpsells(); loadProducts(false); syncUI(); 
             }, 500);
@@ -298,12 +332,11 @@
             setTimeout(() => { toast.classList.add('translate-y-[-20px]', 'opacity-0'); setTimeout(() => toast.remove(), 400); }, 2500);
         }
 
-        // --- CART BUMP ANIMATION ---
         function triggerCartPulse() {
             const btn = document.getElementById('nav-cart-btn');
             if(btn) {
                 btn.classList.remove('cart-bump');
-                void btn.offsetWidth; // trigger reflow
+                void btn.offsetWidth; 
                 btn.classList.add('cart-bump');
             }
         }
@@ -369,7 +402,6 @@
             } else { loadProducts(false); }
         });
 
-        // Added withSkeleton logic to ensure 500ms feedback on category change
         function loadProducts(withSkeleton = false) {
             let filtered = [];
             if (activeCat === '🔥 Top vente') { filtered = globalProducts.filter(p => p.type === activeStore && p.isTop === true); } 
@@ -410,7 +442,6 @@
             lucide.createIcons();
         }
 
-        // --- CALCULATION LOGIC FOR MODAL ---
         function calculateCurrentModalPrice() {
             if(!currentItemForSheet) return;
             let basePrice = currentItemForSheet.price;
@@ -429,7 +460,7 @@
             document.getElementById('bs-btn-price').innerText = basePrice + ' DH';
         }
 
-        // --- DYNAMIC OPEN MODAL ---
+        // --- UPGRADED DYNAMIC OPEN MODAL ---
         function openProductByName(productName, animateBtn = false) {
             const p = globalProducts.find(item => item.name === productName);
             if(!p) return;
@@ -437,66 +468,68 @@
             currentItemForSheet = p;
             document.getElementById('bs-content-scroll').scrollTo(0,0);
             
+            // Header
+            document.getElementById('bs-image').src = p.image;
             document.getElementById('bs-title').innerText = p.name;
             const descEl = document.getElementById('bs-description');
             if(p.description && p.description.trim() !== "") {
                 descEl.innerText = p.description; descEl.classList.remove('hidden');
             } else { descEl.classList.add('hidden'); }
             
-            // SIZES
+            // SIZES (Selectable Cards + Custom Radio)
             const sizeDiv = document.getElementById('bs-sizes');
             const sizeContainer = document.getElementById('size-options-container');
             if(p.hasSizes && p.sizes && p.sizes.length > 0) {
                 sizeContainer.innerHTML = p.sizes.map((s, idx) => `
                     <div class="relative active:scale-[0.98] transition-transform">
                         <input type="radio" name="size-choice" id="size-${idx}" value="${s.price}" data-name="${s.name}" class="peer hidden" ${idx === 0 ? 'checked' : ''} onchange="calculateCurrentModalPrice()">
-                        <label for="size-${idx}" class="flex justify-between items-center p-4 rounded-[16px] border-2 border-[#F4F5F7] bg-white cursor-pointer transition-all peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand-soft)] shadow-sm">
-                            <span class="font-bold text-gray-800 text-[15px]">${s.name}</span>
+                        <label for="size-${idx}" class="flex justify-between items-center p-3.5 rounded-[16px] border-2 border-transparent bg-[#F8F9FA] cursor-pointer transition-all peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand-soft)] shadow-sm">
                             <div class="flex items-center gap-3">
-                                <span class="font-black text-[15px] text-gray-800 peer-checked:text-[var(--brand)] transition-colors">${s.price} DH</span>
-                                <i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--brand)] opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                                <div class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center modal-radio-indicator bg-white shrink-0">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-[var(--brand)] modal-radio-dot"></div>
+                                </div>
+                                <span class="font-bold text-gray-800 text-[15px]">${s.name}</span>
                             </div>
+                            <span class="font-black text-[15px] text-gray-800 peer-checked:text-[var(--brand)] transition-colors shrink-0">${s.price} DH</span>
                         </label>
                     </div>
                 `).join('');
                 sizeDiv.classList.remove('hidden');
             } else { sizeDiv.classList.add('hidden'); }
 
-            // EXTRAS
+            // EXTRAS (Clean Rows + Custom Checkbox)
             const extrasDiv = document.getElementById('bs-extras');
             const extrasContainer = document.getElementById('extras-options-container');
             if(p.hasExtras && p.extras && p.extras.length > 0) {
                 extrasContainer.innerHTML = p.extras.map((e, idx) => `
                     <div class="relative active:scale-[0.98] transition-transform">
                         <input type="checkbox" name="extra-choice" id="extra-${idx}" value="${e.price}" data-name="${e.name}" class="peer hidden" onchange="calculateCurrentModalPrice()">
-                        <label for="extra-${idx}" class="flex justify-between items-center p-4 rounded-[16px] border-2 border-[#F4F5F7] bg-white cursor-pointer transition-all hover:border-gray-200 peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand-soft)] shadow-sm">
-                            <span class="font-bold text-gray-800 text-[15px]">${e.name}</span>
+                        <label for="extra-${idx}" class="flex justify-between items-center p-3.5 rounded-[16px] border-2 border-transparent bg-white cursor-pointer transition-all hover:bg-gray-50 peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand-soft)] shadow-sm border border-gray-100">
                             <div class="flex items-center gap-3">
-                                <span class="font-black text-[14px] text-gray-500 peer-checked:text-[var(--brand)] transition-colors">+${e.price} DH</span>
-                                <div class="w-6 h-6 rounded-full bg-[#F4F5F7] peer-checked:bg-[var(--brand)] flex items-center justify-center transition-colors">
-                                    <i data-lucide="plus" class="w-4 h-4 text-gray-400 peer-checked:hidden"></i>
-                                    <i data-lucide="check" class="w-4 h-4 text-white hidden peer-checked:block"></i>
+                                <div class="w-[20px] h-[20px] rounded-[6px] border-2 border-gray-300 flex items-center justify-center modal-cb-indicator bg-white shrink-0">
+                                    <i data-lucide="check" class="w-3 h-3 text-white modal-cb-icon"></i>
                                 </div>
+                                <span class="font-bold text-gray-800 text-[14px]">${e.name}</span>
                             </div>
+                            <span class="font-black text-[14px] text-gray-500 peer-checked:text-[var(--brand)] transition-colors shrink-0">+${e.price} DH</span>
                         </label>
                     </div>
                 `).join('');
                 extrasDiv.classList.remove('hidden');
             } else { extrasDiv.classList.add('hidden'); }
             
-            // SAUCES
+            // SAUCES (Rounded Pill Grid)
             const sauceDiv = document.getElementById('bs-sauces');
             const sauceContainer = document.getElementById('sauce-options-container');
             if(p.requiresSauce && p.sauces && p.sauces.length > 0) {
-                sauceContainer.innerHTML = p.sauces.map((s, idx) => `
-                    <div class="relative active:scale-[0.98] transition-transform">
+                sauceContainer.innerHTML = `<div class="flex flex-wrap gap-2.5">` + p.sauces.map((s, idx) => `
+                    <div class="relative active:scale-[0.95] transition-transform">
                         <input type="radio" name="sauce-choice" id="sauce-${idx}" value="${s}" class="peer hidden">
-                        <label for="sauce-${idx}" class="flex justify-between items-center p-4 rounded-[16px] border-2 border-[#F4F5F7] bg-white cursor-pointer transition-all peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand-soft)] shadow-sm">
-                            <span class="font-bold text-gray-800 text-[15px]">${s}</span>
-                            <i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--brand)] opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                        <label for="sauce-${idx}" class="flex items-center px-4 py-2.5 rounded-full border-2 border-gray-100 bg-white cursor-pointer transition-all peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand)] peer-checked:text-white text-gray-600 font-bold text-[13px] shadow-sm">
+                            ${s}
                         </label>
                     </div>
-                `).join('');
+                `).join('') + `</div>`;
                 sauceDiv.classList.remove('hidden');
             } else {
                 sauceContainer.innerHTML = '';
@@ -506,10 +539,11 @@
             // INSTRUCTIONS
             const notesDiv = document.getElementById('bs-instructions');
             document.getElementById('bs-notes').value = '';
+            document.getElementById('char-count').innerText = '0'; // Reset counter
             if(p.hasInstructions !== false) notesDiv.classList.remove('hidden'); else notesDiv.classList.add('hidden');
             
             calculateCurrentModalPrice();
-            lucide.createIcons();
+            lucide.createIcons(); // Instantiates the new header and section icons
             document.getElementById('body-wrap').classList.add('bs-open', 'modal-open');
         }
 
@@ -560,7 +594,6 @@
             triggerCartPulse();
         });
 
-        // --- UPGRADED HORIZONTAL UPSELLS (MINI-CARDS) ---
         function renderUpsells() {
             const drinks = globalProducts.filter(p => {
                 const cat = (p.category || '').toLowerCase();
@@ -610,7 +643,6 @@
             triggerCartPulse();
         }
 
-        // CART LOGIC
         function updateCartItemQty(id, change) {
             const index = cart.findIndex(i => i.id === id);
             if(index !== -1) { cart[index].qty += change; if(cart[index].qty <= 0) cart.splice(index, 1); }
