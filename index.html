@@ -304,7 +304,13 @@
             const nav = document.getElementById('sub-nav');
             const cats = [{name: '🔥 Top vente'}];
             const snap = await db.collection("categories").where("type", "==", activeStore).get();
-            snap.forEach(doc => cats.push(doc.data()));
+            snap.forEach(doc => {
+                const catData = doc.data();
+                // Strictly exclude 'Add-ons' category from main labels
+                if(catData.name.toLowerCase() !== 'addons' && catData.name.toLowerCase() !== 'add-ons') {
+                    cats.push(catData);
+                }
+            });
             nav.innerHTML = cats.map((cat, idx) => {
                 let isTop = cat.name === '🔥 Top vente';
                 let isActive = activeCat === cat.name;
@@ -326,12 +332,30 @@
 
         document.getElementById('search-input').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
-            if(term.length > 0) { renderProductGrid(globalProducts.filter(p => p.type === activeStore && p.name.toLowerCase().includes(term))); } 
+            if(term.length > 0) { 
+                // Strictly filter out add-ons from search results
+                const filtered = globalProducts.filter(p => 
+                    p.type === activeStore && 
+                    p.name.toLowerCase().includes(term) &&
+                    p.category.toLowerCase() !== 'addons' && 
+                    p.category.toLowerCase() !== 'add-ons'
+                );
+                renderProductGrid(filtered); 
+            } 
             else { loadProducts(false); }
         });
 
         function loadProducts(withSkeleton = false) {
-            let filtered = activeCat === '🔥 Top vente' ? globalProducts.filter(p => p.type === activeStore && p.isTop === true) : globalProducts.filter(p => p.type === activeStore && p.category === activeCat);
+            // Strictly exclude 'Add-ons' from the main grid view
+            let filtered = activeCat === '🔥 Top vente' ? 
+                globalProducts.filter(p => p.type === activeStore && p.isTop === true) : 
+                globalProducts.filter(p => p.type === activeStore && p.category === activeCat);
+            
+            filtered = filtered.filter(p => 
+                p.category.toLowerCase() !== 'addons' && 
+                p.category.toLowerCase() !== 'add-ons'
+            );
+
             if(withSkeleton) { renderSkeletons(); setTimeout(() => renderProductGrid(filtered), 400); } 
             else { renderProductGrid(filtered); }
         }
@@ -438,17 +462,18 @@
         });
 
         function renderUpsells() {
+            // Strictly fetch from the 'Add-ons' category for the cart drawer
             const addOns = globalProducts.filter(p => p.category?.toLowerCase() === 'addons' || p.category?.toLowerCase() === 'add-ons').slice(0, 5); 
             const container = document.getElementById('upsell-container');
             const list = document.getElementById('upsell-list');
             if(addOns.length === 0) { container.classList.add('hidden'); return; }
             container.classList.remove('hidden');
             list.innerHTML = addOns.map((d, index) => `
-                <div class="upsell-animate snap-start min-w-[250px] h-[72px] bg-white border border-[#F4F5F7] rounded-[16px] p-3 flex items-center gap-3 relative shadow-sm cursor-pointer active:scale-[0.97] transition-transform" style="animation-delay: ${index * 60}ms" onclick="quickAdd('${d.name.replace(/'/g, "\\'")}')">
+                <div class="upsell-animate snap-start min-w-[200px] h-[72px] bg-white border border-[#F4F5F7] rounded-[16px] p-2 flex items-center gap-3 relative shadow-sm cursor-pointer active:scale-[0.97] transition-transform" style="animation-delay: ${index * 60}ms" onclick="quickAdd('${d.name.replace(/'/g, "\\'")}')">
                     <span class="absolute -top-2 left-3 ${index % 2 ? 'bg-[#10B981]' : 'bg-red-500'} text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow-sm z-20">${index % 2 ? 'FRAIS' : 'POPULAIRE'}</span>
-                    <div class="w-[48px] h-[48px] rounded-[12px] bg-[#F4F5F7] overflow-hidden shrink-0 relative"><div class="absolute inset-0 skeleton z-10 pointer-events-none"></div><img src="${d.image}" loading="lazy" class="w-full h-full object-cover opacity-0 blur-[4px] transition-all duration-500" onload="this.classList.remove('opacity-0', 'blur-[4px]'); this.previousElementSibling?.classList.add('skeleton-fade-out');"></div>
-                    <div class="flex-1 min-w-0 flex flex-col justify-center"><p class="font-bold text-[14px] text-gray-900 truncate">${d.name}</p><p class="font-black text-[14px] text-[var(--brand)] mt-0.5">${d.price} DH</p></div>
-                    <button class="btn-add-unified"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                    <div class="w-[44px] h-[44px] rounded-[12px] bg-[#F4F5F7] overflow-hidden shrink-0 relative"><div class="absolute inset-0 skeleton z-10 pointer-events-none"></div><img src="${d.image}" loading="lazy" class="w-full h-full object-cover opacity-0 blur-[4px] transition-all duration-500" onload="this.classList.remove('opacity-0', 'blur-[4px]'); this.previousElementSibling?.classList.add('skeleton-fade-out');"></div>
+                    <div class="flex-1 min-w-0 flex flex-col justify-center"><p class="font-bold text-[13px] text-gray-900 truncate">${d.name}</p><p class="font-black text-[13px] text-[var(--brand)] mt-0.5">${d.price} DH</p></div>
+                    <button class="w-8 h-8 rounded-full bg-[var(--brand)] text-white flex items-center justify-center shrink-0"><i data-lucide="plus" class="w-4 h-4"></i></button>
                 </div>`).join('');
             lucide.createIcons();
         }
@@ -497,23 +522,23 @@
 
         function renderDrawer() {
             const list = document.getElementById('cart-items');
-            if(cart.length === 0) { list.innerHTML = `<div class="py-24 text-center"><p class="text-gray-400 font-bold text-[14px] uppercase tracking-widest mb-4">Panier vide 🌮</p><button onclick="toggleCart(false)" class="text-[15px] font-black underline text-[var(--brand)]">Retour au menu</button></div>`; return; }
+            if(cart.length === 0) { list.innerHTML = `<div class="py-16 text-center"><p class="text-gray-400 font-bold text-[14px] uppercase tracking-widest mb-4">Panier vide 🌮</p><button onclick="toggleCart(false)" class="text-[15px] font-black underline text-[var(--brand)]">Retour au menu</button></div>`; return; }
             list.innerHTML = cart.map(item => `
-                <div class="flex items-center gap-4 bg-white p-5 rounded-[20px] shadow-sm border border-gray-50/50">
-                    <img src="${item.image}" class="w-[72px] h-[72px] rounded-[16px] object-cover bg-[#F8F9FA] shrink-0" style="mix-blend-mode: multiply;">
+                <div class="flex items-center gap-4 bg-white p-4 rounded-[20px] shadow-sm border border-gray-50/50">
+                    <img src="${item.image}" class="w-[64px] h-[64px] rounded-[16px] object-cover bg-[#F8F9FA] shrink-0" style="mix-blend-mode: multiply;">
                     <div class="flex-1 pr-2 min-w-0">
-                        <p class="font-bold text-[16px] text-gray-900 truncate">${item.name}</p>
-                        ${item.sizeName ? `<p class="text-[12px] text-gray-500 font-bold mt-1">Taille: ${item.sizeName}</p>` : ''}
-                        ${item.extras?.length ? `<p class="text-[12px] text-gray-500 font-bold mt-0.5 truncate">Extras: ${item.extras.map(e=>e.name).join(', ')}</p>` : ''}
-                        ${item.sauce ? `<p class="text-[12px] text-gray-500 mt-0.5">Sauce: ${item.sauce}</p>` : ''}
-                        ${item.notes ? `<p class="text-[12px] text-orange-500 italic mt-0.5 truncate">"${item.notes}"</p>` : ''}
-                        <p class="font-black mt-2 text-[17px] text-[var(--brand)]">${item.price} DH</p>
-                        <button onclick="removeCartItem('${item.id}')" class="text-gray-400 text-[11px] font-bold mt-2 flex items-center gap-1.5"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Supprimer</button>
+                        <p class="font-bold text-[15px] text-gray-900 truncate">${item.name}</p>
+                        ${item.sizeName ? `<p class="text-[11px] text-gray-500 font-bold mt-1">Taille: ${item.sizeName}</p>` : ''}
+                        ${item.extras?.length ? `<p class="text-[11px] text-gray-500 font-bold mt-0.5 truncate">Extras: ${item.extras.map(e=>e.name).join(', ')}</p>` : ''}
+                        ${item.sauce ? `<p class="text-[11px] text-gray-500 mt-0.5">Sauce: ${item.sauce}</p>` : ''}
+                        ${item.notes ? `<p class="text-[11px] text-orange-500 italic mt-0.5 truncate">"${item.notes}"</p>` : ''}
+                        <p class="font-black mt-2 text-[16px] text-[var(--brand)]">${item.price} DH</p>
+                        <button onclick="removeCartItem('${item.id}')" class="text-gray-400 text-[10px] font-bold mt-1.5 flex items-center gap-1.5"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Supprimer</button>
                     </div>
-                    <div class="flex flex-col items-center justify-between bg-[#F4F5F7] rounded-full p-1.5 h-[112px] w-[46px] shrink-0">
-                        <button onclick="updateCartItemQty('${item.id}', 1)" class="w-[34px] h-[34px] bg-white rounded-full shadow-sm flex items-center justify-center"><i data-lucide="plus" class="w-4 h-4 text-gray-800"></i></button>
-                        <span class="font-bold text-[15px] text-gray-900">${item.qty}</span>
-                        <button onclick="updateCartItemQty('${item.id}', -1)" class="w-[34px] h-[34px] bg-white rounded-full shadow-sm flex items-center justify-center"><i data-lucide="minus" class="w-4 h-4 text-gray-800"></i></button>
+                    <div class="flex flex-col items-center justify-between bg-[#F4F5F7] rounded-full p-1 h-[96px] w-[42px] shrink-0">
+                        <button onclick="updateCartItemQty('${item.id}', 1)" class="w-[30px] h-[30px] bg-white rounded-full shadow-sm flex items-center justify-center"><i data-lucide="plus" class="w-4 h-4 text-gray-800"></i></button>
+                        <span class="font-bold text-[14px] text-gray-900">${item.qty}</span>
+                        <button onclick="updateCartItemQty('${item.id}', -1)" class="w-[30px] h-[30px] bg-white rounded-full shadow-sm flex items-center justify-center"><i data-lucide="minus" class="w-4 h-4 text-gray-800"></i></button>
                     </div>
                 </div>`).join('');
             lucide.createIcons();
@@ -532,4 +557,3 @@
     </script>
 </body>
 </html>
-
