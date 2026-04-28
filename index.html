@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LASCOTACO | Premium App</title>
+    <title>LASCOTACO | App</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffffff">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -17,38 +17,37 @@
         .app-container { max-width: 500px; margin: 0 auto; width: 100%; position: relative; background: white; min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.05); overflow-x: hidden; }
         body.modal-open { overflow: hidden; }
 
-        /* THEMES */
         .theme-resto { --brand: var(--resto); --brand-soft: rgba(232, 90, 36, 0.1); }
         .theme-epi { --brand: var(--epi); --brand-soft: rgba(16, 185, 129, 0.1); }
 
-        /* SKELETONS */
         .skeleton { background: linear-gradient(90deg, #F1F3F5 25%, #E9ECEF 50%, #F1F3F5 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 20px; }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-        /* CATEGORIES (With exact underline indicator) */
+        /* CATEGORIES (No underline) */
         .category-scroll { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 20px 16px 20px; scroll-padding-left: 20px; scroll-behavior: smooth; }
         .category-pill { position: relative; flex: 0 0 auto; scroll-snap-align: start; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); background: #F8F9FA; color: #495057; border-radius: 12px; }
         .category-pill:active { transform: scale(0.95); }
         .active-label { background-color: var(--brand) !important; color: white !important; font-weight: 800 !important; }
-        .active-label::after { content: ''; position: absolute; bottom: -10px; left: 10%; width: 80%; height: 3px; background-color: var(--brand); border-radius: 4px; }
 
-        /* EXACT CARD MATCH */
+        /* PRODUCT CARDS */
         .product-card { background: white; border-radius: 24px; border: 1px solid #F1F3F5; transition: all 0.3s ease; animation: fadeIn 0.4s ease-out forwards; position: relative; }
         .product-card:active { transform: scale(0.97); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .product-img-wrap { overflow: hidden; border-radius: 20px 20px 6px 6px; height: 150px; background: #FAF5F0; width: 100%; position: relative; }
-        .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; mix-blend-mode: multiply; } /* Multiply removes white bg if present */
+        .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; mix-blend-mode: multiply; }
         .product-card:hover img { transform: scale(1.05); }
 
-        /* BOTTOM SHEET (OPTIONS) */
+        /* BOTTOM SHEET */
         #bottom-sheet-root { position: fixed; inset: 0; z-index: 2000; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
         #bs-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
         #bs-panel { width: 100%; max-width: 500px; background: white; border-radius: 32px 32px 0 0; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); pointer-events: auto; padding-bottom: env(safe-area-inset-bottom); max-height: 85vh; display: flex; flex-direction: column; }
         .bs-open #bs-overlay { opacity: 1; pointer-events: auto; }
         .bs-open #bs-panel { transform: translateY(0); }
 
-        /* UTILS */
+        /* TOGGLE ANIMATION */
+        #store-toggle-bg { transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), background-color 0.4s ease; }
+
         .no-scrollbar::-webkit-scrollbar { display: none; }
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
     </style>
@@ -71,18 +70,21 @@
         <div class="px-5 pb-4 bg-white/95 backdrop-blur-md sticky top-[68px] z-40">
             <div class="relative flex items-center">
                 <i data-lucide="search" class="absolute left-4 w-4 h-4 text-gray-400"></i>
-                <input type="text" id="search-input" placeholder="Rechercher un plat, une boisson..." class="w-full bg-[#F8F9FA] border border-gray-100 rounded-2xl py-3.5 pl-11 pr-12 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#E85A24]/30 transition-shadow">
-                <i data-lucide="sliders-horizontal" class="absolute right-4 w-4 h-4 text-gray-500"></i>
+                <input type="text" id="search-input" placeholder="Rechercher un plat, une boisson..." class="w-full bg-[#F8F9FA] border border-gray-100 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#E85A24]/30 transition-shadow">
             </div>
         </div>
 
-        <div class="px-5 pb-4 flex gap-3 bg-white sticky top-[132px] z-30">
-            <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 py-3.5 rounded-2xl text-[15px] font-extrabold flex items-center justify-center gap-2 text-white bg-[#E85A24] shadow-lg shadow-orange-500/20 transition-all duration-300">
-                <i data-lucide="utensils" class="w-4 h-4"></i> Resto
-            </button>
-            <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 py-3.5 rounded-2xl text-[15px] font-extrabold flex items-center justify-center gap-2 text-gray-800 bg-white border border-gray-100 shadow-sm transition-all duration-300">
-                <i data-lucide="shopping-basket" class="w-4 h-4"></i> Épicerie
-            </button>
+        <div class="px-5 pb-4 bg-white sticky top-[132px] z-30">
+            <div class="bg-gray-50 p-1.5 rounded-2xl flex relative w-full items-center border border-gray-100">
+                <div id="store-toggle-bg" class="absolute left-1.5 top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-[#E85A24] rounded-xl shadow-sm"></div>
+                
+                <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 relative z-10 py-3 rounded-xl text-[15px] font-extrabold flex items-center justify-center gap-2 text-white transition-colors duration-300">
+                    <i data-lucide="utensils" class="w-4 h-4"></i> Resto
+                </button>
+                <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 relative z-10 py-3 rounded-xl text-[15px] font-extrabold flex items-center justify-center gap-2 text-gray-500 transition-colors duration-300">
+                    <i data-lucide="shopping-basket" class="w-4 h-4"></i> Épicerie
+                </button>
+            </div>
         </div>
 
         <div id="sub-nav" class="category-scroll no-scrollbar bg-white relative z-20"></div>
@@ -168,6 +170,29 @@
             
             <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar"></div>
             
+            <div id="upsell-container" class="px-6 pb-4 shrink-0 border-t border-gray-50 pt-4">
+                <p class="font-black text-sm text-gray-800 tracking-tight mb-3">N'oubliez pas ! 🥤</p>
+                <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+                    
+                    <div class="min-w-[150px] bg-white p-2 rounded-2xl flex items-center gap-3 border border-gray-100 shadow-sm active:scale-95 transition cursor-pointer" onclick="quickAdd('Coca Cola', 15, 'https://cdn-icons-png.flaticon.com/512/3075/3075977.png')">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" class="w-10 h-10 object-contain bg-gray-50 rounded-xl p-1">
+                        <div class="flex-1">
+                            <p class="font-bold text-[11px] text-gray-800 leading-tight">Coca Cola</p>
+                            <p class="font-black text-[10px]" style="color: var(--brand)">15 DH</p>
+                        </div>
+                    </div>
+
+                    <div class="min-w-[150px] bg-white p-2 rounded-2xl flex items-center gap-3 border border-gray-100 shadow-sm active:scale-95 transition cursor-pointer" onclick="quickAdd('Sprite', 15, 'https://cdn-icons-png.flaticon.com/512/3075/3075977.png')">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" class="w-10 h-10 object-contain bg-gray-50 rounded-xl p-1" style="filter: hue-rotate(90deg);">
+                        <div class="flex-1">
+                            <p class="font-bold text-[11px] text-gray-800 leading-tight">Sprite</p>
+                            <p class="font-black text-[10px]" style="color: var(--brand)">15 DH</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
             <div class="p-8 bg-gray-50/80 border-t border-gray-100 space-y-4 shrink-0">
                 <div class="flex justify-between items-center px-2">
                     <span class="font-bold text-gray-400 uppercase text-[10px]">Livraison</span>
@@ -185,7 +210,14 @@
     </div>
 
     <script>
-        // FIREBASE
+        // --- PWA INSTALLATION LOGIC ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW setup failed'));
+            });
+        }
+
+        // --- FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyBebaGxqiNBvCqofveg1Fmztl7av3Mdoyg",
             authDomain: "lascotaco-67fe5.firebaseapp.com",
@@ -228,12 +260,13 @@
             `).join('');
         }
 
-        // --- EXACT TOGGLE LOGIC ---
+        // --- NEW RECTANGULAR TOGGLE SWITCH ---
         function setStore(type) { 
             activeStore = type; activeCat = '🔥 Top vente';
             document.getElementById('search-input').value = '';
             
             const body = document.getElementById('body-wrap');
+            const toggleBg = document.getElementById('store-toggle-bg');
             const btnResto = document.getElementById('btn-resto');
             const btnEpi = document.getElementById('btn-epi');
             const waBtn = document.getElementById('wa-btn');
@@ -241,16 +274,20 @@
 
             if(type === 'Restaurant') {
                 body.className = "drawer-closed theme-resto";
+                toggleBg.style.transform = 'translateX(0)';
+                toggleBg.style.backgroundColor = '#E85A24';
                 
-                btnResto.className = "flex-1 py-3.5 rounded-2xl text-[15px] font-extrabold flex items-center justify-center gap-2 text-white bg-[#E85A24] shadow-lg shadow-orange-500/20 transition-all duration-300";
-                btnEpi.className = "flex-1 py-3.5 rounded-2xl text-[15px] font-extrabold flex items-center justify-center gap-2 text-gray-800 bg-white border border-gray-100 shadow-sm transition-all duration-300";
+                btnResto.classList.replace('text-gray-500', 'text-white');
+                btnEpi.classList.replace('text-white', 'text-gray-500');
                 
                 waBtn.style.backgroundColor = "#25D366"; bsBtn.style.backgroundColor = "#E85A24";
             } else {
                 body.className = "drawer-closed theme-epi";
+                toggleBg.style.transform = 'translateX(100%)';
+                toggleBg.style.backgroundColor = '#10B981';
                 
-                btnEpi.className = "flex-1 py-3.5 rounded-2xl text-[15px] font-extrabold flex items-center justify-center gap-2 text-white bg-[#10B981] shadow-lg shadow-emerald-500/20 transition-all duration-300";
-                btnResto.className = "flex-1 py-3.5 rounded-2xl text-[15px] font-extrabold flex items-center justify-center gap-2 text-gray-800 bg-white border border-gray-100 shadow-sm transition-all duration-300";
+                btnEpi.classList.replace('text-gray-500', 'text-white');
+                btnResto.classList.replace('text-white', 'text-gray-500');
                 
                 waBtn.style.backgroundColor = "#10B981"; bsBtn.style.backgroundColor = "#10B981";
             }
@@ -314,7 +351,6 @@
                     <div class="product-img-wrap relative">
                         <img src="${p.image}" loading="lazy">
                         ${p.isTop ? `<span class="absolute top-2 left-2 ${activeStore === 'Restaurant' ? 'bg-[#E85A24]' : 'bg-[#10B981]'} text-white text-[8px] font-black px-2 py-0.5 rounded uppercase shadow-sm">Top</span>` : ''}
-                        <button class="absolute top-2 right-2 p-1.5 bg-white/70 backdrop-blur-sm rounded-full text-gray-500 hover:text-red-500 transition-colors"><i data-lucide="heart" class="w-3.5 h-3.5"></i></button>
                     </div>
                     <h3 class="font-bold text-[12px] text-gray-900 leading-tight h-8 overflow-hidden px-1">${p.name}</h3>
                     <div class="flex justify-between items-center mt-auto pb-1 px-1">
@@ -369,6 +405,15 @@
             
             closeSheet(); syncUI(); showToast(`${currentItemForSheet.name} ajouté !`);
         });
+
+        // Upsell add
+        function quickAdd(name, price, image) {
+            const complexId = `${name}--`;
+            const existingItem = cart.find(i => i.id === complexId);
+            if(existingItem) existingItem.qty++;
+            else cart.push({ id: complexId, name: name, price: price, image: image, sauce: '', notes: '', qty: 1 });
+            syncUI(); renderDrawer(); showToast(`${name} ajouté !`);
+        }
 
         function updateCartItemQty(id, change) {
             const index = cart.findIndex(i => i.id === id);
