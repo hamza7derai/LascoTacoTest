@@ -3,112 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LASCOTACO | Shop Pro</title>
+    <title>LASCOTACO | Premium App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --main: #E85A24; --green: #10B981; }
-        body { background-color: #F8F9FA; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        :root { 
+            --resto: #E85A24; 
+            --epi: #10B981; 
+            --brand: var(--resto); 
+            --bg-warm: #FDFBFA;
+        }
         
-        /* SCROLL LOCK */
+        body { background-color: #F8F9FA; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         body.cart-open { overflow: hidden; }
 
         .app-container { 
             max-width: 500px; margin: 0 auto; width: 100%; position: relative; 
             background: white; min-height: 100vh; box-shadow: 0 0 50px rgba(0,0,0,0.05); 
-            overflow-x: hidden; 
         }
-        
-        /* THEMES */
-        .theme-resto { --brand: var(--main); }
-        .theme-epi { --brand: var(--green); }
 
+        /* --- 1. CATEGORY BAR --- */
+        .category-scroll { 
+            display: flex; gap: 12px; overflow-x: auto; scroll-behavior: smooth;
+            scroll-snap-type: x mandatory; padding: 12px 20px;
+            scroll-padding-left: 20px;
+        }
         .category-pill { 
             flex: 0 0 auto; scroll-snap-align: start;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0.6;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.6; background: #F1F3F5;
         }
         .active-label { 
             background-color: var(--brand) !important; color: white !important; 
-            opacity: 1 !important; transform: scale(1.05); box-shadow: 0 8px 15px rgba(0,0,0,0.1); 
+            opacity: 1 !important; transform: scale(1.05); 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        .active-main-resto { background-color: var(--main) !important; color: white !important; }
-        .active-main-epi { background-color: var(--green) !important; color: white !important; }
+        /* --- 2. THEME TRANSITIONS --- */
+        .theme-transition { transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, transform 0.4s ease; }
+        .active-main-btn { background-color: var(--brand) !important; color: white !important; transform: scale(1.02); }
 
-        /* INFINITE SLIDER */
+        /* --- 3. PRODUCT GRID & CARDS --- */
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 20px; }
+        .product-card { 
+            background: var(--bg-warm); border-radius: 22px; border: 1px solid #F1F3F5;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .product-card:active { transform: scale(0.97); }
+        .product-img-wrap { overflow: hidden; border-radius: 18px; height: 130px; }
+        .product-img-wrap img { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .product-card:hover img { transform: scale(1.06); }
+
+        /* --- 4. INFINITE SLIDER --- */
         .slider-viewport { width: 100%; overflow: hidden; border-radius: 28px; position: relative; }
         .slider-wrapper { display: flex; transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1); }
-        .slide-box { min-width: 100%; height: 220px; padding: 0 4px; }
+        .slide-box { min-width: 100%; height: 210px; padding: 0 4px; }
         .slide-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 24px; }
 
-        .glass-card { background: white; border-radius: 20px; border: 1px solid #F1F3F5; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-
-        /* FIXED CART */
+        /* --- 5. FIXED COMPONENTS --- */
+        .sticky-header { position: sticky; top: 0; background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); z-index: 100; border-bottom: 1px solid #F1F3F5; }
         #cart-drawer-root { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
-        #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); transition: opacity 0.4s ease; }
         #cart-panel { 
             position: absolute; right: 0; top: 0; bottom: 0; width: 85%; max-width: 400px;
             background: white; transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1); 
-            pointer-events: auto;
+            pointer-events: auto; box-shadow: -10px 0 30px rgba(0,0,0,0.05);
         }
         .drawer-open #cart-panel { transform: translateX(0); }
         .drawer-closed #cart-panel { transform: translateX(100%); }
-        .drawer-closed #cart-overlay { opacity: 0; pointer-events: none; }
-        .drawer-open #cart-overlay { opacity: 1; pointer-events: auto; }
+        
+        .checkout-bar { 
+            position: fixed; bottom: 0; width: 100%; max-width: 500px; padding: 20px; z-index: 90; 
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .pulse { animation: pulse-animation 0.4s ease-out; }
+        @keyframes pulse-animation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
 
-        .sticky-footer-wrap { position: fixed; bottom: 0; width: 100%; max-width: 500px; padding: 20px; z-index: 60; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="drawer-closed theme-resto" id="body-wrap">
+<body class="drawer-closed" id="body-wrap">
 
     <div class="app-container">
-        <nav class="sticky top-0 bg-white/80 backdrop-blur-md p-5 z-50 flex justify-between items-center px-6 border-b border-gray-50">
-            <h1 class="text-2xl font-extrabold text-[#E85A24] tracking-tighter italic">LASCOTACO</h1>
-            <button onclick="toggleCart(true)" class="bg-[#1B1B1B] text-white px-5 py-2.5 rounded-2xl font-black text-sm flex items-center gap-2 shadow-xl active:scale-95 transition">
+        <header class="sticky-header px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-extrabold text-[#E85A24] tracking-tighter italic theme-transition" id="logo">LASCOTACO</h1>
+            <button onclick="toggleCart(true)" class="bg-[#1B1B1B] text-white px-5 py-2.5 rounded-2xl font-black text-xs flex items-center gap-2 shadow-lg active:scale-95 transition">
                 <i data-lucide="shopping-bag" class="w-4 h-4 text-orange-400"></i>
                 <span id="nav-total">0 DH</span>
             </button>
-        </nav>
+        </header>
 
-        <div class="p-4 pt-6">
-            <div class="slider-viewport">
+        <div class="p-4">
+            <div class="slider-viewport shadow-sm">
                 <div id="slider" class="slider-wrapper"></div>
                 <div id="slider-dots" class="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5"></div>
             </div>
         </div>
 
-        <div class="p-4 flex gap-3 sticky top-[73px] bg-white/95 backdrop-blur-sm z-40">
-            <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border active-main-resto">
+        <div class="px-6 py-2 flex gap-3 sticky top-[72px] bg-white/90 backdrop-blur-md z-40">
+            <button onclick="setStore('Restaurant')" id="btn-resto" class="theme-transition flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 border border-gray-100 bg-white active-main-btn">
                 <i data-lucide="utensils" class="w-4 h-4"></i> Resto
             </button>
-            <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border">
+            <button onclick="setStore('Épicerie')" id="btn-epi" class="theme-transition flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 border border-gray-100 bg-white">
                 <i data-lucide="shopping-basket" class="w-4 h-4"></i> Épicerie
             </button>
         </div>
 
-        <div id="sub-nav" class="flex gap-3 overflow-x-auto no-scrollbar py-2 px-6 sticky top-[155px] bg-white/95 backdrop-blur-sm z-30 scroll-smooth"></div>
+        <div id="sub-nav" class="category-scroll no-scrollbar sticky top-[148px] bg-white/90 backdrop-blur-md z-30"></div>
 
-        <main id="product-grid" class="p-6 grid grid-cols-2 gap-4 pb-48"></main>
+        <main id="product-grid" class="product-grid pb-44"></main>
 
-        <div id="checkout-bar" class="sticky-footer-wrap translate-y-full">
-            <button onclick="toggleCart(true)" class="w-full bg-[#1A1A1A] text-white p-5 rounded-[2.2rem] flex justify-between items-center shadow-2xl active:scale-95 transition">
+        <div id="checkout-bar" class="checkout-bar translate-y-full">
+            <button onclick="toggleCart(true)" id="main-checkout-btn" class="w-full bg-[#1A1A1A] text-white p-5 rounded-[2rem] flex justify-between items-center shadow-2xl active:scale-95 transition theme-transition">
                 <div class="text-left pl-2">
                     <p id="item-count" class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">0 Articles</p>
                     <p id="final-price" class="text-xl font-black">0 DH</p>
                 </div>
-                <span class="font-black flex items-center gap-2 pr-2 text-sm text-orange-500 font-bold">Voir le panier <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
+                <span class="font-black flex items-center gap-2 pr-2 text-sm text-orange-500" id="checkout-label">Voir le panier <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
             </button>
         </div>
     </div>
 
     <div id="cart-drawer-root">
-        <div id="cart-overlay" onclick="toggleCart(false)"></div>
-        <div id="cart-panel" class="flex flex-col">
+        <div id="cart-overlay" onclick="toggleCart(false)" class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300"></div>
+        <div id="cart-panel" class="flex flex-col rounded-l-[32px]">
             <div class="p-6 border-b flex justify-between items-center">
                 <h2 class="text-xl font-black italic tracking-tight">Mon Panier</h2>
                 <button onclick="toggleCart(false)" class="p-3 bg-gray-100 rounded-full text-gray-500"><i data-lucide="x" class="w-4 h-4"></i></button>
@@ -121,9 +147,9 @@
                 </div>
                 <div class="flex justify-between items-center px-2">
                     <span class="font-bold text-gray-400 uppercase text-[9px]">Total</span>
-                    <span id="drawer-total" class="text-2xl font-black text-[#E85A24]">0 DH</span>
+                    <span id="drawer-total" class="text-2xl font-black text-[#E85A24] theme-transition">0 DH</span>
                 </div>
-                <button id="wa-btn" onclick="sendToWhatsApp()" class="w-full bg-[#25D366] text-white py-5 rounded-[1.8rem] font-black text-lg flex justify-center items-center gap-3 shadow-xl transition">
+                <button id="wa-btn" onclick="sendToWhatsApp()" class="w-full bg-[#25D366] text-white py-5 rounded-[1.8rem] font-black text-lg flex justify-center items-center gap-3 shadow-xl active:scale-95 transition">
                     <i data-lucide="message-circle" class="w-6 h-6"></i> WhatsApp
                 </button>
             </div>
@@ -145,7 +171,7 @@
         let cart = {}; let activeStore = 'Restaurant'; let activeCat = '🔥 Top vente';
         let livraisonFee = 20;
 
-        // --- INFINITE FORWARD SLIDER ---
+        // --- 1. INFINITE SLIDER ---
         async function loadSlides() {
             const slider = document.getElementById('slider');
             const dots = document.getElementById('slider-dots');
@@ -174,26 +200,31 @@
             }, 5000);
         }
 
-        // --- STORE TOGGLE & THEME ---
-        function setStore(type) { 
-            activeStore = type; activeCat = '🔥 Top vente'; 
-            const body = document.getElementById('body-wrap');
+        // --- 2. THEME & STORE TOGGLE ---
+        function setStore(type) {
+            activeStore = type;
+            activeCat = '🔥 Top vente';
+            const root = document.documentElement;
+            const logo = document.getElementById('logo');
             const btnResto = document.getElementById('btn-resto');
             const btnEpi = document.getElementById('btn-epi');
-            const waBtn = document.getElementById('wa-btn');
+            const checkoutLabel = document.getElementById('checkout-label');
 
             if(type === 'Restaurant') {
-                body.className = "drawer-closed theme-resto";
-                btnResto.className = "flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border active-main-resto";
-                btnEpi.className = "flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border";
-                waBtn.style.backgroundColor = "#25D366";
+                root.style.setProperty('--brand', 'var(--resto)');
+                logo.style.color = 'var(--resto)';
+                btnResto.classList.add('active-main-btn');
+                btnEpi.classList.remove('active-main-btn');
+                checkoutLabel.classList.replace('text-emerald-500', 'text-orange-500');
             } else {
-                body.className = "drawer-closed theme-epi";
-                btnResto.className = "flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border";
-                btnEpi.className = "flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border active-main-epi";
-                waBtn.style.backgroundColor = "#10B981"; // Epicerie Green
+                root.style.setProperty('--brand', 'var(--epi)');
+                logo.style.color = 'var(--epi)';
+                btnResto.classList.remove('active-main-btn');
+                btnEpi.classList.add('active-main-btn');
+                checkoutLabel.classList.replace('text-orange-500', 'text-emerald-500');
             }
-            renderLabels(); loadProducts(); 
+            renderLabels();
+            loadProducts();
         }
 
         async function renderLabels() {
@@ -204,7 +235,7 @@
             nav.innerHTML = catsData.map((cat, idx) => `
                 <button id="btn-cat-${idx}" 
                     onclick="handleCatClick('${cat.name}', 'btn-cat-${idx}')" 
-                    class="category-pill px-6 py-2.5 rounded-xl font-bold whitespace-nowrap border ${activeCat === cat.name ? 'active-label' : 'bg-white text-gray-400 border-gray-100'}">
+                    class="category-pill px-6 py-2.5 rounded-xl font-bold whitespace-nowrap border border-transparent ${activeCat === cat.name ? 'active-label' : 'text-gray-400'}">
                     ${cat.name}
                 </button>
             `).join('');
@@ -212,35 +243,38 @@
 
         function handleCatClick(catName, elementId) {
             activeCat = catName;
-            renderLabels(); loadProducts();
+            renderLabels();
+            loadProducts();
             const nav = document.getElementById('sub-nav');
             const activePill = document.getElementById(elementId);
-            const scrollTarget = activePill.offsetLeft - 24;
+            const scrollTarget = activePill.offsetLeft - 20;
             nav.scrollTo({ left: scrollTarget, behavior: 'smooth' });
         }
 
+        // --- 3. PRODUCTS ---
         function loadProducts() {
             let query = db.collection("products").where("type", "==", activeStore);
             if (activeCat === '🔥 Top vente') query = query.where("isTop", "==", true);
             else query = query.where("category", "==", activeCat);
+            
             query.onSnapshot(snap => {
                 const grid = document.getElementById('product-grid');
                 grid.innerHTML = "";
                 snap.forEach(doc => {
                     const p = doc.data(); const qty = cart[p.name]?.qty || 0;
                     grid.innerHTML += `
-                        <div class="glass-card p-3 flex flex-col gap-3">
-                            <div class="h-32 bg-gray-50 rounded-2xl overflow-hidden relative">
+                        <div class="product-card p-3 flex flex-col gap-3 animate-fade-in">
+                            <div class="product-img-wrap shadow-inner relative">
                                 <img src="${p.image}" class="w-full h-full object-cover">
-                                ${p.isTop ? `<span class="absolute top-2 left-2 ${activeStore === 'Restaurant' ? 'bg-orange-600' : 'bg-emerald-600'} text-white text-[8px] font-black px-2 py-1 rounded-md uppercase">Top</span>` : ''}
+                                ${p.isTop ? `<span class="absolute top-2 left-2 px-2 py-1 bg-white/90 backdrop-blur-sm rounded-lg text-[8px] font-black uppercase tracking-tighter" style="color:var(--brand)">Best Seller</span>` : ''}
                             </div>
-                            <h3 class="font-bold text-[10px] text-gray-800 leading-tight">${p.name}</h3>
+                            <h3 class="font-bold text-[10px] text-gray-800 leading-tight h-7 overflow-hidden">${p.name}</h3>
                             <div class="flex justify-between items-center mt-auto">
-                                <span class="font-black text-xs" style="color: var(--brand)">${p.price} DH</span>
+                                <span class="font-black text-xs" style="color:var(--brand)">${p.price} DH</span>
                                 <div class="flex items-center gap-2">
-                                    <button onclick="updateQty('${p.name}', ${p.price}, -1, '${p.image}')" class="w-7 h-7 bg-gray-100 rounded-lg font-bold text-xs">-</button>
+                                    <button onclick="updateQty('${p.name}', ${p.price}, -1, '${p.image}')" class="w-7 h-7 bg-gray-100 rounded-lg font-bold text-xs active:scale-90 transition">-</button>
                                     <span class="font-bold text-[10px] w-3 text-center">${qty}</span>
-                                    <button onclick="updateQty('${p.name}', ${p.price}, 1, '${p.image}')" class="w-7 h-7 text-white rounded-lg font-bold text-xs" style="background-color: var(--brand)">+</button>
+                                    <button onclick="updateQty('${p.name}', ${p.price}, 1, '${p.image}')" class="w-7 h-7 text-white rounded-lg font-bold text-xs active:scale-90 transition shadow-md" style="background:var(--brand)">+</button>
                                 </div>
                             </div>
                         </div>`;
@@ -249,10 +283,18 @@
             });
         }
 
+        // --- 4. CART LOGIC ---
         function updateQty(name, price, change, img) {
             if (!cart[name]) cart[name] = { qty: 0, price: price, image: img };
-            cart[name].qty += change; if (cart[name].qty <= 0) delete cart[name];
-            syncUI(); if(!document.getElementById('body-wrap').classList.contains('drawer-closed')) renderDrawer();
+            cart[name].qty += change;
+            if (cart[name].qty <= 0) delete cart[name];
+            
+            // Visual Pulse effect on add
+            if(change > 0) document.getElementById('nav-total').parentElement.classList.add('pulse');
+            setTimeout(() => document.getElementById('nav-total').parentElement.classList.remove('pulse'), 400);
+
+            syncUI();
+            if(!document.getElementById('body-wrap').classList.contains('drawer-closed')) renderDrawer();
         }
 
         function syncUI() {
@@ -262,50 +304,50 @@
             document.getElementById('final-price').innerText = total + " DH";
             document.getElementById('drawer-total').innerText = (total > 0 ? total + livraisonFee : 0) + " DH";
             document.getElementById('item-count').innerText = count + " Articles";
-            document.getElementById('checkout-bar').style.transform = count > 0 ? 'translateY(0)' : 'translateY(100%)';
+            document.getElementById('checkout-bar').style.transform = count > 0 ? 'translateY(0)' : 'translateY(110%)';
             loadProducts();
-        }
-
-        function renderDrawer() {
-            const itemsList = document.getElementById('cart-items');
-            const cartKeys = Object.keys(cart);
-            if(cartKeys.length === 0) {
-                itemsList.innerHTML = `<p class="text-center text-gray-400 py-10 font-bold text-xs">Panier vide 🌮</p>`;
-                return;
-            }
-            itemsList.innerHTML = cartKeys.map(name => `
-                <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-2xl border border-gray-100">
-                    <img src="${cart[name].image}" class="w-10 h-10 rounded-xl object-cover shadow-sm">
-                    <div class="flex-1 text-[10px]">
-                        <p class="font-bold text-gray-800">${name}</p>
-                        <p class="font-black" style="color: var(--brand)">${cart[name].price} DH</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <button onclick="updateQty('${name}', ${cart[name].price}, -1, '${cart[name].image}')" class="w-6 h-6 bg-white rounded shadow-sm font-black">-</button>
-                        <span class="font-bold">${cart[name].qty}</span>
-                        <button onclick="updateQty('${name}', ${cart[name].price}, 1, '${cart[name].image}')" class="w-6 h-6 text-white rounded shadow-sm font-black" style="background-color: var(--brand)">+</button>
-                    </div>
-                </div>
-            `).join('');
         }
 
         function toggleCart(show) {
             const body = document.getElementById('body-wrap');
             if(show) {
                 body.classList.replace('drawer-closed', 'drawer-open');
-                body.classList.add('cart-open'); // Lock Scroll
+                body.classList.add('cart-open');
                 renderDrawer();
             } else {
                 body.classList.replace('drawer-open', 'drawer-closed');
-                body.classList.remove('cart-open'); // Unlock Scroll
+                body.classList.remove('cart-open');
             }
+        }
+
+        function renderDrawer() {
+            const items = document.getElementById('cart-items');
+            const keys = Object.keys(cart);
+            if(keys.length === 0) {
+                items.innerHTML = `<div class="py-20 text-center text-gray-300 font-bold text-xs uppercase tracking-widest">Panier vide 🌮</div>`;
+                return;
+            }
+            items.innerHTML = keys.map(name => `
+                <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-2xl border border-gray-100 animate-slide-in">
+                    <img src="${cart[name].image}" class="w-12 h-12 rounded-xl object-cover shadow-sm">
+                    <div class="flex-1">
+                        <p class="font-bold text-[10px] text-gray-800 leading-tight">${name}</p>
+                        <p class="text-[9px] font-black" style="color:var(--brand)">${cart[name].price} DH</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="updateQty('${name}', ${cart[name].price}, -1, '${cart[name].image}')" class="w-8 h-8 bg-white rounded-lg shadow-sm font-black">-</button>
+                        <span class="font-bold text-xs">${cart[name].qty}</span>
+                        <button onclick="updateQty('${name}', ${cart[name].price}, 1, '${cart[name].image}')" class="w-8 h-8 text-white rounded-lg shadow-sm font-black" style="background:var(--brand)">+</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function sendToWhatsApp() {
             let msg = `🛒 *Nouvelle Commande LASCOTACO*\n\n`;
             let subtotal = 0;
             for (let id in cart) { msg += `• ${cart[id].qty}x ${id} (${cart[id].qty * cart[id].price} DH)\n`; subtotal += cart[id].qty * cart[id].price; }
-            msg += `\n💰 *Total:* ${subtotal + livraisonFee} DH`;
+            msg += `\n🛵 *Livraison:* ${livraisonFee} DH\n💰 *Total:* ${subtotal + livraisonFee} DH`;
             window.open(`https://wa.me/212708006088?text=${encodeURIComponent(msg)}`);
         }
 
@@ -313,4 +355,3 @@
     </script>
 </body>
 </html>
-
