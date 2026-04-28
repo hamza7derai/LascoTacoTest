@@ -1,332 +1,338 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LASCOTACO | Premium Experience</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root { --resto: #E85A24; --epi: #10B981; --bg: #FDFBFA; }
-        
-        body { 
-            background-color: var(--bg); 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            -webkit-tap-highlight-color: transparent;
-            transition: background-color 0.4s ease;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LASCOTACO</title>
 
-        /* 1. APP CONTAINER & SCROLL LOCK */
-        .app-container { max-width: 500px; margin: 0 auto; width: 100%; position: relative; background: white; min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.03); }
-        body.cart-open { overflow: hidden; }
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-        /* 2. THEME ENGINE - Dynamic Variables */
-        .theme-resto { --brand: var(--resto); --brand-soft: rgba(232, 90, 36, 0.1); }
-        .theme-epi { --brand: var(--epi); --brand-soft: rgba(16, 185, 129, 0.1); }
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-        /* 3. CATEGORY BAR - Premium Snapping */
-        .category-scroll { 
-            display: flex; gap: 12px; overflow-x: auto; scroll-behavior: smooth;
-            scroll-snap-type: x mandatory; padding: 12px 24px; /* 24px Left/Right Breathing Room */
-            scroll-padding-left: 24px;
-        }
-        .category-pill { 
-            flex: 0 0 auto; scroll-snap-align: start;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            background: #F1F3F5; color: #6C757D; border: 1px solid transparent;
-        }
-        .category-pill:active { transform: scale(0.95); }
-        .active-label { 
-            background-color: var(--brand) !important; color: white !important; 
-            transform: scale(1.05); box-shadow: 0 8px 20px var(--brand-soft);
-        }
+<style>
+:root {
+  --resto: #E85A24;
+  --epi: #10B981;
+  --bg: #FDFBFA;
+}
 
-        /* 4. INFINITE SLIDER */
-        .slider-viewport { width: 100%; overflow: hidden; border-radius: 24px; position: relative; }
-        .slider-wrapper { display: flex; transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1); will-change: transform; }
-        .slide-box { min-width: 100%; height: 210px; padding: 0 4px; }
-        .slide-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 20px; }
+body {
+  background: var(--bg);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
 
-        /* 5. PRODUCT CARDS - Bento Style */
-        .product-card { 
-            background: #FFFAF8; border-radius: 22px; border: 1px solid #F1F3F5;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: fadeIn 0.4s ease-out forwards;
-        }
-        .product-card:active { transform: scale(0.97); }
-        .product-img-wrap { overflow: hidden; border-radius: 18px; height: 130px; background: white; }
-        .product-img-wrap img { transition: transform 0.4s ease; width: 100%; height: 100%; object-fit: cover; }
-        .product-card:hover img { transform: scale(1.05); }
+/* APP */
+.app-container {
+  max-width: 500px;
+  margin: auto;
+  background: white;
+  min-height: 100vh;
+}
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+/* THEMES */
+.theme-resto { --brand: var(--resto); --brand-soft: rgba(232,90,36,0.1); }
+.theme-epi { --brand: var(--epi); --brand-soft: rgba(16,185,129,0.1); }
 
-        /* 6. CART DRAWER */
-        #cart-drawer-root { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
-        #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); transition: opacity 0.4s ease; }
-        #cart-panel { 
-            position: absolute; right: 0; top: 0; bottom: 0; width: 88%; max-width: 420px;
-            background: white; border-radius: 30px 0 0 30px;
-            transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1); 
-            pointer-events: auto;
-        }
-        .drawer-open #cart-panel { transform: translateX(0); }
-        .drawer-closed #cart-panel { transform: translateX(100%); }
-        .drawer-closed #cart-overlay { opacity: 0; pointer-events: none; }
-        .drawer-open #cart-overlay { opacity: 1; pointer-events: auto; }
+/* CATEGORY */
+.category-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
 
-        /* 7. UTILS */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .sticky-header { position: sticky; top: 0; z-index: 100; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid #F8F9FA; }
-        .active-store-btn { background-color: var(--brand) !important; color: white !important; box-shadow: 0 10px 20px var(--brand-soft); }
-    </style>
+  padding: 12px 16px;
+}
+
+.category-pill {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+
+  background: #F3F4F6;
+  color: #6B7280;
+
+  transition: 0.3s;
+}
+
+.active-label {
+  background: var(--brand) !important;
+  color: white !important;
+  transform: scale(1.05);
+  box-shadow: 0 8px 18px var(--brand-soft);
+}
+
+/* PRODUCT */
+.product-card {
+  background: #FFFAF8;
+  border-radius: 20px;
+  border: 1px solid #eee;
+  transition: 0.25s;
+}
+.product-card:active { transform: scale(0.96); }
+
+.product-img-wrap {
+  height: 120px;
+  overflow: hidden;
+  border-radius: 16px;
+}
+.product-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.3s;
+}
+.product-card:active img { transform: scale(1.05); }
+
+/* STICKY */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px);
+  z-index: 50;
+}
+
+/* CART */
+.drawer-closed #cart-panel { transform: translateX(100%); }
+.drawer-open #cart-panel { transform: translateX(0); }
+
+#cart-panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 85%;
+  background: white;
+  transition: 0.4s;
+  z-index: 1000;
+}
+
+#cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  display: none;
+}
+.drawer-open #cart-overlay { display: block; }
+
+/* SCROLLBAR */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+</style>
 </head>
-<body class="drawer-closed theme-resto" id="body-wrap">
 
-    <div class="app-container">
-        <header class="sticky-header px-6 py-5 flex justify-between items-center">
-            <h1 class="text-2xl font-black text-[#E85A24] tracking-tighter italic">LASCOTACO</h1>
-            <button onclick="toggleCart(true)" class="bg-[#1A1A1A] text-white px-5 py-2 rounded-2xl font-bold text-xs flex items-center gap-2 active:scale-95 transition">
-                <i data-lucide="shopping-bag" class="w-4 h-4 text-orange-400"></i>
-                <span id="nav-total">0 DH</span>
-            </button>
-        </header>
+<body class="theme-resto drawer-closed" id="body">
 
-        <div class="p-4">
-            <div class="slider-viewport shadow-sm">
-                <div id="slider" class="slider-wrapper"></div>
-                <div id="slider-dots" class="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5"></div>
+<div class="app-container">
+
+<!-- HEADER -->
+<header class="sticky-header p-4 flex justify-between items-center">
+  <h1 class="text-xl font-black text-[#E85A24]">LASCOTACO</h1>
+
+  <button onclick="toggleCart(true)" class="bg-black text-white px-4 py-2 rounded-xl text-sm flex gap-2">
+    🛒 <span id="nav-total">0 DH</span>
+  </button>
+</header>
+
+<!-- STORE SWITCH -->
+<div class="p-4 flex gap-2">
+  <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 p-3 rounded-xl bg-orange-500 text-white font-bold">Resto</button>
+  <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 p-3 rounded-xl bg-gray-100 font-bold">Épicerie</button>
+</div>
+
+<!-- CATEGORIES -->
+<div id="sub-nav" class="category-scroll no-scrollbar"></div>
+
+<!-- PRODUCTS -->
+<main id="grid" class="p-4 grid grid-cols-2 gap-4 pb-32"></main>
+
+</div>
+
+<!-- CART -->
+<div id="cart-overlay" onclick="toggleCart(false)"></div>
+
+<div id="cart-panel" class="p-6 flex flex-col">
+  <h2 class="font-bold text-lg mb-4">Panier</h2>
+  <div id="cart-items" class="flex-1 overflow-auto space-y-3"></div>
+  <button onclick="sendToWhatsApp()" class="bg-green-500 text-white p-4 rounded-xl mt-4">Commander</button>
+</div>
+
+<script>
+
+/* FIREBASE */
+firebase.initializeApp({
+  apiKey: "YOUR_KEY",
+  projectId: "YOUR_ID"
+});
+const db = firebase.firestore();
+
+/* STATE */
+let cart = {};
+let activeStore = "Restaurant";
+let activeCat = "🔥 Top vente";
+
+/* CATEGORIES */
+async function renderLabels() {
+  const nav = document.getElementById("sub-nav");
+
+  const snap = await db.collection("categories")
+    .where("type","==",activeStore)
+    .get();
+
+  let cats = ["🔥 Top vente"];
+  snap.forEach(doc => cats.push(doc.data().name));
+
+  nav.innerHTML = cats.map((c,i)=>`
+    <button id="cat-${i}"
+      onclick="selectCat('${c}','cat-${i}')"
+      class="category-pill px-5 py-2 rounded-xl font-bold ${c===activeCat?'active-label':''}">
+      ${c}
+    </button>
+  `).join("");
+}
+
+/* CLICK */
+function selectCat(name,id){
+  activeCat = name;
+  renderLabels();
+  loadProducts();
+
+  setTimeout(()=>{
+    const nav = document.getElementById("sub-nav");
+    const el = document.getElementById(id);
+
+    nav.scrollTo({
+      left: el.offsetLeft - 40,
+      behavior: "smooth"
+    });
+  },50);
+}
+
+/* PRODUCTS */
+function loadProducts(){
+  let q = db.collection("products").where("type","==",activeStore);
+
+  if(activeCat==="🔥 Top vente") q = q.where("isTop","==",true);
+  else q = q.where("category","==",activeCat);
+
+  q.onSnapshot(snap=>{
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+
+    snap.forEach(doc=>{
+      const p = doc.data();
+      const qty = cart[p.name]?.qty || 0;
+
+      grid.innerHTML += `
+        <div class="product-card p-3">
+          <div class="product-img-wrap">
+            <img src="${p.image}">
+          </div>
+
+          <h3 class="text-xs font-bold mt-2">${p.name}</h3>
+
+          <div class="flex justify-between mt-2 items-center">
+            <span class="font-black text-sm" style="color:var(--brand)">
+              ${p.price} DH
+            </span>
+
+            <div class="flex gap-2 items-center">
+              <button onclick="updateQty('${p.name}',${p.price},-1,'${p.image}')" class="bg-gray-200 w-7 h-7 rounded">-</button>
+              <span>${qty}</span>
+              <button onclick="updateQty('${p.name}',${p.price},1,'${p.image}')" class="bg-orange-500 text-white w-7 h-7 rounded">+</button>
             </div>
+          </div>
         </div>
+      `;
+    });
 
-        <div class="p-4 flex gap-3 sticky top-[72px] bg-white/90 backdrop-blur-md z-40">
-            <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 py-4 rounded-2xl font-extrabold flex items-center justify-center gap-2 transition-all bg-white border border-gray-100 active-store-btn">
-                <i data-lucide="utensils" class="w-4 h-4"></i> Resto
-            </button>
-            <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 py-4 rounded-2xl font-extrabold flex items-center justify-center gap-2 transition-all bg-white border border-gray-100">
-                <i data-lucide="shopping-basket" class="w-4 h-4"></i> Épicerie
-            </button>
-        </div>
+    lucide.createIcons();
+  });
+}
 
-        <div id="sub-nav" class="category-scroll no-scrollbar sticky top-[154px] bg-white/95 backdrop-blur-md z-30"></div>
+/* CART */
+function updateQty(name,price,change,img){
+  if(!cart[name]) cart[name]={qty:0,price,image:img};
 
-        <main id="product-grid" class="p-6 grid grid-cols-2 gap-4 pb-48"></main>
+  cart[name].qty+=change;
+  if(cart[name].qty<=0) delete cart[name];
 
-        <div id="checkout-bar" class="fixed bottom-0 left-0 right-0 max-w-[500px] mx-auto p-6 z-50 translate-y-full transition-transform duration-500">
-            <button onclick="toggleCart(true)" class="w-full bg-[#1A1A1A] text-white p-5 rounded-[2.2rem] flex justify-between items-center shadow-2xl active:scale-95 transition relative overflow-hidden group">
-                <div class="text-left pl-2 z-10">
-                    <p id="item-count" class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">0 Articles</p>
-                    <p id="final-price" class="text-xl font-black">0 DH</p>
-                </div>
-                <span class="font-black flex items-center gap-2 pr-2 text-sm text-orange-500 z-10">Voir le panier <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
-            </button>
-        </div>
+  syncUI();
+}
+
+/* UI */
+function syncUI(){
+  let total=0;
+
+  for(let k in cart){
+    total+=cart[k].qty*cart[k].price;
+  }
+
+  document.getElementById("nav-total").innerText = total+" DH";
+}
+
+/* CART OPEN */
+function toggleCart(open){
+  const body = document.getElementById("body");
+  body.classList.toggle("drawer-open",open);
+  body.classList.toggle("drawer-closed",!open);
+
+  renderCart();
+}
+
+/* CART UI */
+function renderCart(){
+  const list = document.getElementById("cart-items");
+
+  if(Object.keys(cart).length===0){
+    list.innerHTML = "Panier vide";
+    return;
+  }
+
+  list.innerHTML = Object.keys(cart).map(n=>`
+    <div class="flex justify-between">
+      <span>${cart[n].qty}x ${n}</span>
+      <span>${cart[n].qty * cart[n].price} DH</span>
     </div>
+  `).join("");
+}
 
-    <div id="cart-drawer-root">
-        <div id="cart-overlay" onclick="toggleCart(false)"></div>
-        <div id="cart-panel" class="flex flex-col">
-            <div class="p-8 border-b flex justify-between items-center">
-                <h2 class="text-xl font-black italic tracking-tight">Mon Panier</h2>
-                <button onclick="toggleCart(false)" class="p-3 bg-gray-100 rounded-full text-gray-500"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar"></div>
-            <div class="p-10 bg-gray-50/80 border-t border-gray-100 space-y-4">
-                <div class="flex justify-between items-center px-2">
-                    <span class="font-bold text-gray-400 uppercase text-[10px]">Livraison</span>
-                    <span class="font-bold text-gray-800 text-sm">20 DH</span>
-                </div>
-                <div class="flex justify-between items-center px-2">
-                    <span class="font-bold text-gray-400 uppercase text-[10px]">Total à payer</span>
-                    <span id="drawer-total" class="text-3xl font-black text-[#E85A24]">0 DH</span>
-                </div>
-                <button id="wa-btn" onclick="sendToWhatsApp()" class="w-full bg-[#25D366] text-white py-6 rounded-[2rem] font-black text-lg flex justify-center items-center gap-3 shadow-xl active:scale-95 transition">
-                    <i data-lucide="message-circle" class="w-6 h-6"></i> Commander via WhatsApp
-                </button>
-            </div>
-        </div>
-    </div>
+/* STORE SWITCH */
+function setStore(type){
+  activeStore = type;
+  activeCat = "🔥 Top vente";
 
-    <script>
-        // FIREBASE INITIALIZATION
-        const firebaseConfig = {
-            apiKey: "AIzaSyBebaGxqiNBvCqofveg1Fmztl7av3Mdoyg",
-            authDomain: "lascotaco-67fe5.firebaseapp.com",
-            projectId: "lascotaco-67fe5",
-            storageBucket: "lascotaco-67fe5.firebasestorage.app",
-            messagingSenderId: "865918381027",
-            appId: "1:865918381027:web:abc6435df20894020c4ed6"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+  document.getElementById("body").className =
+    type==="Restaurant" ? "theme-resto drawer-closed" : "theme-epi drawer-closed";
 
-        let cart = {}; let activeStore = 'Restaurant'; let activeCat = '🔥 Top vente';
-        let livraisonFee = 20;
+  renderLabels();
+  loadProducts();
+}
 
-        // 1. INFINITE SLIDER LOGIC
-        async function loadSlides() {
-            const slider = document.getElementById('slider');
-            const dots = document.getElementById('slider-dots');
-            const snap = await db.collection("banners").orderBy("timestamp", "desc").get();
-            if (snap.empty) return;
-            const bannerArray = [];
-            snap.forEach(doc => bannerArray.push(doc.data().url));
-            
-            slider.innerHTML = bannerArray.map(url => `<div class="slide-box"><img src="${url}"></div>`).join('');
-            slider.innerHTML += `<div class="slide-box"><img src="${bannerArray[0]}"></div>`; 
-            dots.innerHTML = bannerArray.map((_, i) => `<div class="w-1.5 h-1.5 rounded-full bg-white transition-all duration-500 ${i === 0 ? 'w-6 bg-orange-500' : 'opacity-30'}"></div>`).join('');
-            
-            let index = 0; const total = bannerArray.length;
-            setInterval(() => {
-                index++;
-                slider.style.transition = 'transform 0.7s cubic-bezier(0.65, 0, 0.35, 1)';
-                slider.style.transform = `translateX(-${index * 100}%)`;
-                if (index === total) {
-                    setTimeout(() => {
-                        slider.style.transition = 'none';
-                        index = 0; slider.style.transform = `translateX(0)`;
-                    }, 700);
-                }
-                const dotIdx = index === total ? 0 : index;
-                Array.from(dots.children).forEach((dot, dIdx) => {
-                    dot.className = `w-1.5 h-1.5 rounded-full bg-white transition-all duration-500 ${dIdx === dotIdx ? 'w-6 bg-orange-500' : 'opacity-80'}`;
-                });
-            }, 6000);
-        }
+/* WHATSAPP */
+function sendToWhatsApp(){
+  let msg = "Commande:\n";
 
-        // 2. CATEGORY ENGINE WITH SNAP-TO-LEFT
-        async function renderLabels() {
-            const nav = document.getElementById('sub-nav');
-            const catsData = [{name: '🔥 Top vente'}];
-            const snap = await db.collection("categories").where("type", "==", activeStore).get();
-            snap.forEach(doc => catsData.push(doc.data()));
-            
-            nav.innerHTML = catsData.map((cat, idx) => `
-                <button id="btn-cat-${idx}" 
-                    onclick="handleCatClick('${cat.name}', 'btn-cat-${idx}')" 
-                    class="category-pill px-6 py-2.5 rounded-xl font-bold whitespace-nowrap ${activeCat === cat.name ? 'active-label' : ''}">
-                    ${cat.name}
-                </button>
-            `).join('');
-        }
+  let total=0;
+  for(let k in cart){
+    msg += `${cart[k].qty}x ${k}\n`;
+    total += cart[k].qty * cart[k].price;
+  }
 
-        function handleCatClick(catName, elementId) {
-            activeCat = catName;
-            renderLabels(); loadProducts();
-            
-            const nav = document.getElementById('sub-nav');
-            const pill = document.getElementById(elementId);
-            const scrollTarget = pill.offsetLeft - 24; // 24px Margin breathing room
-            nav.scrollTo({ left: scrollTarget, behavior: 'smooth' });
-        }
+  msg += `Total: ${total} DH`;
 
-        // 3. PRODUCT GRID & STORE TOGGLE
-        function setStore(type) { 
-            activeStore = type; activeCat = '🔥 Top vente';
-            const body = document.getElementById('body-wrap');
-            const btnResto = document.getElementById('btn-resto');
-            const btnEpi = document.getElementById('btn-epi');
-            const waBtn = document.getElementById('wa-btn');
+  window.open("https://wa.me/212708006088?text="+encodeURIComponent(msg));
+}
 
-            if(type === 'Restaurant') {
-                body.className = "drawer-closed theme-resto";
-                btnResto.classList.add('active-store-btn');
-                btnEpi.classList.remove('active-store-btn');
-                waBtn.style.backgroundColor = "#25D366";
-            } else {
-                body.className = "drawer-closed theme-epi";
-                btnResto.classList.remove('active-store-btn');
-                btnEpi.classList.add('active-store-btn');
-                waBtn.style.backgroundColor = "#10B981";
-            }
-            renderLabels(); loadProducts(); 
-        }
+/* INIT */
+document.addEventListener("DOMContentLoaded",()=>{
+  renderLabels();
+  loadProducts();
+});
+</script>
 
-        function loadProducts() {
-            let query = db.collection("products").where("type", "==", activeStore);
-            if (activeCat === '🔥 Top vente') query = query.where("isTop", "==", true);
-            else query = query.where("category", "==", activeCat);
-            
-            query.onSnapshot(snap => {
-                const grid = document.getElementById('product-grid');
-                grid.innerHTML = "";
-                snap.forEach(doc => {
-                    const p = doc.data(); const qty = cart[p.name]?.qty || 0;
-                    grid.innerHTML += `
-                        <div class="product-card p-3 flex flex-col gap-3">
-                            <div class="product-img-wrap shadow-inner relative">
-                                <img src="${p.image}" loading="lazy">
-                                ${p.isTop ? `<span class="absolute top-2 left-2 ${activeStore === 'Restaurant' ? 'bg-orange-600' : 'bg-emerald-600'} text-white text-[7px] font-black px-2 py-1 rounded-md uppercase">Top</span>` : ''}
-                            </div>
-                            <h3 class="font-bold text-[10px] text-gray-800 leading-tight h-8 overflow-hidden">${p.name}</h3>
-                            <div class="flex justify-between items-center mt-auto">
-                                <span class="font-black text-sm" style="color: var(--brand)">${p.price} DH</span>
-                                <div class="flex items-center gap-2">
-                                    <button onclick="updateQty('${p.name}', ${p.price}, -1, '${p.image}')" class="w-8 h-8 bg-gray-100 rounded-xl font-bold text-xs">-</button>
-                                    <span class="font-bold text-[10px] w-3 text-center">${qty}</span>
-                                    <button onclick="updateQty('${p.name}', ${p.price}, 1, '${p.image}')" class="w-8 h-8 text-white rounded-xl font-bold text-xs shadow-md active:scale-125 transition" style="background-color: var(--brand)">+</button>
-                                </div>
-                            </div>
-                        </div>`;
-                });
-                lucide.createIcons();
-            });
-        }
-
-        // 4. CART ENGINE
-        function updateQty(name, price, change, img) {
-            if (!cart[name]) cart[name] = { qty: 0, price: price, image: img };
-            cart[name].qty += change; if (cart[name].qty <= 0) delete cart[name];
-            syncUI(); if(!document.getElementById('body-wrap').classList.contains('drawer-closed')) renderDrawer();
-        }
-
-        function syncUI() {
-            let total = 0; let count = 0;
-            for (let id in cart) { total += cart[id].qty * cart[id].price; count += cart[id].qty; }
-            document.getElementById('nav-total').innerText = total + " DH";
-            document.getElementById('final-price').innerText = total + " DH";
-            document.getElementById('drawer-total').innerText = (total > 0 ? total + livraisonFee : 0) + " DH";
-            document.getElementById('item-count').innerText = count + " Articles";
-            document.getElementById('checkout-bar').style.transform = count > 0 ? 'translateY(0)' : 'translateY(150%)';
-            loadProducts();
-        }
-
-        function renderDrawer() {
-            const list = document.getElementById('cart-items'); const keys = Object.keys(cart);
-            if(keys.length === 0) { list.innerHTML = `<p class="text-center text-gray-400 py-20 font-bold text-xs uppercase tracking-widest">Panier vide 🌮</p>`; return; }
-            list.innerHTML = keys.map(name => `
-                <div class="flex items-center gap-4 bg-gray-50/50 p-4 rounded-[1.5rem] border border-gray-100 transition-all">
-                    <img src="${cart[name].image}" class="w-14 h-14 rounded-2xl object-cover shadow-sm">
-                    <div class="flex-1">
-                        <p class="font-extrabold text-[11px] text-gray-800 leading-tight">${name}</p>
-                        <p class="font-black text-xs" style="color: var(--brand)">${cart[name].price} DH</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <button onclick="updateQty('${name}', ${cart[name].price}, -1, '${cart[name].image}')" class="w-8 h-8 bg-white rounded-xl shadow-sm font-black">-</button>
-                        <span class="font-black text-sm">${cart[name].qty}</span>
-                        <button onclick="updateQty('${name}', ${cart[name].price}, 1, '${cart[name].image}')" class="w-8 h-8 text-white rounded-xl shadow-sm font-black" style="background-color: var(--brand)">+</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function toggleCart(show) {
-            const body = document.getElementById('body-wrap');
-            if(show) { body.classList.replace('drawer-closed', 'drawer-open'); body.classList.add('cart-open'); renderDrawer(); } 
-            else { body.classList.replace('drawer-open', 'drawer-closed'); body.classList.remove('cart-open'); }
-        }
-
-        function sendToWhatsApp() {
-            let msg = `🛒 *Nouvelle Commande LASCOTACO*\n\n`;
-            let sub = 0; for (let id in cart) { msg += `• *${cart[id].qty}x* ${id} (${cart[id].qty * cart[id].price} DH)\n`; sub += cart[id].qty * cart[id].price; }
-            msg += `\n💰 *Total:* ${sub + livraisonFee} DH`;
-            window.open(`https://wa.me/212708006088?text=${encodeURIComponent(msg)}`);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => { loadSlides(); setStore('Restaurant'); lucide.createIcons(); });
-    </script>
 </body>
 </html>
-
