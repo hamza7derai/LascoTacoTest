@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LASCOTACO | App</title>
+    <title>LASCOTACO | Premium Experience</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffffff">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,61 +12,78 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        :root { --resto: #E85A24; --epi: #10B981; --bg: #FDFBFA; }
-        body { background-color: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .app-container { max-width: 500px; margin: 0 auto; width: 100%; position: relative; background: var(--bg); min-height: 100vh; box-shadow: 0 0 80px rgba(0,0,0,0.06); overflow-x: hidden; }
+        :root { 
+            --resto-main: #E85A24; --resto-grad: linear-gradient(135deg, #FF7A45 0%, #E85A24 100%);
+            --epi-main: #10B981; --epi-grad: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+            --bg-app: #FDFBF9; 
+        }
+        body { background-color: var(--bg-app); font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .app-container { max-width: 500px; margin: 0 auto; width: 100%; position: relative; background: var(--bg-app); min-height: 100vh; box-shadow: 0 0 80px rgba(0,0,0,0.06); overflow-x: hidden; }
         body.modal-open { overflow: hidden; }
 
-        .theme-resto { --brand: var(--resto); --brand-grad: linear-gradient(135deg, #FF7B47, #E85A24); --brand-soft: rgba(232, 90, 36, 0.12); }
-        .theme-epi { --brand: var(--epi); --brand-grad: linear-gradient(135deg, #34D399, #10B981); --brand-soft: rgba(16, 185, 129, 0.12); }
+        /* DYNAMIC THEMES */
+        .theme-resto { --brand: var(--resto-main); --brand-grad: var(--resto-grad); --brand-soft: rgba(232, 90, 36, 0.15); }
+        .theme-epi { --brand: var(--epi-main); --brand-grad: var(--epi-grad); --brand-soft: rgba(16, 185, 129, 0.15); }
 
+        /* SMOOTH PREMIUM EASING */
+        .premium-ease { transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); }
+
+        /* DOMINANT HERO SLIDER */
+        .slider-viewport { width: 100%; overflow: hidden; border-radius: 28px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        .slider-wrapper { display: flex; transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1); will-change: transform; }
+        .slide-box { min-width: 100%; height: 240px; padding: 0; position: relative; }
+        .slide-box::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 50%); border-radius: 28px; pointer-events: none; }
+        .slide-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 28px; }
+
+        /* SKELETONS */
         .skeleton { background: linear-gradient(90deg, #F1F3F5 25%, #E9ECEF 50%, #F1F3F5 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 20px; }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-        /* CATEGORIES - Premium Sliding */
-        .category-scroll { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 24px 16px 24px; scroll-padding-left: 24px; scroll-behavior: smooth; }
-        .category-pill { position: relative; flex: 0 0 auto; scroll-snap-align: start; transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); background: #F4F5F7; color: #6C757D; border-radius: 14px; }
-        .category-pill:active { transform: scale(0.94); }
-        .active-label { background: var(--brand-grad) !important; color: white !important; font-weight: 800 !important; box-shadow: 0 8px 16px var(--brand-soft); transform: scale(1.03); }
+        /* CATEGORIES - Gradient active state */
+        .category-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 8px 20px 16px 20px; scroll-padding-left: 20px; scroll-behavior: smooth; }
+        .category-pill { flex: 0 0 auto; scroll-snap-align: start; background: #F4F5F7; color: #6C757D; border-radius: 16px; padding: 10px 22px; font-weight: 700; font-size: 14px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.02); }
+        .category-pill:active { transform: scale(0.95); }
+        .active-label { background: var(--brand-grad) !important; color: white !important; font-weight: 900 !important; transform: scale(1.05); box-shadow: 0 10px 20px var(--brand-soft); border: none; }
 
         /* PREMIUM PRODUCT CARDS */
         .product-card { 
-            background: linear-gradient(to bottom, #FFFFFF, #FFF9F5); 
-            border-radius: 26px; border: 1px solid #FFF0E5; 
-            box-shadow: 0 10px 25px rgba(232, 90, 36, 0.04);
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); 
-            animation: fadeIn 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards; position: relative; 
+            background: linear-gradient(145deg, #FFFFFF, #FFF9F5); border-radius: 28px; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.03); border: 1px solid rgba(255, 255, 255, 0.8);
+            position: relative; animation: fadeIn 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) forwards; overflow: hidden;
         }
-        .product-card:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(232, 90, 36, 0.02); }
+        .product-card:active { transform: scale(0.96); box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
-        .product-img-wrap { overflow: hidden; border-radius: 24px 24px 8px 8px; height: 160px; width: 100%; position: relative; display: flex; justify-content: center; align-items: center; }
-        .product-img-wrap img { width: 90%; height: 90%; object-fit: contain; transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1); filter: drop-shadow(0 15px 15px rgba(0,0,0,0.1)); }
-        .product-card:hover img { transform: scale(1.08) translateY(-5px); }
+        .product-img-wrap { border-radius: 28px 28px 12px 12px; height: 160px; background: #FAF5F0; width: 100%; position: relative; overflow: hidden; }
+        .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1); mix-blend-mode: multiply; }
+        .product-card:hover img { transform: scale(1.06); }
 
-        /* CIRCULAR ADD BUTTON */
-        .add-circle-btn {
-            width: 34px; height: 34px; border-radius: 50%; 
-            background: var(--brand-grad); color: white;
+        /* FLOATING ACTION BUTTON (Card) */
+        .fab-add { 
+            position: absolute; bottom: 12px; right: 12px; width: 40px; height: 40px; 
+            background: var(--brand-grad); color: white; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center;
-            font-weight: 900; font-size: 18px;
-            box-shadow: 0 6px 16px var(--brand-soft);
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+            box-shadow: 0 8px 16px var(--brand-soft); z-index: 10;
         }
-
-        /* PRICE COUNT-UP ANIMATION */
-        .price-update { animation: pricePop 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); }
-        @keyframes pricePop { 0% { transform: scale(1); color: white; } 50% { transform: scale(1.15); color: #FFE5D9; } 100% { transform: scale(1); color: white; } }
+        .animate-pop { animation: popBounce 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); }
+        @keyframes popBounce { 0% { transform: scale(1); } 40% { transform: scale(0.85); background: white; color: var(--brand); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
         /* BOTTOM SHEET */
         #bottom-sheet-root { position: fixed; inset: 0; z-index: 2000; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
-        #bs-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
-        #bs-panel { width: 100%; max-width: 500px; background: white; border-radius: 36px 36px 0 0; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1); pointer-events: auto; padding-bottom: env(safe-area-inset-bottom); max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 -20px 40px rgba(0,0,0,0.1); }
+        #bs-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; }
+        #bs-panel { width: 100%; max-width: 500px; background: white; border-radius: 36px 36px 0 0; transform: translateY(100%); pointer-events: auto; padding-bottom: env(safe-area-inset-bottom); max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 -20px 40px rgba(0,0,0,0.1); }
         .bs-open #bs-overlay { opacity: 1; pointer-events: auto; }
         .bs-open #bs-panel { transform: translateY(0); }
 
-        /* TOGGLE ANIMATION */
-        #store-toggle-bg { transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), background-image 0.4s ease; }
+        /* CART DRAWER */
+        #cart-drawer-root { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
+        #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); opacity: 0; pointer-events: none; }
+        #cart-panel { position: absolute; right: 0; top: 0; bottom: 0; width: 88%; max-width: 420px; background: #F8F9FA; border-radius: 36px 0 0 36px; transform: translateX(100%); pointer-events: auto; display: flex; flex-direction: column; box-shadow: -20px 0 60px rgba(0,0,0,0.1); }
+        .drawer-open #cart-overlay { opacity: 1; pointer-events: auto; }
+        .drawer-open #cart-panel { transform: translateX(0); }
+
+        /* VERTICAL QTY PILL */
+        .qty-pill { background: white; border-radius: 100px; padding: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 90px; width: 36px; }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
@@ -78,166 +95,188 @@
 
     <div class="app-container" id="app-root">
         
-        <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl px-6 py-5 flex justify-between items-center">
-            <h1 class="text-[28px] font-black text-[#E85A24] tracking-tighter italic">LASCOTACO</h1>
-            <button onclick="toggleCart(true)" class="relative bg-[#1A1A1A] text-white px-4 py-2.5 rounded-xl font-bold text-[13px] flex items-center gap-2 active:scale-95 transition-transform shadow-lg shadow-black/10">
-                <i data-lucide="shopping-bag" class="w-4 h-4 text-orange-400"></i>
+        <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl px-5 py-4 flex justify-between items-center border-b border-gray-50/50">
+            <h1 class="text-[26px] font-black tracking-tighter italic" style="color: var(--brand)">LASCOTACO</h1>
+            <button onclick="toggleCart(true)" class="relative bg-white text-gray-800 px-4 py-2.5 rounded-2xl font-black text-xs flex items-center gap-2 shadow-[0_8px_20px_rgba(0,0,0,0.06)] active:scale-95 premium-ease border border-gray-100">
+                <i data-lucide="shopping-bag" class="w-4 h-4" style="color: var(--brand)"></i>
                 <span id="nav-total">0 DH</span>
-                <span id="nav-badge" class="absolute -top-2 -right-2 bg-gradient-to-tr from-[#E85A24] to-[#FF7B47] text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm scale-0 transition-transform">0</span>
+                <span id="nav-badge" class="absolute -top-1.5 -right-1.5 text-white text-[9px] font-black w-[22px] h-[22px] flex items-center justify-center rounded-full border-2 border-white shadow-sm scale-0 premium-ease" style="background: var(--brand-grad)">0</span>
             </button>
         </header>
 
-        <div class="px-6 pb-5 bg-white/80 backdrop-blur-xl sticky top-[76px] z-40">
-            <div class="relative flex items-center shadow-sm rounded-2xl">
-                <i data-lucide="search" class="absolute left-4 w-5 h-5 text-gray-400"></i>
-                <input type="text" id="search-input" placeholder="Rechercher un plat, une boisson..." class="w-full bg-[#F4F5F7] border border-transparent rounded-2xl py-4 pl-12 pr-4 text-[15px] font-bold text-gray-800 focus:outline-none focus:bg-white focus:border-[#E85A24]/30 focus:ring-4 focus:ring-[#E85A24]/10 transition-all">
+        <div class="px-5 pt-3 pb-4 bg-white/80 backdrop-blur-xl sticky top-[68px] z-40">
+            <div class="relative flex items-center shadow-[0_4px_16px_rgba(0,0,0,0.03)] rounded-2xl">
+                <i data-lucide="search" class="absolute left-4 w-4 h-4 text-gray-400"></i>
+                <input type="text" id="search-input" placeholder="Rechercher un produit..." class="w-full bg-white border border-gray-100/50 rounded-2xl py-4 pl-12 pr-4 text-[15px] font-bold focus:outline-none focus:ring-2 transition-shadow" style="--tw-ring-color: var(--brand-soft)">
             </div>
         </div>
 
-        <div class="px-6 pb-4 bg-transparent sticky top-[148px] z-30">
-            <div class="bg-white p-1.5 rounded-2xl flex relative w-full items-center shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-gray-100">
-                <div id="store-toggle-bg" class="absolute left-1.5 top-1.5 bottom-1.5 w-[calc(50%-6px)] rounded-xl shadow-md" style="background-image: var(--brand-grad);"></div>
+        <div class="px-5 pb-5">
+            <div class="slider-viewport">
+                <div id="slider" class="slider-wrapper"></div>
+                <div id="slider-dots" class="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10"></div>
+            </div>
+        </div>
+
+        <div class="px-5 pb-3 bg-white sticky top-[140px] z-30">
+            <div class="bg-[#F4F5F7] p-1.5 rounded-2xl flex relative w-full items-center shadow-inner">
+                <div id="store-toggle-bg" class="absolute left-1.5 top-1.5 bottom-1.5 w-[calc(50%-6px)] rounded-xl shadow-md premium-ease" style="background: var(--brand-grad)"></div>
                 
-                <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 relative z-10 py-3.5 rounded-xl text-[15px] font-extrabold flex items-center justify-center gap-2 text-white transition-colors duration-300">
+                <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 relative z-10 py-3.5 rounded-xl text-[15px] font-black flex items-center justify-center gap-2 text-white premium-ease">
                     <i data-lucide="utensils" class="w-4 h-4"></i> Resto
                 </button>
-                <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 relative z-10 py-3.5 rounded-xl text-[15px] font-extrabold flex items-center justify-center gap-2 text-gray-400 transition-colors duration-300">
+                <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 relative z-10 py-3.5 rounded-xl text-[15px] font-black flex items-center justify-center gap-2 text-gray-500 premium-ease">
                     <i data-lucide="shopping-basket" class="w-4 h-4"></i> Épicerie
                 </button>
             </div>
         </div>
 
-        <div id="sub-nav" class="category-scroll no-scrollbar relative z-20"></div>
+        <div id="sub-nav" class="category-scroll no-scrollbar bg-white relative z-20 pt-2"></div>
 
-        <main id="product-grid" class="p-6 grid grid-cols-2 gap-5 pb-6"></main>
+        <main id="product-grid" class="p-5 grid grid-cols-2 gap-5 pb-8"></main>
 
-        <div class="mx-6 mb-36 bg-gradient-to-r from-[#FFF5F0] to-white rounded-[24px] p-5 flex items-center justify-between border border-orange-100/50 shadow-sm">
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 bg-gradient-to-tr from-[#E85A24] to-[#FF7B47] rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/20">
-                    <i data-lucide="bike" class="w-7 h-7 text-white"></i>
-                </div>
-                <div>
-                    <h4 class="font-black text-gray-800 text-[15px]">Livraison rapide</h4>
-                    <p class="text-[13px] font-bold"><span class="text-[#E85A24]">20-35 min</span> <span class="text-gray-500">chez vous</span></p>
-                </div>
-            </div>
-            <i data-lucide="chevron-right" class="w-6 h-6 text-gray-300"></i>
-        </div>
-
-        <div id="checkout-bar" class="fixed bottom-0 left-0 right-0 max-w-[500px] mx-auto p-5 z-50 translate-y-full transition-transform duration-500 cubic-bezier(0.2, 0.9, 0.3, 1)">
-            <button onclick="toggleCart(true)" class="w-full text-white p-4 rounded-[2.5rem] flex justify-between items-center shadow-[0_20px_40px_rgba(232,90,36,0.3)] active:scale-95 transition-transform duration-300" style="background: var(--brand-grad);">
-                <div class="flex items-center gap-3.5">
-                    <div class="relative bg-white w-12 h-12 rounded-full flex items-center justify-center text-[#E85A24] shadow-inner">
-                        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-                        <span id="floating-badge" class="absolute -top-1 -right-1 bg-[#E85A24] text-white text-[10px] w-5 h-5 rounded-full border-2 border-white flex justify-center items-center font-black shadow-sm">0</span>
+        <div id="checkout-bar" class="fixed bottom-0 left-0 right-0 max-w-[500px] mx-auto p-5 z-50 translate-y-full premium-ease">
+            <div class="absolute inset-0 bg-white/60 backdrop-blur-xl border-t border-white/50 -z-10 rounded-t-[40px]"></div>
+            
+            <button onclick="toggleCart(true)" class="w-full text-white p-4 rounded-[28px] flex justify-between items-center shadow-[0_12px_32px_rgba(0,0,0,0.15)] active:scale-95 premium-ease border border-white/20" style="background: var(--brand-grad)">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white/20 backdrop-blur-sm w-12 h-12 rounded-full flex items-center justify-center border border-white/30 relative">
+                        <i data-lucide="shopping-bag" class="w-5 h-5 text-white"></i>
+                        <span id="floating-badge" class="absolute -top-1 -right-1 bg-white w-5 h-5 rounded-full flex justify-center items-center font-black text-[10px] shadow-sm" style="color: var(--brand)">0</span>
                     </div>
                     <div class="text-left">
-                        <p id="item-count-text" class="text-[13px] font-bold leading-tight">0 article</p>
-                        <p class="text-[10px] font-semibold text-white/90 tracking-wide">Livraison : 20 DH</p>
+                        <p id="item-count-text" class="text-[13px] font-bold text-white/90">0 article</p>
+                        <p class="text-[10px] font-medium text-white/70 tracking-wide uppercase">Livraison : 20 DH</p>
                     </div>
                 </div>
-                <div class="font-black text-[20px] mr-2 tracking-tight" id="final-price-bottom">0 DH</div>
-                <div class="bg-white text-[#E85A24] px-5 py-3.5 rounded-full text-[12px] font-extrabold flex items-center gap-1.5 shadow-md">Voir le panier <i data-lucide="chevron-right" class="w-4 h-4"></i></div>
+                <div class="flex items-center gap-3">
+                    <div class="font-black text-[20px] tracking-tight" id="final-price-bottom">0 DH</div>
+                    <div class="bg-white px-4 py-3.5 rounded-full text-[12px] font-black flex items-center gap-1 shadow-sm" style="color: var(--brand)">
+                        Voir le panier <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </div>
+                </div>
             </button>
         </div>
     </div>
 
-    <div id="bottom-sheet-root">
-        <div id="bs-overlay" onclick="closeSheet()"></div>
-        <div id="bs-panel">
-            <div class="p-7 border-b border-gray-50 flex justify-between items-start shrink-0">
+    <div id="bottom-sheet-root" class="premium-ease">
+        <div id="bs-overlay" onclick="closeSheet()" class="premium-ease"></div>
+        <div id="bs-panel" class="premium-ease">
+            <div class="p-8 border-b border-gray-50 flex justify-between items-start shrink-0">
                 <div>
-                    <h3 id="bs-title" class="font-black text-[22px] text-gray-800 tracking-tight">Produit</h3>
-                    <p id="bs-price" class="font-extrabold text-[#E85A24] mt-1 text-lg">0 DH</p>
+                    <h3 id="bs-title" class="font-black text-2xl text-gray-800 tracking-tight">Produit</h3>
+                    <p id="bs-price" class="font-black mt-1 text-xl" style="color: var(--brand)">0 DH</p>
                 </div>
-                <button onclick="closeSheet()" class="p-3 bg-gray-100 rounded-full active:scale-90 transition shadow-inner"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="closeSheet()" class="p-3 bg-gray-50 rounded-full active:scale-90 premium-ease"><i data-lucide="x" class="w-6 h-6 text-gray-600"></i></button>
             </div>
             
-            <div class="p-7 overflow-y-auto no-scrollbar flex-1 space-y-7">
-                <div id="bs-sauces" class="space-y-3 hidden">
-                    <h4 class="font-bold text-[13px] text-gray-400 uppercase tracking-widest">Choix de Sauce</h4>
-                    <select id="sauce-select" class="w-full p-4.5 bg-[#F8F9FA] rounded-[20px] font-bold text-[15px] text-gray-800 border border-transparent outline-none focus:border-[#E85A24]/50 focus:bg-white transition-colors appearance-none shadow-sm">
-                        <option value="">Sans sauce</option>
-                        <option value="Algérienne">Algérienne</option>
-                        <option value="Big Mac">Big Mac</option>
-                        <option value="Fromagère">Fromagère</option>
-                        <option value="Andalouse">Andalouse</option>
-                    </select>
+            <div class="p-8 overflow-y-auto no-scrollbar flex-1 space-y-8">
+                <div id="bs-sauces" class="space-y-4 hidden">
+                    <h4 class="font-bold text-[11px] text-gray-400 uppercase tracking-widest">Choix de Sauce</h4>
+                    <div class="relative">
+                        <select id="sauce-select" class="w-full p-5 bg-[#F8F9FA] rounded-[20px] font-bold text-[15px] border border-transparent outline-none appearance-none shadow-inner text-gray-800">
+                            <option value="">Sans sauce</option>
+                            <option value="Algérienne">Algérienne</option>
+                            <option value="Big Mac">Big Mac</option>
+                            <option value="Fromagère">Fromagère</option>
+                            <option value="Andalouse">Andalouse</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"></i>
+                    </div>
                 </div>
                 
-                <div class="space-y-3">
-                    <h4 class="font-bold text-[13px] text-gray-400 uppercase tracking-widest">Instructions spéciales</h4>
-                    <textarea id="bs-notes" placeholder="Ex: Sans oignons, bien cuit..." class="w-full p-4.5 bg-[#F8F9FA] rounded-[20px] font-semibold text-[15px] border border-transparent outline-none focus:border-[#E85A24]/50 focus:bg-white resize-none h-28 transition-colors shadow-sm"></textarea>
+                <div class="space-y-4">
+                    <h4 class="font-bold text-[11px] text-gray-400 uppercase tracking-widest">Instructions</h4>
+                    <textarea id="bs-notes" placeholder="Sans oignons, bien cuit..." class="w-full p-5 bg-[#F8F9FA] rounded-[20px] font-semibold text-[15px] border border-transparent outline-none resize-none h-28 shadow-inner text-gray-800"></textarea>
                 </div>
             </div>
 
-            <div class="p-6 bg-white shrink-0 shadow-[0_-20px_40px_rgba(0,0,0,0.04)]">
-                <button id="bs-add-btn" class="w-full text-white py-5 rounded-full font-black text-[19px] active:scale-95 transition-transform duration-300 shadow-[0_10px_25px_var(--brand-soft)]" style="background: var(--brand-grad);">
+            <div class="p-6 bg-white shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] border-t border-gray-50">
+                <button id="bs-add-btn" class="w-full text-white py-5 rounded-[24px] font-black text-[17px] active:scale-95 premium-ease shadow-[0_8px_20px_rgba(0,0,0,0.15)]" style="background: var(--brand-grad)">
                     Ajouter au panier
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="cart-drawer-root" style="position: fixed; inset: 0; z-index: 1000; pointer-events: none;">
-        <div id="cart-overlay" style="position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); opacity: 0; transition: opacity 0.5s ease; pointer-events: none;" onclick="toggleCart(false)"></div>
-        <div id="cart-panel" style="position: absolute; right: 0; top: 0; bottom: 0; width: 88%; max-width: 420px; background: #FDFBFA; border-radius: 36px 0 0 36px; transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1); pointer-events: auto; display: flex; flex-direction: column; box-shadow: -20px 0 50px rgba(0,0,0,0.1);">
+    <div id="cart-drawer-root" class="premium-ease">
+        <div id="cart-overlay" onclick="toggleCart(false)" class="premium-ease"></div>
+        <div id="cart-panel" class="premium-ease">
             
-            <div class="p-7 border-b border-gray-100 flex justify-between items-center shrink-0 bg-white rounded-tl-[36px]">
-                <h2 class="text-[22px] font-black italic tracking-tight">Mon Panier</h2>
-                <button onclick="toggleCart(false)" class="p-3.5 bg-gray-100 rounded-full text-gray-500 active:scale-90 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div class="p-8 bg-white border-b border-gray-50 flex justify-between items-center shrink-0 rounded-tl-[36px]">
+                <h2 class="text-2xl font-black italic tracking-tight text-gray-800">Mon Panier</h2>
+                <button onclick="toggleCart(false)" class="p-3 bg-gray-50 rounded-full text-gray-600 active:scale-90 premium-ease"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             
             <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar"></div>
             
-            <div id="upsell-container" class="px-6 pb-6 shrink-0 pt-6 bg-white border-t border-gray-100 hidden">
-                <p class="font-black text-[15px] text-gray-800 tracking-tight mb-4">N'oubliez pas ! 🥤</p>
-                <div id="upsell-items" class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+            <div id="upsell-container" class="px-6 pb-6 shrink-0 pt-6 bg-white rounded-t-[36px] shadow-[0_-10px_30px_rgba(0,0,0,0.02)] hidden">
+                <p class="font-black text-[13px] text-gray-800 tracking-tight mb-4 flex items-center gap-2">
+                    N'oubliez pas ! <span class="bg-gray-100 px-2 py-1 rounded-md text-[10px] text-gray-500 uppercase tracking-wider">Boissons</span>
+                </p>
+                <div class="flex gap-4 overflow-x-auto no-scrollbar pb-2" id="upsell-list">
                     </div>
             </div>
 
-            <div class="p-8 bg-white border-t border-gray-100 space-y-5 shrink-0 shadow-[0_-20px_30px_rgba(0,0,0,0.02)]">
-                <div class="flex justify-between items-center px-2">
-                    <span class="font-bold text-gray-400 uppercase text-[11px] tracking-widest">Livraison</span>
-                    <span class="font-bold text-gray-800 text-[15px]">20 DH</span>
+            <div class="p-8 bg-white space-y-5 shrink-0 border-t border-gray-50">
+                <div class="bg-[#F8F9FA] p-5 rounded-[24px] space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-gray-500 text-[13px]">Sous-total</span>
+                        <span id="drawer-subtotal" class="font-bold text-gray-800 text-[14px]">0 DH</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-gray-500 text-[13px]">Frais de livraison</span>
+                        <span class="font-bold text-gray-800 text-[14px]">20 DH</span>
+                    </div>
+                    <div class="h-px bg-gray-200 w-full my-1"></div>
+                    <div class="flex justify-between items-center pt-1">
+                        <span class="font-black text-gray-900 text-[16px]">Total à payer</span>
+                        <span id="drawer-total" class="text-[22px] font-black" style="color: var(--brand)">0 DH</span>
+                    </div>
                 </div>
-                <div class="flex justify-between items-center px-2">
-                    <span class="font-bold text-gray-400 uppercase text-[11px] tracking-widest">Total à payer</span>
-                    <span id="drawer-total" class="text-[34px] font-black text-[#E85A24] tracking-tighter">0 DH</span>
-                </div>
-                <button onclick="sendToWhatsApp()" id="wa-btn" class="w-full bg-[#25D366] text-white py-5 rounded-full font-black text-[19px] flex justify-center items-center gap-3 shadow-[0_10px_25px_rgba(37,211,102,0.3)] active:scale-95 transition-transform duration-300">
-                    <i data-lucide="message-circle" class="w-6 h-6"></i> Commander
+                <button onclick="sendToWhatsApp()" id="wa-btn" class="w-full bg-[#25D366] text-white py-5 rounded-[24px] font-black text-lg flex justify-center items-center gap-3 shadow-[0_8px_24px_rgba(37,211,102,0.3)] active:scale-95 premium-ease">
+                    <i data-lucide="message-circle" class="w-6 h-6 fill-current"></i> Commander via WhatsApp
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- PWA INSTALLATION ---
-        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.log('SW setup failed')); }); }
+        // PWA SETUP
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
 
-        // --- FIREBASE ---
+        // FIREBASE SETUP
         const firebaseConfig = { apiKey: "AIzaSyBebaGxqiNBvCqofveg1Fmztl7av3Mdoyg", authDomain: "lascotaco-67fe5.firebaseapp.com", projectId: "lascotaco-67fe5", storageBucket: "lascotaco-67fe5.firebasestorage.app", messagingSenderId: "865918381027", appId: "1:865918381027:web:abc6435df20894020c4ed6" };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
-        let cart = []; 
+        // GLOBALS & LOCAL STORAGE
+        let cart = JSON.parse(localStorage.getItem('lasco_cart_v2')) || []; 
         let activeStore = 'Restaurant'; let activeCat = '🔥 Top vente';
         let livraisonFee = 20;
-        let globalCatalog = []; // Stores ALL products for Global Search & Upsells
+        let globalProducts = []; // ALL products from DB for global search
         let currentItemForSheet = null;
 
-        // --- CART PERSISTENCE (LOCAL STORAGE) ---
-        function saveCart() { localStorage.setItem('lascotaco_cart', JSON.stringify(cart)); }
-        function loadCart() { const saved = localStorage.getItem('lascotaco_cart'); if(saved) { cart = JSON.parse(saved); syncUI(); } }
+        function saveCart() { localStorage.setItem('lasco_cart_v2', JSON.stringify(cart)); }
 
+        // --- FETCH EVERYTHING ONCE (For Global Search & Upsells) ---
+        db.collection("products").get().then(snap => {
+            snap.forEach(doc => {
+                let data = doc.data();
+                if (!data.category) data.category = '🔥 Top vente'; // Default catch
+                globalProducts.push(data);
+            });
+            renderUpsells();
+            loadProducts(); // Load initial grid
+            syncUI(); // Sync cart on load
+        });
+
+        // TOAST NOTIFICATION
         function showToast(message) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = 'bg-[#1A1A1A] text-white px-5 py-4 rounded-[18px] text-[14px] font-bold shadow-2xl transition-all duration-400 translate-y-[-20px] opacity-0 flex items-center justify-between border border-gray-800';
+            toast.className = 'bg-[#1A1A1A] text-white px-5 py-4 rounded-[20px] text-[14px] font-bold shadow-2xl transition-all duration-400 translate-y-[-20px] opacity-0 flex items-center justify-between border border-gray-800';
             toast.innerHTML = `<div class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[#25D366]"></i> <span>${message}</span></div>`;
-            container.appendChild(toast);
-            lucide.createIcons();
+            container.appendChild(toast); lucide.createIcons();
             requestAnimationFrame(() => { toast.classList.remove('translate-y-[-20px]', 'opacity-0'); });
             setTimeout(() => { toast.classList.add('translate-y-[-20px]', 'opacity-0'); setTimeout(() => toast.remove(), 400); }, 2500);
         }
@@ -245,140 +284,118 @@
         function renderSkeletons() {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = Array(4).fill().map(() => `
-                <div class="product-card p-3 flex flex-col gap-3 shadow-none border-gray-50">
-                    <div class="skeleton h-[150px] w-full rounded-[20px]"></div>
-                    <div class="skeleton h-5 w-3/4 rounded mt-2"></div>
-                    <div class="flex justify-between items-center mt-auto pt-2">
-                        <div class="skeleton h-5 w-14 rounded"></div>
-                        <div class="skeleton h-8 w-8 rounded-full"></div>
-                    </div>
-                </div>
-            `).join('');
+                <div class="product-card p-3 flex flex-col gap-3 border-transparent">
+                    <div class="skeleton h-[160px] w-full rounded-[20px]"></div>
+                    <div class="skeleton h-5 w-3/4 rounded mt-1"></div>
+                    <div class="skeleton h-8 w-1/3 rounded mt-auto"></div>
+                </div>`).join('');
         }
 
-        // --- FETCH EVERYTHING ONCE (For Search & Upsells) ---
-        async function fetchGlobalCatalog() {
-            const snap = await db.collection("products").get();
-            globalCatalog = [];
-            snap.forEach(doc => globalCatalog.push(doc.data()));
-            renderDrinksUpsell();
-            loadProducts(); // Load initial tab
-        }
-
-        // --- DYNAMIC DRINKS UPSELL ---
-        function renderDrinksUpsell() {
-            const drinks = globalCatalog.filter(p => {
-                const cat = (p.category || '').toLowerCase();
-                return cat.includes('drinks') || cat.includes('boissons');
-            }).slice(0, 4);
-
-            const container = document.getElementById('upsell-container');
-            const itemsDiv = document.getElementById('upsell-items');
+        // HERO SLIDER
+        async function loadSlides() {
+            const slider = document.getElementById('slider'); const dots = document.getElementById('slider-dots');
+            const snap = await db.collection("banners").orderBy("timestamp", "desc").get();
+            if (snap.empty) return;
+            const arr = []; snap.forEach(doc => arr.push(doc.data().url));
+            slider.innerHTML = arr.map(url => `<div class="slide-box"><img src="${url}"></div>`).join('');
+            slider.innerHTML += `<div class="slide-box"><img src="${arr[0]}"></div>`; 
+            dots.innerHTML = arr.map((_, i) => `<div class="w-2 h-2 rounded-full bg-white transition-all duration-500 ${i === 0 ? 'w-6 opacity-100' : 'opacity-40'}"></div>`).join('');
             
-            if(drinks.length > 0) {
-                container.classList.remove('hidden');
-                itemsDiv.innerHTML = drinks.map(d => `
-                    <div class="min-w-[150px] bg-[#F8F9FA] p-2.5 rounded-[20px] flex items-center gap-3 border border-gray-100 shadow-sm active:scale-95 transition-transform cursor-pointer" onclick="quickAdd('${d.name}', ${d.price}, '${d.image}')">
-                        <img src="${d.image}" class="w-11 h-11 object-contain bg-white rounded-xl p-1 shadow-sm mix-blend-multiply">
-                        <div class="flex-1">
-                            <p class="font-bold text-[12px] text-gray-800 leading-tight">${d.name}</p>
-                            <p class="font-black text-[11px]" style="color: var(--brand)">${d.price} DH</p>
-                        </div>
-                    </div>
-                `).join('');
-            }
+            let i = 0; const tot = arr.length;
+            setInterval(() => {
+                i++; slider.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1)';
+                slider.style.transform = `translateX(-${i * 100}%)`;
+                if (i === tot) { setTimeout(() => { slider.style.transition = 'none'; i = 0; slider.style.transform = `translateX(0)`; }, 600); }
+                const dIdx = i === tot ? 0 : i;
+                Array.from(dots.children).forEach((dot, idx) => { dot.className = `w-2 h-2 rounded-full bg-white transition-all duration-500 ${idx === dIdx ? 'w-6 opacity-100' : 'opacity-40'}`; });
+            }, 5000);
         }
 
-        // --- TOGGLE SWITCH ---
+        // TOGGLE SWITCH
         function setStore(type) { 
-            activeStore = type; activeCat = '🔥 Top vente';
-            document.getElementById('search-input').value = '';
+            activeStore = type; activeCat = '🔥 Top vente'; document.getElementById('search-input').value = '';
             
             const body = document.getElementById('body-wrap');
             const toggleBg = document.getElementById('store-toggle-bg');
-            const btnResto = document.getElementById('btn-resto');
-            const btnEpi = document.getElementById('btn-epi');
-            const waBtn = document.getElementById('wa-btn');
-
+            const btnResto = document.getElementById('btn-resto'); const btnEpi = document.getElementById('btn-epi');
+            
             if(type === 'Restaurant') {
                 body.className = "drawer-closed theme-resto";
                 toggleBg.style.transform = 'translateX(0)';
-                btnResto.classList.replace('text-gray-400', 'text-white');
-                btnEpi.classList.replace('text-white', 'text-gray-400');
-                waBtn.style.backgroundColor = "#25D366"; 
+                btnResto.classList.replace('text-gray-500', 'text-white'); btnEpi.classList.replace('text-white', 'text-gray-500');
             } else {
                 body.className = "drawer-closed theme-epi";
                 toggleBg.style.transform = 'translateX(100%)';
-                btnEpi.classList.replace('text-gray-400', 'text-white');
-                btnResto.classList.replace('text-white', 'text-gray-400');
-                waBtn.style.backgroundColor = "#10B981"; 
+                btnEpi.classList.replace('text-gray-500', 'text-white'); btnResto.classList.replace('text-white', 'text-gray-500');
             }
-            renderSkeletons(); renderLabels(); loadProducts(); 
+            renderSkeletons(); renderLabels(); loadProducts(); renderUpsells();
         }
 
         async function renderLabels() {
             const nav = document.getElementById('sub-nav');
-            const catsData = [{name: '🔥 Top vente'}];
+            const cats = [{name: '🔥 Top vente'}];
             const snap = await db.collection("categories").where("type", "==", activeStore).get();
-            snap.forEach(doc => catsData.push(doc.data()));
-            
-            nav.innerHTML = catsData.map((cat, idx) => `
+            snap.forEach(doc => cats.push(doc.data()));
+            nav.innerHTML = cats.map((cat, idx) => `
                 <button id="btn-cat-${idx}" onclick="handleCatClick('${cat.name}', 'btn-cat-${idx}')" 
-                    class="category-pill px-6 py-3 text-[14px] font-bold whitespace-nowrap ${activeCat === cat.name ? 'active-label' : ''}">
+                    class="category-pill ${activeCat === cat.name ? 'active-label' : ''}">
                     ${cat.name}
-                </button>
-            `).join('');
+                </button>`).join('');
         }
 
         function handleCatClick(catName, elementId) {
             activeCat = catName; document.getElementById('search-input').value = '';
             renderLabels(); renderSkeletons(); loadProducts();
             const nav = document.getElementById('sub-nav');
-            const scrollTarget = document.getElementById(elementId).offsetLeft - 24;
+            const scrollTarget = document.getElementById(elementId).offsetLeft - 20;
             nav.scrollTo({ left: scrollTarget, behavior: 'smooth' });
         }
 
-        // --- GLOBAL SEARCH ---
+        // GLOBAL SEARCH ENGINE
         document.getElementById('search-input').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             if(term.length > 0) {
-                const filtered = globalCatalog.filter(p => p.name.toLowerCase().includes(term));
+                // Search globally across the ACTIVE STORE
+                const filtered = globalProducts.filter(p => p.type === activeStore && p.name.toLowerCase().includes(term));
                 renderProductGrid(filtered);
             } else {
-                loadProducts();
+                loadProducts(); // Reset to current category
             }
         });
 
+        // FILTER GRID BY CATEGORY
         function loadProducts() {
-            let filtered = globalCatalog.filter(p => p.type === activeStore);
+            let filtered = [];
             if (activeCat === '🔥 Top vente') {
-                filtered = filtered.filter(p => p.isTop === true);
+                filtered = globalProducts.filter(p => p.type === activeStore && p.isTop === true);
             } else {
-                filtered = filtered.filter(p => p.category === activeCat);
+                filtered = globalProducts.filter(p => p.type === activeStore && p.category === activeCat);
             }
             renderProductGrid(filtered);
         }
 
         function renderProductGrid(products) {
             const grid = document.getElementById('product-grid');
-            if(products.length === 0) { grid.innerHTML = '<p class="col-span-2 text-center text-gray-400 py-10 font-bold text-[14px]">Aucun résultat trouvé 🌮</p>'; return; }
+            if(products.length === 0) { grid.innerHTML = '<p class="col-span-2 text-center text-gray-400 py-10 font-bold text-sm">Aucun résultat trouvé</p>'; return; }
             
             grid.innerHTML = products.map(p => `
-                <div class="product-card p-3 flex flex-col gap-3 cursor-pointer group" onclick="openOptions('${p.name}', ${p.price}, '${p.image}', '${p.category}')">
+                <div class="product-card cursor-pointer" onclick="openOptions('${p.name}', ${p.price}, '${p.image}', '${p.category}')">
                     <div class="product-img-wrap">
                         <img src="${p.image}" loading="lazy">
-                        ${p.isTop ? `<span class="absolute top-3 left-3 bg-[#E85A24] text-white text-[9px] font-black px-2.5 py-1 rounded-[8px] uppercase shadow-md tracking-wider z-10">Top</span>` : ''}
+                        ${p.isTop ? `<span class="absolute top-3 left-3 text-white text-[9px] font-black px-2.5 py-1 rounded-lg uppercase shadow-sm" style="background: var(--brand-grad)">Top</span>` : ''}
                     </div>
-                    <h3 class="font-extrabold text-[13px] text-gray-800 leading-snug h-9 overflow-hidden px-1">${p.name}</h3>
-                    <div class="flex justify-between items-center mt-auto pb-1 px-1">
-                        <span class="font-black text-[16px] text-gray-900">${p.price} DH</span>
-                        <div class="add-circle-btn group-active:scale-90">+</div>
+                    <div class="p-3 pb-4">
+                        <h3 class="font-bold text-[14px] text-gray-900 leading-tight h-10 line-clamp-2">${p.name}</h3>
+                        <div class="mt-2 font-black text-[17px] tracking-tight text-gray-900">${p.price} DH</div>
                     </div>
+                    <button class="fab-add" onclick="event.stopPropagation(); openOptions('${p.name}', ${p.price}, '${p.image}', '${p.category}');" id="add-btn-${p.name.replace(/\s+/g, '')}">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                    </button>
                 </div>`).join('');
             lucide.createIcons();
         }
 
-        // --- SMART CONDITIONAL SAUCES ---
+        // SMART BOTTOM SHEET
         function openOptions(name, price, image, category) {
             currentItemForSheet = { name, price, image };
             document.getElementById('bs-title').innerText = name;
@@ -386,26 +403,15 @@
             document.getElementById('sauce-select').value = '';
             document.getElementById('bs-notes').value = '';
             
-            const foodName = name.toLowerCase();
-            const foodCat = category ? category.toLowerCase() : '';
-            const needsSauce = ['tacos', 'burger', 'burgers', 'sandwich', 'panini'].some(keyword => 
-                foodName.includes(keyword) || foodCat.includes(keyword)
-            );
+            const foodName = name.toLowerCase(); const foodCat = category ? category.toLowerCase() : '';
+            const needsSauce = ['tacos', 'burger', 'burgers', 'sandwich', 'panini'].some(k => foodName.includes(k) || foodCat.includes(k));
 
             const sauceDiv = document.getElementById('bs-sauces');
-            if(activeStore === 'Restaurant' && needsSauce) {
-                sauceDiv.classList.remove('hidden');
-            } else {
-                sauceDiv.classList.add('hidden');
-            }
-
+            if(activeStore === 'Restaurant' && needsSauce) { sauceDiv.classList.remove('hidden'); } else { sauceDiv.classList.add('hidden'); }
             document.getElementById('body-wrap').classList.add('bs-open', 'modal-open');
         }
 
-        function closeSheet() {
-            document.getElementById('body-wrap').classList.remove('bs-open', 'modal-open');
-            currentItemForSheet = null;
-        }
+        function closeSheet() { document.getElementById('body-wrap').classList.remove('bs-open', 'modal-open'); currentItemForSheet = null; }
 
         document.getElementById('bs-add-btn').addEventListener('click', () => {
             if(!currentItemForSheet) return;
@@ -413,102 +419,133 @@
             const notes = document.getElementById('bs-notes').value.trim();
             const complexId = `${currentItemForSheet.name}-${sauce}-${notes}`;
             
-            const existingItem = cart.find(i => i.id === complexId);
-            if(existingItem) { existingItem.qty++; } else {
+            const existing = cart.find(i => i.id === complexId);
+            if(existing) { existing.qty++; } else {
                 cart.push({ id: complexId, name: currentItemForSheet.name, price: currentItemForSheet.price, image: currentItemForSheet.image, sauce: sauce, notes: notes, qty: 1 });
             }
             
-            closeSheet(); syncUI(); showToast(`${currentItemForSheet.name} ajouté !`);
+            closeSheet(); saveCart(); syncUI(); showToast(`${currentItemForSheet.name} ajouté !`);
+            
+            // Pop Animation on Card Button
+            const btnId = `add-btn-${currentItemForSheet.name.replace(/\s+/g, '')}`;
+            const btn = document.getElementById(btnId);
+            if(btn) { btn.classList.add('animate-pop'); setTimeout(() => btn.classList.remove('animate-pop'), 400); }
         });
 
-        // Quick Add for Drinks Upsell
+        // DYNAMIC UPSELLS
+        function renderUpsells() {
+            // Find drinks from global inventory
+            const drinks = globalProducts.filter(p => {
+                const cat = (p.category || '').toLowerCase();
+                return cat.includes('boisson') || cat.includes('drink');
+            }).slice(0, 4); // Take up to 4 drinks
+
+            const container = document.getElementById('upsell-container');
+            const list = document.getElementById('upsell-list');
+            
+            if(drinks.length === 0) { container.classList.add('hidden'); return; }
+            
+            container.classList.remove('hidden');
+            list.innerHTML = drinks.map(d => `
+                <div class="min-w-[140px] bg-[#F8F9FA] p-2.5 rounded-[24px] flex items-center gap-3 border border-transparent shadow-sm active:scale-95 premium-ease cursor-pointer" onclick="quickAdd('${d.name}', ${d.price}, '${d.image}')">
+                    <img src="${d.image}" class="w-12 h-12 object-cover bg-white rounded-[16px] shadow-sm" style="mix-blend-mode: multiply;">
+                    <div class="flex-1">
+                        <p class="font-bold text-[12px] text-gray-800 leading-tight line-clamp-1">${d.name}</p>
+                        <p class="font-black text-[11px] mt-0.5" style="color: var(--brand)">+${d.price} DH</p>
+                    </div>
+                </div>`).join('');
+        }
+
         function quickAdd(name, price, image) {
             const complexId = `${name}--`;
-            const existingItem = cart.find(i => i.id === complexId);
-            if(existingItem) existingItem.qty++;
+            const existing = cart.find(i => i.id === complexId);
+            if(existing) existing.qty++;
             else cart.push({ id: complexId, name: name, price: price, image: image, sauce: '', notes: '', qty: 1 });
-            syncUI(); renderDrawer(); showToast(`${name} ajouté !`);
+            saveCart(); syncUI(); renderDrawer(); showToast(`${name} ajouté !`);
         }
 
         function updateCartItemQty(id, change) {
             const index = cart.findIndex(i => i.id === id);
-            if(index !== -1) {
-                cart[index].qty += change;
-                if(cart[index].qty <= 0) cart.splice(index, 1);
-            }
-            syncUI(); renderDrawer();
+            if(index !== -1) { cart[index].qty += change; if(cart[index].qty <= 0) cart.splice(index, 1); }
+            saveCart(); syncUI(); renderDrawer();
         }
 
-        // --- CART ENGINE & ANIMATIONS ---
-        function animatePrice() {
-            const priceEl = document.getElementById('final-price-bottom');
-            priceEl.classList.remove('price-update');
-            void priceEl.offsetWidth; // trigger reflow
-            priceEl.classList.add('price-update');
+        // --- ANIMATED PRICE LOGIC ---
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start) + " DH";
+                if (progress < 1) window.requestAnimationFrame(step);
+                else obj.innerHTML = end + " DH";
+            };
+            window.requestAnimationFrame(step);
         }
 
+        let lastTotal = 0;
         function syncUI() {
-            saveCart(); // Save to LocalStorage
-            
             let total = 0; let count = 0;
             cart.forEach(i => { total += i.qty * i.price; count += i.qty; });
             const totalWithDelivery = total > 0 ? total + livraisonFee : 0;
             
-            // Header
+            // Header Sync
             document.getElementById('nav-total').innerText = total + " DH";
             const navBadge = document.getElementById('nav-badge');
-            if (count > 0) { navBadge.innerText = count; navBadge.classList.replace('scale-0', 'scale-100'); } else { navBadge.classList.replace('scale-100', 'scale-0'); }
+            if (count > 0) { navBadge.innerText = count; navBadge.classList.replace('scale-0', 'scale-100'); } 
+            else { navBadge.classList.replace('scale-100', 'scale-0'); }
             
-            // Bottom Bar
+            // Bottom Bar Sync
             document.getElementById('floating-badge').innerText = count;
             document.getElementById('item-count-text').innerText = count + (count > 1 ? " articles" : " article");
             
-            // Animate Price if changed
-            const currentTotalText = document.getElementById('final-price-bottom').innerText;
-            if(currentTotalText !== total + " DH" && total > 0) animatePrice();
+            // Animate Bottom Bar Price
+            const bottomPriceEl = document.getElementById('final-price-bottom');
+            if (total !== lastTotal) {
+                animateValue(bottomPriceEl, lastTotal, total, 400);
+                // Pulse Animation on Bar
+                const barBtn = document.querySelector('#checkout-bar button');
+                barBtn.style.transform = 'scale(1.03)';
+                setTimeout(() => barBtn.style.transform = 'scale(1)', 200);
+                lastTotal = total;
+            } else {
+                bottomPriceEl.innerText = total + " DH";
+            }
             
-            document.getElementById('final-price-bottom').innerText = total + " DH";
+            // Drawer Sync
+            document.getElementById('drawer-subtotal').innerText = total + " DH";
             document.getElementById('drawer-total').innerText = totalWithDelivery + " DH";
+            
             document.getElementById('checkout-bar').style.transform = count > 0 ? 'translateY(0)' : 'translateY(150%)';
         }
 
         function renderDrawer() {
             const list = document.getElementById('cart-items');
-            if(cart.length === 0) { list.innerHTML = `<div class="py-24 text-center"><p class="text-gray-400 font-bold text-[13px] uppercase tracking-widest mb-5">Panier vide 🌮</p><button onclick="toggleCart(false)" class="text-[14px] font-black underline underline-offset-4" style="color: var(--brand)">Retour au menu</button></div>`; return; }
+            if(cart.length === 0) { list.innerHTML = `<div class="py-20 text-center flex flex-col items-center"><div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4"><i data-lucide="shopping-bag" class="w-8 h-8 text-gray-300"></i></div><p class="text-gray-400 font-bold text-xs uppercase tracking-widest mb-4">Votre panier est vide</p><button onclick="toggleCart(false)" class="text-[14px] font-black underline underline-offset-4" style="color: var(--brand)">Commencer la commande</button></div>`; lucide.createIcons(); return; }
             
             list.innerHTML = cart.map(item => `
-                <div class="flex items-center gap-4 bg-white p-4 rounded-[24px] shadow-sm border border-gray-50 mb-3">
-                    <img src="${item.image}" class="w-16 h-16 rounded-2xl object-cover bg-[#F8F9FA] p-1 shrink-0 mix-blend-multiply">
-                    <div class="flex-1 text-[12px]">
-                        <p class="font-extrabold text-gray-800 leading-tight text-[13px]">${item.name}</p>
-                        ${item.sauce ? `<p class="text-[10px] text-gray-500 mt-1.5 uppercase tracking-wider font-bold">Sauce: ${item.sauce}</p>` : ''}
-                        ${item.notes ? `<p class="text-[10px] text-orange-500 italic mt-0.5 font-bold">"${item.notes}"</p>` : ''}
-                        <p class="font-black mt-2 text-[15px]" style="color: var(--brand)">${item.price} DH</p>
+                <div class="flex items-center gap-4 bg-white p-4 rounded-[28px] border border-gray-100 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
+                    <img src="${item.image}" class="w-20 h-20 rounded-[20px] object-cover bg-gray-50 shrink-0">
+                    <div class="flex-1 text-[13px]">
+                        <p class="font-bold text-gray-900 leading-tight">${item.name}</p>
+                        ${item.sauce ? `<p class="text-[10px] text-gray-500 mt-1 font-semibold bg-gray-50 inline-block px-2 py-0.5 rounded-md">Sauce: ${item.sauce}</p>` : ''}
+                        ${item.notes ? `<p class="text-[10px] text-orange-500 italic mt-1 font-medium">"${item.notes}"</p>` : ''}
+                        <p class="font-black mt-2 text-[15px] tracking-tight" style="color: var(--brand)">${item.price} DH</p>
                     </div>
-                    
-                    <div class="flex flex-col items-center justify-between h-20 bg-[#F4F5F7] rounded-full p-1 border border-gray-100 shadow-inner shrink-0">
-                        <button onclick="updateCartItemQty('${item.id}', 1)" class="w-7 h-7 bg-white flex items-center justify-center font-black rounded-full shadow-sm active:scale-90 transition">+</button>
-                        <span class="font-black text-[13px] text-gray-800">${item.qty}</span>
-                        <button onclick="updateCartItemQty('${item.id}', -1)" class="w-7 h-7 flex items-center justify-center font-black text-gray-500 active:scale-90 transition">-</button>
+                    <div class="qty-pill">
+                        <button onclick="updateCartItemQty('${item.id}', 1)" class="w-7 h-7 flex items-center justify-center font-black active:scale-75 premium-ease bg-gray-50 rounded-full text-gray-800 hover:bg-gray-100">+</button>
+                        <span class="font-black text-[13px] text-gray-900">${item.qty}</span>
+                        <button onclick="updateCartItemQty('${item.id}', -1)" class="w-7 h-7 flex items-center justify-center font-black active:scale-75 premium-ease bg-gray-50 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600">-</button>
                     </div>
                 </div>
             `).join('');
+            lucide.createIcons();
         }
 
         function toggleCart(show) {
-            const body = document.getElementById('body-wrap');
-            const overlay = document.getElementById('cart-overlay');
-            const panel = document.getElementById('cart-panel');
-            if(show) { 
-                body.classList.replace('drawer-closed', 'drawer-open'); body.classList.add('modal-open'); 
-                overlay.style.opacity = '1'; overlay.style.pointerEvents = 'auto';
-                panel.style.transform = 'translateX(0)';
-                renderDrawer(); 
-            } else { 
-                body.classList.replace('drawer-open', 'drawer-closed'); body.classList.remove('modal-open'); 
-                overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none';
-                panel.style.transform = 'translateX(100%)';
-            }
+            const body = document.getElementById('body-wrap'); const overlay = document.getElementById('cart-overlay'); const panel = document.getElementById('cart-panel');
+            if(show) { body.classList.replace('drawer-closed', 'drawer-open'); body.classList.add('modal-open'); renderDrawer(); } 
+            else { body.classList.replace('drawer-open', 'drawer-closed'); body.classList.remove('modal-open'); }
         }
 
         function sendToWhatsApp() {
@@ -526,13 +563,7 @@
             window.open(`https://wa.me/212708006088?text=${encodeURIComponent(msg)}`);
         }
 
-        document.addEventListener('DOMContentLoaded', () => { 
-            renderSkeletons(); 
-            fetchGlobalCatalog(); // Fetch all data first
-            loadCart(); // Load saved cart
-            setStore('Restaurant'); 
-            lucide.createIcons(); 
-        });
+        document.addEventListener('DOMContentLoaded', () => { renderSkeletons(); loadSlides(); setStore('Restaurant'); lucide.createIcons(); });
     </script>
 </body>
 </html>
