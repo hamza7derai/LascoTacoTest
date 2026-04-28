@@ -570,15 +570,56 @@
 
         function toggleCart(show) { document.getElementById('body-wrap').classList.toggle('drawer-open', show); document.getElementById('body-wrap').classList.toggle('modal-open', show); if(show) renderDrawer(); }
 
-        function sendToWhatsApp() {
+        async function sendToWhatsApp() {
             if(cart.length === 0) return;
+            
             let msg = `🛒 *Nouvelle Commande LASCOTACO*\n\n`;
-            let sub = 0; cart.forEach(i => { msg += `• *${i.qty}x* ${i.name} ${i.sizeName ? `(${i.sizeName})` : ''}\n  ${i.extras?.length ? `Extras: ${i.extras.map(e=>e.name).join(', ')}\n` : ''}${i.sauce ? `Sauce: ${i.sauce}\n` : ''}${i.notes ? `Note: ${i.notes}\n` : ''}  = ${i.qty * i.price} DH\n\n`; sub += i.qty * i.price; });
-            msg += `🛵 *Livraison:* ${livraisonFee} DH\n💰 *TOTAL:* ${sub + livraisonFee} DH`;
+            let subtotalSale = 0; 
+            let subtotalCost = 0; 
+
+            cart.forEach(item => { 
+                msg += `• *${item.qty}x* ${item.name} ${item.sizeName ? `(${item.sizeName})` : ''}\n  ${item.extras?.length ? `Extras: ${item.extras.map(e=>e.name).join(', ')}\n` : ''}${item.sauce ? `Sauce: ${item.sauce}\n` : ''}${item.notes ? `Note: ${item.notes}\n` : ''}  = ${item.qty * item.price} DH\n\n`; 
+                
+                subtotalSale += item.qty * item.price; 
+                
+                // Find the original product to get YOUR cost price
+                const originalProduct = globalProducts.find(p => p.name === item.name);
+                const unitCost = (originalProduct && originalProduct.costPrice) ? Number(originalProduct.costPrice) : 0; 
+                subtotalCost += item.qty * unitCost;
+            });
+
+            msg += `🛵 *Livraison:* ${livraisonFee} DH\n💰 *TOTAL:* ${subtotalSale + livraisonFee} DH`;
+
+            // Calculate your exact profit for this specific order
+            const myProfit = subtotalSale - subtotalCost;
+
+            try {
+                // Save the order to a new "orders" collection in Firebase
+                const orderData = {
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    items: cart,
+                    totalSale: subtotalSale,
+                    totalCost: subtotalCost,
+                    profit: myProfit,
+                    deliveryFee: livraisonFee,
+                    status: "en_attente", // Pending delivery
+                    dateString: new Date().toLocaleDateString('fr-FR') // Saves today's date (ex: 28/04/2026)
+                };
+                await db.collection("orders").add(orderData);
+                
+                // Empty the cart after ordering
+                cart = []; 
+                saveCart(); 
+                syncUI(); 
+                toggleCart(false);
+            } catch (error) {
+                console.error("Erreur d'enregistrement:", error);
+            }
+
+            // Open WhatsApp
             window.open(`https://wa.me/212708006088?text=${encodeURIComponent(msg)}`);
         }
         document.addEventListener('DOMContentLoaded', () => { setStore('Restaurant'); lucide.createIcons(); });
     </script>
 </body>
 </html>
-
