@@ -3,90 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LASCOTACO | Premium Shop</title>
+    <title>LASCOTACO | Pro Shop</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --main: #E85A24; }
-        body { background-color: #F8F9FA; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
+        :root { --main: #E85A24; } /* Dynamic Variable */
+        body { background-color: #F8F9FA; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         
+        /* SCROLL LOCK */
+        body.no-scroll { overflow: hidden; height: 100vh; }
+
         .app-container { 
             max-width: 500px; margin: 0 auto; width: 100%; position: relative; 
-            background: white; min-height: 100vh; box-shadow: 0 0 80px rgba(0,0,0,0.03); 
+            background: white; min-height: 100vh; box-shadow: 0 0 50px rgba(0,0,0,0.05); 
             overflow-x: hidden; 
         }
-
-        /* --- 1. CATEGORY BAR --- */
+        
+        /* CATEGORY PILLS */
         .category-scroll { 
             display: flex; gap: 12px; overflow-x: auto; scroll-behavior: smooth;
-            scroll-snap-type: x mandatory; padding: 15px 24px;
-            scroll-padding-left: 24px; /* Breathing room margin */
+            scroll-snap-type: x mandatory; padding: 10px 24px;
+            scroll-padding-left: 20px;
         }
         .category-pill { 
             flex: 0 0 auto; scroll-snap-align: start;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            opacity: 0.5; transform: scale(0.95);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.6;
         }
-        .category-pill:active { transform: scale(0.92); }
         .active-label { 
-            background-color: var(--main) !important; color: white !important; 
-            opacity: 1 !important; transform: scale(1.05); 
-            box-shadow: 0 10px 20px rgba(232, 90, 36, 0.25); 
+            background-color: var(--main) !important; color: white !important; border-color: var(--main) !important;
+            opacity: 1 !important; transform: scale(1.05); box-shadow: 0 8px 15px rgba(0,0,0,0.1); 
         }
 
-        /* --- 2. INFINITE SLIDER --- */
-        .slider-viewport { width: 100%; overflow: hidden; border-radius: 32px; position: relative; margin: 0 auto; }
-        .slider-wrapper { display: flex; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); will-change: transform; }
-        .slide-box { min-width: 100%; height: 230px; padding: 0 6px; }
-        .slide-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 28px; transition: transform 8s linear; }
-        .slider-viewport:hover img { transform: scale(1.1); } /* Subtle zoom parallax */
+        /* SLIDER */
+        .slider-viewport { width: 100%; overflow: hidden; border-radius: 28px; position: relative; }
+        .slider-wrapper { display: flex; transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1); will-change: transform; }
+        .slide-box { min-width: 100%; height: 220px; padding: 0 4px; }
+        .slide-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 24px; }
 
-        /* --- 3. PRODUCT CARDS --- */
-        .product-card { 
-            background: white; border-radius: 24px; border: 1px solid #F1F3F5;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .product-card:active { transform: scale(0.97); background-color: #FAFAFA; }
-        .product-img-wrap { overflow: hidden; position: relative; border-radius: 20px; height: 140px; background: #F8F9FA; }
-        .product-img-wrap img { transition: transform 0.5s ease; }
-        .product-card:hover .product-img-wrap img { transform: scale(1.08); }
+        .glass-card { background: white; border-radius: 20px; border: 1px solid #F1F3F5; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+        
+        /* DYNAMIC ACTIVE STORE COLORS */
+        .active-main-resto { background-color: #E85A24 !important; color: white !important; }
+        .active-main-epi { background-color: #2D6A4F !important; color: white !important; }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* --- 4. FLOATING +1 ANIMATION --- */
-        @keyframes floatUp {
-            0% { opacity: 0; transform: translateY(0); }
-            20% { opacity: 1; }
-            100% { opacity: 0; transform: translateY(-40px); }
-        }
-        .plus-one { position: absolute; font-weight: 800; color: var(--main); animation: floatUp 0.8s ease-out forwards; pointer-events: none; z-index: 50; }
-
-        /* --- 5. FIXED CART DRAWER --- */
+        /* FIXED CART DRAWER */
         #cart-drawer-root { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
-        #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); transition: opacity 0.5s ease; }
+        #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); transition: opacity 0.4s ease; }
         #cart-panel { 
-            position: absolute; right: 0; top: 0; bottom: 0; width: 88%; max-width: 420px;
-            background: white; border-radius: 32px 0 0 32px;
-            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); 
-            pointer-events: auto; box-shadow: -20px 0 60px rgba(0,0,0,0.1);
+            position: absolute; right: 0; top: 0; bottom: 0; width: 85%; max-width: 400px;
+            background: white; transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1); 
+            pointer-events: auto;
         }
         .drawer-open #cart-panel { transform: translateX(0); }
         .drawer-closed #cart-panel { transform: translateX(100%); }
         .drawer-closed #cart-overlay { opacity: 0; pointer-events: none; }
         .drawer-open #cart-overlay { opacity: 1; pointer-events: auto; }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .sticky-footer-wrap { position: fixed; bottom: 0; width: 100%; max-width: 500px; padding: 20px; z-index: 100; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .sticky-footer-wrap { position: fixed; bottom: 0; width: 100%; max-width: 500px; padding: 20px; z-index: 60; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     </style>
 </head>
 <body class="drawer-closed" id="body-wrap">
 
     <div class="app-container" id="app-root">
         
-        <nav class="sticky top-0 bg-white/80 backdrop-blur-lg p-5 z-50 flex justify-between items-center px-8 border-b border-gray-50">
+        <nav class="sticky top-0 bg-white/80 backdrop-blur-md p-5 z-50 flex justify-between items-center px-6 border-b border-gray-50">
             <h1 class="text-2xl font-extrabold text-[#E85A24] tracking-tighter italic">LASCOTACO</h1>
-            <button onclick="toggleCart(true)" class="bg-[#1B1B1B] text-white px-6 py-2.5 rounded-2xl font-black text-xs flex items-center gap-2 shadow-2xl active:scale-90 transition-transform">
+            <button onclick="toggleCart(true)" class="bg-[#1B1B1B] text-white px-5 py-2.5 rounded-2xl font-black text-sm flex items-center gap-2 shadow-xl active:scale-95 transition">
                 <i data-lucide="shopping-bag" class="w-4 h-4 text-orange-400"></i>
                 <span id="nav-total">0 DH</span>
             </button>
@@ -95,31 +83,30 @@
         <div class="p-4 pt-6">
             <div class="slider-viewport">
                 <div id="slider" class="slider-wrapper"></div>
-                <div id="slider-dots" class="absolute bottom-5 left-0 right-0 flex justify-center gap-2"></div>
+                <div id="slider-dots" class="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5"></div>
             </div>
         </div>
 
-        <div class="px-6 py-4 flex gap-4 sticky top-[73px] bg-white/95 backdrop-blur-md z-40">
-            <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 py-4 rounded-3xl font-extrabold flex items-center justify-center gap-2 transition-all bg-white border border-gray-100 active-main">
+        <div class="p-4 flex gap-3 sticky top-[73px] bg-white/95 backdrop-blur-sm z-40">
+            <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border active-main-resto shadow-lg">
                 <i data-lucide="utensils" class="w-4 h-4"></i> Resto
             </button>
-            <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 py-4 rounded-3xl font-extrabold flex items-center justify-center gap-2 transition-all bg-white border border-gray-100">
+            <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border">
                 <i data-lucide="shopping-basket" class="w-4 h-4"></i> Épicerie
             </button>
         </div>
 
-        <div id="sub-nav" class="category-scroll no-scrollbar sticky top-[165px] bg-white/95 backdrop-blur-md z-30"></div>
+        <div id="sub-nav" class="category-scroll no-scrollbar sticky top-[155px] bg-white/95 backdrop-blur-sm z-30"></div>
 
-        <main id="product-grid" class="p-6 grid grid-cols-2 gap-5 pb-48"></main>
+        <main id="product-grid" class="p-6 grid grid-cols-2 gap-4 pb-48"></main>
 
         <div id="checkout-bar" class="sticky-footer-wrap translate-y-full">
-            <button onclick="toggleCart(true)" class="w-full bg-[#1A1A1A] text-white p-5 rounded-[2.5rem] flex justify-between items-center shadow-[0_20px_50px_rgba(0,0,0,0.2)] active:scale-95 transition-transform overflow-hidden relative group">
-                <div class="absolute inset-0 bg-gradient-to-r from-orange-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="text-left pl-3 z-10">
-                    <p id="item-count" class="text-[8px] font-bold text-gray-400 uppercase tracking-[0.2em]">0 Articles</p>
+            <button onclick="toggleCart(true)" id="main-order-btn" class="w-full bg-[#1A1A1A] text-white p-5 rounded-[2.2rem] flex justify-between items-center shadow-2xl active:scale-95 transition">
+                <div class="text-left pl-2">
+                    <p id="item-count" class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">0 Articles</p>
                     <p id="final-price" class="text-xl font-black">0 DH</p>
                 </div>
-                <span class="font-black flex items-center gap-2 pr-3 text-sm text-orange-500 z-10">Voir le panier <i data-lucide="arrow-right" class="w-5 h-5"></i></span>
+                <span class="font-black flex items-center gap-2 pr-2 text-sm text-orange-500 font-bold">Voir le panier <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
             </button>
         </div>
     </div>
@@ -127,29 +114,28 @@
     <div id="cart-drawer-root">
         <div id="cart-overlay" onclick="toggleCart(false)"></div>
         <div id="cart-panel" class="flex flex-col">
-            <div class="p-8 border-b border-gray-50 flex justify-between items-center">
-                <h2 class="text-2xl font-black italic tracking-tight">Mon Panier</h2>
-                <button onclick="toggleCart(false)" class="p-4 bg-gray-100 rounded-full text-gray-500 active:scale-75 transition-transform"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div class="p-6 border-b flex justify-between items-center">
+                <h2 class="text-xl font-black italic tracking-tight">Mon Panier</h2>
+                <button onclick="toggleCart(false)" class="p-3 bg-gray-100 rounded-full text-gray-500"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
-            <div id="cart-items" class="flex-1 overflow-y-auto p-8 space-y-5 no-scrollbar"></div>
-            <div class="p-10 bg-gray-50/50 border-t border-gray-100 space-y-4">
+            <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar"></div>
+            <div class="p-8 bg-gray-50/80 border-t border-gray-100 space-y-3">
                 <div class="flex justify-between items-center px-2">
-                    <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest">Livraison</span>
-                    <span class="font-black text-gray-800 text-sm">20 DH</span>
+                    <span class="font-bold text-gray-400 uppercase text-[9px]">Livraison</span>
+                    <span class="font-bold text-gray-600 text-xs">20 DH</span>
                 </div>
                 <div class="flex justify-between items-center px-2">
-                    <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest text-orange-500">Total Final</span>
-                    <span id="drawer-total" class="text-3xl font-black text-[#E85A24]">0 DH</span>
+                    <span class="font-bold text-gray-400 uppercase text-[9px]">Total</span>
+                    <span id="drawer-total" class="text-2xl font-black text-[#E85A24]">0 DH</span>
                 </div>
-                <button onclick="sendToWhatsApp()" class="w-full bg-[#25D366] text-white py-6 rounded-[2rem] font-black text-lg flex justify-center items-center gap-3 shadow-2xl active:scale-95 transition-all">
-                    <i data-lucide="message-circle" class="w-6 h-6"></i> Commander
+                <button onclick="sendToWhatsApp()" id="whatsapp-btn" class="w-full bg-[#25D366] text-white py-5 rounded-[1.8rem] font-black text-lg flex justify-center items-center gap-3 shadow-xl active:scale-95 transition">
+                    <i data-lucide="message-circle" class="w-6 h-6"></i> WhatsApp
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        // FIREBASE SETUP
         const firebaseConfig = {
             apiKey: "AIzaSyBebaGxqiNBvCqofveg1Fmztl7av3Mdoyg",
             authDomain: "lascotaco-67fe5.firebaseapp.com",
@@ -164,7 +150,7 @@
         let cart = {}; let activeStore = 'Restaurant'; let activeCat = '🔥 Top vente';
         let livraisonFee = 20;
 
-        // --- 1. INFINITE LOOP SLIDER ---
+        // INFINITE SLIDER
         async function loadSlides() {
             const slider = document.getElementById('slider');
             const dots = document.getElementById('slider-dots');
@@ -172,33 +158,52 @@
             if (snap.empty) return;
             const bannerArray = [];
             snap.forEach(doc => bannerArray.push(doc.data().url));
-            
             slider.innerHTML = bannerArray.map(url => `<div class="slide-box"><img src="${url}"></div>`).join('');
-            slider.innerHTML += `<div class="slide-box"><img src="${bannerArray[0]}"></div>`; // Forward loop clone
-            
-            dots.innerHTML = bannerArray.map((_, i) => `<div class="w-1.5 h-1.5 rounded-full bg-white transition-all duration-500 ${i === 0 ? 'w-8 bg-orange-500' : 'opacity-40'}"></div>`).join('');
-            
+            slider.innerHTML += `<div class="slide-box"><img src="${bannerArray[0]}"></div>`;
+            dots.innerHTML = bannerArray.map((_, i) => `<div class="w-1.5 h-1.5 rounded-full bg-white transition-all duration-500 ${i === 0 ? 'w-6' : 'opacity-30'}"></div>`).join('');
             let index = 0;
-            const total = bannerArray.length;
+            const totalSlides = bannerArray.length;
             setInterval(() => {
                 index++;
-                slider.style.transition = 'transform 0.8s cubic-bezier(0.65, 0, 0.35, 1)';
+                slider.style.transition = 'transform 0.7s cubic-bezier(0.65, 0, 0.35, 1)';
                 slider.style.transform = `translateX(-${index * 100}%)`;
-                if (index === total) {
+                if (index === totalSlides) {
                     setTimeout(() => {
                         slider.style.transition = 'none';
                         index = 0;
                         slider.style.transform = `translateX(0)`;
-                    }, 800);
+                    }, 700);
                 }
-                const dotIdx = index === total ? 0 : index;
+                const dotIdx = index === totalSlides ? 0 : index;
                 Array.from(dots.children).forEach((dot, dIdx) => {
-                    dot.className = `w-1.5 h-1.5 rounded-full bg-white transition-all duration-500 ${dIdx === dotIdx ? 'w-8 bg-orange-500' : 'opacity-40'}`;
+                    dot.className = `w-1.5 h-1.5 rounded-full bg-white transition-all duration-500 ${dIdx === dotIdx ? 'w-6' : 'opacity-80'}`;
                 });
-            }, 6000);
+            }, 5000);
         }
 
-        // --- 2. CATEGORY SNAPPING ---
+        // STORE TOGGLE LOGIC
+        function setStore(type) { 
+            activeStore = type; 
+            activeCat = '🔥 Top vente';
+            
+            const root = document.documentElement;
+            const btnResto = document.getElementById('btn-resto');
+            const btnEpi = document.getElementById('btn-epi');
+
+            if(type === 'Restaurant') {
+                root.style.setProperty('--main', '#E85A24');
+                btnResto.className = "flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border active-main-resto shadow-lg";
+                btnEpi.className = "flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border";
+            } else {
+                root.style.setProperty('--main', '#2D6A4F'); // Green for Epicerie
+                btnEpi.className = "flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border active-main-epi shadow-lg";
+                btnResto.className = "flex-1 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-white border";
+            }
+            
+            renderLabels(); 
+            loadProducts(); 
+        }
+
         async function renderLabels() {
             const nav = document.getElementById('sub-nav');
             const catsData = [{name: '🔥 Top vente'}];
@@ -207,7 +212,7 @@
             nav.innerHTML = catsData.map((cat, idx) => `
                 <button id="btn-cat-${idx}" 
                     onclick="handleCatClick('${cat.name}', 'btn-cat-${idx}')" 
-                    class="category-pill px-7 py-3 rounded-2xl font-bold whitespace-nowrap border ${activeCat === cat.name ? 'active-label' : 'bg-gray-100/50 text-gray-400 border-transparent'}">
+                    class="category-pill px-6 py-2.5 rounded-xl font-bold whitespace-nowrap border ${activeCat === cat.name ? 'active-label' : 'bg-white text-gray-400 border-gray-100'}">
                     ${cat.name}
                 </button>
             `).join('');
@@ -215,24 +220,19 @@
 
         function handleCatClick(catName, elementId) {
             activeCat = catName;
-            const pills = document.querySelectorAll('.category-pill');
-            pills.forEach(p => p.classList.remove('active-label'));
-            const activePill = document.getElementById(elementId);
-            activePill.classList.add('active-label');
-
+            renderLabels();
             const nav = document.getElementById('sub-nav');
-            const offset = 24; 
-            const scrollTarget = activePill.offsetLeft - offset;
-            nav.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+            setTimeout(() => {
+                const activePill = document.getElementById(elementId);
+                if(activePill) nav.scrollTo({ left: activePill.offsetLeft - 24, behavior: 'smooth' });
+            }, 10);
             loadProducts();
         }
 
-        // --- 3. PRODUCTS & MICRO-INTERACTIONS ---
         function loadProducts() {
             let query = db.collection("products").where("type", "==", activeStore);
             if (activeCat === '🔥 Top vente') query = query.where("isTop", "==", true);
             else query = query.where("category", "==", activeCat);
-
             query.onSnapshot(snap => {
                 const grid = document.getElementById('product-grid');
                 grid.innerHTML = "";
@@ -240,37 +240,24 @@
                     const p = doc.data();
                     const qty = cart[p.name]?.qty || 0;
                     grid.innerHTML += `
-                        <div class="product-card p-4 flex flex-col gap-4">
-                            <div class="product-img-wrap shadow-inner">
-                                <img src="${p.image}" loading="lazy" class="w-full h-full object-cover">
-                                ${p.isTop ? '<span class="absolute top-3 left-3 bg-[#E85A24] text-white text-[7px] font-black px-2.5 py-1 rounded-lg uppercase">Best Seller</span>' : ''}
+                        <div class="glass-card p-3 flex flex-col gap-3">
+                            <div class="h-32 bg-gray-50 rounded-2xl overflow-hidden relative shadow-inner">
+                                <img src="${p.image}" class="w-full h-full object-cover">
+                                ${p.isTop ? '<span class="absolute top-2 left-2 bg-orange-600 text-white text-[8px] font-black px-2 py-1 rounded-md" style="background-color: var(--main)">TOP</span>' : ''}
                             </div>
-                            <h3 class="font-bold text-[11px] text-gray-800 leading-snug h-8 overflow-hidden">${p.name}</h3>
+                            <h3 class="font-bold text-[11px] text-gray-800 leading-tight">${p.name}</h3>
                             <div class="flex justify-between items-center mt-auto">
-                                <span class="font-black text-[#E85A24] text-sm">${p.price} DH</span>
-                                <div class="flex items-center gap-3 relative">
-                                    <button onclick="updateQty('${p.name}', ${p.price}, -1, '${p.image}')" class="w-8 h-8 bg-gray-50 rounded-xl font-bold text-xs active:scale-75 transition-transform">-</button>
-                                    <span class="font-black text-xs w-4 text-center">${qty}</span>
-                                    <button onclick="animateAdd(event, '${p.name}', ${p.price}, '${p.image}')" class="w-8 h-8 bg-[#E85A24] text-white rounded-xl shadow-lg shadow-orange-200 active:scale-75 transition-transform font-bold text-xs">+</button>
+                                <span class="font-black text-xs" style="color: var(--main)">${p.price} DH</span>
+                                <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1 border border-gray-100">
+                                    <button onclick="updateQty('${p.name}', ${p.price}, -1, '${p.image}')" class="w-6 h-6 bg-white rounded shadow-sm font-bold text-xs">-</button>
+                                    <span class="font-bold text-[10px] w-3 text-center">${qty}</span>
+                                    <button onclick="updateQty('${p.name}', ${p.price}, 1, '${p.image}')" class="w-6 h-6 text-white rounded shadow-sm font-bold text-xs" style="background-color: var(--main)">+</button>
                                 </div>
                             </div>
                         </div>`;
                 });
                 lucide.createIcons();
             });
-        }
-
-        function animateAdd(e, name, price, img) {
-            // Floating +1
-            const float = document.createElement('span');
-            float.innerText = '+1';
-            float.className = 'plus-one';
-            float.style.left = `${e.clientX - 10}px`;
-            float.style.top = `${e.clientY - 20}px`;
-            document.body.appendChild(float);
-            setTimeout(() => float.remove(), 800);
-
-            updateQty(name, price, 1, img);
         }
 
         function updateQty(name, price, change, img) {
@@ -284,13 +271,11 @@
         function syncUI() {
             let total = 0; let count = 0;
             for (let id in cart) { total += cart[id].qty * cart[id].price; count += cart[id].qty; }
-            const totalWithDelivery = total > 0 ? total + livraisonFee : 0;
-            
             document.getElementById('nav-total').innerText = total + " DH";
             document.getElementById('final-price').innerText = total + " DH";
-            document.getElementById('drawer-total').innerText = totalWithDelivery + " DH";
+            document.getElementById('drawer-total').innerText = (total > 0 ? total + livraisonFee : 0) + " DH";
             document.getElementById('item-count').innerText = count + " Articles";
-            document.getElementById('checkout-bar').style.transform = count > 0 ? 'translateY(0)' : 'translateY(150%)';
+            document.getElementById('checkout-bar').style.transform = count > 0 ? 'translateY(0)' : 'translateY(100%)';
             loadProducts();
         }
 
@@ -298,28 +283,20 @@
             const itemsList = document.getElementById('cart-items');
             const cartKeys = Object.keys(cart);
             if(cartKeys.length === 0) {
-                itemsList.innerHTML = `
-                    <div class="py-24 text-center space-y-6">
-                        <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto">
-                            <i data-lucide="shopping-cart" class="w-8 h-8 text-gray-200"></i>
-                        </div>
-                        <p class="text-gray-400 font-bold text-xs uppercase tracking-widest">Votre panier est vide</p>
-                        <button onclick="handleCatClick('🔥 Top vente', 'btn-cat-0'); toggleCart(false);" class="text-orange-500 font-black text-xs underline underline-offset-8">Commencer mes achats</button>
-                    </div>`;
-                lucide.createIcons();
+                itemsList.innerHTML = `<p class="text-center text-gray-400 py-10 font-bold text-xs">Panier vide 🌮</p>`;
                 return;
             }
             itemsList.innerHTML = cartKeys.map(name => `
-                <div class="flex items-center gap-5 bg-gray-50/50 p-4 rounded-3xl border border-gray-100 animate-in slide-in-from-right duration-300">
-                    <img src="${cart[name].image}" class="w-16 h-16 rounded-2xl object-cover shadow-sm">
-                    <div class="flex-1 text-[11px]">
-                        <p class="font-extrabold text-gray-800 leading-tight mb-1">${name}</p>
-                        <p class="font-black text-[#E85A24]">${cart[name].price} DH</p>
+                <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-2xl border border-gray-100">
+                    <img src="${cart[name].image}" class="w-10 h-10 rounded-xl object-cover shadow-sm">
+                    <div class="flex-1">
+                        <p class="font-bold text-[10px] text-gray-800 leading-tight">${name}</p>
+                        <p class="text-[9px] font-black text-[#E85A24]">${cart[name].price} DH</p>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <button onclick="updateQty('${name}', ${cart[name].price}, -1, '${cart[name].image}')" class="w-9 h-9 bg-white rounded-xl shadow-sm font-black active:scale-75 transition-transform">-</button>
-                        <span class="font-black text-sm">${cart[name].qty}</span>
-                        <button onclick="updateQty('${name}', ${cart[name].price}, 1, '${cart[name].image}')" class="w-9 h-9 bg-[#E85A24] text-white rounded-xl shadow-sm font-black active:scale-75 transition-transform">+</button>
+                    <div class="flex items-center gap-3">
+                        <button onclick="updateQty('${name}', ${cart[name].price}, -1, '${cart[name].image}')" class="w-6 h-6 bg-white rounded shadow-sm font-black">-</button>
+                        <span class="font-bold text-[10px]">${cart[name].qty}</span>
+                        <button onclick="updateQty('${name}', ${cart[name].price}, 1, '${cart[name].image}')" class="w-6 h-6 text-white rounded shadow-sm font-black" style="background-color: var(--main)">+</button>
                     </div>
                 </div>
             `).join('');
@@ -327,25 +304,24 @@
 
         function toggleCart(show) {
             const body = document.getElementById('body-wrap');
-            if(show) { body.classList.replace('drawer-closed', 'drawer-open'); renderDrawer(); } 
-            else { body.classList.replace('drawer-open', 'drawer-closed'); }
-        }
-
-        function setStore(type) { 
-            activeStore = type; activeCat = '🔥 Top vente'; 
-            renderLabels(); loadProducts(); 
-            document.getElementById('btn-resto').classList.toggle('active-main', type === 'Restaurant');
-            document.getElementById('btn-epi').classList.toggle('active-main', type === 'Épicerie');
+            if(show) { 
+                body.classList.replace('drawer-closed', 'drawer-open'); 
+                body.classList.add('no-scroll'); // LOCK SCROLL
+                renderDrawer(); 
+            } else { 
+                body.classList.replace('drawer-open', 'drawer-closed'); 
+                body.classList.remove('no-scroll'); // UNLOCK SCROLL
+            }
         }
 
         function sendToWhatsApp() {
             let msg = `🛒 *Nouvelle Commande LASCOTACO*\n\n`;
             let subtotal = 0;
             for (let id in cart) { 
-                msg += `• *${cart[id].qty}x* ${id} (${cart[id].qty * cart[id].price} DH)\n`; 
-                subtotal += cart[id].qty * cart[id].price; 
+                msg += `• ${cart[id].qty}x ${id} (${cart[id].qty * cart[id].price} DH)\n`;
+                subtotal += cart[id].qty * cart[id].price;
             }
-            msg += `\n🛵 *Livraison:* ${livraisonFee} DH\n💰 *TOTAL:* ${subtotal + livraisonFee} DH`;
+            msg += `\n💰 *Total:* ${subtotal + livraisonFee} DH`;
             window.open(`https://wa.me/212708006088?text=${encodeURIComponent(msg)}`);
         }
 
