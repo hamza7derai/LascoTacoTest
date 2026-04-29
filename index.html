@@ -54,7 +54,7 @@
         #bs-overlay, #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
         
         #bs-panel, #cart-panel { width: 100%; max-width: 500px; border-radius: 32px 32px 0 0; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); pointer-events: auto; display: flex; flex-direction: column; max-height: 92vh; box-shadow: 0 -20px 40px rgba(0,0,0,0.1); }
-        #bs-panel { background: #FDFBFA; padding-bottom: env(safe-area-inset-bottom); }
+        #bs-panel { background: #FFFFFF; padding-bottom: env(safe-area-inset-bottom); }
         #cart-panel { background: #FDFBFA; }
         
         .bs-open #bs-overlay, .drawer-open #cart-overlay { opacity: 1; pointer-events: auto; }
@@ -139,23 +139,33 @@
     <div id="bottom-sheet-root">
         <div id="bs-overlay" onclick="closeSheet()"></div>
         <div id="bs-panel">
-            <div class="p-5 bg-white flex items-start gap-4 shrink-0 relative rounded-t-[32px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] z-20">
-                <div class="absolute top-2.5 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full"></div>
-                <img id="bs-image" src="" class="w-20 h-20 rounded-[16px] object-cover bg-[#F4F5F7] mt-2 shrink-0 shadow-sm border border-gray-100">
-                <div class="mt-2 pr-2 w-full flex-1 min-w-0">
-                    <h3 id="bs-title" class="font-black text-[18px] text-gray-900 leading-tight tracking-tight truncate">Produit</h3>
-                    <p id="bs-description" class="text-[12px] text-gray-500 font-medium mt-1 leading-snug hidden line-clamp-2"></p>
-                    <p id="bs-price" class="font-black mt-2 text-[18px] text-[var(--brand)]">0 DH</p>
+            <div class="absolute top-2.5 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full z-30"></div>
+            <button onclick="closeSheet()" class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center bg-gray-100 rounded-full text-gray-600 hover:bg-gray-200 active:scale-90 transition-transform duration-200 z-30">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+            
+            <div class="p-6 pt-10 flex gap-5 items-center relative z-20">
+                <img id="bs-image" src="" class="w-[110px] h-[110px] rounded-[24px] object-cover bg-[#F8F9FA] shrink-0 shadow-sm border border-gray-50">
+                <div class="flex-1 min-w-0 flex flex-col justify-center">
+                    <h3 id="bs-title" class="font-black text-[22px] text-gray-900 leading-tight tracking-tight">Produit</h3>
+                    <p id="bs-subtitle" class="text-[13px] text-gray-500 font-semibold mt-1 leading-snug line-clamp-2"></p>
+                    <div id="bs-badge-container" class="mt-2 hidden">
+                        <span id="bs-badge-text" class="text-[10px] font-bold px-2 py-1 rounded-[6px] text-[var(--brand)] bg-[var(--brand-soft)] border border-[var(--brand-soft)] flex items-center gap-1 w-fit">
+                            <i data-lucide="leaf" class="w-3 h-3"></i> Frais du jour
+                        </span>
+                    </div>
+                    <p id="bs-price" class="font-black mt-2 text-[22px] text-[var(--brand)] tracking-tight">0 DH</p>
+                    <p id="bs-disclaimer" class="text-[10px] font-bold text-gray-400 mt-1 flex items-center gap-1 hidden">
+                        <i data-lucide="info" class="w-3 h-3"></i> Prix du marché, peut varier.
+                    </p>
                 </div>
-                <button onclick="closeSheet()" class="w-8 h-8 flex items-center justify-center bg-[#F4F5F7] rounded-full text-gray-500 hover:bg-gray-200 active:scale-90 transition-transform duration-200 mt-2 shrink-0">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
             </div>
             
-            <div class="p-5 overflow-y-auto no-scrollbar flex-1 space-y-8 relative z-10" id="bs-content-scroll">
+            <div class="px-6 flex-1 overflow-y-auto no-scrollbar space-y-7 relative z-10 pb-6" id="bs-content-scroll">
+                
                 <div id="bs-sizes" class="space-y-3 hidden">
                     <div class="flex items-center justify-between mb-2">
-                        <h4 class="font-black text-[15px] text-gray-900 flex items-center gap-2"><i data-lucide="users" class="w-4 h-4 text-gray-400"></i> Taille</h4>
+                        <h4 class="font-black text-[15px] text-gray-900 flex items-center gap-2"> Taille</h4>
                         <span class="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-1 rounded-md uppercase">Requis</span>
                     </div>
                     <div id="size-options-container" class="space-y-2"></div>
@@ -163,7 +173,7 @@
 
                 <div id="bs-sauces" class="space-y-3 hidden">
                     <div class="flex items-center justify-between mb-2">
-                        <h4 class="font-black text-[15px] text-gray-900 flex items-center gap-2"><i data-lucide="droplet" class="w-4 h-4 text-gray-400"></i> Sauces</h4>
+                        <h4 class="font-black text-[15px] text-gray-900 flex items-center gap-2"> Sauces</h4>
                         <span class="bg-[var(--brand-soft)] text-[var(--brand)] text-[10px] font-bold px-2 py-1 rounded-md uppercase">Requis</span>
                     </div>
                     <div id="sauce-options-container" class="space-y-2"></div>
@@ -171,27 +181,57 @@
 
                 <div id="bs-extras" class="space-y-3 hidden">
                     <div class="flex items-center justify-between mb-2">
-                        <h4 class="font-black text-[15px] text-gray-900 flex items-center gap-2"><i data-lucide="gift" class="w-4 h-4 text-gray-400"></i> Extras</h4>
+                        <h4 class="font-black text-[15px] text-gray-900 flex items-center gap-2"> Extras</h4>
                         <span class="text-gray-400 text-[11px] font-bold uppercase">Optionnel</span>
                     </div>
                     <div id="extras-options-container" class="space-y-2"></div>
                 </div>
                 
-                <div id="bs-instructions" class="space-y-3 hidden pb-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <h4 class="font-black text-[15px] text-gray-900 flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4 text-gray-400"></i> Notes</h4>
+                <div class="flex items-center justify-between pt-2">
+                    <h4 class="font-black text-[16px] text-gray-900">Quantité</h4>
+                    <div class="flex items-center gap-4 bg-[#F8F9FA] rounded-[16px] px-2 py-1.5 border border-gray-100 shadow-sm">
+                        <button onclick="updateModalQty(-1)" class="w-8 h-8 flex items-center justify-center text-[var(--brand)] active:scale-90 transition-transform"><i data-lucide="minus" class="w-5 h-5"></i></button>
+                        <span id="bs-qty" class="font-black text-[16px] text-gray-900 w-4 text-center">1</span>
+                        <button onclick="updateModalQty(1)" class="w-8 h-8 flex items-center justify-center text-[var(--brand)] active:scale-90 transition-transform"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                    </div>
+                    <span id="bs-total-inline" class="font-black text-[16px] text-[var(--brand)] text-right min-w-[50px]">0 DH</span>
+                </div>
+
+                <div id="bs-instructions" class="space-y-3 hidden">
+                    <div class="flex items-center justify-between mb-1">
+                        <h4 class="font-bold text-[14px] text-gray-800 flex items-center gap-1.5"><i data-lucide="file-text" class="w-4 h-4 text-[var(--brand)]"></i> Notes <span class="text-gray-400 font-medium text-[12px]">(optionnel)</span></h4>
                     </div>
                     <div class="relative">
-                        <textarea id="bs-notes" maxlength="150" oninput="document.getElementById('char-count').innerText = this.value.length" placeholder="Ex: Sans oignons..." class="w-full p-4 bg-[#F8F9FA] rounded-[16px] font-medium text-[14px] text-gray-800 border-2 border-transparent outline-none resize-none h-24 transition-colors focus:border-[var(--brand)] focus:bg-white placeholder-gray-400 shadow-inner"></textarea>
+                        <textarea id="bs-notes" maxlength="150" oninput="document.getElementById('char-count').innerText = this.value.length" placeholder="Ex: Sans oignons, bien cuit..." class="w-full p-4 bg-[#F8F9FA] rounded-[16px] font-medium text-[13px] text-gray-800 border-2 border-transparent outline-none resize-none h-20 transition-colors focus:border-[var(--brand)] focus:bg-white placeholder-gray-400 shadow-inner"></textarea>
                         <span class="absolute bottom-3 right-4 text-[10px] font-bold text-gray-400"><span id="char-count">0</span>/150</span>
+                    </div>
+                </div>
+
+                <div class="bg-[#F8F9FA] rounded-[20px] p-4 flex justify-between gap-2 border border-gray-50">
+                    <div class="flex-1 flex flex-col items-center text-center gap-1">
+                        <i id="tb-icon-1" data-lucide="leaf" class="w-5 h-5 text-gray-700"></i>
+                        <p id="tb-title-1" class="font-bold text-[11px] text-gray-900 mt-1">Produits frais</p>
+                        <p id="tb-sub-1" class="text-[9px] font-semibold text-gray-500 leading-tight">Sélectionnés avec soin</p>
+                    </div>
+                    <div class="w-[1px] bg-gray-200/60 my-1"></div>
+                    <div class="flex-1 flex flex-col items-center text-center gap-1">
+                        <i id="tb-icon-2" data-lucide="truck" class="w-5 h-5 text-[var(--brand)]"></i>
+                        <p id="tb-title-2" class="font-bold text-[11px] text-gray-900 mt-1">Livraison rapide</p>
+                        <p id="tb-sub-2" class="text-[9px] font-semibold text-gray-500 leading-tight">En moins de 45 min</p>
+                    </div>
+                    <div class="w-[1px] bg-gray-200/60 my-1"></div>
+                    <div class="flex-1 flex flex-col items-center text-center gap-1">
+                        <i id="tb-icon-3" data-lucide="shield-check" class="w-5 h-5 text-gray-700"></i>
+                        <p id="tb-title-3" class="font-bold text-[11px] text-gray-900 mt-1">Qualité garantie</p>
+                        <p id="tb-sub-3" class="text-[9px] font-semibold text-gray-500 leading-tight">Satisfait ou remboursé</p>
                     </div>
                 </div>
             </div>
 
             <div class="p-5 bg-white shrink-0 border-t border-gray-100 shadow-[0_-15px_40px_rgba(0,0,0,0.04)] z-20">
-                <button id="bs-add-btn" class="w-full text-white py-4 h-[60px] rounded-[20px] font-black text-[16px] active:scale-[0.97] transition-all duration-200 flex items-center justify-between px-6 shadow-[0_8px_25px_var(--brand-medium)] bg-gradient-to-r from-[var(--brand)] to-[#FF8A50]">
-                    <div class="flex items-center gap-2.5"><i data-lucide="shopping-cart" class="w-5 h-5"></i><span>Ajouter</span></div>
-                    <span id="bs-btn-price" class="bg-white/25 px-3 py-1.5 rounded-[10px] backdrop-blur-sm tracking-wide">0 DH</span>
+                <button id="bs-add-btn" class="w-full text-white h-[56px] rounded-[16px] font-black text-[15px] active:scale-[0.97] transition-all duration-200 flex items-center justify-between px-5 shadow-[0_8px_20px_var(--brand-medium)] bg-[var(--brand)]">
+                    <div class="flex items-center gap-2"><i data-lucide="shopping-basket" class="w-5 h-5"></i><span>Ajouter au panier</span></div>
+                    <span id="bs-btn-price" class="bg-white/20 px-3 py-1.5 rounded-[10px] tracking-wide text-[15px]">0 DH</span>
                 </button>
             </div>
         </div>
@@ -242,7 +282,7 @@
                         <span id="drawer-total" class="text-[28px] font-black text-[var(--brand)] tracking-tight">0 DH</span>
                     </div>
                 </div>
-                <button onclick="sendToWhatsApp()" id="wa-btn" class="w-full bg-[#25D366] text-white py-4.5 h-[60px] rounded-[20px] font-black text-[16px] flex justify-center items-center gap-2 mt-6 active:scale-[0.97] transition-all shadow-[0_8px_20px_rgba(37,211,102,0.25)]">
+                <button onclick="sendToWhatsApp()" id="wa-btn" class="w-full bg-[#25D366] text-white py-4 h-[60px] rounded-[20px] font-black text-[16px] flex justify-center items-center gap-2 mt-6 active:scale-[0.97] transition-all shadow-[0_8px_20px_rgba(37,211,102,0.25)]">
                     <i data-lucide="message-circle" class="w-5 h-5 fill-current text-white"></i> Commander
                 </button>
             </div>
@@ -260,6 +300,7 @@
         let livraisonFee = 20;
         let globalProducts = []; 
         let currentItemForSheet = null;
+        let currentModalQty = 1; // NEW: Tracks quantity before adding to cart
         let lastTotal = 0; 
 
         function renderSkeletons() {
@@ -392,34 +433,76 @@
             lucide.createIcons();
         }
 
+        // --- NEW QUANTITY LOGIC FOR MODAL ---
+        function updateModalQty(change) {
+            currentModalQty = Math.max(1, currentModalQty + change);
+            document.getElementById('bs-qty').innerText = currentModalQty;
+            calculateCurrentModalPrice();
+        }
+
         function calculateCurrentModalPrice() {
             if(!currentItemForSheet) return;
-            let basePrice = currentItemForSheet.price;
-            if(currentItemForSheet.hasSizes && currentItemForSheet.sizes?.length > 0) { const checkedSize = document.querySelector('input[name="size-choice"]:checked'); if (checkedSize) basePrice = Number(checkedSize.value); }
-            if(currentItemForSheet.hasExtras && currentItemForSheet.extras?.length > 0) { document.querySelectorAll('input[name="extra-choice"]:checked').forEach(cb => { basePrice += Number(cb.value); }); }
-            document.getElementById('bs-price').innerText = basePrice + ' DH';
-            document.getElementById('bs-btn-price').innerText = basePrice + ' DH';
+            let unitPrice = currentItemForSheet.price;
+            if(currentItemForSheet.hasSizes && currentItemForSheet.sizes?.length > 0) { const checkedSize = document.querySelector('input[name="size-choice"]:checked'); if (checkedSize) unitPrice = Number(checkedSize.value); }
+            if(currentItemForSheet.hasExtras && currentItemForSheet.extras?.length > 0) { document.querySelectorAll('input[name="extra-choice"]:checked').forEach(cb => { unitPrice += Number(cb.value); }); }
+            
+            const totalPrice = unitPrice * currentModalQty;
+            
+            // Update Base Unit Price Display
+            document.getElementById('bs-price').innerText = unitPrice + ' DH';
+            
+            // Update Inline Total and Button Total
+            document.getElementById('bs-total-inline').innerText = totalPrice + ' DH';
+            document.getElementById('bs-btn-price').innerText = totalPrice + ' DH';
         }
 
         function openProductByName(productName, animateBtn = false) {
             const p = globalProducts.find(item => item.name === productName);
             if(!p) return;
             currentItemForSheet = p;
+            currentModalQty = 1; // Reset Qty
+            document.getElementById('bs-qty').innerText = currentModalQty;
+
             document.getElementById('bs-content-scroll').scrollTo(0,0);
             document.getElementById('bs-image').src = p.image;
             document.getElementById('bs-title').innerText = p.name;
-            const descEl = document.getElementById('bs-description');
-            if(p.description?.trim()) { descEl.innerText = p.description; descEl.classList.remove('hidden'); } else { descEl.classList.add('hidden'); }
             
+            const subtitleEl = document.getElementById('bs-subtitle');
+            if(p.description?.trim()) { subtitleEl.innerText = p.description; subtitleEl.classList.remove('hidden'); } else { subtitleEl.classList.add('hidden'); }
+
+            // Dynamic Trust Elements based on Store Type
+            const badgeContainer = document.getElementById('bs-badge-container');
+            const disclaimerEl = document.getElementById('bs-disclaimer');
+            
+            if (activeStore === 'Épicerie') {
+                badgeContainer.classList.remove('hidden');
+                document.getElementById('bs-badge-text').innerHTML = `<i data-lucide="leaf" class="w-3 h-3"></i> Frais du jour`;
+                disclaimerEl.classList.remove('hidden');
+                
+                // Set Epicerie Trust Badges
+                document.getElementById('tb-icon-1').setAttribute('data-lucide', 'leaf'); document.getElementById('tb-title-1').innerText = "Produits frais"; document.getElementById('tb-sub-1').innerText = "Sélectionnés avec soin";
+                document.getElementById('tb-title-2').innerText = "Livraison rapide"; document.getElementById('tb-sub-2').innerText = "En moins de 45 min";
+                document.getElementById('tb-title-3').innerText = "Qualité garantie"; document.getElementById('tb-sub-3').innerText = "Satisfait ou remboursé";
+            } else {
+                badgeContainer.classList.add('hidden');
+                disclaimerEl.classList.add('hidden');
+                
+                // Set Resto Trust Badges
+                document.getElementById('tb-icon-1').setAttribute('data-lucide', 'flame'); document.getElementById('tb-title-1').innerText = "Fait maison"; document.getElementById('tb-sub-1').innerText = "Préparé à la commande";
+                document.getElementById('tb-title-2').innerText = "Chaud & Rapide"; document.getElementById('tb-sub-2').innerText = "Directement chez vous";
+                document.getElementById('tb-title-3').innerText = "Saveur garantie"; document.getElementById('tb-sub-3').innerText = "Ingrédients de qualité";
+            }
+            
+            // Build Form Options
             const sizeDiv = document.getElementById('bs-sizes');
             const sizeContainer = document.getElementById('size-options-container');
             if(p.hasSizes && p.sizes?.length > 0) {
                 sizeContainer.innerHTML = p.sizes.map((s, idx) => `
                     <div class="relative active:scale-[0.98] transition-transform">
                         <input type="radio" name="size-choice" id="size-${idx}" value="${s.price}" data-name="${s.name}" class="peer hidden" ${idx === 0 ? 'checked' : ''} onchange="calculateCurrentModalPrice()">
-                        <label for="size-${idx}" class="flex justify-between items-center p-3.5 rounded-[16px] border-2 border-transparent bg-[#F8F9FA] cursor-pointer transition-all peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand-soft)] shadow-sm">
-                            <div class="flex items-center gap-3"><div class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center modal-radio-indicator bg-white shrink-0"><div class="w-2.5 h-2.5 rounded-full bg-[var(--brand)] modal-radio-dot"></div></div><span class="font-bold text-gray-800 text-[15px]">${s.name}</span></div>
-                            <span class="font-black text-[15px] text-gray-800 peer-checked:text-[var(--brand)] shrink-0">${s.price} DH</span>
+                        <label for="size-${idx}" class="flex justify-between items-center p-3.5 rounded-[16px] border border-gray-100 bg-white cursor-pointer transition-all peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand-soft)] shadow-sm">
+                            <div class="flex items-center gap-3"><div class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center modal-radio-indicator bg-white shrink-0"><div class="w-2.5 h-2.5 rounded-full bg-[var(--brand)] modal-radio-dot"></div></div><span class="font-bold text-gray-800 text-[14px]">${s.name}</span></div>
+                            <span class="font-black text-[14px] text-gray-800 peer-checked:text-[var(--brand)] shrink-0">${s.price} DH</span>
                         </label>
                     </div>`).join('');
                 sizeDiv.classList.remove('hidden');
@@ -431,7 +514,7 @@
                 extrasContainer.innerHTML = p.extras.map((e, idx) => `
                     <div class="relative active:scale-[0.98] transition-transform">
                         <input type="checkbox" name="extra-choice" id="extra-${idx}" value="${e.price}" data-name="${e.name}" class="peer hidden" onchange="calculateCurrentModalPrice()">
-                        <label for="extra-${idx}" class="flex justify-between items-center p-3.5 rounded-[16px] border-2 border-transparent bg-white cursor-pointer transition-all hover:bg-gray-50 peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand-soft)] shadow-sm border border-gray-100">
+                        <label for="extra-${idx}" class="flex justify-between items-center p-3.5 rounded-[16px] border border-gray-100 bg-white cursor-pointer transition-all hover:bg-gray-50 peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand-soft)] shadow-sm">
                             <div class="flex items-center gap-3"><div class="w-[20px] h-[20px] rounded-[6px] border-2 border-gray-300 flex items-center justify-center modal-cb-indicator bg-white shrink-0"><i data-lucide="check" class="w-3 h-3 text-white modal-cb-icon"></i></div><span class="font-bold text-gray-800 text-[14px]">${e.name}</span></div>
                             <span class="font-black text-[14px] text-gray-500 peer-checked:text-[var(--brand)] shrink-0">+${e.price} DH</span>
                         </label>
@@ -442,7 +525,7 @@
             const sauceDiv = document.getElementById('bs-sauces');
             const sauceContainer = document.getElementById('sauce-options-container');
             if(p.requiresSauce && p.sauces?.length > 0) {
-                sauceContainer.innerHTML = `<div class="flex flex-wrap gap-2.5">` + p.sauces.map((s, idx) => `<div class="relative active:scale-[0.95] transition-transform"><input type="radio" name="sauce-choice" id="sauce-${idx}" value="${s}" class="peer hidden"><label for="sauce-${idx}" class="flex items-center px-4 py-2.5 rounded-full border-2 border-gray-100 bg-white cursor-pointer transition-all peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand)] peer-checked:text-white text-gray-600 font-bold text-[13px] shadow-sm">${s}</label></div>`).join('') + `</div>`;
+                sauceContainer.innerHTML = `<div class="flex flex-wrap gap-2.5">` + p.sauces.map((s, idx) => `<div class="relative active:scale-[0.95] transition-transform"><input type="radio" name="sauce-choice" id="sauce-${idx}" value="${s}" class="peer hidden"><label for="sauce-${idx}" class="flex items-center px-4 py-2.5 rounded-full border border-gray-200 bg-white cursor-pointer transition-all peer-checked:border-[var(--brand)] peer-checked:bg-[var(--brand)] peer-checked:text-white text-gray-700 font-bold text-[13px] shadow-sm">${s}</label></div>`).join('') + `</div>`;
                 sauceDiv.classList.remove('hidden');
             } else { sauceContainer.innerHTML = ''; sauceDiv.classList.add('hidden'); }
             
@@ -460,18 +543,23 @@
         document.getElementById('bs-add-btn').addEventListener('click', () => {
             if(!currentItemForSheet) return;
             const p = currentItemForSheet;
-            let finalPrice = p.price;
+            let unitPrice = p.price;
             let finalSizeName = "";
-            if (p.hasSizes && p.sizes?.length > 0) { const checkedSize = document.querySelector('input[name="size-choice"]:checked'); if (checkedSize) { finalPrice = Number(checkedSize.value); finalSizeName = checkedSize.dataset.name; } }
+            if (p.hasSizes && p.sizes?.length > 0) { const checkedSize = document.querySelector('input[name="size-choice"]:checked'); if (checkedSize) { unitPrice = Number(checkedSize.value); finalSizeName = checkedSize.dataset.name; } }
             let selectedExtras = [];
-            if(p.hasExtras && p.extras?.length > 0) { document.querySelectorAll('input[name="extra-choice"]:checked').forEach(cb => { selectedExtras.push({ name: cb.dataset.name, price: Number(cb.value) }); finalPrice += Number(cb.value); }); }
+            if(p.hasExtras && p.extras?.length > 0) { document.querySelectorAll('input[name="extra-choice"]:checked').forEach(cb => { selectedExtras.push({ name: cb.dataset.name, price: Number(cb.value) }); unitPrice += Number(cb.value); }); }
             const checkedSauce = document.querySelector('input[name="sauce-choice"]:checked');
             const sauce = checkedSauce ? checkedSauce.value : '';
             const notes = document.getElementById('bs-notes').value.trim();
             if (p.requiresSauce && !sauce) { alert("Choisissez une sauce."); return; }
+            
             const complexId = `${p.name}-${finalSizeName}-${sauce}-${notes}-${selectedExtras.map(e => e.name).join(',')}`;
             const existing = cart.find(i => i.id === complexId);
-            if(existing) existing.qty++; else cart.push({ id: complexId, name: p.name, price: finalPrice, image: p.image, sizeName: finalSizeName, extras: selectedExtras, sauce: sauce, notes: notes, qty: 1 });
+            
+            // Multiply by Modal Quantity
+            if(existing) existing.qty += currentModalQty; 
+            else cart.push({ id: complexId, name: p.name, price: unitPrice, image: p.image, sizeName: finalSizeName, extras: selectedExtras, sauce: sauce, notes: notes, qty: currentModalQty });
+            
             closeSheet(); saveCart(); syncUI(); showToast(`${p.name} ajouté !`); triggerCartPulse();
         });
 
@@ -570,7 +658,6 @@
         function toggleCart(show) { document.getElementById('body-wrap').classList.toggle('drawer-open', show); document.getElementById('body-wrap').classList.toggle('modal-open', show); if(show) renderDrawer(); }
 
         // --- UPDATED SEND TO WHATSAPP ---
-        // Dynamically checks for Size Cost Prices!
         async function sendToWhatsApp() {
             if(cart.length === 0) return;
             
@@ -583,31 +670,22 @@
                 
                 subtotalSale += item.qty * item.price; 
                 
-                // 🧠 SMART COST CALCULATION
                 const originalProduct = globalProducts.find(p => p.name === item.name);
                 let unitCost = 0;
                 
                 if (originalProduct) {
-                    // Check if a specific size was selected AND if that size has a costPrice
                     if (item.sizeName && originalProduct.sizes && originalProduct.sizes.length > 0) {
                         const matchedSize = originalProduct.sizes.find(s => s.name === item.sizeName);
-                        if (matchedSize && matchedSize.costPrice) {
-                            unitCost = Number(matchedSize.costPrice);
-                        } else if (originalProduct.costPrice) {
-                            unitCost = Number(originalProduct.costPrice); // Fallback to base cost
-                        }
+                        if (matchedSize && matchedSize.costPrice) { unitCost = Number(matchedSize.costPrice); } 
+                        else if (originalProduct.costPrice) { unitCost = Number(originalProduct.costPrice); }
                     } else if (originalProduct.costPrice) {
-                        // Standard product without sizes
                         unitCost = Number(originalProduct.costPrice);
                     }
                 }
-                
                 subtotalCost += item.qty * unitCost;
             });
 
             msg += `🛵 *Livraison:* ${livraisonFee} DH\n💰 *TOTAL:* ${subtotalSale + livraisonFee} DH`;
-
-            // Calculate exact profit
             const myProfit = subtotalSale - subtotalCost;
 
             try {
@@ -637,4 +715,3 @@
     </script>
 </body>
 </html>
-
