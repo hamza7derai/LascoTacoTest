@@ -18,8 +18,21 @@
         .app-container { max-width: 500px; margin: 0 auto; width: 100%; position: relative; background: #FFFFFF; min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.03); overflow-x: hidden; }
         body.modal-open { overflow: hidden; }
 
-        .theme-resto { --brand: var(--resto); --brand-soft: rgba(232, 90, 36, 0.1); --brand-medium: rgba(232, 90, 36, 0.15); }
-        .theme-epi { --brand: var(--epi); --brand-soft: rgba(16, 185, 129, 0.1); --brand-medium: rgba(16, 185, 129, 0.15); }
+        /* THEMES & DYNAMIC BANNER COLORS */
+        .theme-resto { 
+            --brand: var(--resto); 
+            --brand-soft: rgba(232, 90, 36, 0.1); 
+            --brand-medium: rgba(232, 90, 36, 0.15); 
+            --banner-from: #FFF0E6; 
+            --banner-to: #FFE4D6; 
+        }
+        .theme-epi { 
+            --brand: var(--epi); 
+            --brand-soft: rgba(16, 185, 129, 0.1); 
+            --brand-medium: rgba(16, 185, 129, 0.15); 
+            --banner-from: #E6F8F3; 
+            --banner-to: #D1E8DB; 
+        }
 
         .premium-ease { transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -61,6 +74,16 @@
         .bs-open #bs-panel, .drawer-open #cart-panel { transform: translateY(0); }
 
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
+
+        .modal-radio-indicator { transition: border-color 0.2s ease; }
+        .modal-radio-dot { opacity: 0; transform: scale(0.5); transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1); }
+        .peer:checked + label .modal-radio-indicator { border-color: var(--brand); }
+        .peer:checked + label .modal-radio-dot { opacity: 1; transform: scale(1); }
+
+        .modal-cb-indicator { transition: all 0.2s ease; }
+        .modal-cb-icon { opacity: 0; transform: scale(0.5); transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1); }
+        .peer:checked + label .modal-cb-indicator { background-color: var(--brand); border-color: var(--brand); }
+        .peer:checked + label .modal-cb-icon { opacity: 1; transform: scale(1); }
     </style>
 </head>
 <body class="drawer-closed theme-resto" id="body-wrap">
@@ -87,11 +110,12 @@
         </div>
 
         <div class="px-5 pb-4 bg-white sticky top-[152px] z-30">
-            <div class="flex gap-3">
-                <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 py-3.5 rounded-[20px] text-[15px] font-extrabold flex items-center justify-center gap-2 bg-[var(--brand)] text-white shadow-[0_4px_12px_var(--brand-soft)] transition-all active:scale-95">
+            <div class="bg-[#F4F5F7] p-1.5 rounded-[20px] flex relative w-full items-center shadow-inner">
+                <div id="store-toggle-bg" class="absolute left-1.5 top-1.5 bottom-1.5 w-[calc(50%-6px)] rounded-[16px] shadow-sm bg-[var(--brand)] transition-transform duration-300 ease-out"></div>
+                <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 relative z-10 py-3 rounded-[16px] text-[15px] font-extrabold flex items-center justify-center gap-2 text-white transition-colors duration-300 active:scale-95">
                     <i data-lucide="utensils" class="w-4 h-4"></i> Resto
                 </button>
-                <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 py-3.5 rounded-[20px] text-[15px] font-extrabold flex items-center justify-center gap-2 bg-[#F4F5F7] text-gray-500 transition-all active:scale-95">
+                <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 relative z-10 py-3 rounded-[16px] text-[15px] font-extrabold flex items-center justify-center gap-2 text-gray-500 transition-colors duration-300 active:scale-95">
                     <i data-lucide="shopping-basket" class="w-4 h-4"></i> Épicerie
                 </button>
             </div>
@@ -103,7 +127,7 @@
         </div>
 
         <div class="px-5 pb-4">
-            <div class="bg-gradient-to-r from-[#FFF0E6] to-[#FFE4D6] rounded-[24px] p-4 flex items-center gap-4 relative overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-transform">
+            <div class="rounded-[24px] p-4 flex items-center gap-4 relative overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-all duration-300" style="background: linear-gradient(to right, var(--banner-from), var(--banner-to));">
                 <div class="w-12 h-12 bg-[var(--brand)] rounded-full flex items-center justify-center shrink-0 z-10 shadow-md">
                     <i data-lucide="zap" class="w-6 h-6 text-white fill-current"></i>
                 </div>
@@ -304,18 +328,22 @@
         let currentModalQty = 1;
         let lastTotal = 0; 
 
-        // SMART ICON DICTIONARY
-        const categoryIcons = {
-            '🔥 Top vente': 'flame',
-            'Pasticcio': 'pie-chart',
-            'Drinks': 'cup-soda',
-            'Tacos': 'sandwich',
-            'Burgers': 'utensils',
-            'Pizza': 'pizza',
-            'Fruits': 'apple',
-            'Veggie': 'carrot',
-            'default': 'circle-dashed'
-        };
+        // SMART ICON MATCHER
+        function getCategoryIcon(catName) {
+            const n = catName.toLowerCase();
+            if(n.includes('top')) return 'flame';
+            if(n.includes('pasticcio')) return 'pie-chart';
+            if(n.includes('drink') || n.includes('boisson')) return 'cup-soda';
+            if(n.includes('taco')) return 'sandwich';
+            if(n.includes('burger')) return 'utensils';
+            if(n.includes('pizza')) return 'pizza';
+            if(n.includes('fruit')) return 'apple';
+            if(n.includes('veg') || n.includes('légume')) return 'carrot';
+            if(n.includes('dessert') || n.includes('sucré')) return 'cake';
+            if(n.includes('snack')) return 'cookie';
+            if(n.includes('sauce')) return 'droplet';
+            return 'tag'; // fallback icon
+        }
 
         function renderSkeletons() {
             const grid = document.getElementById('product-grid');
@@ -365,17 +393,19 @@
         function setStore(type) { 
             activeStore = type; activeCat = '🔥 Top vente'; document.getElementById('search-input').value = '';
             const body = document.getElementById('body-wrap');
+            const toggleBg = document.getElementById('store-toggle-bg');
             const btnResto = document.getElementById('btn-resto'); const btnEpi = document.getElementById('btn-epi');
             
-            // Apply specific UI changes for the new buttons
             if(type === 'Restaurant') { 
                 body.className = "drawer-closed theme-resto"; 
-                btnResto.className = "flex-1 py-3.5 rounded-[20px] text-[15px] font-extrabold flex items-center justify-center gap-2 bg-[var(--brand)] text-white shadow-[0_4px_12px_var(--brand-soft)] transition-all active:scale-95";
-                btnEpi.className = "flex-1 py-3.5 rounded-[20px] text-[15px] font-extrabold flex items-center justify-center gap-2 bg-[#F4F5F7] text-gray-500 transition-all active:scale-95";
+                toggleBg.style.transform = 'translateX(0)'; 
+                btnResto.classList.replace('text-gray-500', 'text-white'); 
+                btnEpi.classList.replace('text-white', 'text-gray-500'); 
             } else { 
                 body.className = "drawer-closed theme-epi"; 
-                btnEpi.className = "flex-1 py-3.5 rounded-[20px] text-[15px] font-extrabold flex items-center justify-center gap-2 bg-[var(--brand)] text-white shadow-[0_4px_12px_var(--brand-soft)] transition-all active:scale-95";
-                btnResto.className = "flex-1 py-3.5 rounded-[20px] text-[15px] font-extrabold flex items-center justify-center gap-2 bg-[#F4F5F7] text-gray-500 transition-all active:scale-95";
+                toggleBg.style.transform = 'translateX(100%)'; 
+                btnEpi.classList.replace('text-gray-500', 'text-white'); 
+                btnResto.classList.replace('text-white', 'text-gray-500'); 
             }
             renderLabels(); loadProducts(true); renderUpsells();
         }
@@ -394,9 +424,7 @@
             nav.innerHTML = cats.map((cat, idx) => {
                 let isTop = cat.name === '🔥 Top vente';
                 let isActive = activeCat === cat.name;
-                
-                // Fetch the right icon, default to a dashed circle if unknown
-                let iconName = categoryIcons[cat.name] || categoryIcons['default'];
+                let iconName = getCategoryIcon(cat.name);
                 
                 return `
                 <button id="btn-cat-${idx}" onclick="handleCatClick('${cat.name}', 'btn-cat-${idx}')" class="category-pill flex items-center gap-2 px-5 py-2.5 text-[14px] font-bold whitespace-nowrap rounded-[16px] transition-all duration-200 ${isActive ? 'bg-[var(--brand)] text-white shadow-md' : 'bg-[#F4F5F7] text-[#64748b] hover:bg-gray-100'}">
@@ -735,3 +763,4 @@
     </script>
 </body>
 </html>
+
