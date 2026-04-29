@@ -64,8 +64,8 @@
             <div class="flex justify-between items-center mb-5">
                 <h1 class="text-2xl font-black italic tracking-tighter" style="color: var(--brand)">LASCOTACO <span class="text-gray-400 font-bold text-sm not-italic ml-1">Admin</span></h1>
                 <div class="flex gap-2">
-                    <button onclick="calculateDailyProfit()" class="w-10 h-10 bg-[#10B981] text-white rounded-full flex justify-center items-center font-bold text-[13px] shadow-lg shadow-green-500/25 active:scale-90 transition-transform">
-                        <i data-lucide="wallet" class="w-4 h-4"></i>
+                    <button onclick="calculateDailyProfit()" class="w-10 h-10 bg-[#10B981] text-white rounded-full flex justify-center items-center font-bold shadow-lg shadow-green-500/25 active:scale-90 transition-transform">
+                        <i data-lucide="wallet" class="w-4 h-4 text-white"></i>
                     </button>
                     <button onclick="openModal()" class="px-5 py-2.5 bg-[#E85A24] text-white rounded-full flex justify-center items-center gap-2 font-bold text-[13px] shadow-lg shadow-orange-500/25 active:scale-95 transition">
                         <i data-lucide="plus" class="w-4 h-4"></i> Produit
@@ -91,45 +91,85 @@
     </div>
 
     <div id="caisse-overlay" onclick="closeCaisse()"></div>
-    <div id="caisse-panel">
-        <div class="p-6 bg-white flex justify-between items-center shrink-0 rounded-t-[32px] relative z-20 shadow-sm border-b border-gray-50">
+    <div id="caisse-panel" class="h-[90vh]">
+        <div class="p-6 pb-4 bg-white flex justify-between items-center shrink-0 rounded-t-[32px] relative z-20 border-b border-gray-50">
             <div class="absolute top-2.5 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full"></div>
-            <h2 class="text-2xl font-black text-gray-900 mt-2 tracking-tight">Finances du jour</h2>
-            <button onclick="closeCaisse()" class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-500 active:scale-90 transition mt-2"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div>
+                <h2 class="text-[22px] font-black text-gray-900 mt-2 tracking-tight">Finances du jour</h2>
+                <p id="caisse-header-date" class="text-[12px] font-bold text-gray-400 flex items-center gap-1.5 mt-0.5"><i data-lucide="calendar" class="w-3 h-3"></i> --/--/----</p>
+            </div>
+            <button onclick="closeCaisse()" class="w-9 h-9 bg-[#F4F5F7] rounded-full flex items-center justify-center text-gray-500 active:scale-90 transition mt-2"><i data-lucide="x" class="w-4 h-4"></i></button>
         </div>
         
-        <div class="p-6 overflow-y-auto space-y-4">
-            <div class="bg-white p-6 rounded-[24px] shadow-sm border border-gray-100 text-center">
-                <p class="text-[13px] font-bold text-gray-400 uppercase tracking-widest mb-1 flex justify-center items-center gap-1.5"><i data-lucide="piggy-bank" class="w-4 h-4"></i> Bénéfice Net</p>
-                <p id="caisse-profit" class="text-[48px] font-black text-[var(--brand)] tracking-tighter leading-none mt-2">0 DH</p>
-            </div>
+        <div class="flex-1 overflow-y-auto p-5 space-y-5 no-scrollbar relative z-10">
             
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-white p-4 rounded-[20px] shadow-sm border border-gray-100 text-center">
-                    <p class="text-[12px] font-bold text-gray-400 uppercase mb-1">Commandes</p>
-                    <p id="caisse-count" class="text-[20px] font-black text-gray-800">0</p>
+            <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-50 flex items-center justify-between">
+                <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center border border-green-100 shrink-0">
+                    <i data-lucide="wallet" class="w-6 h-6 text-[#10B981]"></i>
                 </div>
-                <div class="bg-white p-4 rounded-[20px] shadow-sm border border-gray-100 text-center">
-                    <p class="text-[12px] font-bold text-gray-400 uppercase mb-1">Date</p>
-                    <p id="caisse-date" class="text-[16px] font-black text-gray-800 mt-1">--/--/----</p>
+                <div class="text-right">
+                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1">Bénéfice Net (Validé)</p>
+                    <p id="ui-net-profit" class="text-[32px] font-black text-[#10B981] leading-none tracking-tight">0 DH</p>
                 </div>
             </div>
-            
-            <div class="pt-4 pb-6">
-                <button id="btn-pay-caisse" onclick="markAsPaid()" class="w-full h-[64px] bg-[#10B981] text-white rounded-[22px] font-black text-[17px] shadow-[0_12px_30px_rgba(16,185,129,0.25)] active:scale-95 transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="check-circle" class="w-5 h-5"></i> Marquer comme payé
-                </button>
-                <p class="text-center text-[12px] font-bold text-gray-400 mt-4 leading-snug px-4">Validez ce montant uniquement après avoir reçu l'argent du livreur.</p>
+
+            <div class="grid grid-cols-4 gap-2">
+                <div class="bg-white py-3 px-1 rounded-[16px] shadow-sm border border-gray-50 text-center flex flex-col justify-center">
+                    <i data-lucide="shopping-bag" class="w-4 h-4 text-gray-400 mx-auto mb-1.5"></i>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase leading-tight mb-1 truncate px-1">Revenus</p>
+                    <p id="ui-rev" class="text-[14px] font-black text-gray-900 truncate px-1">0</p>
+                </div>
+                <div class="bg-white py-3 px-1 rounded-[16px] shadow-sm border border-gray-50 text-center flex flex-col justify-center">
+                    <i data-lucide="package" class="w-4 h-4 text-gray-400 mx-auto mb-1.5"></i>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase leading-tight mb-1 truncate px-1">Coût</p>
+                    <p id="ui-cost" class="text-[14px] font-black text-red-500 truncate px-1">0</p>
+                </div>
+                <div class="bg-white py-3 px-1 rounded-[16px] shadow-sm border border-gray-50 text-center flex flex-col justify-center">
+                    <i data-lucide="bike" class="w-4 h-4 text-gray-400 mx-auto mb-1.5"></i>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase leading-tight mb-1 truncate px-1">Livraison</p>
+                    <p id="ui-fee" class="text-[14px] font-black text-orange-400 truncate px-1">0</p>
+                </div>
+                <div class="bg-white py-3 px-1 rounded-[16px] shadow-sm border border-gray-50 text-center flex flex-col justify-center">
+                    <i data-lucide="hash" class="w-4 h-4 text-gray-400 mx-auto mb-1.5"></i>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase leading-tight mb-1 truncate px-1">Cmds</p>
+                    <p id="ui-count" class="text-[14px] font-black text-gray-900 truncate px-1">0</p>
+                </div>
             </div>
+
+            <div class="pb-6">
+                <div class="flex justify-between items-center mb-3 px-1">
+                    <h3 class="text-[12px] font-black text-gray-400 uppercase tracking-widest">Détails des commandes</h3>
+                </div>
+                <div id="caisse-orders-list" class="space-y-3">
+                    </div>
+            </div>
+        </div>
+        
+        <div class="p-5 bg-white shrink-0 border-t border-gray-100 shadow-[0_-15px_40px_rgba(0,0,0,0.04)] z-20 space-y-4">
+            <div class="flex justify-between items-center bg-orange-50/60 px-4 py-3.5 rounded-[16px] border border-orange-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm border border-orange-100 shrink-0"><i data-lucide="hand-coins" class="w-5 h-5 text-[#E85A24]"></i></div>
+                    <div>
+                        <p class="text-[12px] font-black text-gray-900 uppercase">À récupérer du livreur</p>
+                        <p class="text-[10px] font-semibold text-gray-500 leading-tight mt-0.5">Ventes des commandes en attente</p>
+                    </div>
+                </div>
+                <span id="ui-pending-cash" class="text-[20px] font-black text-[#E85A24] shrink-0">0 DH</span>
+            </div>
+            
+            <button id="btn-pay-caisse" onclick="markAllAsPaid()" class="w-full h-[56px] bg-[#10B981] text-white rounded-[20px] font-black text-[16px] shadow-[0_8px_25px_rgba(16,185,129,0.25)] active:scale-95 transition-all flex items-center justify-center gap-2">
+                <i data-lucide="check-circle" class="w-5 h-5"></i> Valider tout
+            </button>
         </div>
     </div>
 
+
     <div id="modal-overlay" onclick="closeModal()"></div>
     <div id="modal-panel">
-        <div class="p-6 bg-white flex justify-between items-center shrink-0 rounded-t-[32px] relative z-20 shadow-sm">
-            <div class="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full"></div>
+        <div class="p-6 bg-white flex justify-between items-center shrink-0 rounded-t-[32px] relative z-20 shadow-sm border-b border-gray-50">
+            <div class="absolute top-2.5 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full"></div>
             <h2 id="modal-title" class="text-2xl font-black text-gray-900 mt-2 tracking-tight">Nouveau Produit</h2>
-            <button onclick="closeModal()" class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-500 active:scale-90 transition mt-2"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <button onclick="closeModal()" class="w-10 h-10 bg-[#F4F5F7] rounded-full flex items-center justify-center text-gray-500 active:scale-90 transition mt-2"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
 
         <div class="flex-1 overflow-y-auto no-scrollbar p-5 space-y-6 relative z-10" id="modal-content">
@@ -161,8 +201,8 @@
                         <input id="p-price" type="number" placeholder="0.00" class="input-premium font-black text-[#E85A24]">
                     </div>
                     <div>
-                        <label class="label-text">Prix de revient (DH)</label>
-                        <input id="p-cost-price" type="number" placeholder="Caché (Ex: 25)" class="input-premium font-black text-gray-500 bg-gray-50">
+                        <label class="label-text flex items-center gap-1">Coût (DH) <i data-lucide="eye-off" class="w-3 h-3"></i></label>
+                        <input id="p-cost-price" type="number" placeholder="Ex: 25" class="input-premium font-black text-gray-500 bg-gray-50">
                     </div>
                 </div>
 
@@ -276,7 +316,8 @@
         let dynamicSauces = [];
         let dynamicSizes = [];
         let dynamicExtras = [];
-        let pendingOrderIds = []; // Stores orders to mark as paid
+        
+        let dailyOrdersData = []; // NEW: Array to hold all dashboard orders
 
         // 3. UI FUNCTIONS
         function showToast(msg) {
@@ -313,6 +354,7 @@
         // 4. MODAL MANAGEMENT
         function openModal(id = null) {
             document.body.classList.add('modal-open');
+            document.body.style.overflow = 'hidden';
             if(!id) {
                 document.getElementById('modal-title').innerText = "Nouveau Produit";
                 clearForm();
@@ -320,10 +362,10 @@
                 document.getElementById('modal-title').innerText = "Modifier Produit";
             }
         }
-        function closeModal() { document.body.classList.remove('modal-open'); }
+        function closeModal() { document.body.classList.remove('modal-open'); document.body.style.overflow = '';}
         
-        function openCaisse() { document.body.classList.add('caisse-open'); }
-        function closeCaisse() { document.body.classList.remove('caisse-open'); }
+        function openCaisse() { document.body.classList.add('caisse-open'); document.body.style.overflow = 'hidden'; }
+        function closeCaisse() { document.body.classList.remove('caisse-open'); document.body.style.overflow = ''; }
 
         function clearForm() {
             document.getElementById('p-id').value = ""; document.getElementById('p-name').value = "";
@@ -540,80 +582,164 @@
             lucide.createIcons();
         }
 
-        // 8. FINANCE SYSTEM
+        // 8. ADVANCED FINANCE SYSTEM
         async function calculateDailyProfit() {
             const today = new Date().toLocaleDateString('fr-FR');
-            document.getElementById('caisse-date').innerText = today;
+            document.getElementById('caisse-header-date').innerHTML = `<i data-lucide="calendar" class="w-3 h-3 inline"></i> ${today}`;
             
             try {
-                const snapshot = await db.collection("orders")
-                    .where("dateString", "==", today)
-                    .where("status", "==", "en_attente")
-                    .get();
+                // Fetch ALL orders from today
+                const snapshot = await db.collection("orders").where("dateString", "==", today).get();
                 
-                let totalProfit = 0;
-                let orderCount = 0;
-                pendingOrderIds = []; // Reset array
-
+                dailyOrdersData = [];
                 snapshot.forEach(doc => {
-                    totalProfit += doc.data().profit || 0;
-                    orderCount++;
-                    pendingOrderIds.push(doc.id); // Save the ID to update it later
+                    dailyOrdersData.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Update UI Modal
-                document.getElementById('caisse-profit').innerText = totalProfit + " DH";
-                document.getElementById('caisse-count').innerText = orderCount;
-                
-                // Style button based on orders
-                const btnPay = document.getElementById('btn-pay-caisse');
-                if(orderCount === 0) {
-                    btnPay.disabled = true;
-                    btnPay.classList.replace('bg-[#10B981]', 'bg-gray-300');
-                    btnPay.classList.remove('shadow-[0_12px_30px_rgba(16,185,129,0.25)]');
-                } else {
-                    btnPay.disabled = false;
-                    btnPay.classList.replace('bg-gray-300', 'bg-[#10B981]');
-                    btnPay.classList.add('shadow-[0_12px_30px_rgba(16,185,129,0.25)]');
-                }
+                // Sort orders newest to oldest
+                dailyOrdersData.sort((a, b) => {
+                    const tA = a.timestamp ? a.timestamp.toMillis() : 0;
+                    const tB = b.timestamp ? b.timestamp.toMillis() : 0;
+                    return tB - tA;
+                });
 
+                renderCaisseDashboard();
                 openCaisse();
             } catch (error) {
                 console.error("Erreur caisse:", error);
-                showToast("Erreur de connexion.");
+                showToast("Erreur de synchronisation.");
             }
         }
 
-        async function markAsPaid() {
-            if(pendingOrderIds.length === 0) return;
+        function renderCaisseDashboard() {
+            let rev = 0, cost = 0, fee = 0, count = 0;
+            let netProfit = 0, pendingCash = 0;
+            let pendingIds = [];
+
+            dailyOrdersData.forEach(o => {
+                count++;
+                rev += o.totalSale || 0;
+                cost += o.totalCost || 0;
+                fee += o.deliveryFee || 0;
+                
+                if (o.status === "validé" || o.status === "payé_par_livreur") {
+                    netProfit += o.profit || 0; // Only count profit if money is in hand
+                } else {
+                    pendingCash += o.totalSale || 0; // Ventes en attente du livreur
+                    pendingIds.push(o.id);
+                }
+            });
+
+            // Update DOM top stats
+            document.getElementById('ui-net-profit').innerText = netProfit + " DH";
+            document.getElementById('ui-rev').innerText = rev + " DH";
+            document.getElementById('ui-cost').innerText = cost + " DH";
+            document.getElementById('ui-fee').innerText = fee + " DH";
+            document.getElementById('ui-count').innerText = count;
+            document.getElementById('ui-pending-cash').innerText = pendingCash + " DH";
+
+            // Update Validation Button state
+            const btnPay = document.getElementById('btn-pay-caisse');
+            if(pendingIds.length === 0) {
+                btnPay.disabled = true;
+                btnPay.classList.replace('bg-[#10B981]', 'bg-gray-300');
+                btnPay.classList.remove('shadow-[0_8px_25px_rgba(16,185,129,0.25)]');
+                btnPay.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Tout est à jour`;
+            } else {
+                btnPay.disabled = false;
+                btnPay.classList.replace('bg-gray-300', 'bg-[#10B981]');
+                btnPay.classList.add('shadow-[0_8px_25px_rgba(16,185,129,0.25)]');
+                btnPay.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Valider tout`;
+            }
+
+            // Render Orders List
+            const listEl = document.getElementById('caisse-orders-list');
+            if (dailyOrdersData.length === 0) {
+                listEl.innerHTML = `<div class="bg-gray-50 rounded-[20px] p-6 text-center border border-gray-100"><p class="text-gray-400 font-bold text-[13px]">Aucune commande aujourd'hui.</p></div>`;
+            } else {
+                listEl.innerHTML = dailyOrdersData.map(o => {
+                    const isValide = (o.status === "validé" || o.status === "payé_par_livreur");
+                    const shortId = o.id.substring(o.id.length - 4).toUpperCase();
+                    const timeStr = o.timestamp ? new Date(o.timestamp.toDate()).toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}) : '--:--';
+                    
+                    // Format item names list
+                    let itemsStr = 'Articles divers';
+                    let firstImg = '';
+                    if (o.items && o.items.length > 0) {
+                        itemsStr = o.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+                        firstImg = o.items[0].image;
+                    }
+
+                    return `
+                    <div class="bg-white p-3 rounded-[20px] shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-gray-100 flex items-center gap-3 relative transition-all active:scale-[0.98]">
+                        <div class="w-14 h-14 rounded-[14px] overflow-hidden bg-gray-50 shrink-0 border border-gray-100">
+                            <img src="${firstImg}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 min-w-0 pr-1">
+                            <div class="flex justify-between items-start mb-0.5">
+                                <p class="font-black text-[13px] text-gray-900 tracking-tight">#CMD-${shortId}</p>
+                                <span class="text-[9px] font-bold px-2 py-0.5 rounded-[6px] border ${isValide ? 'bg-green-50 text-green-600 border-green-100' : 'bg-orange-50 text-orange-500 border-orange-100'} flex items-center gap-1 shrink-0">
+                                    ${isValide ? '<i data-lucide="check" class="w-3 h-3"></i> Validé' : '<i data-lucide="clock" class="w-3 h-3"></i> En attente'}
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-gray-500 truncate font-semibold">${itemsStr}</p>
+                            <p class="text-[10px] text-gray-400 font-medium mt-1 flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> ${timeStr}</p>
+                        </div>
+                        <div class="text-right shrink-0 border-l border-gray-50 pl-3">
+                            <p class="text-[9px] font-bold text-gray-400 uppercase leading-none">Total</p>
+                            <p class="font-black text-[14px] text-gray-900 leading-tight">${o.totalSale} DH</p>
+                            <p class="text-[10px] font-bold ${isValide ? 'text-green-500' : 'text-orange-400'} mt-1">Pr: ${o.profit} DH</p>
+                        </div>
+                        ${!isValide ? `<button onclick="validateSingleOrder('${o.id}')" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"></button>` : ''}
+                    </div>`;
+                }).join('');
+            }
+            lucide.createIcons();
+        }
+
+        async function validateSingleOrder(id) {
+            if(confirm("Valider l'encaissement de cette commande ?")) {
+                try {
+                    await db.collection("orders").doc(id).update({ status: "validé" });
+                    
+                    // Update local array for instant UI update
+                    const idx = dailyOrdersData.findIndex(o => o.id === id);
+                    if(idx > -1) dailyOrdersData[idx].status = "validé";
+                    
+                    renderCaisseDashboard();
+                    showToast("Commande validée !");
+                } catch(err) {
+                    showToast("Erreur. Réessayez.");
+                }
+            }
+        }
+
+        async function markAllAsPaid() {
+            const pending = dailyOrdersData.filter(o => o.status !== "validé" && o.status !== "payé_par_livreur");
+            if(pending.length === 0) return;
             
+            if(!confirm(`Valider l'encaissement global de ${pending.length} commandes ?`)) return;
+
             const btnPay = document.getElementById('btn-pay-caisse');
             btnPay.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Traitement...`;
-            lucide.createIcons();
             
             try {
-                // Use Firebase Batch to update all orders at once
                 const batch = db.batch();
-                pendingOrderIds.forEach(id => {
-                    const ref = db.collection("orders").doc(id);
-                    batch.update(ref, { status: "payé_par_livreur" });
+                pending.forEach(o => {
+                    const ref = db.collection("orders").doc(o.id);
+                    batch.update(ref, { status: "validé" });
                 });
-                
                 await batch.commit();
                 
-                showToast("Caisse validée avec succès !");
-                closeCaisse();
+                // Update local array
+                pending.forEach(o => o.status = "validé");
+                renderCaisseDashboard();
                 
-                // Reset button UI for next time
-                setTimeout(() => {
-                    btnPay.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Marquer comme payé`;
-                    lucide.createIcons();
-                }, 500);
-                
+                showToast("Caisse validée !");
             } catch (error) {
-                console.error("Erreur validation caisse:", error);
-                alert("Erreur lors de la validation. Réessayez.");
-                btnPay.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Marquer comme payé`;
+                console.error("Erreur batch:", error);
+                alert("Erreur réseau. Veuillez réessayer.");
+                btnPay.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Valider tout`;
                 lucide.createIcons();
             }
         }
@@ -623,4 +749,3 @@
     </script>
 </body>
 </html>
-
