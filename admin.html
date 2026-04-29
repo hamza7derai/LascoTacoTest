@@ -12,7 +12,7 @@
     
     <style>
         :root { --brand: #E85A24; --brand-hover: #D04D1B; --brand-soft: rgba(232, 90, 36, 0.1); --bg-app: #FDFBFA; --green: #10B981; }
-        body { background-color: #E2E8F0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #E2E8F0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
         
         .app-container { max-width: 500px; margin: 0 auto; width: 100%; background: var(--bg-app); min-height: 100vh; position: relative; box-shadow: 0 0 40px rgba(0,0,0,0.05); overflow-x: hidden; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -31,12 +31,16 @@
         .toggle-switch:checked::after { transform: translateX(22px); }
         .toggle-switch.orange:checked { background-color: var(--brand); }
 
-        /* BOTTOM SHEET MODAL */
-        #modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; z-index: 1000; }
-        #modal-panel { position: fixed; bottom: 0; left: 50%; width: 100%; max-width: 500px; transform: translate(-50%, 100%); background: #F4F5F7; border-radius: 32px 32px 0 0; pointer-events: none; z-index: 1001; max-height: 92vh; display: flex; flex-direction: column; box-shadow: 0 -20px 60px rgba(0,0,0,0.15); }
-        
+        /* MODALS */
+        #modal-overlay, #caisse-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; z-index: 1000; transition: opacity 0.3s ease; }
+        #modal-panel, #caisse-panel { position: fixed; bottom: 0; left: 50%; width: 100%; max-width: 500px; transform: translate(-50%, 100%); background: #F4F5F7; border-radius: 32px 32px 0 0; pointer-events: none; z-index: 1001; max-height: 92vh; display: flex; flex-direction: column; box-shadow: 0 -20px 60px rgba(0,0,0,0.15); transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); }
+        #caisse-panel { background: #FDFBFA; }
+
         body.modal-open #modal-overlay { opacity: 1; pointer-events: auto; }
         body.modal-open #modal-panel { transform: translate(-50%, 0); pointer-events: auto; }
+        
+        body.caisse-open #caisse-overlay { opacity: 1; pointer-events: auto; }
+        body.caisse-open #caisse-panel { transform: translate(-50%, 0); pointer-events: auto; }
 
         /* ANIMATED SECTIONS */
         .expandable-ui { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); }
@@ -60,8 +64,8 @@
             <div class="flex justify-between items-center mb-5">
                 <h1 class="text-2xl font-black italic tracking-tighter" style="color: var(--brand)">LASCOTACO <span class="text-gray-400 font-bold text-sm not-italic ml-1">Admin</span></h1>
                 <div class="flex gap-2">
-                    <button onclick="calculateDailyProfit()" class="px-4 py-2.5 bg-[#10B981] text-white rounded-full flex justify-center items-center gap-2 font-bold text-[13px] shadow-lg shadow-green-500/25 active:scale-95 transition">
-                        <i data-lucide="wallet" class="w-4 h-4"></i> Caisse
+                    <button onclick="calculateDailyProfit()" class="w-10 h-10 bg-[#10B981] text-white rounded-full flex justify-center items-center font-bold text-[13px] shadow-lg shadow-green-500/25 active:scale-90 transition-transform">
+                        <i data-lucide="wallet" class="w-4 h-4"></i>
                     </button>
                     <button onclick="openModal()" class="px-5 py-2.5 bg-[#E85A24] text-white rounded-full flex justify-center items-center gap-2 font-bold text-[13px] shadow-lg shadow-orange-500/25 active:scale-95 transition">
                         <i data-lucide="plus" class="w-4 h-4"></i> Produit
@@ -86,9 +90,42 @@
         <main id="admin-list" class="p-5 flex flex-col gap-4 pb-24 min-h-[50vh]"></main>
     </div>
 
-    <div id="modal-overlay" class="premium-ease" onclick="closeModal()"></div>
-    <div id="modal-panel" class="premium-ease">
+    <div id="caisse-overlay" onclick="closeCaisse()"></div>
+    <div id="caisse-panel">
+        <div class="p-6 bg-white flex justify-between items-center shrink-0 rounded-t-[32px] relative z-20 shadow-sm border-b border-gray-50">
+            <div class="absolute top-2.5 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full"></div>
+            <h2 class="text-2xl font-black text-gray-900 mt-2 tracking-tight">Finances du jour</h2>
+            <button onclick="closeCaisse()" class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-500 active:scale-90 transition mt-2"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
         
+        <div class="p-6 overflow-y-auto space-y-4">
+            <div class="bg-white p-6 rounded-[24px] shadow-sm border border-gray-100 text-center">
+                <p class="text-[13px] font-bold text-gray-400 uppercase tracking-widest mb-1 flex justify-center items-center gap-1.5"><i data-lucide="piggy-bank" class="w-4 h-4"></i> Bénéfice Net</p>
+                <p id="caisse-profit" class="text-[48px] font-black text-[var(--brand)] tracking-tighter leading-none mt-2">0 DH</p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-[20px] shadow-sm border border-gray-100 text-center">
+                    <p class="text-[12px] font-bold text-gray-400 uppercase mb-1">Commandes</p>
+                    <p id="caisse-count" class="text-[20px] font-black text-gray-800">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-[20px] shadow-sm border border-gray-100 text-center">
+                    <p class="text-[12px] font-bold text-gray-400 uppercase mb-1">Date</p>
+                    <p id="caisse-date" class="text-[16px] font-black text-gray-800 mt-1">--/--/----</p>
+                </div>
+            </div>
+            
+            <div class="pt-4 pb-6">
+                <button id="btn-pay-caisse" onclick="markAsPaid()" class="w-full h-[64px] bg-[#10B981] text-white rounded-[22px] font-black text-[17px] shadow-[0_12px_30px_rgba(16,185,129,0.25)] active:scale-95 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i> Marquer comme payé
+                </button>
+                <p class="text-center text-[12px] font-bold text-gray-400 mt-4 leading-snug px-4">Validez ce montant uniquement après avoir reçu l'argent du livreur.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-overlay" onclick="closeModal()"></div>
+    <div id="modal-panel">
         <div class="p-6 bg-white flex justify-between items-center shrink-0 rounded-t-[32px] relative z-20 shadow-sm">
             <div class="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full"></div>
             <h2 id="modal-title" class="text-2xl font-black text-gray-900 mt-2 tracking-tight">Nouveau Produit</h2>
@@ -239,6 +276,7 @@
         let dynamicSauces = [];
         let dynamicSizes = [];
         let dynamicExtras = [];
+        let pendingOrderIds = []; // Stores orders to mark as paid
 
         // 3. UI FUNCTIONS
         function showToast(msg) {
@@ -275,7 +313,6 @@
         // 4. MODAL MANAGEMENT
         function openModal(id = null) {
             document.body.classList.add('modal-open');
-            document.body.style.overflow = 'hidden';
             if(!id) {
                 document.getElementById('modal-title').innerText = "Nouveau Produit";
                 clearForm();
@@ -283,10 +320,10 @@
                 document.getElementById('modal-title').innerText = "Modifier Produit";
             }
         }
-        function closeModal() { 
-            document.body.classList.remove('modal-open'); 
-            document.body.style.overflow = '';
-        }
+        function closeModal() { document.body.classList.remove('modal-open'); }
+        
+        function openCaisse() { document.body.classList.add('caisse-open'); }
+        function closeCaisse() { document.body.classList.remove('caisse-open'); }
 
         function clearForm() {
             document.getElementById('p-id').value = ""; document.getElementById('p-name').value = "";
@@ -503,8 +540,11 @@
             lucide.createIcons();
         }
 
+        // 8. FINANCE SYSTEM
         async function calculateDailyProfit() {
             const today = new Date().toLocaleDateString('fr-FR');
+            document.getElementById('caisse-date').innerText = today;
+            
             try {
                 const snapshot = await db.collection("orders")
                     .where("dateString", "==", today)
@@ -513,17 +553,68 @@
                 
                 let totalProfit = 0;
                 let orderCount = 0;
+                pendingOrderIds = []; // Reset array
 
                 snapshot.forEach(doc => {
                     totalProfit += doc.data().profit || 0;
                     orderCount++;
+                    pendingOrderIds.push(doc.id); // Save the ID to update it later
                 });
 
-                alert(`💰 CAISSE DU JOUR (${today})\n\n📦 Commandes en attente : ${orderCount}\n💸 Votre Bénéfice Net : ${totalProfit} DH\n\nLe livreur doit vous remettre exactement ${totalProfit} DH ce soir.`);
+                // Update UI Modal
+                document.getElementById('caisse-profit').innerText = totalProfit + " DH";
+                document.getElementById('caisse-count').innerText = orderCount;
                 
+                // Style button based on orders
+                const btnPay = document.getElementById('btn-pay-caisse');
+                if(orderCount === 0) {
+                    btnPay.disabled = true;
+                    btnPay.classList.replace('bg-[#10B981]', 'bg-gray-300');
+                    btnPay.classList.remove('shadow-[0_12px_30px_rgba(16,185,129,0.25)]');
+                } else {
+                    btnPay.disabled = false;
+                    btnPay.classList.replace('bg-gray-300', 'bg-[#10B981]');
+                    btnPay.classList.add('shadow-[0_12px_30px_rgba(16,185,129,0.25)]');
+                }
+
+                openCaisse();
             } catch (error) {
                 console.error("Erreur caisse:", error);
-                alert("Erreur lors du calcul de la caisse. Assurez-vous que l'index Firebase est créé si nécessaire.");
+                showToast("Erreur de connexion.");
+            }
+        }
+
+        async function markAsPaid() {
+            if(pendingOrderIds.length === 0) return;
+            
+            const btnPay = document.getElementById('btn-pay-caisse');
+            btnPay.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Traitement...`;
+            lucide.createIcons();
+            
+            try {
+                // Use Firebase Batch to update all orders at once
+                const batch = db.batch();
+                pendingOrderIds.forEach(id => {
+                    const ref = db.collection("orders").doc(id);
+                    batch.update(ref, { status: "payé_par_livreur" });
+                });
+                
+                await batch.commit();
+                
+                showToast("Caisse validée avec succès !");
+                closeCaisse();
+                
+                // Reset button UI for next time
+                setTimeout(() => {
+                    btnPay.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Marquer comme payé`;
+                    lucide.createIcons();
+                }, 500);
+                
+            } catch (error) {
+                console.error("Erreur validation caisse:", error);
+                alert("Erreur lors de la validation. Réessayez.");
+                btnPay.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Marquer comme payé`;
+                lucide.createIcons();
             }
         }
 
@@ -532,3 +623,4 @@
     </script>
 </body>
 </html>
+
