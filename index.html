@@ -538,7 +538,6 @@
             if(cart.length === 0) { list.innerHTML = `<div class="py-16 text-center"><p class="text-gray-400 font-bold text-[14px] uppercase tracking-widest mb-4">Panier vide 🌮</p><button onclick="toggleCart(false)" class="text-[15px] font-black underline text-[var(--brand)]">Retour au menu</button></div>`; return; }
             
             list.innerHTML = cart.map(item => {
-                // Generate colored pill badges
                 let badgesHtml = '';
                 if(item.sizeName) badgesHtml += `<span class="bg-[#FFF0E6] text-[var(--brand)] text-[10px] font-bold px-2 py-1 rounded-[6px]">${item.sizeName}</span>`;
                 if(item.extras && item.extras.length > 0) {
@@ -570,6 +569,8 @@
 
         function toggleCart(show) { document.getElementById('body-wrap').classList.toggle('drawer-open', show); document.getElementById('body-wrap').classList.toggle('modal-open', show); if(show) renderDrawer(); }
 
+        // --- UPDATED SEND TO WHATSAPP ---
+        // Dynamically checks for Size Cost Prices!
         async function sendToWhatsApp() {
             if(cart.length === 0) return;
             
@@ -582,19 +583,34 @@
                 
                 subtotalSale += item.qty * item.price; 
                 
-                // Find the original product to get YOUR cost price
+                // 🧠 SMART COST CALCULATION
                 const originalProduct = globalProducts.find(p => p.name === item.name);
-                const unitCost = (originalProduct && originalProduct.costPrice) ? Number(originalProduct.costPrice) : 0; 
+                let unitCost = 0;
+                
+                if (originalProduct) {
+                    // Check if a specific size was selected AND if that size has a costPrice
+                    if (item.sizeName && originalProduct.sizes && originalProduct.sizes.length > 0) {
+                        const matchedSize = originalProduct.sizes.find(s => s.name === item.sizeName);
+                        if (matchedSize && matchedSize.costPrice) {
+                            unitCost = Number(matchedSize.costPrice);
+                        } else if (originalProduct.costPrice) {
+                            unitCost = Number(originalProduct.costPrice); // Fallback to base cost
+                        }
+                    } else if (originalProduct.costPrice) {
+                        // Standard product without sizes
+                        unitCost = Number(originalProduct.costPrice);
+                    }
+                }
+                
                 subtotalCost += item.qty * unitCost;
             });
 
             msg += `🛵 *Livraison:* ${livraisonFee} DH\n💰 *TOTAL:* ${subtotalSale + livraisonFee} DH`;
 
-            // Calculate your exact profit for this specific order
+            // Calculate exact profit
             const myProfit = subtotalSale - subtotalCost;
 
             try {
-                // Save the order to a new "orders" collection in Firebase
                 const orderData = {
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                     items: cart,
@@ -602,12 +618,11 @@
                     totalCost: subtotalCost,
                     profit: myProfit,
                     deliveryFee: livraisonFee,
-                    status: "en_attente", // Pending delivery
-                    dateString: new Date().toLocaleDateString('fr-FR') // Saves today's date (ex: 28/04/2026)
+                    status: "en_attente",
+                    dateString: new Date().toLocaleDateString('fr-FR')
                 };
                 await db.collection("orders").add(orderData);
                 
-                // Empty the cart after ordering
                 cart = []; 
                 saveCart(); 
                 syncUI(); 
@@ -616,10 +631,10 @@
                 console.error("Erreur d'enregistrement:", error);
             }
 
-            // Open WhatsApp
             window.open(`https://wa.me/212708006088?text=${encodeURIComponent(msg)}`);
         }
         document.addEventListener('DOMContentLoaded', () => { setStore('Restaurant'); lucide.createIcons(); });
     </script>
 </body>
 </html>
+
