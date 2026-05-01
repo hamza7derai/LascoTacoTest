@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -13,26 +13,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        :root { --resto: #E85A24; --epi: #10B981; --bg: #FDFBFA; }
+        :root { --brand: #E85A24; --brand-soft: rgba(232, 90, 36, 0.1); --brand-medium: rgba(232, 90, 36, 0.15); --market: #10B981; --bg: #FDFBFA; }
         body { background-color: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .app-container { max-width: 500px; margin: 0 auto; width: 100%; position: relative; background: #FFFFFF; min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.03); overflow-x: hidden; }
+        .app-container { max-width: 500px; margin: 0 auto; width: 100%; position: relative; background: #FFFFFF; min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.03); overflow-x: hidden; padding-bottom: 90px; }
         body.modal-open { overflow: hidden; }
-
-        /* THEMES & DYNAMIC BANNER COLORS */
-        .theme-resto { 
-            --brand: var(--resto); 
-            --brand-soft: rgba(232, 90, 36, 0.1); 
-            --brand-medium: rgba(232, 90, 36, 0.15); 
-            --banner-from: #FFF0E6; 
-            --banner-to: #FFE4D6; 
-        }
-        .theme-epi { 
-            --brand: var(--epi); 
-            --brand-soft: rgba(16, 185, 129, 0.1); 
-            --brand-medium: rgba(16, 185, 129, 0.15); 
-            --banner-from: #E6F8F3; 
-            --banner-to: #D1E8DB; 
-        }
 
         .premium-ease { transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -48,6 +32,14 @@
         @keyframes cartBump { 0% { transform: scale(1); } 40% { transform: scale(1.1) rotate(-4deg); } 70% { transform: scale(0.95) rotate(2deg); } 100% { transform: scale(1) rotate(0); } }
         .cart-bump { animation: cartBump 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.5); }
         
+        /* BURO STYLE CIRCLES */
+        .type-scroll { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 12px 20px 16px 20px; scroll-padding-left: 20px; scroll-behavior: smooth; }
+        .type-btn { display: flex; flex-direction: column; items-center; gap: 8px; flex-shrink: 0; scroll-snap-align: start; transition: transform 0.2s; }
+        .type-btn:active { transform: scale(0.95); }
+        .type-circle { width: 64px; height: 64px; border-radius: 50%; background: #F4F5F7; display: flex; align-items: center; justify-content: center; border: 2px solid transparent; transition: all 0.3s ease; }
+        .type-btn.active .type-circle { background: #FFF0E6; border-color: var(--brand); box-shadow: 0 4px 12px var(--brand-soft); }
+        .type-btn.active span { color: var(--brand); font-weight: 800; }
+
         .category-scroll { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 20px 16px 20px; scroll-padding-left: 20px; scroll-behavior: smooth; }
         .category-pill { position: relative; flex: 0 0 auto; scroll-snap-align: start; transition: all 0.2s ease; border: 2px solid transparent; }
         .category-pill:active { transform: scale(0.95); }
@@ -59,9 +51,6 @@
         
         .btn-add-unified { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; background-color: var(--brand); box-shadow: 0 4px 12px var(--brand-soft); transition: transform 0.15s ease, box-shadow 0.15s ease; flex-shrink: 0; }
         .btn-add-unified:active { transform: scale(0.9); box-shadow: 0 2px 6px var(--brand-soft); }
-
-        @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .upsell-animate { opacity: 0; animation: slideUpFade 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) forwards; }
 
         #bottom-sheet-root, #cart-drawer-root { position: fixed; inset: 0; z-index: 2000; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
         #bs-overlay, #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
@@ -75,18 +64,18 @@
 
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
 
-        .modal-radio-indicator { transition: border-color 0.2s ease; }
-        .modal-radio-dot { opacity: 0; transform: scale(0.5); transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1); }
-        .peer:checked + label .modal-radio-indicator { border-color: var(--brand); }
-        .peer:checked + label .modal-radio-dot { opacity: 1; transform: scale(1); }
+        /* BOTTOM NAV BAR */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: white; border-top: 1px solid #F3F4F6; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; padding-bottom: env(safe-area-inset-bottom); z-index: 1000; height: 75px; box-shadow: 0 -10px 30px rgba(0,0,0,0.03); }
+        .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #A0AEC0; transition: color 0.2s; background: transparent; }
+        .nav-btn.active { color: var(--brand); }
+        .nav-btn span { font-size: 10px; font-weight: 700; }
+        
+        /* FLOATING CHECKOUT BAR OFFSET */
+        #checkout-bar { transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); bottom: 90px; } 
 
-        .modal-cb-indicator { transition: all 0.2s ease; }
-        .modal-cb-icon { opacity: 0; transform: scale(0.5); transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1); }
-        .peer:checked + label .modal-cb-indicator { background-color: var(--brand); border-color: var(--brand); }
-        .peer:checked + label .modal-cb-icon { opacity: 1; transform: scale(1); }
     </style>
 </head>
-<body class="drawer-closed theme-resto" id="body-wrap">
+<body id="body-wrap">
 
     <div id="toast-container"></div>
 
@@ -101,48 +90,45 @@
             </button>
         </header>
 
-        <div class="px-5 pt-2 pb-4 bg-white/95 backdrop-blur-xl sticky top-[72px] z-40">
+        <div class="px-5 pt-2 pb-2 bg-white/95 backdrop-blur-xl sticky top-[72px] z-40">
             <div class="relative flex items-center group">
                 <i data-lucide="search" class="absolute left-4 w-5 h-5 text-gray-400 group-focus-within:text-[var(--brand)] transition-colors"></i>
-                <input type="text" id="search-input" placeholder="Rechercher un plat, une boisson..." class="w-full bg-[#F4F5F7] border-2 border-transparent rounded-[20px] py-4 pl-12 pr-12 text-[15px] font-semibold focus:outline-none focus:bg-white focus:border-[var(--brand)] transition-all">
+                <input type="text" id="search-input" placeholder="Search for food, drinks..." class="w-full bg-[#F4F5F7] border-2 border-transparent rounded-[20px] py-4 pl-12 pr-12 text-[15px] font-semibold focus:outline-none focus:bg-white focus:border-[var(--brand)] transition-all">
                 <button class="absolute right-4 text-gray-400 hover:text-[var(--brand)] transition-colors active:scale-90"><i data-lucide="sliders-horizontal" class="w-5 h-5"></i></button>
             </div>
         </div>
 
-        <div class="px-5 pb-4 bg-white sticky top-[152px] z-30">
-            <div class="bg-[#F4F5F7] p-1.5 rounded-[20px] flex relative w-full items-center shadow-inner">
-                <div id="store-toggle-bg" class="absolute left-1.5 top-1.5 bottom-1.5 w-[calc(50%-6px)] rounded-[16px] shadow-sm bg-[var(--brand)] transition-transform duration-300 ease-out"></div>
-                <button onclick="setStore('Restaurant')" id="btn-resto" class="flex-1 relative z-10 py-3 rounded-[16px] text-[15px] font-extrabold flex items-center justify-center gap-2 text-white transition-colors duration-300 active:scale-95">
-                    <i data-lucide="utensils" class="w-4 h-4"></i> Resto
-                </button>
-                <button onclick="setStore('Épicerie')" id="btn-epi" class="flex-1 relative z-10 py-3 rounded-[16px] text-[15px] font-extrabold flex items-center justify-center gap-2 text-gray-500 transition-colors duration-300 active:scale-95">
-                    <i data-lucide="shopping-basket" class="w-4 h-4"></i> Épicerie
-                </button>
-            </div>
+        <div id="types-container" class="bg-white">
+            <div class="type-scroll no-scrollbar" id="type-scroll-nav">
+                </div>
         </div>
 
-        <div id="sub-nav-wrapper" class="bg-white relative z-20">
+        <div id="sub-nav-wrapper" class="bg-white relative z-20 mt-2">
             <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
             <div id="sub-nav" class="category-scroll no-scrollbar"></div>
         </div>
 
-        <div class="px-5 pb-4">
-            <div class="rounded-[24px] p-4 flex items-center gap-4 relative overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-all duration-300" style="background: linear-gradient(to right, var(--banner-from), var(--banner-to));">
+        <div class="px-5 pb-4 mt-2">
+            <div class="rounded-[24px] p-4 flex items-center gap-4 relative overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-all duration-300 bg-gradient-to-r from-[#FFF0E6] to-[#FFE4D6]">
                 <div class="w-12 h-12 bg-[var(--brand)] rounded-full flex items-center justify-center shrink-0 z-10 shadow-md">
                     <i data-lucide="zap" class="w-6 h-6 text-white fill-current"></i>
                 </div>
                 <div class="z-10 flex-1">
-                    <h4 class="font-black text-[16px] text-gray-900 leading-tight">Livraison rapide</h4>
-                    <p class="text-[13px] font-semibold text-gray-600 mt-0.5">à votre porte en moins de <span class="text-[var(--brand)] font-black">30 min</span></p>
+                    <h4 class="font-black text-[16px] text-gray-900 leading-tight">Fast Delivery</h4>
+                    <p class="text-[13px] font-semibold text-gray-600 mt-0.5">to your door in under <span class="text-[var(--brand)] font-black">30 min</span></p>
                 </div>
                 <img src="https://cdn3d.iconscout.com/3d/premium/thumb/delivery-boy-riding-scooter-5349141-4466249.png" class="absolute right-[-10px] bottom-[-15px] w-[130px] h-[130px] object-contain z-0 opacity-90 drop-shadow-md" alt="Livraison">
                 <i data-lucide="chevron-right" class="w-5 h-5 text-[var(--brand)] relative z-10"></i>
             </div>
         </div>
 
-        <main id="product-grid" class="p-5 pt-2 grid grid-cols-2 gap-4 pb-40"></main>
+        <div class="px-5 flex justify-between items-end mb-2">
+            <h2 id="section-title" class="text-xl font-black text-gray-900 tracking-tight">Top Sales</h2>
+            <button class="text-[12px] font-bold text-gray-400 hover:text-[var(--brand)]">See all ></button>
+        </div>
+        <main id="product-grid" class="p-5 pt-2 grid grid-cols-2 gap-4 pb-20"></main>
 
-        <div id="checkout-bar" class="fixed bottom-6 left-5 right-5 max-w-[460px] mx-auto z-50 translate-y-[150%] premium-ease">
+        <div id="checkout-bar" class="fixed left-5 right-5 max-w-[460px] mx-auto z-40 translate-y-[200%] premium-ease">
             <button onclick="toggleCart(true)" class="w-full text-white p-3 rounded-[24px] flex justify-between items-center shadow-[0_12px_30px_var(--brand-medium)] active:scale-[0.98] premium-ease relative overflow-hidden bg-[var(--brand)]">
                 <div class="flex items-center gap-3 pl-1 z-10">
                     <div class="relative bg-white/20 backdrop-blur-md w-[48px] h-[48px] rounded-[18px] flex items-center justify-center">
@@ -150,8 +136,8 @@
                         <span id="floating-badge" class="absolute -top-1.5 -right-1.5 text-[var(--brand)] text-[11px] w-6 h-6 rounded-full flex justify-center items-center font-black bg-white shadow-md">0</span>
                     </div>
                     <div class="text-left">
-                        <p id="item-count-text" class="text-[15px] font-black leading-tight">0 article</p>
-                        <p class="text-[12px] font-semibold text-white/80 mt-0.5">Voir le panier</p>
+                        <p id="item-count-text" class="text-[15px] font-black leading-tight">0 item</p>
+                        <p class="text-[12px] font-semibold text-white/80 mt-0.5">View cart</p>
                     </div>
                 </div>
                 <div class="font-black text-[20px] bg-white text-[var(--brand)] px-5 py-3.5 rounded-[18px] shadow-sm z-10 tracking-tight" id="final-price-bottom">
@@ -159,6 +145,33 @@
                 </div>
             </button>
         </div>
+
+        <nav class="bottom-nav">
+            <button onclick="switchNav('home')" id="nav-home" class="nav-btn active">
+                <i data-lucide="home" class="w-[22px] h-[22px]"></i>
+                <span>Main</span>
+            </button>
+            <button onclick="switchNav('categories')" id="nav-cat" class="nav-btn">
+                <i data-lucide="layout-grid" class="w-[22px] h-[22px]"></i>
+                <span>Categories</span>
+            </button>
+            
+            <button onclick="switchNav('market')" id="nav-market" class="relative flex flex-col items-center justify-center -mt-8 flex-1">
+                <div id="market-icon-bg" class="w-[56px] h-[56px] bg-[var(--market)] rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(16,185,129,0.3)] border-4 border-white transition-transform active:scale-95 text-white">
+                    <i data-lucide="shopping-basket" class="w-6 h-6"></i>
+                </div>
+                <span id="market-text" class="text-[10px] font-bold text-gray-400 mt-1 transition-colors">Market</span>
+            </button>
+            
+            <button onclick="showComingSoon('Favorites')" class="nav-btn">
+                <i data-lucide="heart" class="w-[22px] h-[22px]"></i>
+                <span>Favorites</span>
+            </button>
+            <button onclick="showComingSoon('Profile')" class="nav-btn">
+                <i data-lucide="user" class="w-[22px] h-[22px]"></i>
+                <span>Profile</span>
+            </button>
+        </nav>
     </div>
 
     <div id="bottom-sheet-root">
@@ -172,17 +185,14 @@
             <div class="p-6 pt-10 flex gap-5 items-center relative z-20">
                 <img id="bs-image" src="" class="w-[110px] h-[110px] rounded-[24px] object-cover bg-[#F8F9FA] shrink-0 shadow-sm border border-gray-50">
                 <div class="flex-1 min-w-0 flex flex-col justify-center">
-                    <h3 id="bs-title" class="font-black text-[22px] text-gray-900 leading-tight tracking-tight">Produit</h3>
+                    <h3 id="bs-title" class="font-black text-[22px] text-gray-900 leading-tight tracking-tight">Product</h3>
                     <p id="bs-subtitle" class="text-[13px] text-gray-500 font-semibold mt-1 leading-snug line-clamp-2"></p>
                     <div id="bs-badge-container" class="mt-2 hidden">
-                        <span id="bs-badge-text" class="text-[10px] font-bold px-2 py-1 rounded-[6px] text-[var(--brand)] bg-[var(--brand-soft)] border border-[var(--brand-soft)] flex items-center gap-1 w-fit">
-                            <i data-lucide="leaf" class="w-3 h-3"></i> Frais du jour
+                        <span id="bs-badge-text" class="text-[10px] font-bold px-2 py-1 rounded-[6px] text-[#10B981] bg-[#E6F8F3] border border-[#D1E8DB] flex items-center gap-1 w-fit">
+                            <i data-lucide="leaf" class="w-3 h-3"></i> Fresh Today
                         </span>
                     </div>
                     <p id="bs-price" class="font-black mt-2 text-[22px] text-[var(--brand)] tracking-tight">0 DH</p>
-                    <p id="bs-disclaimer" class="text-[10px] font-bold text-gray-400 mt-1 flex items-center gap-1 hidden">
-                        <i data-lucide="info" class="w-3 h-3"></i> Prix du marché, peut varier.
-                    </p>
                 </div>
             </div>
             
@@ -190,8 +200,8 @@
                 
                 <div id="bs-sizes" class="space-y-3 hidden">
                     <div class="flex items-center justify-between mb-2">
-                        <h4 class="font-black text-[15px] text-gray-900 flex items-center gap-2"> Taille</h4>
-                        <span class="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-1 rounded-md uppercase">Requis</span>
+                        <h4 class="font-black text-[15px] text-gray-900 flex items-center gap-2"> Size</h4>
+                        <span class="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-1 rounded-md uppercase">Required</span>
                     </div>
                     <div id="size-options-container" class="space-y-2"></div>
                 </div>
@@ -199,7 +209,7 @@
                 <div id="bs-sauces" class="space-y-3 hidden">
                     <div class="flex items-center justify-between mb-2">
                         <h4 class="font-black text-[15px] text-gray-900 flex items-center gap-2"> Sauces</h4>
-                        <span class="bg-[var(--brand-soft)] text-[var(--brand)] text-[10px] font-bold px-2 py-1 rounded-md uppercase">Requis</span>
+                        <span class="bg-[var(--brand-soft)] text-[var(--brand)] text-[10px] font-bold px-2 py-1 rounded-md uppercase">Required</span>
                     </div>
                     <div id="sauce-options-container" class="space-y-2"></div>
                 </div>
@@ -207,13 +217,13 @@
                 <div id="bs-extras" class="space-y-3 hidden">
                     <div class="flex items-center justify-between mb-2">
                         <h4 class="font-black text-[15px] text-gray-900 flex items-center gap-2"> Extras</h4>
-                        <span class="text-gray-400 text-[11px] font-bold uppercase">Optionnel</span>
+                        <span class="text-gray-400 text-[11px] font-bold uppercase">Optional</span>
                     </div>
                     <div id="extras-options-container" class="space-y-2"></div>
                 </div>
                 
                 <div class="flex items-center justify-between pt-2">
-                    <h4 class="font-black text-[16px] text-gray-900">Quantité</h4>
+                    <h4 class="font-black text-[16px] text-gray-900">Quantity</h4>
                     <div class="flex items-center gap-4 bg-[#F8F9FA] rounded-[16px] px-2 py-1.5 border border-gray-100 shadow-sm">
                         <button onclick="updateModalQty(-1)" class="w-8 h-8 flex items-center justify-center text-[var(--brand)] active:scale-90 transition-transform"><i data-lucide="minus" class="w-5 h-5"></i></button>
                         <span id="bs-qty" class="font-black text-[16px] text-gray-900 w-4 text-center">1</span>
@@ -224,38 +234,18 @@
 
                 <div id="bs-instructions" class="space-y-3 hidden">
                     <div class="flex items-center justify-between mb-1">
-                        <h4 class="font-bold text-[14px] text-gray-800 flex items-center gap-1.5"><i data-lucide="file-text" class="w-4 h-4 text-[var(--brand)]"></i> Notes <span class="text-gray-400 font-medium text-[12px]">(optionnel)</span></h4>
+                        <h4 class="font-bold text-[14px] text-gray-800 flex items-center gap-1.5"><i data-lucide="file-text" class="w-4 h-4 text-[var(--brand)]"></i> Notes <span class="text-gray-400 font-medium text-[12px]">(optional)</span></h4>
                     </div>
                     <div class="relative">
-                        <textarea id="bs-notes" maxlength="150" oninput="document.getElementById('char-count').innerText = this.value.length" placeholder="Ex: Sans oignons, bien cuit..." class="w-full p-4 bg-[#F8F9FA] rounded-[16px] font-medium text-[13px] text-gray-800 border-2 border-transparent outline-none resize-none h-20 transition-colors focus:border-[var(--brand)] focus:bg-white placeholder-gray-400 shadow-inner"></textarea>
+                        <textarea id="bs-notes" maxlength="150" oninput="document.getElementById('char-count').innerText = this.value.length" placeholder="Ex: No onions, well done..." class="w-full p-4 bg-[#F8F9FA] rounded-[16px] font-medium text-[13px] text-gray-800 border-2 border-transparent outline-none resize-none h-20 transition-colors focus:border-[var(--brand)] focus:bg-white placeholder-gray-400 shadow-inner"></textarea>
                         <span class="absolute bottom-3 right-4 text-[10px] font-bold text-gray-400"><span id="char-count">0</span>/150</span>
-                    </div>
-                </div>
-
-                <div class="bg-[#F8F9FA] rounded-[20px] p-4 flex justify-between gap-2 border border-gray-50">
-                    <div class="flex-1 flex flex-col items-center text-center gap-1">
-                        <i id="tb-icon-1" data-lucide="leaf" class="w-5 h-5 text-gray-700"></i>
-                        <p id="tb-title-1" class="font-bold text-[11px] text-gray-900 mt-1">Produits frais</p>
-                        <p id="tb-sub-1" class="text-[9px] font-semibold text-gray-500 leading-tight">Sélectionnés avec soin</p>
-                    </div>
-                    <div class="w-[1px] bg-gray-200/60 my-1"></div>
-                    <div class="flex-1 flex flex-col items-center text-center gap-1">
-                        <i id="tb-icon-2" data-lucide="truck" class="w-5 h-5 text-[var(--brand)]"></i>
-                        <p id="tb-title-2" class="font-bold text-[11px] text-gray-900 mt-1">Livraison rapide</p>
-                        <p id="tb-sub-2" class="text-[9px] font-semibold text-gray-500 leading-tight">En moins de 45 min</p>
-                    </div>
-                    <div class="w-[1px] bg-gray-200/60 my-1"></div>
-                    <div class="flex-1 flex flex-col items-center text-center gap-1">
-                        <i id="tb-icon-3" data-lucide="shield-check" class="w-5 h-5 text-gray-700"></i>
-                        <p id="tb-title-3" class="font-bold text-[11px] text-gray-900 mt-1">Qualité garantie</p>
-                        <p id="tb-sub-3" class="text-[9px] font-semibold text-gray-500 leading-tight">Satisfait ou remboursé</p>
                     </div>
                 </div>
             </div>
 
             <div class="p-5 bg-white shrink-0 border-t border-gray-100 shadow-[0_-15px_40px_rgba(0,0,0,0.04)] z-20">
                 <button id="bs-add-btn" class="w-full text-white h-[56px] rounded-[16px] font-black text-[15px] active:scale-[0.97] transition-all duration-200 flex items-center justify-between px-5 shadow-[0_8px_20px_var(--brand-medium)] bg-[var(--brand)]">
-                    <div class="flex items-center gap-2"><i data-lucide="shopping-basket" class="w-5 h-5"></i><span>Ajouter au panier</span></div>
+                    <div class="flex items-center gap-2"><i data-lucide="shopping-basket" class="w-5 h-5"></i><span>Add to cart</span></div>
                     <span id="bs-btn-price" class="bg-white/20 px-3 py-1.5 rounded-[10px] tracking-wide text-[15px]">0 DH</span>
                 </button>
             </div>
@@ -268,33 +258,25 @@
             <div class="p-6 flex justify-between items-start shrink-0 bg-white rounded-t-[32px] relative shadow-[0_4px_16px_rgba(0,0,0,0.02)] z-20 border-b border-gray-50">
                 <div class="absolute top-2.5 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full"></div>
                 <div class="mt-2">
-                    <h2 class="text-[24px] font-black tracking-tight text-gray-900">Mon Panier</h2>
+                    <h2 class="text-[24px] font-black tracking-tight text-gray-900">My Cart</h2>
                     <p class="text-[13px] font-bold mt-1 flex items-center gap-1.5 text-[var(--brand)]">
                         <i data-lucide="clock" class="w-4 h-4"></i> 
-                        <span id="cart-header-count">0 article</span> <span class="text-gray-400">• ~ 30 min</span>
+                        <span id="cart-header-count">0 item</span> <span class="text-gray-400">• ~ 30 min</span>
                     </p>
                 </div>
                 <button onclick="toggleCart(false)" class="w-8 h-8 flex items-center justify-center bg-[#F4F5F7] rounded-full text-gray-500 hover:bg-gray-200 active:scale-90 transition-transform mt-2"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
             
             <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-4 no-scrollbar bg-[#FDFBFA] z-10"></div>
-            
-            <div id="upsell-container" class="pb-5 shrink-0 bg-[#FDFBFA] hidden z-10">
-                <div class="px-5 pt-2 pb-3 flex items-center gap-1.5">
-                    <i data-lucide="sparkles" class="w-4 h-4 text-[var(--brand)]"></i>
-                    <p class="font-black text-[16px] text-gray-900">À ne pas manquer ! 🥤</p>
-                </div>
-                <div class="flex gap-3 overflow-x-auto no-scrollbar px-5 pb-3 pt-1" style="scroll-snap-type: x mandatory;" id="upsell-list"></div>
-            </div>
 
             <div class="p-6 bg-white shrink-0 rounded-t-[32px] shadow-[0_-20px_40px_rgba(0,0,0,0.06)] z-20">
                 <div class="space-y-4">
                     <div class="flex justify-between items-center">
-                        <span class="font-bold text-gray-500 text-[14px] flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5 text-gray-400"></i> Sous-total</span>
+                        <span class="font-bold text-gray-500 text-[14px] flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5 text-gray-400"></i> Subtotal</span>
                         <span id="drawer-subtotal" class="font-bold text-gray-600 text-[15px]">0 DH</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="font-bold text-gray-500 text-[14px] flex items-center gap-2"><i data-lucide="truck" class="w-5 h-5 text-gray-400"></i> Livraison</span>
+                        <span class="font-bold text-gray-500 text-[14px] flex items-center gap-2"><i data-lucide="truck" class="w-5 h-5 text-gray-400"></i> Delivery</span>
                         <span class="font-bold text-gray-600 text-[15px]">20 DH</span>
                     </div>
                     
@@ -302,13 +284,12 @@
                         <div class="flex items-center gap-2">
                             <i data-lucide="wallet" class="w-5 h-5 text-[var(--brand)]"></i>
                             <span class="font-black text-gray-900 text-[18px]">Total</span>
-                            <span class="text-[10px] font-bold text-gray-400 uppercase ml-0.5">TTC</span>
                         </div>
                         <span id="drawer-total" class="text-[28px] font-black text-[var(--brand)] tracking-tight">0 DH</span>
                     </div>
                 </div>
-                <button onclick="sendToWhatsApp()" id="wa-btn" class="w-full bg-[#25D366] text-white py-4 h-[60px] rounded-[20px] font-black text-[16px] flex justify-center items-center gap-2 mt-6 active:scale-[0.97] transition-all shadow-[0_8px_20px_rgba(37,211,102,0.25)]">
-                    <i data-lucide="message-circle" class="w-5 h-5 fill-current text-white"></i> Commander
+                <button onclick="sendToWhatsApp()" class="w-full bg-[#25D366] text-white py-4 h-[60px] rounded-[20px] font-black text-[16px] flex justify-center items-center gap-2 mt-6 active:scale-[0.97] transition-all shadow-[0_8px_20px_rgba(37,211,102,0.25)]">
+                    <i data-lucide="message-circle" class="w-5 h-5 fill-current text-white"></i> Order Now
                 </button>
             </div>
         </div>
@@ -321,14 +302,23 @@
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
         let cart = JSON.parse(localStorage.getItem('lasco_cart_v2')) || []; 
-        let activeStore = 'Restaurant'; let activeCat = '🔥 Top vente';
+        let activeType = 'Fast Food'; // Default Main Type
+        let activeCat = '🔥 Top Sales';
         let livraisonFee = 20;
         let globalProducts = []; 
         let currentItemForSheet = null;
         let currentModalQty = 1;
         let lastTotal = 0; 
 
-        // SMART ICON MATCHER
+        // THE 5 MAIN TYPES FOR THE CIRCLE SCROLL
+        const mainTypes = [
+            { name: 'Breakfast', icon: 'coffee' },
+            { name: 'Fast Food', icon: 'pizza' },
+            { name: 'Meals', icon: 'utensils' },
+            { name: 'Drinks', icon: 'cup-soda' },
+            { name: 'Desserts', icon: 'cake' }
+        ];
+
         function getCategoryIcon(catName) {
             const n = catName.toLowerCase();
             if(n.includes('top')) return 'flame';
@@ -338,11 +328,10 @@
             if(n.includes('burger')) return 'utensils';
             if(n.includes('pizza')) return 'pizza';
             if(n.includes('fruit')) return 'apple';
-            if(n.includes('veg') || n.includes('légume')) return 'carrot';
-            if(n.includes('dessert') || n.includes('sucré')) return 'cake';
+            if(n.includes('veg')) return 'carrot';
+            if(n.includes('dessert') || n.includes('cake')) return 'cake';
             if(n.includes('snack')) return 'cookie';
-            if(n.includes('sauce')) return 'droplet';
-            return 'tag'; // fallback icon
+            return 'tag';
         }
 
         function renderSkeletons() {
@@ -368,10 +357,10 @@
             snap.forEach(doc => {
                 let data = doc.data();
                 if (data.isActive === false) return; 
-                if (!data.category) data.category = '🔥 Top vente'; 
+                if (!data.category) data.category = '🔥 Top Sales'; 
                 globalProducts.push(data);
             });
-            setTimeout(() => { renderUpsells(); loadProducts(false); syncUI(); }, 500);
+            setTimeout(() => { renderTypeCircles(); renderLabels(); loadProducts(false); syncUI(); }, 500);
         });
 
         function showToast(message) {
@@ -390,46 +379,79 @@
             if (window.navigator.vibrate) window.navigator.vibrate(10);
         }
 
-        function setStore(type) { 
-            activeStore = type; activeCat = '🔥 Top vente'; document.getElementById('search-input').value = '';
-            const body = document.getElementById('body-wrap');
-            const toggleBg = document.getElementById('store-toggle-bg');
-            const btnResto = document.getElementById('btn-resto'); const btnEpi = document.getElementById('btn-epi');
+        function showComingSoon(feature) {
+            showToast(`${feature} is coming soon!`);
+        }
+
+        // NAVIGATION LOGIC
+        function switchNav(tab) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('market-icon-bg').classList.remove('scale-110');
+            document.getElementById('market-text').classList.remove('text-[var(--market)]');
             
-            if(type === 'Restaurant') { 
-                body.className = "drawer-closed theme-resto"; 
-                toggleBg.style.transform = 'translateX(0)'; 
-                btnResto.classList.replace('text-gray-500', 'text-white'); 
-                btnEpi.classList.replace('text-white', 'text-gray-500'); 
-            } else { 
-                body.className = "drawer-closed theme-epi"; 
-                toggleBg.style.transform = 'translateX(100%)'; 
-                btnEpi.classList.replace('text-gray-500', 'text-white'); 
-                btnResto.classList.replace('text-white', 'text-gray-500'); 
+            if(tab === 'home' || tab === 'categories') {
+                document.getElementById('nav-' + tab).classList.add('active');
+                if(activeType === 'Market') activeType = 'Fast Food'; // Reset to a main type if leaving market
+                document.getElementById('types-container').classList.remove('hidden');
+            } 
+            else if (tab === 'market') {
+                document.getElementById('market-icon-bg').classList.add('scale-110');
+                document.getElementById('market-text').classList.add('text-[var(--market)]');
+                document.getElementById('types-container').classList.add('hidden'); // Hide main types
+                activeType = 'Market';
             }
-            renderLabels(); loadProducts(true); renderUpsells();
+            
+            activeCat = '🔥 Top Sales';
+            renderTypeCircles();
+            renderLabels();
+            loadProducts(true);
+        }
+
+        function renderTypeCircles() {
+            const container = document.getElementById('type-scroll-nav');
+            container.innerHTML = mainTypes.map(type => {
+                let isActive = activeType === type.name;
+                return `
+                <button onclick="handleTypeClick('${type.name}')" class="type-btn ${isActive ? 'active' : ''}">
+                    <div class="type-circle">
+                        <i data-lucide="${type.icon}" class="w-7 h-7 ${isActive ? 'text-[var(--brand)]' : 'text-gray-400'}"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold text-gray-500">${type.name}</span>
+                </button>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function handleTypeClick(typeName) {
+            activeType = typeName;
+            activeCat = '🔥 Top Sales';
+            document.getElementById('search-input').value = '';
+            renderTypeCircles();
+            renderLabels(); 
+            loadProducts(true);
         }
 
         async function renderLabels() {
             const nav = document.getElementById('sub-nav');
-            const cats = [{name: '🔥 Top vente'}];
-            const snap = await db.collection("categories").where("type", "==", activeStore).get();
+            const cats = [{name: '🔥 Top Sales'}];
+            const snap = await db.collection("categories").where("type", "==", activeType).get();
             snap.forEach(doc => {
                 const catData = doc.data();
-                if(catData.name.toLowerCase() !== 'addons' && catData.name.toLowerCase() !== 'add-ons') {
-                    cats.push(catData);
-                }
+                cats.push(catData);
             });
             
+            document.getElementById('section-title').innerText = activeType === 'Market' ? 'Market Products' : activeType;
+
             nav.innerHTML = cats.map((cat, idx) => {
-                let isTop = cat.name === '🔥 Top vente';
+                let isTop = cat.name === '🔥 Top Sales';
                 let isActive = activeCat === cat.name;
                 let iconName = getCategoryIcon(cat.name);
+                let brandColor = activeType === 'Market' ? 'var(--market)' : 'var(--brand)';
                 
                 return `
-                <button id="btn-cat-${idx}" onclick="handleCatClick('${cat.name}', 'btn-cat-${idx}')" class="category-pill flex items-center gap-2 px-5 py-2.5 text-[14px] font-bold whitespace-nowrap rounded-[16px] transition-all duration-200 ${isActive ? 'bg-[var(--brand)] text-white shadow-md' : 'bg-[#F4F5F7] text-[#64748b] hover:bg-gray-100'}">
+                <button id="btn-cat-${idx}" onclick="handleCatClick('${cat.name}', 'btn-cat-${idx}')" class="category-pill flex items-center gap-2 px-5 py-2.5 text-[14px] font-bold whitespace-nowrap rounded-[16px] transition-all duration-200 ${isActive ? 'text-white shadow-md' : 'bg-[#F4F5F7] text-[#64748b] hover:bg-gray-100'}" style="${isActive ? `background-color: ${brandColor};` : ''}">
                     <i data-lucide="${iconName}" class="w-4 h-4 ${isActive ? 'text-white' : 'text-gray-400'}"></i>
-                    ${isTop ? 'Top vente' : cat.name}
+                    ${isTop ? 'Top Sales' : cat.name}
                 </button>`;
             }).join('');
             lucide.createIcons();
@@ -449,26 +471,16 @@
         document.getElementById('search-input').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             if(term.length > 0) { 
-                const filtered = globalProducts.filter(p => 
-                    p.type === activeStore && 
-                    p.name.toLowerCase().includes(term) &&
-                    p.category.toLowerCase() !== 'addons' && 
-                    p.category.toLowerCase() !== 'add-ons'
-                );
+                const filtered = globalProducts.filter(p => p.name.toLowerCase().includes(term));
                 renderProductGrid(filtered); 
             } 
             else { loadProducts(false); }
         });
 
         function loadProducts(withSkeleton = false) {
-            let filtered = activeCat === '🔥 Top vente' ? 
-                globalProducts.filter(p => p.type === activeStore && p.isTop === true) : 
-                globalProducts.filter(p => p.type === activeStore && p.category === activeCat);
-            
-            filtered = filtered.filter(p => 
-                p.category.toLowerCase() !== 'addons' && 
-                p.category.toLowerCase() !== 'add-ons'
-            );
+            let filtered = activeCat === '🔥 Top Sales' ? 
+                globalProducts.filter(p => p.type === activeType && p.isTop === true) : 
+                globalProducts.filter(p => p.type === activeType && p.category === activeCat);
 
             if(withSkeleton) { renderSkeletons(); setTimeout(() => renderProductGrid(filtered), 400); } 
             else { renderProductGrid(filtered); }
@@ -476,7 +488,10 @@
 
         function renderProductGrid(products) {
             const grid = document.getElementById('product-grid');
-            if(products.length === 0) { grid.innerHTML = '<div class="col-span-2 text-center text-gray-400 py-12"><i data-lucide="search-x" class="w-10 h-10 mx-auto mb-3 opacity-50"></i><p class="font-bold text-[15px]">Aucun résultat trouvé</p></div>'; lucide.createIcons(); return; }
+            if(products.length === 0) { grid.innerHTML = '<div class="col-span-2 text-center text-gray-400 py-12"><i data-lucide="search-x" class="w-10 h-10 mx-auto mb-3 opacity-50"></i><p class="font-bold text-[15px]">No results found</p></div>'; lucide.createIcons(); return; }
+            
+            let btnColor = activeType === 'Market' ? 'var(--market)' : 'var(--brand)';
+
             grid.innerHTML = products.map((p, index) => `
                 <div class="product-card cursor-pointer p-2 flex flex-col" onclick="openProductByName('${p.name.replace(/'/g, "\\'")}')">
                     <div class="product-img-wrap group">
@@ -486,12 +501,13 @@
                     </div>
                     <div class="pt-3 px-1.5 flex flex-col flex-1 justify-between pb-1">
                         <h3 class="font-bold text-[14px] text-gray-900 leading-snug line-clamp-2">${p.name}</h3>
-                        <div class="flex justify-between items-end mt-3"><span class="font-black text-[16px] text-[var(--brand)] mb-1">${p.hasSizes ? 'Dès ' : ''}${p.price} DH</span><button class="btn-add-unified" onclick="event.stopPropagation(); openProductByName('${p.name.replace(/'/g, "\\'")}', true);"><i data-lucide="plus" class="w-5 h-5"></i></button></div>
+                        <div class="flex justify-between items-end mt-3"><span class="font-black text-[16px] text-[var(--brand)] mb-1" style="color: ${btnColor}">${p.hasSizes ? 'From ' : ''}${p.price} DH</span><button class="btn-add-unified" style="background-color: ${btnColor}" onclick="event.stopPropagation(); openProductByName('${p.name.replace(/'/g, "\\'")}', true);"><i data-lucide="plus" class="w-5 h-5"></i></button></div>
                     </div>
                 </div>`).join('');
             lucide.createIcons();
         }
 
+        // --- SHEET & CART LOGIC (Unchanged math, translated UI) ---
         function updateModalQty(change) {
             currentModalQty = Math.max(1, currentModalQty + change);
             document.getElementById('bs-qty').innerText = currentModalQty;
@@ -525,23 +541,12 @@
             if(p.description?.trim()) { subtitleEl.innerText = p.description; subtitleEl.classList.remove('hidden'); } else { subtitleEl.classList.add('hidden'); }
 
             const badgeContainer = document.getElementById('bs-badge-container');
-            const disclaimerEl = document.getElementById('bs-disclaimer');
             
-            if (activeStore === 'Épicerie') {
+            if (p.type === 'Market') {
                 badgeContainer.classList.remove('hidden');
-                document.getElementById('bs-badge-text').innerHTML = `<i data-lucide="leaf" class="w-3 h-3"></i> Frais du jour`;
-                disclaimerEl.classList.remove('hidden');
-                
-                document.getElementById('tb-icon-1').setAttribute('data-lucide', 'leaf'); document.getElementById('tb-title-1').innerText = "Produits frais"; document.getElementById('tb-sub-1').innerText = "Sélectionnés avec soin";
-                document.getElementById('tb-title-2').innerText = "Livraison rapide"; document.getElementById('tb-sub-2').innerText = "En moins de 45 min";
-                document.getElementById('tb-title-3').innerText = "Qualité garantie"; document.getElementById('tb-sub-3').innerText = "Satisfait ou remboursé";
+                document.getElementById('bs-badge-text').innerHTML = `<i data-lucide="leaf" class="w-3 h-3"></i> Fresh Today`;
             } else {
                 badgeContainer.classList.add('hidden');
-                disclaimerEl.classList.add('hidden');
-                
-                document.getElementById('tb-icon-1').setAttribute('data-lucide', 'flame'); document.getElementById('tb-title-1').innerText = "Fait maison"; document.getElementById('tb-sub-1').innerText = "Préparé à la commande";
-                document.getElementById('tb-title-2').innerText = "Chaud & Rapide"; document.getElementById('tb-sub-2').innerText = "Directement chez vous";
-                document.getElementById('tb-title-3').innerText = "Saveur garantie"; document.getElementById('tb-sub-3').innerText = "Ingrédients de qualité";
             }
             
             const sizeDiv = document.getElementById('bs-sizes');
@@ -584,6 +589,9 @@
             document.getElementById('char-count').innerText = '0';
             if(p.hasInstructions !== false) notesDiv.classList.remove('hidden'); else notesDiv.classList.add('hidden');
             
+            let btnColor = p.type === 'Market' ? 'var(--market)' : 'var(--brand)';
+            document.getElementById('bs-add-btn').style.backgroundColor = btnColor;
+            
             calculateCurrentModalPrice(); lucide.createIcons();
             document.getElementById('body-wrap').classList.add('bs-open', 'modal-open');
         }
@@ -601,7 +609,7 @@
             const checkedSauce = document.querySelector('input[name="sauce-choice"]:checked');
             const sauce = checkedSauce ? checkedSauce.value : '';
             const notes = document.getElementById('bs-notes').value.trim();
-            if (p.requiresSauce && !sauce) { alert("Choisissez une sauce."); return; }
+            if (p.requiresSauce && !sauce) { alert("Please choose a sauce."); return; }
             
             const complexId = `${p.name}-${finalSizeName}-${sauce}-${notes}-${selectedExtras.map(e => e.name).join(',')}`;
             const existing = cart.find(i => i.id === complexId);
@@ -609,33 +617,8 @@
             if(existing) existing.qty += currentModalQty; 
             else cart.push({ id: complexId, name: p.name, price: unitPrice, image: p.image, sizeName: finalSizeName, extras: selectedExtras, sauce: sauce, notes: notes, qty: currentModalQty });
             
-            closeSheet(); saveCart(); syncUI(); showToast(`${p.name} ajouté !`); triggerCartPulse();
+            closeSheet(); saveCart(); syncUI(); showToast(`${p.name} added!`); triggerCartPulse();
         });
-
-        function renderUpsells() {
-            const addOns = globalProducts.filter(p => p.category?.toLowerCase() === 'addons' || p.category?.toLowerCase() === 'add-ons').slice(0, 5); 
-            const container = document.getElementById('upsell-container');
-            const list = document.getElementById('upsell-list');
-            if(addOns.length === 0) { container.classList.add('hidden'); return; }
-            container.classList.remove('hidden');
-            list.innerHTML = addOns.map((d, index) => `
-                <div class="upsell-animate snap-start min-w-[200px] h-[72px] bg-white border border-[#F4F5F7] rounded-[16px] p-2 flex items-center gap-3 relative shadow-sm cursor-pointer active:scale-[0.97] transition-transform" style="animation-delay: ${index * 60}ms" onclick="quickAdd('${d.name.replace(/'/g, "\\'")}')">
-                    <span class="absolute -top-2 left-3 ${index % 2 ? 'bg-[#10B981]' : 'bg-red-500'} text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow-sm z-20">${index % 2 ? 'FRAIS' : 'POPULAIRE'}</span>
-                    <div class="w-[44px] h-[44px] rounded-[12px] bg-[#F4F5F7] overflow-hidden shrink-0 relative"><div class="absolute inset-0 skeleton z-10 pointer-events-none"></div><img src="${d.image}" loading="lazy" class="w-full h-full object-cover opacity-0 blur-[4px] transition-all duration-500" onload="this.classList.remove('opacity-0', 'blur-[4px]'); this.previousElementSibling?.classList.add('skeleton-fade-out');"></div>
-                    <div class="flex-1 min-w-0 flex flex-col justify-center"><p class="font-bold text-[13px] text-gray-900 truncate">${d.name}</p><p class="font-black text-[13px] text-[var(--brand)] mt-0.5">${d.price} DH</p></div>
-                    <button class="w-8 h-8 rounded-full bg-[var(--brand)] text-white flex items-center justify-center shrink-0 shadow-[0_2px_8px_var(--brand-soft)]"><i data-lucide="plus" class="w-4 h-4 text-white"></i></button>
-                </div>`).join('');
-            lucide.createIcons();
-        }
-
-        function quickAdd(productName) {
-            const p = globalProducts.find(item => item.name === productName);
-            if(!p) return;
-            const complexId = `${p.name}-----`;
-            const existing = cart.find(i => i.id === complexId);
-            if(existing) existing.qty++; else cart.push({ id: complexId, name: p.name, price: p.price, image: p.image, sizeName: '', extras: [], sauce: '', notes: '', qty: 1 });
-            saveCart(); syncUI(); renderDrawer(); showToast(`${p.name} ajouté !`); triggerCartPulse();
-        }
 
         function updateCartItemQty(id, change) {
             const index = cart.findIndex(i => i.id === id);
@@ -661,18 +644,18 @@
             const navBadge = document.getElementById('nav-badge');
             if (count > 0) { navBadge.innerText = count; navBadge.classList.replace('scale-0', 'scale-100'); } else { navBadge.classList.replace('scale-100', 'scale-0'); }
             document.getElementById('floating-badge').innerText = count;
-            document.getElementById('item-count-text').innerText = count + (count > 1 ? " articles" : " article");
+            document.getElementById('item-count-text').innerText = count + (count > 1 ? " items" : " item");
             const bottomPriceEl = document.getElementById('final-price-bottom');
             if (total !== lastTotal) { animateValue(bottomPriceEl, lastTotal, total, 300); lastTotal = total; } else { bottomPriceEl.innerText = total + " DH"; }
-            document.getElementById('cart-header-count').innerText = count + (count > 1 ? " articles" : " article");
+            document.getElementById('cart-header-count').innerText = count + (count > 1 ? " items" : " item");
             document.getElementById('drawer-subtotal').innerText = total + " DH";
             document.getElementById('drawer-total').innerText = (total > 0 ? total + livraisonFee : 0) + " DH";
-            document.getElementById('checkout-bar').style.transform = count > 0 ? 'translateY(0)' : 'translateY(150%)';
+            document.getElementById('checkout-bar').style.transform = count > 0 ? 'translateY(0)' : 'translateY(200%)';
         }
 
         function renderDrawer() {
             const list = document.getElementById('cart-items');
-            if(cart.length === 0) { list.innerHTML = `<div class="py-16 text-center"><p class="text-gray-400 font-bold text-[14px] uppercase tracking-widest mb-4">Panier vide 🌮</p><button onclick="toggleCart(false)" class="text-[15px] font-black underline text-[var(--brand)]">Retour au menu</button></div>`; return; }
+            if(cart.length === 0) { list.innerHTML = `<div class="py-16 text-center"><p class="text-gray-400 font-bold text-[14px] uppercase tracking-widest mb-4">Cart is empty 🌮</p><button onclick="toggleCart(false)" class="text-[15px] font-black underline text-[var(--brand)]">Back to menu</button></div>`; return; }
             
             list.innerHTML = cart.map(item => {
                 let badgesHtml = '';
@@ -691,7 +674,7 @@
                         ${item.notes ? `<p class="text-[11px] text-orange-500 italic mt-0.5 truncate">"${item.notes}"</p>` : ''}
                         <p class="font-black mt-1 text-[16px] text-[var(--brand)]">${item.price} DH</p>
                         <button onclick="removeCartItem('${item.id}')" class="mt-2 flex items-center gap-1 text-gray-400 hover:text-red-500 font-bold text-[11px] active:scale-95 transition-transform w-fit">
-                            <i data-lucide="trash-2" class="w-3 h-3"></i> Supprimer
+                            <i data-lucide="trash-2" class="w-3 h-3"></i> Remove
                         </button>
                     </div>
                     <div class="flex flex-col items-center justify-between bg-white border border-gray-100 rounded-[24px] p-1 h-[100px] w-[40px] shrink-0 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
@@ -709,7 +692,7 @@
         async function sendToWhatsApp() {
             if(cart.length === 0) return;
             
-            let msg = `🛒 *Nouvelle Commande LASCOTACO*\n\n`;
+            let msg = `🛒 *New Order LASCOTACO*\n\n`;
             let subtotalSale = 0; 
             let subtotalCost = 0; 
 
@@ -733,7 +716,7 @@
                 subtotalCost += item.qty * unitCost;
             });
 
-            msg += `🛵 *Livraison:* ${livraisonFee} DH\n💰 *TOTAL:* ${subtotalSale + livraisonFee} DH`;
+            msg += `🛵 *Delivery:* ${livraisonFee} DH\n💰 *TOTAL:* ${subtotalSale + livraisonFee} DH`;
             const myProfit = subtotalSale - subtotalCost;
 
             try {
@@ -744,7 +727,7 @@
                     totalCost: subtotalCost,
                     profit: myProfit,
                     deliveryFee: livraisonFee,
-                    status: "en_attente",
+                    status: "pending",
                     dateString: new Date().toLocaleDateString('fr-FR')
                 };
                 await db.collection("orders").add(orderData);
@@ -754,13 +737,11 @@
                 syncUI(); 
                 toggleCart(false);
             } catch (error) {
-                console.error("Erreur d'enregistrement:", error);
+                console.error("Save error:", error);
             }
 
             window.open(`https://wa.me/212708006088?text=${encodeURIComponent(msg)}`);
         }
-        document.addEventListener('DOMContentLoaded', () => { setStore('Restaurant'); lucide.createIcons(); });
     </script>
 </body>
 </html>
-
