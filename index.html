@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #E85A24; --brand-soft: rgba(232, 90, 36, 0.1); --brand-medium: rgba(232, 90, 36, 0.15); --market: #10B981; --bg: #FDFBFA; }
-        body { background-color: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; overflow-x: hidden;}
         .app-container { max-width: 500px; margin: 0 auto; width: 100%; position: relative; background: #FFFFFF; min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.03); overflow-x: hidden; padding-bottom: 90px; }
         body.modal-open { overflow: hidden; }
 
@@ -32,16 +32,17 @@
         @keyframes cartBump { 0% { transform: scale(1); } 40% { transform: scale(1.1) rotate(-4deg); } 70% { transform: scale(0.95) rotate(2deg); } 100% { transform: scale(1) rotate(0); } }
         .cart-bump { animation: cartBump 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.5); }
         
-        /* BURO STYLE CIRCLES */
+        /* BURO STYLE CIRCLES (Home View) */
         .type-scroll { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 12px 20px 16px 20px; scroll-padding-left: 20px; scroll-behavior: smooth; }
-        .type-btn { display: flex; flex-direction: column; items-center; gap: 8px; flex-shrink: 0; scroll-snap-align: start; transition: transform 0.2s; }
+        .type-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; scroll-snap-align: start; transition: transform 0.2s; }
         .type-btn:active { transform: scale(0.95); }
         .type-circle { width: 64px; height: 64px; border-radius: 50%; background: #F4F5F7; display: flex; align-items: center; justify-content: center; border: 2px solid transparent; transition: all 0.3s ease; }
         .type-btn.active .type-circle { background: #FFF0E6; border-color: var(--brand); box-shadow: 0 4px 12px var(--brand-soft); }
         .type-btn.active span { color: var(--brand); font-weight: 800; }
 
+        /* CATEGORY PILLS */
         .category-scroll { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 20px 16px 20px; scroll-padding-left: 20px; scroll-behavior: smooth; }
-        .category-pill { position: relative; flex: 0 0 auto; scroll-snap-align: start; transition: all 0.2s ease; border: 2px solid transparent; }
+        .category-pill { position: relative; flex: 0 0 auto; scroll-snap-align: start; transition: all 0.2s ease; border: 1px solid transparent; }
         .category-pill:active { transform: scale(0.95); }
         
         .product-card { background: white; border-radius: 20px; transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.2s ease; animation: fadeIn 0.4s ease-out forwards; border: 1px solid transparent; box-shadow: 0 4px 16px rgba(0,0,0,0.03); }
@@ -73,6 +74,9 @@
         /* FLOATING CHECKOUT BAR OFFSET */
         #checkout-bar { transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); bottom: 90px; } 
 
+        /* VIEW TOGGLING */
+        .view-page { display: none; animation: fadeIn 0.3s ease-out forwards; }
+        .view-page.active { display: block; }
     </style>
 </head>
 <body id="body-wrap">
@@ -81,52 +85,77 @@
 
     <div class="app-container" id="app-root">
         
-        <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-xl px-5 py-4 flex justify-between items-center">
-            <h1 class="text-[26px] font-black tracking-tighter italic" style="color: var(--brand)">LASCOTACO</h1>
-            <button id="nav-cart-btn" onclick="toggleCart(true)" class="relative bg-[#1A1A1A] text-white px-4 py-3 rounded-[16px] font-bold text-[14px] flex items-center gap-2 active:scale-95 transition-transform shadow-md">
-                <i data-lucide="shopping-bag" class="w-4 h-4" style="color: var(--brand)"></i>
-                <span id="nav-total">0 DH</span>
-                <span id="nav-badge" class="absolute -top-2 -right-2 text-white text-[11px] font-black w-6 h-6 flex items-center justify-center rounded-full border-2 border-[#1A1A1A] shadow-sm scale-0 premium-ease" style="background-color: var(--brand)">0</span>
-            </button>
-        </header>
+        <div id="view-home" class="view-page active">
+            <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-xl px-5 py-4 flex justify-between items-center">
+                <h1 class="text-[26px] font-black tracking-tighter italic" style="color: var(--brand)">LASCOTACO</h1>
+                <button onclick="toggleCart(true)" class="relative bg-[#1A1A1A] text-white px-4 py-3 rounded-[16px] font-bold text-[14px] flex items-center gap-2 active:scale-95 transition-transform shadow-md">
+                    <i data-lucide="shopping-bag" class="w-4 h-4" style="color: var(--brand)"></i>
+                    <span id="nav-total">0 DH</span>
+                    <span id="nav-badge" class="absolute -top-2 -right-2 text-white text-[11px] font-black w-6 h-6 flex items-center justify-center rounded-full border-2 border-[#1A1A1A] shadow-sm scale-0 premium-ease" style="background-color: var(--brand)">0</span>
+                </button>
+            </header>
 
-        <div class="px-5 pt-2 pb-2 bg-white/95 backdrop-blur-xl sticky top-[72px] z-40">
-            <div class="relative flex items-center group">
-                <i data-lucide="search" class="absolute left-4 w-5 h-5 text-gray-400 group-focus-within:text-[var(--brand)] transition-colors"></i>
-                <input type="text" id="search-input" placeholder="Search for food, drinks..." class="w-full bg-[#F4F5F7] border-2 border-transparent rounded-[20px] py-4 pl-12 pr-12 text-[15px] font-semibold focus:outline-none focus:bg-white focus:border-[var(--brand)] transition-all">
-                <button class="absolute right-4 text-gray-400 hover:text-[var(--brand)] transition-colors active:scale-90"><i data-lucide="sliders-horizontal" class="w-5 h-5"></i></button>
+            <div class="px-5 pt-2 pb-2 bg-white/95 backdrop-blur-xl sticky top-[72px] z-40">
+                <div class="relative flex items-center group">
+                    <i data-lucide="search" class="absolute left-4 w-5 h-5 text-gray-400 group-focus-within:text-[var(--brand)] transition-colors"></i>
+                    <input type="text" id="search-input" placeholder="Search for food, drinks..." class="w-full bg-[#F4F5F7] border-2 border-transparent rounded-[20px] py-4 pl-12 pr-12 text-[15px] font-semibold focus:outline-none focus:bg-white focus:border-[var(--brand)] transition-all">
+                    <button class="absolute right-4 text-gray-400 hover:text-[var(--brand)] transition-colors active:scale-90"><i data-lucide="sliders-horizontal" class="w-5 h-5"></i></button>
+                </div>
             </div>
-        </div>
 
-        <div id="types-container" class="bg-white">
-            <div class="type-scroll no-scrollbar" id="type-scroll-nav">
-                </div>
-        </div>
-
-        <div id="sub-nav-wrapper" class="bg-white relative z-20 mt-2">
-            <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
-            <div id="sub-nav" class="category-scroll no-scrollbar"></div>
-        </div>
-
-        <div class="px-5 pb-4 mt-2">
-            <div class="rounded-[24px] p-4 flex items-center gap-4 relative overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-all duration-300 bg-gradient-to-r from-[#FFF0E6] to-[#FFE4D6]">
-                <div class="w-12 h-12 bg-[var(--brand)] rounded-full flex items-center justify-center shrink-0 z-10 shadow-md">
-                    <i data-lucide="zap" class="w-6 h-6 text-white fill-current"></i>
-                </div>
-                <div class="z-10 flex-1">
-                    <h4 class="font-black text-[16px] text-gray-900 leading-tight">Fast Delivery</h4>
-                    <p class="text-[13px] font-semibold text-gray-600 mt-0.5">to your door in under <span class="text-[var(--brand)] font-black">30 min</span></p>
-                </div>
-                <img src="https://cdn3d.iconscout.com/3d/premium/thumb/delivery-boy-riding-scooter-5349141-4466249.png" class="absolute right-[-10px] bottom-[-15px] w-[130px] h-[130px] object-contain z-0 opacity-90 drop-shadow-md" alt="Livraison">
-                <i data-lucide="chevron-right" class="w-5 h-5 text-[var(--brand)] relative z-10"></i>
+            <div id="types-container" class="bg-white">
+                <div class="type-scroll no-scrollbar" id="type-scroll-nav"></div>
             </div>
+
+            <div id="sub-nav-wrapper" class="bg-white relative z-20 mt-2">
+                <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
+                <div id="sub-nav" class="category-scroll no-scrollbar"></div>
+            </div>
+
+            <div class="px-5 pb-4 mt-2">
+                <div class="rounded-[24px] p-4 flex items-center gap-4 relative overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-all duration-300 bg-gradient-to-r from-[#FFF0E6] to-[#FFE4D6]">
+                    <div class="w-12 h-12 bg-[var(--brand)] rounded-full flex items-center justify-center shrink-0 z-10 shadow-md">
+                        <i data-lucide="zap" class="w-6 h-6 text-white fill-current"></i>
+                    </div>
+                    <div class="z-10 flex-1">
+                        <h4 class="font-black text-[16px] text-gray-900 leading-tight">Fast Delivery</h4>
+                        <p class="text-[13px] font-semibold text-gray-600 mt-0.5">to your door in under <span class="text-[var(--brand)] font-black">30 min</span></p>
+                    </div>
+                    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/delivery-boy-riding-scooter-5349141-4466249.png" class="absolute right-[-10px] bottom-[-15px] w-[130px] h-[130px] object-contain z-0 opacity-90 drop-shadow-md" alt="Livraison">
+                    <i data-lucide="chevron-right" class="w-5 h-5 text-[var(--brand)] relative z-10"></i>
+                </div>
+            </div>
+
+            <div class="px-5 flex justify-between items-end mb-2">
+                <h2 id="section-title" class="text-xl font-black text-gray-900 tracking-tight">Top Sales</h2>
+                <button onclick="switchNav('categories')" class="text-[12px] font-bold text-gray-400 hover:text-[var(--brand)]">See all ></button>
+            </div>
+            <main id="product-grid" class="p-5 pt-2 grid grid-cols-2 gap-4 pb-20"></main>
         </div>
 
-        <div class="px-5 flex justify-between items-end mb-2">
-            <h2 id="section-title" class="text-xl font-black text-gray-900 tracking-tight">Top Sales</h2>
-            <button class="text-[12px] font-bold text-gray-400 hover:text-[var(--brand)]">See all ></button>
+
+        <div id="view-categories-list" class="view-page min-h-screen bg-white pb-24">
+            <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-xl px-5 py-5 flex justify-between items-center border-b border-gray-50">
+                 <h1 class="text-[22px] font-black tracking-tight text-gray-900 mx-auto">Categories</h1>
+                 <button class="absolute right-5 text-gray-800"><i data-lucide="search" class="w-6 h-6"></i></button>
+            </header>
+            <div class="px-5 py-6 space-y-4" id="categories-cards-container">
+                </div>
         </div>
-        <main id="product-grid" class="p-5 pt-2 grid grid-cols-2 gap-4 pb-20"></main>
+
+
+        <div id="view-category-detail" class="view-page min-h-screen bg-[#FDFBFA] pb-24">
+             <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-xl px-5 py-4 flex items-center justify-between border-b border-gray-50">
+                 <button onclick="closeCategoryDetail()" class="w-10 h-10 bg-white border border-gray-200 shadow-sm rounded-full flex items-center justify-center text-gray-800 active:scale-90 transition-transform"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
+                 <h1 id="detail-title" class="text-[20px] font-black tracking-tight text-gray-900">Title</h1>
+                 <button class="w-10 h-10 flex items-center justify-center text-gray-800"><i data-lucide="search" class="w-6 h-6"></i></button>
+             </header>
+             <div class="bg-white pt-3 pb-4 sticky top-[72px] z-40 shadow-sm">
+                 <div class="category-scroll no-scrollbar" id="detail-sub-nav"></div>
+             </div>
+             <main id="detail-product-grid" class="p-5 grid grid-cols-2 gap-4"></main>
+        </div>
+
 
         <div id="checkout-bar" class="fixed left-5 right-5 max-w-[460px] mx-auto z-40 translate-y-[200%] premium-ease">
             <button onclick="toggleCart(true)" class="w-full text-white p-3 rounded-[24px] flex justify-between items-center shadow-[0_12px_30px_var(--brand-medium)] active:scale-[0.98] premium-ease relative overflow-hidden bg-[var(--brand)]">
@@ -140,9 +169,7 @@
                         <p class="text-[12px] font-semibold text-white/80 mt-0.5">View cart</p>
                     </div>
                 </div>
-                <div class="font-black text-[20px] bg-white text-[var(--brand)] px-5 py-3.5 rounded-[18px] shadow-sm z-10 tracking-tight" id="final-price-bottom">
-                    0 DH
-                </div>
+                <div class="font-black text-[20px] bg-white text-[var(--brand)] px-5 py-3.5 rounded-[18px] shadow-sm z-10 tracking-tight" id="final-price-bottom">0 DH</div>
             </button>
         </div>
 
@@ -156,7 +183,7 @@
                 <span>Categories</span>
             </button>
             
-            <button onclick="switchNav('market')" id="nav-market" class="relative flex flex-col items-center justify-center -mt-8 flex-1">
+            <button onclick="switchNav('market')" id="nav-market" class="relative flex flex-col items-center justify-center -mt-8 flex-1 group">
                 <div id="market-icon-bg" class="w-[56px] h-[56px] bg-[var(--market)] rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(16,185,129,0.3)] border-4 border-white transition-transform active:scale-95 text-white">
                     <i data-lucide="shopping-basket" class="w-6 h-6"></i>
                 </div>
@@ -266,9 +293,7 @@
                 </div>
                 <button onclick="toggleCart(false)" class="w-8 h-8 flex items-center justify-center bg-[#F4F5F7] rounded-full text-gray-500 hover:bg-gray-200 active:scale-90 transition-transform mt-2"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
-            
             <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-4 no-scrollbar bg-[#FDFBFA] z-10"></div>
-
             <div class="p-6 bg-white shrink-0 rounded-t-[32px] shadow-[0_-20px_40px_rgba(0,0,0,0.06)] z-20">
                 <div class="space-y-4">
                     <div class="flex justify-between items-center">
@@ -279,7 +304,6 @@
                         <span class="font-bold text-gray-500 text-[14px] flex items-center gap-2"><i data-lucide="truck" class="w-5 h-5 text-gray-400"></i> Delivery</span>
                         <span class="font-bold text-gray-600 text-[15px]">20 DH</span>
                     </div>
-                    
                     <div class="pt-2 mt-1 flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <i data-lucide="wallet" class="w-5 h-5 text-[var(--brand)]"></i>
@@ -302,7 +326,7 @@
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
         let cart = JSON.parse(localStorage.getItem('lasco_cart_v2')) || []; 
-        let activeType = 'Fast Food'; // Default Main Type
+        let activeType = 'Fast Food'; 
         let activeCat = '🔥 Top Sales';
         let livraisonFee = 20;
         let globalProducts = []; 
@@ -310,13 +334,13 @@
         let currentModalQty = 1;
         let lastTotal = 0; 
 
-        // THE 5 MAIN TYPES FOR THE CIRCLE SCROLL
+        // THE 5 MAIN TYPES
         const mainTypes = [
-            { name: 'Breakfast', icon: 'coffee' },
-            { name: 'Fast Food', icon: 'pizza' },
-            { name: 'Meals', icon: 'utensils' },
-            { name: 'Drinks', icon: 'cup-soda' },
-            { name: 'Desserts', icon: 'cake' }
+            { name: 'Breakfast', icon: 'coffee', desc: 'Start the day fresh', color: '#FFF3E0', emoji: '🥐' },
+            { name: 'Fast Food', icon: 'pizza', desc: 'Quick & delicious', color: '#FFEBEE', emoji: '🍔' },
+            { name: 'Meals', icon: 'utensils', desc: 'Satisfying dishes', color: '#FFF8E1', emoji: '🍛' },
+            { name: 'Drinks', icon: 'cup-soda', desc: 'Cold beverages', color: '#E3F2FD', emoji: '🥤' },
+            { name: 'Desserts', icon: 'cake', desc: 'Sweet treats', color: '#FCE4EC', emoji: '🍰' }
         ];
 
         function getCategoryIcon(catName) {
@@ -334,8 +358,8 @@
             return 'tag';
         }
 
-        function renderSkeletons() {
-            const grid = document.getElementById('product-grid');
+        function renderSkeletons(targetGrid = 'product-grid') {
+            const grid = document.getElementById(targetGrid);
             grid.innerHTML = Array(6).fill().map(() => `
                 <div class="product-card p-2 flex flex-col h-[260px] border-transparent shadow-sm">
                     <div class="skeleton w-full h-[160px] rounded-[16px] mb-3 shrink-0"></div>
@@ -352,7 +376,6 @@
 
         function saveCart() { localStorage.setItem('lasco_cart_v2', JSON.stringify(cart)); }
 
-        renderSkeletons();
         db.collection("products").get().then(snap => {
             snap.forEach(doc => {
                 let data = doc.data();
@@ -360,7 +383,13 @@
                 if (!data.category) data.category = '🔥 Top Sales'; 
                 globalProducts.push(data);
             });
-            setTimeout(() => { renderTypeCircles(); renderLabels(); loadProducts(false); syncUI(); }, 500);
+            setTimeout(() => { 
+                renderTypeCircles(); 
+                renderLabels(); 
+                loadProducts(false); 
+                renderCategoryCards();
+                syncUI(); 
+            }, 500);
         });
 
         function showToast(message) {
@@ -379,35 +408,49 @@
             if (window.navigator.vibrate) window.navigator.vibrate(10);
         }
 
-        function showComingSoon(feature) {
-            showToast(`${feature} is coming soon!`);
-        }
+        function showComingSoon(feature) { showToast(`${feature} is coming soon!`); }
 
-        // NAVIGATION LOGIC
+        // ==========================================
+        // SINGLE PAGE APP (SPA) NAVIGATION LOGIC
+        // ==========================================
         function switchNav(tab) {
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById('market-icon-bg').classList.remove('scale-110');
             document.getElementById('market-text').classList.remove('text-[var(--market)]');
             
-            if(tab === 'home' || tab === 'categories') {
-                document.getElementById('nav-' + tab).classList.add('active');
-                if(activeType === 'Market') activeType = 'Fast Food'; // Reset to a main type if leaving market
-                document.getElementById('types-container').classList.remove('hidden');
+            // Hide all views
+            document.querySelectorAll('.view-page').forEach(v => v.classList.remove('active'));
+            
+            if(tab === 'home') {
+                document.getElementById('nav-home').classList.add('active');
+                document.getElementById('view-home').classList.add('active');
+                if(activeType === 'Market') activeType = 'Fast Food'; // Reset
+                activeCat = '🔥 Top Sales';
+                renderTypeCircles();
+                renderLabels();
+                loadProducts(false);
             } 
+            else if(tab === 'categories') {
+                document.getElementById('nav-cat').classList.add('active');
+                document.getElementById('view-categories-list').classList.add('active');
+            }
             else if (tab === 'market') {
                 document.getElementById('market-icon-bg').classList.add('scale-110');
                 document.getElementById('market-text').classList.add('text-[var(--market)]');
-                document.getElementById('types-container').classList.add('hidden'); // Hide main types
+                document.getElementById('view-home').classList.add('active'); // Market uses Home view layout
+                document.getElementById('types-container').classList.add('hidden'); // Hide types scroll
                 activeType = 'Market';
+                activeCat = '🔥 Top Sales';
+                renderLabels();
+                loadProducts(true);
             }
-            
-            activeCat = '🔥 Top Sales';
-            renderTypeCircles();
-            renderLabels();
-            loadProducts(true);
         }
 
+        // ==========================================
+        // HOME VIEW FUNCTIONS
+        // ==========================================
         function renderTypeCircles() {
+            document.getElementById('types-container').classList.remove('hidden');
             const container = document.getElementById('type-scroll-nav');
             container.innerHTML = mainTypes.map(type => {
                 let isActive = activeType === type.name;
@@ -435,10 +478,7 @@
             const nav = document.getElementById('sub-nav');
             const cats = [{name: '🔥 Top Sales'}];
             const snap = await db.collection("categories").where("type", "==", activeType).get();
-            snap.forEach(doc => {
-                const catData = doc.data();
-                cats.push(catData);
-            });
+            snap.forEach(doc => { cats.push(doc.data()); });
             
             document.getElementById('section-title').innerText = activeType === 'Market' ? 'Market Products' : activeType;
 
@@ -449,7 +489,7 @@
                 let brandColor = activeType === 'Market' ? 'var(--market)' : 'var(--brand)';
                 
                 return `
-                <button id="btn-cat-${idx}" onclick="handleCatClick('${cat.name}', 'btn-cat-${idx}')" class="category-pill flex items-center gap-2 px-5 py-2.5 text-[14px] font-bold whitespace-nowrap rounded-[16px] transition-all duration-200 ${isActive ? 'text-white shadow-md' : 'bg-[#F4F5F7] text-[#64748b] hover:bg-gray-100'}" style="${isActive ? `background-color: ${brandColor};` : ''}">
+                <button id="btn-cat-${idx}" onclick="handleCatClick('${cat.name}', 'btn-cat-${idx}')" class="category-pill flex items-center gap-2 px-5 py-2.5 text-[14px] font-bold whitespace-nowrap rounded-[16px] transition-all duration-200 ${isActive ? 'text-white shadow-md' : 'bg-[#F4F5F7] text-[#64748b] hover:bg-gray-100'}" style="${isActive ? `background-color: ${brandColor}; border-color: ${brandColor};` : 'border-color: transparent;'}">
                     <i data-lucide="${iconName}" class="w-4 h-4 ${isActive ? 'text-white' : 'text-gray-400'}"></i>
                     ${isTop ? 'Top Sales' : cat.name}
                 </button>`;
@@ -463,16 +503,14 @@
             activeCat = catName; document.getElementById('search-input').value = '';
             renderLabels(); loadProducts(true);
             const nav = document.getElementById('sub-nav');
-            if (document.getElementById(elementId)) {
-                nav.scrollTo({ left: document.getElementById(elementId).offsetLeft - 20, behavior: 'smooth' });
-            }
+            if (document.getElementById(elementId)) { nav.scrollTo({ left: document.getElementById(elementId).offsetLeft - 20, behavior: 'smooth' }); }
         }
 
         document.getElementById('search-input').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             if(term.length > 0) { 
                 const filtered = globalProducts.filter(p => p.name.toLowerCase().includes(term));
-                renderProductGrid(filtered); 
+                renderProductGrid(filtered, 'product-grid'); 
             } 
             else { loadProducts(false); }
         });
@@ -482,13 +520,89 @@
                 globalProducts.filter(p => p.type === activeType && p.isTop === true) : 
                 globalProducts.filter(p => p.type === activeType && p.category === activeCat);
 
-            if(withSkeleton) { renderSkeletons(); setTimeout(() => renderProductGrid(filtered), 400); } 
-            else { renderProductGrid(filtered); }
+            if(withSkeleton) { renderSkeletons('product-grid'); setTimeout(() => renderProductGrid(filtered, 'product-grid'), 400); } 
+            else { renderProductGrid(filtered, 'product-grid'); }
         }
 
-        function renderProductGrid(products) {
-            const grid = document.getElementById('product-grid');
-            if(products.length === 0) { grid.innerHTML = '<div class="col-span-2 text-center text-gray-400 py-12"><i data-lucide="search-x" class="w-10 h-10 mx-auto mb-3 opacity-50"></i><p class="font-bold text-[15px]">No results found</p></div>'; lucide.createIcons(); return; }
+        // ==========================================
+        // CATEGORY LIST VIEW (The Big Cards)
+        // ==========================================
+        function renderCategoryCards() {
+            const container = document.getElementById('categories-cards-container');
+            container.innerHTML = mainTypes.map(c => {
+                const count = globalProducts.filter(p => p.type === c.name).length;
+                return `
+                <div onclick="openCategoryDetail('${c.name}')" class="flex justify-between items-center p-6 rounded-[24px] cursor-pointer active:scale-95 transition-transform shadow-sm" style="background-color: ${c.color};">
+                    <div>
+                        <h3 class="font-black text-[20px] text-gray-900 tracking-tight">${c.name}</h3>
+                        <p class="text-[13px] font-bold text-gray-600 mt-1 opacity-80">${c.desc}</p>
+                        <span class="inline-block mt-3 bg-white/50 text-[11px] font-bold px-3 py-1.5 rounded-full text-gray-800 backdrop-blur-sm shadow-sm">${count} products</span>
+                    </div>
+                    <div class="text-[60px] leading-none drop-shadow-xl">${c.emoji}</div>
+                </div>`;
+            }).join('');
+        }
+
+        // ==========================================
+        // CATEGORY DETAIL VIEW (Buro Pill style)
+        // ==========================================
+        function openCategoryDetail(typeName) {
+            document.querySelectorAll('.view-page').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-category-detail').classList.add('active');
+            
+            document.getElementById('detail-title').innerText = typeName;
+            activeType = typeName;
+            activeCat = 'All'; 
+            
+            renderDetailSubNav();
+            loadDetailProducts(true);
+        }
+
+        function closeCategoryDetail() {
+            document.querySelectorAll('.view-page').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-categories-list').classList.add('active');
+        }
+
+        async function renderDetailSubNav() {
+            const nav = document.getElementById('detail-sub-nav');
+            const cats = [{name: 'All'}];
+            const snap = await db.collection("categories").where("type", "==", activeType).get();
+            snap.forEach(doc => { cats.push(doc.data()); });
+            
+            nav.innerHTML = cats.map((cat, idx) => {
+                let isActive = activeCat === cat.name;
+                return `
+                <button id="btn-detail-cat-${idx}" onclick="handleDetailCatClick('${cat.name}', 'btn-detail-cat-${idx}')" class="category-pill flex items-center px-5 py-2 text-[14px] font-bold whitespace-nowrap rounded-full transition-all duration-200 border ${isActive ? 'bg-[#1A1A1A] text-white border-[#1A1A1A] shadow-md' : 'bg-white text-gray-600 border-gray-200'}">
+                    ${cat.name}
+                </button>`;
+            }).join('');
+        }
+
+        function handleDetailCatClick(catName, elementId) {
+            const el = document.getElementById(elementId);
+            if(el) { el.classList.add('tab-bounce'); setTimeout(() => el.classList.remove('tab-bounce'), 250); }
+            activeCat = catName;
+            renderDetailSubNav();
+            loadDetailProducts(true);
+            const nav = document.getElementById('detail-sub-nav');
+            if (document.getElementById(elementId)) { nav.scrollTo({ left: document.getElementById(elementId).offsetLeft - 20, behavior: 'smooth' }); }
+        }
+
+        function loadDetailProducts(withSkeleton = false) {
+            let filtered = activeCat === 'All' ? 
+                globalProducts.filter(p => p.type === activeType) : 
+                globalProducts.filter(p => p.type === activeType && p.category === activeCat);
+
+            if(withSkeleton) { renderSkeletons('detail-product-grid'); setTimeout(() => renderProductGrid(filtered, 'detail-product-grid'), 300); } 
+            else { renderProductGrid(filtered, 'detail-product-grid'); }
+        }
+
+        // ==========================================
+        // SHARED PRODUCT GRID RENDERER
+        // ==========================================
+        function renderProductGrid(products, targetElementId) {
+            const grid = document.getElementById(targetElementId);
+            if(products.length === 0) { grid.innerHTML = '<div class="col-span-2 text-center text-gray-400 py-12"><i data-lucide="search-x" class="w-10 h-10 mx-auto mb-3 opacity-50"></i><p class="font-bold text-[15px]">No products found</p></div>'; lucide.createIcons(); return; }
             
             let btnColor = activeType === 'Market' ? 'var(--market)' : 'var(--brand)';
 
@@ -507,7 +621,9 @@
             lucide.createIcons();
         }
 
-        // --- SHEET & CART LOGIC (Unchanged math, translated UI) ---
+        // ==========================================
+        // BOTTOM SHEET & CART LOGIC (Shared)
+        // ==========================================
         function updateModalQty(change) {
             currentModalQty = Math.max(1, currentModalQty + change);
             document.getElementById('bs-qty').innerText = currentModalQty;
@@ -545,9 +661,7 @@
             if (p.type === 'Market') {
                 badgeContainer.classList.remove('hidden');
                 document.getElementById('bs-badge-text').innerHTML = `<i data-lucide="leaf" class="w-3 h-3"></i> Fresh Today`;
-            } else {
-                badgeContainer.classList.add('hidden');
-            }
+            } else { badgeContainer.classList.add('hidden'); }
             
             const sizeDiv = document.getElementById('bs-sizes');
             const sizeContainer = document.getElementById('size-options-container');
@@ -693,12 +807,10 @@
             if(cart.length === 0) return;
             
             let msg = `🛒 *New Order LASCOTACO*\n\n`;
-            let subtotalSale = 0; 
-            let subtotalCost = 0; 
+            let subtotalSale = 0; let subtotalCost = 0; 
 
             cart.forEach(item => { 
                 msg += `• *${item.qty}x* ${item.name} ${item.sizeName ? `(${item.sizeName})` : ''}\n  ${item.extras?.length ? `Extras: ${item.extras.map(e=>e.name).join(', ')}\n` : ''}${item.sauce ? `Sauce: ${item.sauce}\n` : ''}${item.notes ? `Note: ${item.notes}\n` : ''}  = ${item.qty * item.price} DH\n\n`; 
-                
                 subtotalSale += item.qty * item.price; 
                 
                 const originalProduct = globalProducts.find(p => p.name === item.name);
@@ -709,9 +821,7 @@
                         const matchedSize = originalProduct.sizes.find(s => s.name === item.sizeName);
                         if (matchedSize && matchedSize.costPrice) { unitCost = Number(matchedSize.costPrice); } 
                         else if (originalProduct.costPrice) { unitCost = Number(originalProduct.costPrice); }
-                    } else if (originalProduct.costPrice) {
-                        unitCost = Number(originalProduct.costPrice);
-                    }
+                    } else if (originalProduct.costPrice) { unitCost = Number(originalProduct.costPrice); }
                 }
                 subtotalCost += item.qty * unitCost;
             });
@@ -720,28 +830,13 @@
             const myProfit = subtotalSale - subtotalCost;
 
             try {
-                const orderData = {
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    items: cart,
-                    totalSale: subtotalSale,
-                    totalCost: subtotalCost,
-                    profit: myProfit,
-                    deliveryFee: livraisonFee,
-                    status: "pending",
-                    dateString: new Date().toLocaleDateString('fr-FR')
-                };
+                const orderData = { timestamp: firebase.firestore.FieldValue.serverTimestamp(), items: cart, totalSale: subtotalSale, totalCost: subtotalCost, profit: myProfit, deliveryFee: livraisonFee, status: "pending", dateString: new Date().toLocaleDateString('fr-FR') };
                 await db.collection("orders").add(orderData);
-                
-                cart = []; 
-                saveCart(); 
-                syncUI(); 
-                toggleCart(false);
-            } catch (error) {
-                console.error("Save error:", error);
-            }
-
+                cart = []; saveCart(); syncUI(); toggleCart(false);
+            } catch (error) { console.error("Save error:", error); }
             window.open(`https://wa.me/212708006088?text=${encodeURIComponent(msg)}`);
         }
     </script>
 </body>
 </html>
+
