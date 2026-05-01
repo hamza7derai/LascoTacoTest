@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -46,7 +46,7 @@
 
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
         
-        .cat-pill { padding: 10px 20px; border-radius: 99px; font-weight: 800; font-size: 13px; color: #718096; background: #F4F5F7; flex: 0 0 auto; cursor: pointer; transition: 0.2s; border: 2px solid transparent; }
+        .cat-pill { padding: 10px 20px; border-radius: 99px; font-weight: 800; font-size: 13px; color: #718096; background: #F4F5F7; flex: 0 0 auto; cursor: pointer; transition: 0.2s; border: 2px solid transparent; white-space: nowrap; }
         .cat-pill.active { background: white; color: var(--brand); border-color: var(--brand); box-shadow: 0 4px 15px var(--brand-soft); }
 
         /* BOTTOM NAV */
@@ -68,34 +68,38 @@
                 <div class="flex justify-between items-center mb-5">
                     <h1 class="text-2xl font-black italic tracking-tighter" style="color: var(--brand)">LASCOTACO <span class="text-gray-400 font-bold text-sm not-italic ml-1">Admin</span></h1>
                     <button onclick="openModal()" class="px-5 py-2.5 bg-[#E85A24] text-white rounded-full flex justify-center items-center gap-2 font-bold text-[13px] shadow-lg shadow-orange-500/25 active:scale-95 transition">
-                        <i data-lucide="plus" class="w-4 h-4"></i> Produit
+                        <i data-lucide="plus" class="w-4 h-4"></i> Product
                     </button>
                 </div>
                 <div class="relative">
                     <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
-                    <input type="text" id="search-bar" oninput="refreshList()" placeholder="Rechercher un produit..." class="w-full bg-gray-50 border-2 border-transparent rounded-[16px] py-3.5 pl-12 pr-4 text-[14px] font-semibold outline-none focus:bg-white focus:border-orange-500 transition-colors">
+                    <input type="text" id="search-bar" oninput="refreshList()" placeholder="Search a product..." class="w-full bg-gray-50 border-2 border-transparent rounded-[16px] py-3.5 pl-12 pr-4 text-[14px] font-semibold outline-none focus:bg-white focus:border-orange-500 transition-colors">
                 </div>
             </header>
 
             <div class="px-5 py-4 bg-white/80 backdrop-blur-md sticky top-[146px] z-30">
                 <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2" id="filter-container">
-                    <div class="cat-pill active" onclick="setFilter('All')">Tous</div>
-                    <div class="cat-pill" onclick="setFilter('Restaurant')">Restaurant</div>
-                    <div class="cat-pill" onclick="setFilter('Épicerie')">Épicerie</div>
+                    <div class="cat-pill active" onclick="setFilter('All')">All</div>
+                    <div class="cat-pill" onclick="setFilter('Breakfast')">Breakfast</div>
+                    <div class="cat-pill" onclick="setFilter('Fast Food')">Fast Food</div>
+                    <div class="cat-pill" onclick="setFilter('Meals')">Meals</div>
+                    <div class="cat-pill" onclick="setFilter('Drinks')">Drinks</div>
+                    <div class="cat-pill" onclick="setFilter('Desserts')">Desserts</div>
+                    <div class="cat-pill" onclick="setFilter('Market')">Market</div>
                 </div>
             </div>
 
             <main id="admin-list" class="p-5 flex flex-col gap-4 min-h-[50vh]"></main>
         </div>
 
-        <div id="view-caisse" class="tab-content bg-[#F8F9FA] min-h-screen pb-6">
+        <div id="view-pos" class="tab-content bg-[#F8F9FA] min-h-screen pb-6">
             <header class="bg-white px-6 pt-8 pb-6 rounded-b-[32px] shadow-sm relative z-20">
-                <h1 class="text-3xl font-black text-gray-900 tracking-tight">Caisse du jour</h1>
-                <p id="caisse-header-date" class="text-[13px] font-bold text-gray-400 flex items-center gap-1.5 mt-1"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> --/--/----</p>
+                <h1 class="text-3xl font-black text-gray-900 tracking-tight">Today's Register</h1>
+                <p id="pos-header-date" class="text-[13px] font-bold text-gray-400 flex items-center gap-1.5 mt-1"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> --/--/----</p>
                 
                 <div class="mt-8 bg-green-50 p-5 rounded-[24px] border border-green-100 flex items-center justify-between">
                     <div>
-                        <p class="text-[11px] font-bold text-green-600 uppercase tracking-widest mb-1 flex items-center gap-1.5"><i data-lucide="wallet" class="w-4 h-4"></i> Bénéfice Validé</p>
+                        <p class="text-[11px] font-bold text-green-600 uppercase tracking-widest mb-1 flex items-center gap-1.5"><i data-lucide="wallet" class="w-4 h-4"></i> Validated Profit</p>
                         <p id="ui-net-profit" class="text-[40px] font-black text-[#10B981] leading-none tracking-tight">0 DH</p>
                     </div>
                 </div>
@@ -103,22 +107,22 @@
                 <div class="grid grid-cols-4 gap-2 mt-4">
                     <div class="bg-gray-50 py-3 px-1 rounded-[16px] text-center flex flex-col justify-center">
                         <i data-lucide="shopping-bag" class="w-4 h-4 text-gray-400 mx-auto mb-1"></i>
-                        <p class="text-[9px] font-bold text-gray-500 uppercase leading-tight mb-0.5 truncate px-1">Revenus</p>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase leading-tight mb-0.5 truncate px-1">Revenue</p>
                         <p id="ui-rev" class="text-[14px] font-black text-gray-900 truncate px-1">0</p>
                     </div>
                     <div class="bg-gray-50 py-3 px-1 rounded-[16px] text-center flex flex-col justify-center">
                         <i data-lucide="package" class="w-4 h-4 text-gray-400 mx-auto mb-1"></i>
-                        <p class="text-[9px] font-bold text-gray-500 uppercase leading-tight mb-0.5 truncate px-1">Coût</p>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase leading-tight mb-0.5 truncate px-1">Cost</p>
                         <p id="ui-cost" class="text-[14px] font-black text-red-500 truncate px-1">0</p>
                     </div>
                     <div class="bg-gray-50 py-3 px-1 rounded-[16px] text-center flex flex-col justify-center">
                         <i data-lucide="bike" class="w-4 h-4 text-gray-400 mx-auto mb-1"></i>
-                        <p class="text-[9px] font-bold text-gray-500 uppercase leading-tight mb-0.5 truncate px-1">Livraison</p>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase leading-tight mb-0.5 truncate px-1">Delivery</p>
                         <p id="ui-fee" class="text-[14px] font-black text-orange-400 truncate px-1">0</p>
                     </div>
                     <div class="bg-gray-50 py-3 px-1 rounded-[16px] text-center flex flex-col justify-center">
                         <i data-lucide="hash" class="w-4 h-4 text-gray-400 mx-auto mb-1"></i>
-                        <p class="text-[9px] font-bold text-gray-500 uppercase leading-tight mb-0.5 truncate px-1">Total Cmd</p>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase leading-tight mb-0.5 truncate px-1">Total Orders</p>
                         <p id="ui-count" class="text-[14px] font-black text-gray-900 truncate px-1">0</p>
                     </div>
                 </div>
@@ -126,33 +130,32 @@
 
             <div class="p-5">
                 <div class="flex justify-between items-center mb-4 px-1">
-                    <h3 class="text-[13px] font-black text-gray-400 uppercase tracking-widest">Suivi des commandes</h3>
+                    <h3 class="text-[13px] font-black text-gray-400 uppercase tracking-widest">Order Tracking</h3>
                 </div>
-                <div id="caisse-orders-list" class="space-y-4">
-                    </div>
+                <div id="pos-orders-list" class="space-y-4"></div>
             </div>
 
             <div class="mx-5 mt-4 bg-white p-5 rounded-[24px] shadow-sm border border-gray-100 space-y-4">
                 <div class="flex justify-between items-center bg-orange-50/50 px-4 py-3.5 rounded-[16px] border border-orange-100">
                     <div>
-                        <p class="text-[11px] font-black text-[#E85A24] uppercase">En attente livreur</p>
-                        <p class="text-[10px] font-bold text-gray-500 mt-0.5">Espèces à récupérer</p>
+                        <p class="text-[11px] font-black text-[#E85A24] uppercase">Awaiting Courier</p>
+                        <p class="text-[10px] font-bold text-gray-500 mt-0.5">Cash to collect</p>
                     </div>
                     <span id="ui-pending-cash" class="text-[20px] font-black text-[#E85A24]">0 DH</span>
                 </div>
                 
-                <button id="btn-pay-caisse" onclick="closeDay()" class="w-full h-[56px] bg-[#10B981] text-white rounded-[16px] font-black text-[16px] shadow-md active:scale-95 transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="vault" class="w-5 h-5"></i> Clôturer la journée (Payé)
+                <button id="btn-pay-pos" onclick="closeDay()" class="w-full h-[56px] bg-[#10B981] text-white rounded-[16px] font-black text-[16px] shadow-md active:scale-95 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="vault" class="w-5 h-5"></i> Close Day (Paid)
                 </button>
             </div>
         </div>
 
         <div id="view-history" class="tab-content bg-[#F8F9FA] min-h-screen pb-6">
             <header class="bg-white px-6 pt-8 pb-6 rounded-b-[32px] shadow-sm">
-                <h1 class="text-3xl font-black text-gray-900 tracking-tight mb-6">Performances</h1>
+                <h1 class="text-3xl font-black text-gray-900 tracking-tight mb-6">Performance</h1>
                 <div class="bg-gray-900 p-6 rounded-[24px] text-white shadow-xl relative overflow-hidden">
                     <div class="absolute -right-4 -top-4 opacity-10"><i data-lucide="trending-up" class="w-32 h-32"></i></div>
-                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1">Bénéfice (7 derniers jours)</p>
+                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1">Profit (Last 7 Days)</p>
                     <p id="hist-total-profit" class="text-[40px] font-black text-white leading-none tracking-tight">0 DH</p>
                     <div class="mt-4 flex gap-4">
                         <div>
@@ -160,7 +163,7 @@
                             <p id="hist-total-sales" class="font-black text-[16px]">0 DH</p>
                         </div>
                         <div>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase">Commandes</p>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase">Orders</p>
                             <p id="hist-total-cmds" class="font-black text-[16px]">0</p>
                         </div>
                     </div>
@@ -172,12 +175,12 @@
                     <div class="bg-white p-5 rounded-[20px] shadow-sm border border-gray-100 flex flex-col justify-center">
                         <div class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center mb-2"><i data-lucide="x-circle" class="w-4 h-4"></i></div>
                         <p id="hist-refused" class="text-[20px] font-black text-gray-900 leading-none">0</p>
-                        <p class="text-[10px] font-bold text-gray-400 uppercase mt-1">Refusées / Annulées</p>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase mt-1">Rejected / Canceled</p>
                     </div>
                     <div class="bg-white p-5 rounded-[20px] shadow-sm border border-gray-100 flex flex-col justify-center">
                         <div class="w-8 h-8 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center mb-2"><i data-lucide="flame" class="w-4 h-4"></i></div>
                         <p id="hist-top-name" class="text-[14px] font-black text-gray-900 leading-tight truncate">--</p>
-                        <p class="text-[10px] font-bold text-gray-400 uppercase mt-1">Produit star</p>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase mt-1">Top Product</p>
                     </div>
                 </div>
             </div>
@@ -186,15 +189,15 @@
         <nav class="bottom-nav">
             <button class="nav-item active" onclick="switchTab('products', this)">
                 <i data-lucide="package" class="w-6 h-6"></i>
-                <span class="text-[10px] font-bold uppercase tracking-wider">Produits</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider">Products</span>
             </button>
-            <button class="nav-item" onclick="switchTab('caisse', this)">
+            <button class="nav-item" onclick="switchTab('pos', this)">
                 <i data-lucide="wallet" class="w-6 h-6"></i>
-                <span class="text-[10px] font-bold uppercase tracking-wider">Caisse</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider">POS</span>
             </button>
             <button class="nav-item" onclick="switchTab('history', this)">
                 <i data-lucide="bar-chart-2" class="w-6 h-6"></i>
-                <span class="text-[10px] font-bold uppercase tracking-wider">Historique</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider">History</span>
             </button>
         </nav>
     </div>
@@ -203,7 +206,7 @@
     <div id="modal-panel">
         <div class="p-6 bg-white flex justify-between items-center shrink-0 rounded-t-[32px] relative z-20 shadow-sm border-b border-gray-50">
             <div class="absolute top-2.5 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full"></div>
-            <h2 id="modal-title" class="text-2xl font-black text-gray-900 mt-2 tracking-tight">Nouveau Produit</h2>
+            <h2 id="modal-title" class="text-2xl font-black text-gray-900 mt-2 tracking-tight">New Product</h2>
             <button onclick="closeModal()" class="w-10 h-10 bg-[#F4F5F7] rounded-full flex items-center justify-center text-gray-500 active:scale-90 transition mt-2"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
 
@@ -215,27 +218,27 @@
                     <img id="img-preview" src="" class="w-full h-full object-cover hidden transition-transform duration-500 group-hover:scale-105">
                     <div id="img-icon" class="flex flex-col items-center gap-2">
                         <i data-lucide="image" class="w-8 h-8 text-gray-400"></i>
-                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Aperçu</span>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Preview</span>
                     </div>
                 </div>
                 <div>
-                    <label class="label-text">URL de l'image</label>
-                    <input id="p-img" type="text" placeholder="Collez le lien de l'image ici..." class="input-premium" oninput="updateImagePreview()">
+                    <label class="label-text">Image URL</label>
+                    <input id="p-img" type="text" placeholder="Paste image link here..." class="input-premium" oninput="updateImagePreview()">
                 </div>
             </div>
 
             <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-5">
                 <div>
-                    <label class="label-text">Nom du produit</label>
-                    <input id="p-name" type="text" placeholder="Ex: Tacos Double Viande" class="input-premium">
+                    <label class="label-text">Product Name</label>
+                    <input id="p-name" type="text" placeholder="Ex: Double Meat Tacos" class="input-premium">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="label-text">Prix (DH)</label>
+                        <label class="label-text">Price (DH)</label>
                         <input id="p-price" type="number" placeholder="0.00" class="input-premium font-black text-[#E85A24]">
                     </div>
                     <div>
-                        <label class="label-text flex items-center gap-1">Coût Base (DH) <i data-lucide="eye-off" class="w-3 h-3"></i></label>
+                        <label class="label-text flex items-center gap-1">Base Cost (DH) <i data-lucide="eye-off" class="w-3 h-3"></i></label>
                         <input id="p-cost-price" type="number" placeholder="Ex: 25" class="input-premium font-black text-gray-500 bg-gray-50">
                     </div>
                 </div>
@@ -243,58 +246,62 @@
                     <div>
                         <label class="label-text">Type</label>
                         <select id="p-type" class="input-premium appearance-none cursor-pointer" onchange="syncCategories()">
-                            <option value="Restaurant">Restaurant</option>
-                            <option value="Épicerie">Épicerie</option>
+                            <option value="Breakfast">Breakfast</option>
+                            <option value="Fast Food">Fast Food</option>
+                            <option value="Meals">Meals</option>
+                            <option value="Drinks">Drinks</option>
+                            <option value="Desserts">Desserts</option>
+                            <option value="Market">Market</option>
                         </select>
                     </div>
                     <div>
                         <label class="label-text flex justify-between items-center">
-                            Catégorie 
-                            <button onclick="addNewCat()" class="text-orange-500 hover:text-orange-600 bg-orange-50 px-3 py-1 rounded-full text-[10px]">+ Ajouter</button>
+                            Category 
+                            <button onclick="addNewCat()" class="text-orange-500 hover:text-orange-600 bg-orange-50 px-3 py-1 rounded-full text-[10px]">+ Add</button>
                         </label>
                         <select id="p-label" class="input-premium appearance-none cursor-pointer"></select>
                     </div>
                 </div>
                 <div>
                     <label class="label-text">Description</label>
-                    <textarea id="p-desc" placeholder="Ingrédients, détails (2 lignes max)..." class="input-premium h-24 resize-none"></textarea>
+                    <textarea id="p-desc" placeholder="Ingredients, details (max 2 lines)..." class="input-premium h-24 resize-none"></textarea>
                 </div>
             </div>
 
             <div class="space-y-4">
-                <h3 class="font-black text-[11px] text-gray-400 uppercase tracking-widest pl-2 mb-2">Configuration Avancée</h3>
+                <h3 class="font-black text-[11px] text-gray-400 uppercase tracking-widest pl-2 mb-2">Advanced Configuration</h3>
                 
                 <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex justify-between items-center">
-                    <div class="flex items-center gap-4"><div class="w-10 h-10 bg-orange-50 rounded-[12px] flex items-center justify-center text-orange-500"><i data-lucide="zap" class="w-5 h-5"></i></div><div><p class="font-bold text-sm text-gray-900">Mettre en avant</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Afficher dans le top vente</p></div></div>
+                    <div class="flex items-center gap-4"><div class="w-10 h-10 bg-orange-50 rounded-[12px] flex items-center justify-center text-orange-500"><i data-lucide="zap" class="w-5 h-5"></i></div><div><p class="font-bold text-sm text-gray-900">Highlight</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Show in top sales</p></div></div>
                     <input type="checkbox" id="p-top" class="toggle-switch orange">
                 </div>
                 
                 <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-                    <div class="flex justify-between items-center"><div><p class="font-bold text-sm text-gray-900">Choix de sauces</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Le client pourra choisir une sauce</p></div><input type="checkbox" id="p-sauce-toggle" class="toggle-switch" onchange="toggleUIAccordion('sauce-ui', this.checked)"></div>
-                    <div id="sauce-ui" class="expandable-ui"><div class="expandable-content"><div class="mt-5 pt-5 border-t border-gray-100 space-y-3"><div id="sauce-list" class="space-y-2"></div><button onclick="addDynamicField('sauces')" class="w-full py-3.5 border-2 border-dashed border-gray-200 rounded-[16px] font-bold text-gray-400 text-sm hover:border-orange-500 hover:text-orange-500 hover:bg-orange-50 transition-all">+ Ajouter une sauce</button></div></div></div>
+                    <div class="flex justify-between items-center"><div><p class="font-bold text-sm text-gray-900">Sauce Options</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Client can select a sauce</p></div><input type="checkbox" id="p-sauce-toggle" class="toggle-switch" onchange="toggleUIAccordion('sauce-ui', this.checked)"></div>
+                    <div id="sauce-ui" class="expandable-ui"><div class="expandable-content"><div class="mt-5 pt-5 border-t border-gray-100 space-y-3"><div id="sauce-list" class="space-y-2"></div><button onclick="addDynamicField('sauces')" class="w-full py-3.5 border-2 border-dashed border-gray-200 rounded-[16px] font-bold text-gray-400 text-sm hover:border-orange-500 hover:text-orange-500 hover:bg-orange-50 transition-all">+ Add a sauce</button></div></div></div>
                 </div>
                 
                 <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-                    <div class="flex justify-between items-center"><div><p class="font-bold text-sm text-gray-900">Tailles & Variantes</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Proposez différentes tailles/prix</p></div><input type="checkbox" id="p-size-toggle" class="toggle-switch" onchange="toggleUIAccordion('size-ui', this.checked)"></div>
+                    <div class="flex justify-between items-center"><div><p class="font-bold text-sm text-gray-900">Sizes & Variants</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Offer different sizes/prices</p></div><input type="checkbox" id="p-size-toggle" class="toggle-switch" onchange="toggleUIAccordion('size-ui', this.checked)"></div>
                     <div id="size-ui" class="expandable-ui">
                         <div class="expandable-content">
                             <div class="mt-5 pt-5 border-t border-gray-100 space-y-3">
                                 <div id="size-list" class="space-y-3"></div>
-                                <button onclick="addDynamicField('sizes')" class="w-full py-3.5 border-2 border-dashed border-gray-200 rounded-[16px] font-bold text-gray-400 text-sm hover:border-orange-500 hover:text-orange-500 hover:bg-orange-50 transition-all">+ Ajouter une taille</button>
+                                <button onclick="addDynamicField('sizes')" class="w-full py-3.5 border-2 border-dashed border-gray-200 rounded-[16px] font-bold text-gray-400 text-sm hover:border-orange-500 hover:text-orange-500 hover:bg-orange-50 transition-all">+ Add a size</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-                    <div class="flex justify-between items-center"><div><p class="font-bold text-sm text-gray-900">Extras</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Options payantes supplémentaires</p></div><input type="checkbox" id="p-extra-toggle" class="toggle-switch" onchange="toggleUIAccordion('extra-ui', this.checked)"></div>
-                    <div id="extra-ui" class="expandable-ui"><div class="expandable-content"><div class="mt-5 pt-5 border-t border-gray-100 space-y-3"><div id="extra-list" class="space-y-2"></div><button onclick="addDynamicField('extras')" class="w-full py-3.5 border-2 border-dashed border-gray-200 rounded-[16px] font-bold text-gray-400 text-sm hover:border-orange-500 hover:text-orange-500 hover:bg-orange-50 transition-all">+ Ajouter un extra</button></div></div></div>
+                    <div class="flex justify-between items-center"><div><p class="font-bold text-sm text-gray-900">Extras</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Additional paid options</p></div><input type="checkbox" id="p-extra-toggle" class="toggle-switch" onchange="toggleUIAccordion('extra-ui', this.checked)"></div>
+                    <div id="extra-ui" class="expandable-ui"><div class="expandable-content"><div class="mt-5 pt-5 border-t border-gray-100 space-y-3"><div id="extra-list" class="space-y-2"></div><button onclick="addDynamicField('extras')" class="w-full py-3.5 border-2 border-dashed border-gray-200 rounded-[16px] font-bold text-gray-400 text-sm hover:border-orange-500 hover:text-orange-500 hover:bg-orange-50 transition-all">+ Add an extra</button></div></div></div>
                 </div>
                 <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex justify-between items-center">
-                    <div><p class="font-bold text-sm text-gray-900">Instructions Spéciales</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Autoriser les notes du client</p></div><input type="checkbox" id="p-instructions" class="toggle-switch" checked>
+                    <div><p class="font-bold text-sm text-gray-900">Special Instructions</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Allow client notes</p></div><input type="checkbox" id="p-instructions" class="toggle-switch" checked>
                 </div>
                 <div class="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex justify-between items-center border-l-4 border-green-500">
-                    <div><p class="font-bold text-sm text-gray-900">Produit Disponible</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Visible sur l'application client</p></div><input type="checkbox" id="p-active" class="toggle-switch" checked>
+                    <div><p class="font-bold text-sm text-gray-900">Product Available</p><p class="text-[11px] text-gray-500 font-semibold mt-0.5">Visible on client app</p></div><input type="checkbox" id="p-active" class="toggle-switch" checked>
                 </div>
             </div>
             <div class="h-10"></div>
@@ -302,7 +309,7 @@
 
         <div class="sticky bottom-0 p-6 bg-white/95 backdrop-blur-xl border-t border-gray-100 rounded-t-[32px] shadow-[0_-20px_40px_rgba(0,0,0,0.08)] z-20">
             <button onclick="saveProduct()" class="w-full h-[64px] bg-gradient-to-r from-[#E85A24] to-[#F2703F] text-white rounded-[22px] font-black text-[17px] shadow-[0_12px_30px_rgba(232,90,36,0.3)] hover:shadow-[0_15px_35px_rgba(232,90,36,0.4)] transition-all duration-300 active:scale-95 flex items-center justify-center gap-3">
-                <i data-lucide="save" class="w-6 h-6"></i> Enregistrer le produit
+                <i data-lucide="save" class="w-6 h-6"></i> Save Product
             </button>
         </div>
     </div>
@@ -337,7 +344,7 @@
             document.getElementById(`view-${tabId}`).classList.add('active');
             btnElement.classList.add('active');
             
-            if(tabId === 'caisse') loadCaisseTab();
+            if(tabId === 'pos') loadPosTab();
             if(tabId === 'history') loadHistoryTab();
         }
 
@@ -345,7 +352,7 @@
         function setFilter(type) { currentFilter = type; document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active')); event.target.classList.add('active'); refreshList(); }
         function toggleUIAccordion(id, show) { const el = document.getElementById(id); if(show) { el.classList.add('open'); } else { el.classList.remove('open'); } }
         function updateImagePreview() { const url = document.getElementById('p-img').value; const img = document.getElementById('img-preview'); const icon = document.getElementById('img-icon'); if(url) { img.src = url; img.classList.remove('hidden'); icon.classList.add('hidden'); } else { img.classList.add('hidden'); icon.classList.remove('hidden'); } }
-        function openModal(id = null) { document.body.classList.add('modal-open'); document.body.style.overflow = 'hidden'; if(!id) { document.getElementById('modal-title').innerText = "Nouveau Produit"; clearForm(); } else { document.getElementById('modal-title').innerText = "Modifier Produit"; } }
+        function openModal(id = null) { document.body.classList.add('modal-open'); document.body.style.overflow = 'hidden'; if(!id) { document.getElementById('modal-title').innerText = "New Product"; clearForm(); } else { document.getElementById('modal-title').innerText = "Edit Product"; } }
         function closeModal() { document.body.classList.remove('modal-open'); document.body.style.overflow = ''; }
 
         function clearForm() {
@@ -357,25 +364,24 @@
         }
 
         function renderDynamic(type) {
-            if(type === 'sauces') { document.getElementById('sauce-list').innerHTML = dynamicSauces.map((s, i) => `<div class="flex gap-2 bg-[#F4F5F7] rounded-[16px] p-2 items-center shadow-sm"><i data-lucide="grip-vertical" class="w-4 h-4 text-gray-400 ml-2"></i><input type="text" value="${s}" onchange="dynamicSauces[${i}]=this.value" class="flex-1 bg-transparent text-[14px] font-bold outline-none text-gray-900 px-2" placeholder="Ex: Algérienne"><button onclick="dynamicSauces.splice(${i},1); renderDynamic('sauces')" class="w-10 h-10 text-red-400 hover:text-red-600 rounded-[12px]"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join(''); }
+            if(type === 'sauces') { document.getElementById('sauce-list').innerHTML = dynamicSauces.map((s, i) => `<div class="flex gap-2 bg-[#F4F5F7] rounded-[16px] p-2 items-center shadow-sm"><i data-lucide="grip-vertical" class="w-4 h-4 text-gray-400 ml-2"></i><input type="text" value="${s}" onchange="dynamicSauces[${i}]=this.value" class="flex-1 bg-transparent text-[14px] font-bold outline-none text-gray-900 px-2" placeholder="Ex: Algerian"><button onclick="dynamicSauces.splice(${i},1); renderDynamic('sauces')" class="w-10 h-10 text-red-400 hover:text-red-600 rounded-[12px]"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join(''); }
             
-            // UPDATED SIZES RENDER WITH COST PRICE
             else if(type === 'sizes') { 
                 document.getElementById('size-list').innerHTML = dynamicSizes.map((s, i) => `
                     <div class="flex flex-col gap-2 bg-[#F4F5F7] border border-transparent focus-within:border-orange-500 transition-all rounded-[16px] p-3 shadow-sm relative">
                         <button onclick="dynamicSizes.splice(${i},1); renderDynamic('sizes')" class="absolute top-2 right-2 w-8 h-8 text-red-400 hover:text-red-600 bg-white rounded-full flex justify-center items-center shadow-sm"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         <div class="pr-10">
-                            <input type="text" value="${s.name}" onchange="dynamicSizes[${i}].name=this.value" class="w-full bg-transparent text-[14px] font-bold outline-none text-gray-900 placeholder-gray-400 border-b border-gray-200 pb-1 mb-2" placeholder="Nom de la taille (ex: XL)">
+                            <input type="text" value="${s.name}" onchange="dynamicSizes[${i}].name=this.value" class="w-full bg-transparent text-[14px] font-bold outline-none text-gray-900 placeholder-gray-400 border-b border-gray-200 pb-1 mb-2" placeholder="Size name (ex: XL)">
                             <div class="flex gap-4">
                                 <div class="flex-1">
-                                    <label class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Prix de Vente</label>
+                                    <label class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Sell Price</label>
                                     <div class="flex items-center">
                                         <input type="number" value="${s.price}" onchange="dynamicSizes[${i}].price=Number(this.value)" class="w-full bg-transparent text-[15px] font-black outline-none text-[#E85A24]" placeholder="0.00">
                                         <span class="text-[10px] font-bold text-gray-400">DH</span>
                                     </div>
                                 </div>
                                 <div class="flex-1 border-l border-gray-200 pl-4">
-                                    <label class="text-[9px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">Coût <i data-lucide="eye-off" class="w-2.5 h-2.5"></i></label>
+                                    <label class="text-[9px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">Cost <i data-lucide="eye-off" class="w-2.5 h-2.5"></i></label>
                                     <div class="flex items-center">
                                         <input type="number" value="${s.costPrice || ''}" onchange="dynamicSizes[${i}].costPrice=Number(this.value)" class="w-full bg-transparent text-[15px] font-bold outline-none text-gray-500" placeholder="0.00">
                                         <span class="text-[10px] font-bold text-gray-400">DH</span>
@@ -386,15 +392,15 @@
                     </div>`).join(''); 
             }
             
-            else if(type === 'extras') { document.getElementById('extra-list').innerHTML = dynamicExtras.map((e, i) => `<div class="flex gap-2 bg-[#F4F5F7] rounded-[16px] p-2 items-center shadow-sm"><i data-lucide="grip-vertical" class="w-4 h-4 text-gray-400 ml-2"></i><input type="text" value="${e.name}" onchange="dynamicExtras[${i}].name=this.value" class="w-1/2 bg-transparent text-[14px] font-bold outline-none text-gray-900 px-2 border-r border-gray-200" placeholder="Ex: Fromage"><span class="text-[14px] font-bold text-gray-400 pl-2">+</span><input type="number" value="${e.price}" onchange="dynamicExtras[${i}].price=Number(this.value)" class="w-1/3 bg-transparent text-[14px] font-black outline-none text-gray-700 text-right pr-2" placeholder="Prix"><span class="text-xs font-bold text-gray-400 pr-1">DH</span><button onclick="dynamicExtras.splice(${i},1); renderDynamic('extras')" class="w-10 h-10 text-red-400 hover:text-red-600 rounded-[12px]"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join(''); }
+            else if(type === 'extras') { document.getElementById('extra-list').innerHTML = dynamicExtras.map((e, i) => `<div class="flex gap-2 bg-[#F4F5F7] rounded-[16px] p-2 items-center shadow-sm"><i data-lucide="grip-vertical" class="w-4 h-4 text-gray-400 ml-2"></i><input type="text" value="${e.name}" onchange="dynamicExtras[${i}].name=this.value" class="w-1/2 bg-transparent text-[14px] font-bold outline-none text-gray-900 px-2 border-r border-gray-200" placeholder="Ex: Cheese"><span class="text-[14px] font-bold text-gray-400 pl-2">+</span><input type="number" value="${e.price}" onchange="dynamicExtras[${i}].price=Number(this.value)" class="w-1/3 bg-transparent text-[14px] font-black outline-none text-gray-700 text-right pr-2" placeholder="Price"><span class="text-xs font-bold text-gray-400 pr-1">DH</span><button onclick="dynamicExtras.splice(${i},1); renderDynamic('extras')" class="w-10 h-10 text-red-400 hover:text-red-600 rounded-[12px]"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join(''); }
             lucide.createIcons();
         }
         
-        // PUSH EMPTY COSTPRICE
         function addDynamicField(type) { if(type === 'sauces') { dynamicSauces.push(''); } else if(type === 'sizes') { dynamicSizes.push({name: '', price: '', costPrice: ''}); } else if(type === 'extras') { dynamicExtras.push({name: '', price: ''}); } renderDynamic(type); }
 
         async function syncCategories(defaultVal = null) { const type = document.getElementById('p-type').value; const select = document.getElementById('p-label'); select.innerHTML = ""; const snap = await db.collection("categories").where("type", "==", type).get(); snap.forEach(doc => { select.innerHTML += `<option value="${doc.data().name}">${doc.data().name}</option>`; }); if(defaultVal) select.value = defaultVal; }
-        async function addNewCat() { const name = prompt("Nom de la catégorie:"); if(name && name.trim() !== '') { const type = document.getElementById('p-type').value; await db.collection("categories").add({ name: name, type: type }); syncCategories(name); showToast("Catégorie ajoutée"); } }
+        
+        async function addNewCat() { const name = prompt("Category Name:"); if(name && name.trim() !== '') { const type = document.getElementById('p-type').value; await db.collection("categories").add({ name: name, type: type }); syncCategories(name); showToast("Category added"); } }
 
         async function saveProduct() {
             const id = document.getElementById('p-id').value;
@@ -411,7 +417,6 @@
                 requiresSauce: document.getElementById('p-sauce-toggle').checked, 
                 sauces: dynamicSauces.filter(s => s.trim() !== ''), 
                 hasSizes: document.getElementById('p-size-toggle').checked, 
-                // MAP COST PRICE TO DATABASE
                 sizes: dynamicSizes.filter(s => s.name.trim() !== '' && s.price > 0).map(s => ({
                     name: s.name,
                     price: Number(s.price),
@@ -422,17 +427,28 @@
                 hasInstructions: document.getElementById('p-instructions').checked, 
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
-            if(!data.name || !data.price) return alert("Le nom et le prix sont obligatoires !");
-            if(id) { await db.collection("products").doc(id).update(data); showToast("Produit modifié !"); } else { await db.collection("products").add(data); showToast("Produit ajouté !"); }
+            if(!data.name || !data.price) return alert("Name and Price are required!");
+            if(id) { await db.collection("products").doc(id).update(data); showToast("Product updated!"); } else { await db.collection("products").add(data); showToast("Product added!"); }
             closeModal(); refreshList();
         }
 
         async function editProduct(id) {
             const doc = await db.collection("products").doc(id).get(); const p = doc.data();
-            document.getElementById('p-id').value = id; document.getElementById('p-name').value = p.name; document.getElementById('p-price').value = p.price || ''; document.getElementById('p-cost-price').value = p.costPrice || ''; document.getElementById('p-type').value = p.type || 'Restaurant'; await syncCategories(p.category); document.getElementById('p-desc').value = p.description || ''; document.getElementById('p-img').value = p.image || ''; updateImagePreview(); document.getElementById('p-top').checked = p.isTop || false; document.getElementById('p-active').checked = p.isActive !== false; document.getElementById('p-instructions').checked = p.hasInstructions !== false;
+            document.getElementById('p-id').value = id; 
+            document.getElementById('p-name').value = p.name; 
+            document.getElementById('p-price').value = p.price || ''; 
+            document.getElementById('p-cost-price').value = p.costPrice || ''; 
+            document.getElementById('p-type').value = p.type || 'Fast Food'; 
+            await syncCategories(p.category); 
+            document.getElementById('p-desc').value = p.description || ''; 
+            document.getElementById('p-img').value = p.image || ''; 
+            updateImagePreview(); 
+            document.getElementById('p-top').checked = p.isTop || false; 
+            document.getElementById('p-active').checked = p.isActive !== false; 
+            document.getElementById('p-instructions').checked = p.hasInstructions !== false;
+            
             document.getElementById('p-sauce-toggle').checked = p.requiresSauce || false; toggleUIAccordion('sauce-ui', p.requiresSauce); dynamicSauces = p.sauces || []; renderDynamic('sauces');
             
-            // MAP OLD DB ITEMS SAFELY
             document.getElementById('p-size-toggle').checked = p.hasSizes || false; toggleUIAccordion('size-ui', p.hasSizes); 
             dynamicSizes = (p.sizes || []).map(s => ({...s, costPrice: s.costPrice || 0})); 
             renderDynamic('sizes');
@@ -441,7 +457,7 @@
             openModal(id);
         }
 
-        async function deleteProd(id, name) { if(confirm(`Supprimer définitivement "${name}" ?`)) { await db.collection("products").doc(id).delete(); showToast("Produit supprimé"); refreshList(); } }
+        async function deleteProd(id, name) { if(confirm(`Delete "${name}" permanently?`)) { await db.collection("products").doc(id).delete(); showToast("Product deleted"); refreshList(); } }
 
         async function refreshList() {
             const search = document.getElementById('search-bar').value.toLowerCase();
@@ -470,19 +486,19 @@
                     </div>
                 </div>`;
             });
-            if(count === 0) list.innerHTML = `<div class="py-20 text-center text-gray-400 font-bold">Aucun produit trouvé.</div>`;
+            if(count === 0) list.innerHTML = `<div class="py-20 text-center text-gray-400 font-bold">No products found.</div>`;
             lucide.createIcons();
         }
 
         // ==========================================
-        // CAISSE & ORDER LOGIC (THE POS ENGINE)
+        // POS ENGINE (CAISSE)
         // ==========================================
-        async function loadCaisseTab() {
-            const today = new Date().toLocaleDateString('fr-FR');
-            document.getElementById('caisse-header-date').innerHTML = `<i data-lucide="calendar" class="w-3.5 h-3.5 inline mb-0.5"></i> ${today}`;
+        async function loadPosTab() {
+            const today = new Date().toLocaleDateString('fr-FR'); // Keeping French format for consistency in your workflow
+            document.getElementById('pos-header-date').innerHTML = `<i data-lucide="calendar" class="w-3.5 h-3.5 inline mb-0.5"></i> ${today}`;
             
             try {
-                // Fetch ALL orders for today (pending, validé, payé, refusé)
+                // Fetch ALL orders for today 
                 const snap = await db.collection("orders").where("dateString", "==", today).get();
                 dailyOrdersData = [];
                 snap.forEach(doc => dailyOrdersData.push({ id: doc.id, ...doc.data() }));
@@ -490,30 +506,30 @@
                 // Sort newest first
                 dailyOrdersData.sort((a,b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
                 
-                renderCaisseView();
+                renderPosView();
             } catch(e) { console.error(e); }
         }
 
-        function renderCaisseView() {
+        function renderPosView() {
             let netProfit = 0, rev = 0, cost = 0, fee = 0, count = 0, pendingCash = 0;
             let hasValidToClose = false;
 
-            const listEl = document.getElementById('caisse-orders-list');
+            const listEl = document.getElementById('pos-orders-list');
             listEl.innerHTML = '';
 
             dailyOrdersData.forEach(o => {
-                if(o.status !== "refusé") {
+                if(o.status !== "rejected") {
                     count++;
                     rev += o.totalSale || 0;
                     cost += o.totalCost || 0;
                     fee += o.deliveryFee || 0;
                 }
 
-                if(o.status === "validé") {
+                if(o.status === "delivered") {
                     netProfit += o.profit || 0;
                     hasValidToClose = true;
                 }
-                if(o.status === "en_attente") {
+                if(o.status === "pending") {
                     pendingCash += o.totalSale || 0;
                 }
 
@@ -527,19 +543,19 @@
                 let statusUI = '';
                 let actionUI = '';
                 
-                if(o.status === "en_attente") {
-                    statusUI = `<span class="text-[10px] font-bold px-2 py-0.5 rounded-[6px] bg-orange-50 text-orange-500 border border-orange-100 flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> En attente</span>`;
+                if(o.status === "pending") {
+                    statusUI = `<span class="text-[10px] font-bold px-2 py-0.5 rounded-[6px] bg-orange-50 text-orange-500 border border-orange-100 flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> Pending</span>`;
                     actionUI = `
                         <div class="flex gap-2 w-full mt-3 pt-3 border-t border-gray-100">
-                            <button onclick="updateOrderStatus('${o.id}', 'refusé')" class="flex-1 py-2 rounded-[12px] font-bold text-[12px] bg-red-50 text-red-500 active:scale-95 transition flex justify-center gap-1"><i data-lucide="x" class="w-4 h-4"></i> Refuser</button>
-                            <button onclick="updateOrderStatus('${o.id}', 'validé')" class="flex-1 py-2 rounded-[12px] font-bold text-[12px] bg-green-500 text-white active:scale-95 transition flex justify-center gap-1"><i data-lucide="check" class="w-4 h-4"></i> Livré (Valider)</button>
+                            <button onclick="updateOrderStatus('${o.id}', 'rejected')" class="flex-1 py-2 rounded-[12px] font-bold text-[12px] bg-red-50 text-red-500 active:scale-95 transition flex justify-center gap-1"><i data-lucide="x" class="w-4 h-4"></i> Reject</button>
+                            <button onclick="updateOrderStatus('${o.id}', 'delivered')" class="flex-1 py-2 rounded-[12px] font-bold text-[12px] bg-green-500 text-white active:scale-95 transition flex justify-center gap-1"><i data-lucide="check" class="w-4 h-4"></i> Delivered (Validate)</button>
                         </div>`;
-                } else if(o.status === "validé") {
-                    statusUI = `<span class="text-[10px] font-bold px-2 py-0.5 rounded-[6px] bg-green-50 text-green-600 border border-green-100 flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> Validé (Attente clôture)</span>`;
-                } else if(o.status === "payé" || o.status === "payé_par_livreur") {
-                    statusUI = `<span class="text-[10px] font-bold px-2 py-0.5 rounded-[6px] bg-gray-100 text-gray-600 border border-gray-200 flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Payé (Clôturé)</span>`;
-                } else if(o.status === "refusé") {
-                    statusUI = `<span class="text-[10px] font-bold px-2 py-0.5 rounded-[6px] bg-red-50 text-red-500 border border-red-100 flex items-center gap-1"><i data-lucide="slash" class="w-3 h-3"></i> Refusé</span>`;
+                } else if(o.status === "delivered") {
+                    statusUI = `<span class="text-[10px] font-bold px-2 py-0.5 rounded-[6px] bg-green-50 text-green-600 border border-green-100 flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> Delivered (Await Close)</span>`;
+                } else if(o.status === "paid") {
+                    statusUI = `<span class="text-[10px] font-bold px-2 py-0.5 rounded-[6px] bg-gray-100 text-gray-600 border border-gray-200 flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Paid (Closed)</span>`;
+                } else if(o.status === "rejected") {
+                    statusUI = `<span class="text-[10px] font-bold px-2 py-0.5 rounded-[6px] bg-red-50 text-red-500 border border-red-100 flex items-center gap-1"><i data-lucide="slash" class="w-3 h-3"></i> Rejected</span>`;
                 }
 
                 listEl.innerHTML += `
@@ -557,14 +573,14 @@
                         <div class="text-right shrink-0 border-l border-gray-50 pl-3">
                             <p class="text-[9px] font-bold text-gray-400 uppercase leading-none">Total</p>
                             <p class="font-black text-[15px] text-gray-900 leading-tight">${o.totalSale} DH</p>
-                            <p class="text-[10px] font-bold ${o.status === 'refusé' ? 'text-gray-300 line-through' : 'text-green-500'} mt-1">Pr: ${o.profit} DH</p>
+                            <p class="text-[10px] font-bold ${o.status === 'rejected' ? 'text-gray-300 line-through' : 'text-green-500'} mt-1">Pr: ${o.profit} DH</p>
                         </div>
                     </div>
                     ${actionUI}
                 </div>`;
             });
 
-            if(dailyOrdersData.length === 0) listEl.innerHTML = `<div class="p-6 text-center text-gray-400 font-bold text-[13px]">Aucune commande aujourd'hui.</div>`;
+            if(dailyOrdersData.length === 0) listEl.innerHTML = `<div class="p-6 text-center text-gray-400 font-bold text-[13px]">No orders today.</div>`;
 
             // UPDATE TOP STATS
             document.getElementById('ui-net-profit').innerText = netProfit + " DH";
@@ -575,17 +591,17 @@
             document.getElementById('ui-pending-cash').innerText = pendingCash + " DH";
 
             // UPDATE CLOSE BUTTON
-            const btnPay = document.getElementById('btn-pay-caisse');
+            const btnPay = document.getElementById('btn-pay-pos');
             if(!hasValidToClose) {
                 btnPay.disabled = true;
                 btnPay.classList.replace('bg-[#10B981]', 'bg-gray-300');
                 btnPay.classList.remove('shadow-md');
-                btnPay.innerHTML = `<i data-lucide="lock" class="w-5 h-5"></i> Rien à clôturer`;
+                btnPay.innerHTML = `<i data-lucide="lock" class="w-5 h-5"></i> Nothing to close`;
             } else {
                 btnPay.disabled = false;
                 btnPay.classList.replace('bg-gray-300', 'bg-[#10B981]');
                 btnPay.classList.add('shadow-md');
-                btnPay.innerHTML = `<i data-lucide="vault" class="w-5 h-5"></i> Clôturer la journée (${netProfit} DH)`;
+                btnPay.innerHTML = `<i data-lucide="vault" class="w-5 h-5"></i> Close Day (${netProfit} DH)`;
             }
             lucide.createIcons();
         }
@@ -595,36 +611,35 @@
                 await db.collection("orders").doc(id).update({ status: newStatus });
                 const idx = dailyOrdersData.findIndex(o => o.id === id);
                 if(idx > -1) dailyOrdersData[idx].status = newStatus;
-                renderCaisseView();
-            } catch(e) { console.error(e); showToast("Erreur !"); }
+                renderPosView();
+            } catch(e) { console.error(e); showToast("Error!"); }
         }
 
         async function closeDay() {
-            const validOrders = dailyOrdersData.filter(o => o.status === "validé");
+            const validOrders = dailyOrdersData.filter(o => o.status === "delivered");
             if(validOrders.length === 0) return;
             
-            if(!confirm(`Confirmez-vous la réception des espèces et la clôture de ces commandes ?`)) return;
+            if(!confirm(`Confirm you received the cash and close these orders?`)) return;
 
             try {
                 const batch = db.batch();
                 validOrders.forEach(o => {
                     const ref = db.collection("orders").doc(o.id);
-                    batch.update(ref, { status: "payé" });
+                    batch.update(ref, { status: "paid" });
                 });
                 await batch.commit();
                 
-                validOrders.forEach(o => o.status = "payé");
-                renderCaisseView();
-                showToast("Journée clôturée avec succès !");
-            } catch (error) { console.error(error); showToast("Erreur !"); }
+                validOrders.forEach(o => o.status = "paid");
+                renderPosView();
+                showToast("Day closed successfully!");
+            } catch (error) { console.error(error); showToast("Error!"); }
         }
 
         // ==========================================
-        // HISTORY & ANALYTICS LOGIC
+        // HISTORY & ANALYTICS
         // ==========================================
         async function loadHistoryTab() {
             try {
-                // Get last 7 days of orders
                 const sevenDaysAgo = new Date();
                 sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
                 
@@ -634,21 +649,19 @@
                     .get();
 
                 let totalProfit = 0; let totalVol = 0; let totalCmds = 0; let refused = 0;
-                let productTracker = {}; // To find top product
+                let productTracker = {}; 
 
                 snap.forEach(doc => {
                     const o = doc.data();
-                    if(o.status === "refusé") {
+                    if(o.status === "rejected") {
                         refused++;
                     } else {
-                        // Include validé and payé
                         totalCmds++;
                         totalVol += (o.totalSale || 0);
-                        if(o.status === "payé" || o.status === "payé_par_livreur" || o.status === "validé") {
+                        if(o.status === "paid" || o.status === "delivered") {
                             totalProfit += (o.profit || 0);
                         }
 
-                        // Track items for Top Product
                         if(o.items) {
                             o.items.forEach(item => {
                                 if(!productTracker[item.name]) productTracker[item.name] = { qty: 0, profit: 0 };
@@ -658,7 +671,6 @@
                     }
                 });
 
-                // Find Top Product
                 let topName = "--"; let topQty = 0;
                 for (const [name, stats] of Object.entries(productTracker)) {
                     if(stats.qty > topQty) { topQty = stats.qty; topName = name; }
