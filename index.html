@@ -21,58 +21,54 @@
         .premium-ease { transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
+        /* SKELETONS */
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
         .skeleton { background: linear-gradient(90deg, #F4F5F7 25%, #E9ECEF 50%, #F4F5F7 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; }
         .skeleton-fade-out { animation: fadeOut 0.3s ease-out forwards; }
         @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-        @keyframes tabBounce { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
-        .tab-bounce { animation: tabBounce 0.2s cubic-bezier(0.2, 0.9, 0.3, 1); }
-
-        @keyframes cartBump { 0% { transform: scale(1); } 40% { transform: scale(1.1) rotate(-4deg); } 70% { transform: scale(0.95) rotate(2deg); } 100% { transform: scale(1) rotate(0); } }
-        .cart-bump { animation: cartBump 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.5); }
-        
-        /* BURO STYLE CIRCLES (Home View) */
-        .type-scroll { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 12px 20px 16px 20px; scroll-padding-left: 20px; scroll-behavior: smooth; }
-        .type-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; scroll-snap-align: start; transition: transform 0.2s; }
+        /* TOP CIRCLES NAV (Updated to new design) */
+        .type-scroll { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 12px 20px 0px 20px; scroll-behavior: smooth; }
+        .type-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; scroll-snap-align: start; transition: transform 0.2s; position: relative; padding-bottom: 12px; }
         .type-btn:active { transform: scale(0.95); }
-        .type-circle { width: 64px; height: 64px; border-radius: 50%; background: #F4F5F7; display: flex; align-items: center; justify-content: center; border: 2px solid transparent; transition: all 0.3s ease; }
+        .type-circle { width: 60px; height: 60px; border-radius: 50%; background: #F8F9FA; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; color: #64748B; }
+        .type-btn.active .type-circle { background: #FFF0E6; color: var(--brand); }
+        .type-btn span { color: #64748B; font-weight: 700; font-size: 11px; transition: color 0.3s; }
+        .type-btn.active span { color: var(--brand); }
+        .type-indicator { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 0; height: 3px; background: var(--brand); border-radius: 4px; transition: width 0.3s ease; }
+        .type-btn.active .type-indicator { width: 24px; }
+
+        /* HORIZONTAL PRODUCT SCROLL */
+        .product-h-scroll { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 20px 20px 20px; scroll-padding-left: 20px; }
+        .product-card-h { flex-shrink: 0; width: 150px; scroll-snap-align: start; background: white; border-radius: 20px; padding: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.04); border: 1px solid #F8F9FA; display: flex; flex-direction: column; transition: transform 0.2s; }
+        .product-card-h:active { transform: scale(0.96); }
+        .product-img-wrap-h { width: 100%; height: 130px; border-radius: 14px; background: #F4F5F7; overflow: hidden; position: relative; margin-bottom: 8px; }
         
-        /* CATEGORY PILLS */
+        /* CATEGORY PILLS (For Detail Page) */
         .category-scroll { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 20px 16px 20px; scroll-padding-left: 20px; scroll-behavior: smooth; }
         .category-pill { position: relative; flex: 0 0 auto; scroll-snap-align: start; transition: all 0.2s ease; border: 1px solid transparent; }
         .category-pill:active { transform: scale(0.95); }
-        
-        .product-card { background: white; border-radius: 20px; transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.2s ease; animation: fadeIn 0.4s ease-out forwards; border: 1px solid transparent; box-shadow: 0 4px 16px rgba(0,0,0,0.03); }
-        .product-card:active { transform: scale(0.97); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .product-img-wrap { overflow: hidden; border-radius: 16px 16px 6px 6px; height: 160px; background: #F4F5F7; width: 100%; position: relative; }
-        
-        .btn-add-unified { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; background-color: var(--brand); box-shadow: 0 4px 12px var(--brand-soft); transition: transform 0.15s ease, box-shadow 0.15s ease; flex-shrink: 0; }
-        .btn-add-unified:active { transform: scale(0.9); box-shadow: 0 2px 6px var(--brand-soft); }
 
+        /* MODALS & BOTTOM SHEETS */
         #bottom-sheet-root, #cart-drawer-root { position: fixed; inset: 0; z-index: 2000; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
         #bs-overlay, #cart-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
-        
         #bs-panel, #cart-panel { width: 100%; max-width: 500px; border-radius: 32px 32px 0 0; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); pointer-events: auto; display: flex; flex-direction: column; max-height: 92vh; box-shadow: 0 -20px 40px rgba(0,0,0,0.1); }
         #bs-panel { background: #FFFFFF; padding-bottom: env(safe-area-inset-bottom); }
         #cart-panel { background: #FDFBFA; }
-        
         .bs-open #bs-overlay, .drawer-open #cart-overlay { opacity: 1; pointer-events: auto; }
         .bs-open #bs-panel, .drawer-open #cart-panel { transform: translateY(0); }
 
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
 
-        /* BOTTOM NAV BAR */
+        /* BOTTOM NAV BAR (Updated Mockup) */
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: white; border-top: 1px solid #F3F4F6; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; padding-bottom: env(safe-area-inset-bottom); z-index: 1000; height: 75px; box-shadow: 0 -10px 30px rgba(0,0,0,0.03); }
         .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #A0AEC0; transition: color 0.2s; background: transparent; }
         .nav-btn.active { color: var(--brand); }
         .nav-btn span { font-size: 10px; font-weight: 700; }
         
-        /* FLOATING CHECKOUT BAR OFFSET */
+        /* FLOATING CHECKOUT BAR (New Design) */
         #checkout-bar { transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); bottom: 90px; } 
 
-        /* VIEW TOGGLING */
         .view-page { display: none; animation: fadeIn 0.3s ease-out forwards; }
         .view-page.active { display: block; }
     </style>
@@ -85,23 +81,22 @@
         
         <div id="view-home" class="view-page active">
             <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-xl px-5 py-4 flex justify-between items-center">
-                <h1 class="text-[26px] font-black tracking-tighter italic" style="color: var(--brand)">LASCOTACO</h1>
-                <button onclick="toggleCart(true)" class="relative bg-[#1A1A1A] text-white px-4 py-3 rounded-[16px] font-bold text-[14px] flex items-center gap-2 active:scale-95 transition-transform shadow-md">
-                    <i data-lucide="shopping-bag" class="w-4 h-4" style="color: var(--brand)"></i>
+                <h1 class="text-[24px] font-black tracking-tighter italic" style="color: var(--brand)">LASCOTACO</h1>
+                <button onclick="toggleCart(true)" class="bg-[#F8F9FA] text-gray-900 px-4 py-2.5 rounded-[16px] font-bold text-[14px] flex items-center gap-2 active:scale-95 transition-transform border border-gray-100">
+                    <i data-lucide="shopping-bag" class="w-4 h-4 text-[var(--brand)]"></i>
                     <span id="nav-total">0 DH</span>
-                    <span id="nav-badge" class="absolute -top-2 -right-2 text-white text-[11px] font-black w-6 h-6 flex items-center justify-center rounded-full border-2 border-[#1A1A1A] shadow-sm scale-0 premium-ease" style="background-color: var(--brand)">0</span>
                 </button>
             </header>
 
-            <div class="px-5 pt-2 pb-2 bg-white/95 backdrop-blur-xl sticky top-[72px] z-40">
+            <div class="px-5 pt-1 pb-2 bg-white/95 backdrop-blur-xl sticky top-[68px] z-40">
                 <div class="relative flex items-center group">
                     <i data-lucide="search" class="absolute left-4 w-5 h-5 text-gray-400 group-focus-within:text-[var(--brand)] transition-colors"></i>
-                    <input type="text" id="search-input" placeholder="Search for food, drinks..." class="w-full bg-[#F4F5F7] border-2 border-transparent rounded-[20px] py-4 pl-12 pr-12 text-[15px] font-semibold focus:outline-none focus:bg-white focus:border-[var(--brand)] transition-all">
+                    <input type="text" id="search-input" placeholder="Search for food, drinks..." class="w-full bg-[#F8F9FA] border border-gray-100 rounded-[18px] py-3.5 pl-12 pr-12 text-[14px] font-semibold focus:outline-none focus:bg-white focus:border-[var(--brand)] transition-all">
                     <button class="absolute right-4 text-gray-400 hover:text-[var(--brand)] transition-colors active:scale-90"><i data-lucide="sliders-horizontal" class="w-5 h-5"></i></button>
                 </div>
             </div>
 
-            <div id="types-container" class="bg-white mt-1">
+            <div id="types-container" class="bg-white">
                 <div class="type-scroll no-scrollbar" id="type-scroll-nav">
                     </div>
             </div>
@@ -120,61 +115,51 @@
                 </div>
             </div>
 
-            <div class="px-5 flex justify-between items-end mb-2 mt-2">
-                <h2 id="section-title" class="text-[20px] font-black text-gray-900 tracking-tight flex items-center gap-2">🔥 Top Sales</h2>
-                <button onclick="switchNav('categories')" class="text-[12px] font-bold text-gray-400 hover:text-[var(--brand)] transition-colors">See all categories ></button>
-            </div>
-            <main id="product-grid" class="p-5 pt-2 grid grid-cols-2 gap-4 pb-20"></main>
+            <div id="home-sections-container" class="pb-20"></div>
         </div>
 
 
-        <div id="view-categories-list" class="view-page min-h-screen bg-white pb-24">
-            <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-xl px-5 py-5 flex justify-between items-center border-b border-gray-50">
-                 <h1 class="text-[22px] font-black tracking-tight text-gray-900 mx-auto">Categories</h1>
-                 <button class="absolute right-5 text-gray-800"><i data-lucide="search" class="w-6 h-6"></i></button>
-            </header>
-            <div class="px-5 py-6 space-y-4" id="categories-cards-container">
-                </div>
-        </div>
-
-
-        <div id="view-category-detail" class="view-page min-h-screen bg-[#FDFBFA] pb-24">
-             <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-xl px-5 py-4 flex items-center justify-between border-b border-gray-50">
-                 <button onclick="closeCategoryDetail()" class="w-10 h-10 bg-white border border-gray-200 shadow-sm rounded-full flex items-center justify-center text-gray-800 active:scale-90 transition-transform"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
+        <div id="view-category-detail" class="view-page min-h-screen bg-[#FFFFFF] pb-24">
+             <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-xl px-5 py-4 flex items-center justify-between">
+                 <button onclick="closeCategoryDetail()" class="w-10 h-10 bg-[#F8F9FA] rounded-full flex items-center justify-center text-gray-800 active:scale-90 transition-transform"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
                  <h1 id="detail-title" class="text-[20px] font-black tracking-tight text-gray-900">Title</h1>
                  <button class="w-10 h-10 flex items-center justify-center text-gray-800"><i data-lucide="search" class="w-6 h-6"></i></button>
              </header>
-             <div class="bg-white pt-3 pb-4 sticky top-[72px] z-40 shadow-sm">
+             <div class="bg-white pt-2 pb-4 sticky top-[72px] z-40">
                  <div class="category-scroll no-scrollbar" id="detail-sub-nav"></div>
              </div>
-             <main id="detail-product-grid" class="p-5 pt-2 grid grid-cols-2 gap-4"></main>
+             
+             <main id="detail-product-grid" class="p-5 pt-0 grid grid-cols-2 gap-4"></main>
         </div>
 
 
         <div id="checkout-bar" class="fixed left-5 right-5 max-w-[460px] mx-auto z-40 translate-y-[200%] premium-ease">
-            <button onclick="toggleCart(true)" class="w-full text-white p-3 rounded-[24px] flex justify-between items-center shadow-[0_12px_30px_var(--brand-medium)] active:scale-[0.98] premium-ease relative overflow-hidden bg-[var(--brand)]">
-                <div class="flex items-center gap-3 pl-1 z-10">
-                    <div class="relative bg-white/20 backdrop-blur-md w-[48px] h-[48px] rounded-[18px] flex items-center justify-center">
-                        <i data-lucide="shopping-bag" class="w-[24px] h-[24px] text-white"></i>
-                        <span id="floating-badge" class="absolute -top-1.5 -right-1.5 text-[var(--brand)] text-[11px] w-6 h-6 rounded-full flex justify-center items-center font-black bg-white shadow-md">0</span>
+            <button onclick="toggleCart(true)" class="w-full text-white p-3.5 rounded-[24px] flex justify-between items-center shadow-[0_12px_30px_var(--brand-medium)] active:scale-[0.98] premium-ease relative overflow-hidden bg-[var(--brand)]">
+                <div class="flex items-center gap-3 pl-2 z-10">
+                    <div class="relative">
+                        <i data-lucide="shopping-bag" class="w-7 h-7 text-white"></i>
+                        <span id="floating-badge" class="absolute -top-1 -right-2 text-[var(--brand)] text-[10px] w-5 h-5 rounded-full flex justify-center items-center font-black bg-white shadow-sm border border-orange-100">0</span>
                     </div>
-                    <div class="text-left">
-                        <p id="item-count-text" class="text-[15px] font-black leading-tight">0 item</p>
+                    <div class="text-left ml-2">
+                        <p id="item-count-text" class="text-[15px] font-black leading-tight">0 items</p>
                         <p class="text-[12px] font-semibold text-white/80 mt-0.5">View cart</p>
                     </div>
                 </div>
-                <div class="font-black text-[20px] bg-white text-[var(--brand)] px-5 py-3.5 rounded-[18px] shadow-sm z-10 tracking-tight" id="final-price-bottom">0 DH</div>
+                <div class="font-black text-[16px] bg-white text-[var(--brand)] px-5 py-3 rounded-[16px] shadow-sm z-10 tracking-tight flex items-center gap-1">
+                    <span id="final-price-bottom">0 DH</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-orange-400"></i>
+                </div>
             </button>
         </div>
 
         <nav class="bottom-nav">
             <button onclick="switchNav('home')" id="nav-home" class="nav-btn active">
                 <i data-lucide="home" class="w-[22px] h-[22px]"></i>
-                <span>Main</span>
+                <span>Home</span>
             </button>
-            <button onclick="switchNav('categories')" id="nav-cat" class="nav-btn">
-                <i data-lucide="layout-grid" class="w-[22px] h-[22px]"></i>
-                <span>Categories</span>
+            <button onclick="focusSearch()" id="nav-explore" class="nav-btn">
+                <i data-lucide="search" class="w-[22px] h-[22px]"></i>
+                <span>Explore</span>
             </button>
             
             <button onclick="switchNav('market')" id="nav-market" class="relative flex flex-col items-center justify-center -mt-8 flex-1 group">
@@ -320,9 +305,8 @@
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
         let cart = JSON.parse(localStorage.getItem('lasco_cart_v2')) || []; 
-        let activeType = 'Home'; // Track current page focus
-        let activeCat = 'All';   // Track sub-category in detail view
-        let previousView = 'home'; // Track back button path
+        let activeType = 'Home'; 
+        let activeCat = 'All';   
         
         let livraisonFee = 20;
         let globalProducts = []; 
@@ -332,28 +316,12 @@
 
         // THE 5 MAIN TYPES
         const mainTypes = [
-            { name: 'Breakfast', icon: 'coffee', desc: 'Start the day fresh', color: '#FFF3E0', emoji: '🥐' },
-            { name: 'Fast Food', icon: 'pizza', desc: 'Quick & delicious', color: '#FFEBEE', emoji: '🍔' },
-            { name: 'Meals', icon: 'utensils', desc: 'Satisfying dishes', color: '#FFF8E1', emoji: '🍛' },
-            { name: 'Drinks', icon: 'cup-soda', desc: 'Cold beverages', color: '#E3F2FD', emoji: '🥤' },
-            { name: 'Desserts', icon: 'cake', desc: 'Sweet treats', color: '#FCE4EC', emoji: '🍰' }
+            { name: 'Breakfast', icon: 'coffee' },
+            { name: 'Fast Food', icon: 'pizza' },
+            { name: 'Meals', icon: 'utensils' },
+            { name: 'Drinks', icon: 'cup-soda' },
+            { name: 'Desserts', icon: 'cake' }
         ];
-
-        function renderSkeletons(targetGrid = 'product-grid') {
-            const grid = document.getElementById(targetGrid);
-            grid.innerHTML = Array(6).fill().map(() => `
-                <div class="product-card p-2 flex flex-col h-[260px] border-transparent shadow-sm">
-                    <div class="skeleton w-full h-[160px] rounded-[16px] mb-3 shrink-0"></div>
-                    <div class="px-1.5 flex flex-col flex-1">
-                        <div class="skeleton w-3/4 h-4 rounded mb-2"></div>
-                        <div class="skeleton w-1/2 h-4 rounded mt-auto mb-1"></div>
-                        <div class="flex justify-between items-end mt-2">
-                            <div class="skeleton w-1/3 h-5 rounded mb-1"></div>
-                            <div class="skeleton w-[40px] h-[40px] rounded-full shrink-0"></div>
-                        </div>
-                    </div>
-                </div>`).join('');
-        }
 
         function saveCart() { localStorage.setItem('lasco_cart_v2', JSON.stringify(cart)); }
 
@@ -366,8 +334,7 @@
             });
             setTimeout(() => { 
                 renderTypeCircles(); 
-                loadHomeProducts(false); 
-                renderCategoryCards();
+                renderHomeSections();
                 syncUI(); 
             }, 500);
         });
@@ -390,6 +357,12 @@
 
         function showComingSoon(feature) { showToast(`${feature} is coming soon!`); }
 
+        function focusSearch() {
+            switchNav('home');
+            document.getElementById('view-home').scrollTo({top: 0, behavior: 'smooth'});
+            setTimeout(() => document.getElementById('search-input').focus(), 300);
+        }
+
         // ==========================================
         // SPA NAVIGATION LOGIC
         // ==========================================
@@ -400,19 +373,15 @@
             
             document.querySelectorAll('.view-page').forEach(v => v.classList.remove('active'));
             
-            if(tab === 'home') {
-                document.getElementById('nav-home').classList.add('active');
+            if(tab === 'home' || tab === 'explore') {
+                document.getElementById(tab === 'explore' ? 'nav-explore' : 'nav-home').classList.add('active');
                 document.getElementById('view-home').classList.add('active');
                 document.getElementById('types-container').classList.remove('hidden');
                 
                 activeType = 'Home';
-                document.getElementById('section-title').innerHTML = '🔥 Top Sales';
-                loadHomeProducts(false);
+                renderTypeCircles(); // Reset active circle
+                renderHomeSections();
             } 
-            else if(tab === 'categories') {
-                document.getElementById('nav-cat').classList.add('active');
-                document.getElementById('view-categories-list').classList.add('active');
-            }
             else if (tab === 'market') {
                 document.getElementById('market-icon-bg').classList.add('scale-110');
                 document.getElementById('market-text').classList.add('text-[var(--market)]');
@@ -420,81 +389,157 @@
                 document.getElementById('types-container').classList.add('hidden'); // Hide circles in market mode
                 
                 activeType = 'Market';
-                document.getElementById('section-title').innerHTML = '<i data-lucide="shopping-basket" class="w-5 h-5 text-[var(--market)]"></i> Market Products';
-                loadHomeProducts(true);
+                renderHomeSections();
             }
             lucide.createIcons();
         }
 
         // ==========================================
-        // HOME VIEW FUNCTIONS
+        // HOME VIEW: DAYPARTING & SECTIONS
         // ==========================================
         
-        // The Top Circles on the Home page now link DIRECTLY to the detail page
         function renderTypeCircles() {
             const container = document.getElementById('type-scroll-nav');
             container.innerHTML = mainTypes.map(type => {
+                let isActive = activeType === type.name;
                 return `
-                <button onclick="openCategoryDetail('${type.name}', 'home')" class="type-btn">
-                    <div class="type-circle hover:bg-[#FFF0E6] hover:border-[var(--brand)] transition-colors">
-                        <i data-lucide="${type.icon}" class="w-7 h-7 text-gray-500 hover:text-[var(--brand)] transition-colors"></i>
+                <button onclick="openCategoryDetail('${type.name}')" class="type-btn ${isActive ? 'active' : ''}">
+                    <div class="type-circle">
+                        <i data-lucide="${type.icon}" class="w-6 h-6"></i>
                     </div>
-                    <span class="text-[11px] font-semibold text-gray-600">${type.name}</span>
+                    <span>${type.name}</span>
+                    <div class="type-indicator"></div>
                 </button>`;
             }).join('');
             lucide.createIcons();
         }
 
-        function loadHomeProducts(withSkeleton = false) {
-            // If Market, show Market items. Otherwise, show global Top Sales across all categories.
-            let filtered = activeType === 'Market' ? 
-                globalProducts.filter(p => p.type === 'Market') : 
-                globalProducts.filter(p => p.isTop === true);
+        // Time-based Logic (Dayparting)
+        function getDaypartingConfig() {
+            const hour = new Date().getHours();
+            if (hour >= 6 && hour < 11) {
+                return { title: '☀️ Breakfast', subtitle: 'Until 11:00', type: 'Breakfast' };
+            } else if (hour >= 11 && hour < 15) {
+                return { title: '🍔 Lunch Specials', subtitle: 'Popular mid-day', type: 'Fast Food' };
+            } else if (hour >= 22 || hour < 4) {
+                return { title: '🌙 Late Night', subtitle: 'Midnight cravings', type: 'Fast Food' };
+            }
+            return null; // Don't show extra section if not in a specific window
+        }
 
-            if(withSkeleton) { 
-                renderSkeletons('product-grid'); 
-                setTimeout(() => renderProductGrid(filtered, 'product-grid'), 400); 
-            } else { 
-                renderProductGrid(filtered, 'product-grid'); 
+        function renderHomeSections() {
+            const container = document.getElementById('home-sections-container');
+            container.innerHTML = ''; // Clear existing
+
+            if (activeType === 'Market') {
+                // If Market tab is active, just show market items in a vertical grid
+                const marketItems = globalProducts.filter(p => p.type === 'Market');
+                container.innerHTML = `
+                    <div class="px-5 flex justify-between items-end mb-3 mt-4">
+                        <h2 class="text-[20px] font-black text-gray-900 tracking-tight flex items-center gap-2"><i data-lucide="shopping-basket" class="w-5 h-5 text-[var(--market)]"></i> Market</h2>
+                    </div>
+                    <main id="home-market-grid" class="px-5 grid grid-cols-2 gap-4"></main>
+                `;
+                renderStandardGrid(marketItems, 'home-market-grid');
+                return;
+            }
+
+            // --- STANDARD HOME DASHBOARD ---
+
+            // 1. TOP SALES SECTION (Always visible)
+            const topSales = globalProducts.filter(p => p.isTop === true && p.type !== 'Market');
+            let html = `
+                <div class="px-5 flex justify-between items-end mb-2 mt-4">
+                    <h2 class="text-[20px] font-black text-gray-900 tracking-tight flex items-center gap-2">🔥 Top Sales</h2>
+                    <button onclick="openCategoryDetail('Fast Food')" class="text-[12px] font-bold text-[var(--brand)] hover:opacity-80 transition-opacity">See all ></button>
+                </div>
+                <div class="product-h-scroll no-scrollbar" id="home-top-scroll"></div>
+            `;
+
+            // 2. DAYPARTING SECTION (Time-based)
+            const daypart = getDaypartingConfig();
+            let daypartItems = [];
+            if (daypart) {
+                daypartItems = globalProducts.filter(p => p.type === daypart.type);
+                if(daypartItems.length > 0) {
+                    html += `
+                        <div class="px-5 flex justify-between items-end mb-2 mt-6">
+                            <h2 class="text-[20px] font-black text-gray-900 tracking-tight flex items-center gap-2">${daypart.title} <span class="text-[12px] font-bold text-gray-400 font-normal ml-1">${daypart.subtitle}</span></h2>
+                            <button onclick="openCategoryDetail('${daypart.type}')" class="text-[12px] font-bold text-[var(--brand)] hover:opacity-80 transition-opacity">See all ></button>
+                        </div>
+                        <div class="product-h-scroll no-scrollbar" id="home-daypart-scroll"></div>
+                    `;
+                }
+            }
+
+            container.innerHTML = html;
+            
+            // Populate Horizontal Scrolls
+            renderHorizontalScroll(topSales, 'home-top-scroll');
+            if(daypart && daypartItems.length > 0) {
+                renderHorizontalScroll(daypartItems, 'home-daypart-scroll');
             }
         }
 
-        // Home Page Search Logic
-        document.getElementById('search-input').addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            if(term.length > 0) { 
-                let filtered = globalProducts.filter(p => p.name.toLowerCase().includes(term));
-                if (activeType === 'Market') { filtered = filtered.filter(p => p.type === 'Market'); }
-                renderProductGrid(filtered, 'product-grid'); 
-            } 
-            else { loadHomeProducts(false); }
-        });
-
-        // ==========================================
-        // CATEGORY LIST VIEW (The Big Cards)
-        // ==========================================
-        function renderCategoryCards() {
-            const container = document.getElementById('categories-cards-container');
-            container.innerHTML = mainTypes.map(c => {
-                const count = globalProducts.filter(p => p.type === c.name).length;
+        // Horizontal Card Renderer (New Mockup Style)
+        function renderHorizontalScroll(products, containerId) {
+            const container = document.getElementById(containerId);
+            if(!container) return;
+            
+            container.innerHTML = products.map((p, index) => {
+                const priceLabel = p.hasSizes ? `From ${p.price}` : p.price;
+                const descText = p.description ? p.description : p.category; // fallback to category if no desc
+                
                 return `
-                <div onclick="openCategoryDetail('${c.name}', 'categories')" class="flex justify-between items-center p-6 rounded-[24px] cursor-pointer active:scale-95 transition-transform shadow-sm" style="background-color: ${c.color};">
-                    <div>
-                        <h3 class="font-black text-[20px] text-gray-900 tracking-tight">${c.name}</h3>
-                        <p class="text-[13px] font-bold text-gray-600 mt-1 opacity-80">${c.desc}</p>
-                        <span class="inline-block mt-3 bg-white/50 text-[11px] font-bold px-3 py-1.5 rounded-full text-gray-800 backdrop-blur-sm shadow-sm">${count} products</span>
+                <div class="product-card-h cursor-pointer" onclick="openProductByName('${p.name.replace(/'/g, "\\'")}')">
+                    <div class="product-img-wrap-h">
+                        <img src="${p.image}" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/400x300/F4F5F7/A0AEC0?text=--'" class="w-full h-full object-cover">
+                        ${p.isTop ? `<span class="absolute top-2 left-2 bg-white/95 backdrop-blur-sm text-[var(--brand)] text-[9px] font-black px-1.5 py-0.5 rounded uppercase shadow-sm">TOP</span>` : ''}
                     </div>
-                    <div class="text-[60px] leading-none drop-shadow-xl">${c.emoji}</div>
+                    <h3 class="font-bold text-[14px] text-gray-900 leading-tight truncate w-full">${p.name}</h3>
+                    <p class="text-[11px] text-gray-500 truncate w-full mt-0.5 mb-1 opacity-80">${descText}</p>
+                    <div class="flex justify-between items-center mt-auto pt-2">
+                        <span class="font-black text-[15px] text-[var(--brand)]">${priceLabel} DH</span>
+                        <button class="w-7 h-7 bg-[var(--brand)] rounded-full text-white flex items-center justify-center shadow-md active:scale-90 transition-transform" onclick="event.stopPropagation(); openProductByName('${p.name.replace(/'/g, "\\'")}', true);"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                    </div>
                 </div>`;
             }).join('');
+            lucide.createIcons();
+        }
+
+        // Basic 2-col Grid (For Category Detail & Market Views)
+        function renderStandardGrid(products, targetElementId) {
+            const grid = document.getElementById(targetElementId);
+            if(!grid) return;
+            if(products.length === 0) { grid.innerHTML = '<div class="col-span-2 text-center text-gray-400 py-12"><i data-lucide="search-x" class="w-10 h-10 mx-auto mb-3 opacity-50"></i><p class="font-bold text-[15px]">No products found</p></div>'; lucide.createIcons(); return; }
+            
+            let btnColor = activeType === 'Market' ? 'var(--market)' : 'var(--brand)';
+
+            grid.innerHTML = products.map((p, index) => {
+                 const descText = p.description ? p.description : p.category;
+                 return `
+                <div class="product-card cursor-pointer p-2 flex flex-col" onclick="openProductByName('${p.name.replace(/'/g, "\\'")}')">
+                    <div class="product-img-wrap group">
+                        <img src="${p.image}" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/400x300/F4F5F7/A0AEC0?text=--'" class="w-full h-full object-cover">
+                        ${p.isTop ? `<span class="absolute top-2 left-2 bg-white/95 text-[var(--brand)] text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm">TOP</span>` : ''}
+                    </div>
+                    <div class="pt-3 px-1.5 flex flex-col flex-1 pb-1">
+                        <h3 class="font-bold text-[14px] text-gray-900 leading-snug line-clamp-2">${p.name}</h3>
+                        <p class="text-[11px] text-gray-500 truncate w-full mt-0.5 opacity-80">${descText}</p>
+                        <div class="flex justify-between items-center mt-auto pt-3">
+                            <span class="font-black text-[16px] text-[var(--brand)]" style="color: ${btnColor}">${p.hasSizes ? 'From ' : ''}${p.price} DH</span>
+                            <button class="btn-add-unified" style="background-color: ${btnColor}; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" onclick="event.stopPropagation(); openProductByName('${p.name.replace(/'/g, "\\'")}', true);"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                        </div>
+                    </div>
+                </div>`
+            }).join('');
+            lucide.createIcons();
         }
 
         // ==========================================
-        // CATEGORY DETAIL VIEW (Grid + Orange Pills)
+        // CATEGORY DETAIL VIEW
         // ==========================================
-        function openCategoryDetail(typeName, fromView = 'categories') {
-            previousView = fromView; // Remember where the user came from for the back button
-            
+        function openCategoryDetail(typeName) {
             document.querySelectorAll('.view-page').forEach(v => v.classList.remove('active'));
             document.getElementById('view-category-detail').classList.add('active');
             
@@ -502,18 +547,17 @@
             activeType = typeName;
             activeCat = 'All'; 
             
+            // Sync top circle visually without changing view
+            renderTypeCircles(); 
+            
             renderDetailSubNav();
-            loadDetailProducts(true);
+            loadDetailProducts();
+            window.scrollTo(0,0);
         }
 
         function closeCategoryDetail() {
-            document.querySelectorAll('.view-page').forEach(v => v.classList.remove('active'));
-            if(previousView === 'home') {
-                document.getElementById('view-home').classList.add('active');
-                // Optional: refresh home data if needed
-            } else {
-                document.getElementById('view-categories-list').classList.add('active');
-            }
+            // Return to home
+            switchNav('home');
         }
 
         async function renderDetailSubNav() {
@@ -524,7 +568,6 @@
             
             nav.innerHTML = cats.map((cat, idx) => {
                 let isActive = activeCat === cat.name;
-                // CHANGED: Active pill is now warm orange instead of black
                 return `
                 <button id="btn-detail-cat-${idx}" onclick="handleDetailCatClick('${cat.name}', 'btn-detail-cat-${idx}')" class="category-pill flex items-center px-5 py-2 text-[14px] font-bold whitespace-nowrap rounded-full transition-all duration-200 border ${isActive ? 'bg-[var(--brand)] text-white border-[var(--brand)] shadow-md' : 'bg-white text-gray-600 border-gray-200'}">
                     ${cat.name}
@@ -537,50 +580,20 @@
             if(el) { el.classList.add('tab-bounce'); setTimeout(() => el.classList.remove('tab-bounce'), 250); }
             activeCat = catName;
             renderDetailSubNav();
-            loadDetailProducts(true);
+            loadDetailProducts();
             const nav = document.getElementById('detail-sub-nav');
             if (document.getElementById(elementId)) { nav.scrollTo({ left: document.getElementById(elementId).offsetLeft - 20, behavior: 'smooth' }); }
         }
 
-        function loadDetailProducts(withSkeleton = false) {
+        function loadDetailProducts() {
             let filtered = activeCat === 'All' ? 
                 globalProducts.filter(p => p.type === activeType) : 
                 globalProducts.filter(p => p.type === activeType && p.category === activeCat);
-
-            if(withSkeleton) { 
-                renderSkeletons('detail-product-grid'); 
-                setTimeout(() => renderProductGrid(filtered, 'detail-product-grid'), 300); 
-            } else { 
-                renderProductGrid(filtered, 'detail-product-grid'); 
-            }
+            renderStandardGrid(filtered, 'detail-product-grid'); 
         }
 
         // ==========================================
-        // SHARED PRODUCT GRID RENDERER
-        // ==========================================
-        function renderProductGrid(products, targetElementId) {
-            const grid = document.getElementById(targetElementId);
-            if(products.length === 0) { grid.innerHTML = '<div class="col-span-2 text-center text-gray-400 py-12"><i data-lucide="search-x" class="w-10 h-10 mx-auto mb-3 opacity-50"></i><p class="font-bold text-[15px]">No products found</p></div>'; lucide.createIcons(); return; }
-            
-            let btnColor = activeType === 'Market' ? 'var(--market)' : 'var(--brand)';
-
-            grid.innerHTML = products.map((p, index) => `
-                <div class="product-card cursor-pointer p-2 flex flex-col" onclick="openProductByName('${p.name.replace(/'/g, "\\'")}')">
-                    <div class="product-img-wrap group">
-                        <div class="absolute inset-0 skeleton z-10 pointer-events-none"></div>
-                        <img src="${p.image}" ${index >= 4 ? 'loading="lazy"' : ''} onerror="this.onerror=null; this.src='https://placehold.co/400x300/F4F5F7/A0AEC0?text=--'" class="w-full h-full object-cover opacity-0 blur-[4px] transition-all duration-500 ease-out" onload="this.classList.remove('opacity-0', 'blur-[4px]'); this.previousElementSibling?.classList.add('skeleton-fade-out');">
-                        ${p.isTop ? `<span class="absolute top-2 left-2 text-[var(--brand)] bg-white/95 backdrop-blur-sm text-[9px] font-black px-2 py-1 rounded-[6px] uppercase shadow-sm z-20">Top</span>` : ''}
-                    </div>
-                    <div class="pt-3 px-1.5 flex flex-col flex-1 justify-between pb-1">
-                        <h3 class="font-bold text-[14px] text-gray-900 leading-snug line-clamp-2">${p.name}</h3>
-                        <div class="flex justify-between items-end mt-3"><span class="font-black text-[16px] text-[var(--brand)] mb-1" style="color: ${btnColor}">${p.hasSizes ? 'From ' : ''}${p.price} DH</span><button class="btn-add-unified" style="background-color: ${btnColor}" onclick="event.stopPropagation(); openProductByName('${p.name.replace(/'/g, "\\'")}', true);"><i data-lucide="plus" class="w-5 h-5"></i></button></div>
-                    </div>
-                </div>`).join('');
-            lucide.createIcons();
-        }
-
-        // ==========================================
-        // BOTTOM SHEET & CART LOGIC (Shared)
+        // BOTTOM SHEET & CART LOGIC
         // ==========================================
         function updateModalQty(change) {
             currentModalQty = Math.max(1, currentModalQty + change);
@@ -615,10 +628,7 @@
             if(p.description?.trim()) { subtitleEl.innerText = p.description; subtitleEl.classList.remove('hidden'); } else { subtitleEl.classList.add('hidden'); }
 
             const badgeContainer = document.getElementById('bs-badge-container');
-            
-            if (p.type === 'Market') {
-                badgeContainer.classList.remove('hidden');
-                document.getElementById('bs-badge-text').innerHTML = `<i data-lucide="leaf" class="w-3 h-3"></i> Fresh Today`;
+            if (p.type === 'Market') { badgeContainer.classList.remove('hidden'); document.getElementById('bs-badge-text').innerHTML = `<i data-lucide="leaf" class="w-3 h-3"></i> Fresh Today`;
             } else { badgeContainer.classList.add('hidden'); }
             
             const sizeDiv = document.getElementById('bs-sizes');
@@ -714,8 +724,15 @@
             let total = 0, count = 0; cart.forEach(i => { total += i.qty * i.price; count += i.qty; });
             document.getElementById('nav-total').innerText = total + " DH";
             const navBadge = document.getElementById('nav-badge');
-            if (count > 0) { navBadge.innerText = count; navBadge.classList.replace('scale-0', 'scale-100'); } else { navBadge.classList.replace('scale-100', 'scale-0'); }
-            document.getElementById('floating-badge').innerText = count;
+            const floatBadge = document.getElementById('floating-badge');
+            
+            if (count > 0) { 
+                navBadge.innerText = count; navBadge.classList.replace('scale-0', 'scale-100'); 
+                floatBadge.innerText = count;
+            } else { 
+                navBadge.classList.replace('scale-100', 'scale-0'); 
+            }
+            
             document.getElementById('item-count-text').innerText = count + (count > 1 ? " items" : " item");
             const bottomPriceEl = document.getElementById('final-price-bottom');
             if (total !== lastTotal) { animateValue(bottomPriceEl, lastTotal, total, 300); lastTotal = total; } else { bottomPriceEl.innerText = total + " DH"; }
@@ -763,7 +780,6 @@
 
         async function sendToWhatsApp() {
             if(cart.length === 0) return;
-            
             let msg = `🛒 *New Order LASCOTACO*\n\n`;
             let subtotalSale = 0; let subtotalCost = 0; 
 
