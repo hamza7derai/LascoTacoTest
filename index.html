@@ -340,6 +340,7 @@
         
         let livraisonFee = 20;
         let globalProducts = []; 
+        let globalCategories = []; 
         let currentItemForSheet = null;
         let currentModalQty = 1;
         let lastTotal = 0; 
@@ -355,32 +356,35 @@
         function saveCart() { localStorage.setItem('lasco_cart_v2', JSON.stringify(cart)); }
 
         // ==========================================
-        // STATE PERSISTENCE (Refresh Fix)
+        // STATE PERSISTENCE (Bulletproof Refreshes)
         // ==========================================
         function saveAppState() {
-            sessionStorage.setItem('lasco_nav_tab', activeNavTab);
-            sessionStorage.setItem('lasco_view', currentView);
-            sessionStorage.setItem('lasco_type', activeType);
-            sessionStorage.setItem('lasco_cat', activeCat);
-            sessionStorage.setItem('lasco_prev', previousView);
+            localStorage.setItem('lasco_nav_tab', activeNavTab);
+            localStorage.setItem('lasco_view', currentView);
+            localStorage.setItem('lasco_type', activeType);
+            localStorage.setItem('lasco_cat', activeCat);
+            localStorage.setItem('lasco_prev', previousView);
         }
 
         function restoreAppState() {
             try {
-                activeNavTab = sessionStorage.getItem('lasco_nav_tab') || 'home';
-                currentView = sessionStorage.getItem('lasco_view') || 'main';
-                activeType = sessionStorage.getItem('lasco_type') || 'Home';
-                activeCat = sessionStorage.getItem('lasco_cat') || 'All';
-                previousView = sessionStorage.getItem('lasco_prev') || 'home';
+                activeNavTab = localStorage.getItem('lasco_nav_tab') || 'home';
+                currentView = localStorage.getItem('lasco_view') || 'main';
+                activeType = localStorage.getItem('lasco_type') || 'Home';
+                activeCat = localStorage.getItem('lasco_cat') || 'All';
+                previousView = localStorage.getItem('lasco_prev') || 'home';
 
-                // Safeguard check
                 if (currentView === 'detail' && activeType === 'Home') {
                     currentView = 'main'; activeNavTab = 'home';
                 }
 
                 if (currentView === 'detail') {
                     updateNavUI(activeNavTab);
-                    openCategoryDetail(activeType, previousView, true);
+                    document.querySelectorAll('.view-page').forEach(v => v.classList.remove('active'));
+                    document.getElementById('view-category-detail').classList.add('active');
+                    document.getElementById('detail-title').innerText = activeType;
+                    renderTypeCircles(); 
+                    // Products will render automatically when onSnapshot fires
                 } else if (currentView === 'categories_list') {
                     switchNav('categories');
                 } else if (currentView === 'main' && activeType === 'Market') {
@@ -389,19 +393,29 @@
                     switchNav('home');
                 }
             } catch(e) {
-                console.error("State restore failed, falling back to home.", e);
                 switchNav('home');
             }
         }
 
         // ==========================================
-        // APP INITIALIZATION
+        // REAL-TIME APP INITIALIZATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            // Immediately render static icons to prevent blank screen
             lucide.createIcons();
+            restoreAppState(); 
+            syncUI(); 
 
-            db.collection("products").get().then(snap => {
+            // 1. Real-time listener for Categories
+            db.collection("categories").onSnapshot(snap => {
+                globalCategories = [];
+                snap.forEach(doc => globalCategories.push(doc.data()));
+                
+                if(currentView === 'detail') renderDetailSubNav();
+            });
+
+            // 2. Real-time listener for Products
+            db.collection("products").onSnapshot(snap => {
+                globalProducts = [];
                 snap.forEach(doc => {
                     let data = doc.data();
                     if (data.isActive !== false) {
@@ -409,13 +423,17 @@
                         globalProducts.push(data);
                     }
                 });
+
+                // Instantly update UI without crashing
                 renderCategoryCards();
-                restoreAppState();
-                syncUI(); 
-                lucide.createIcons(); // Catch dynamic elements
-            }).catch(error => {
-                console.error("Error loading products:", error);
-                showToast("Connection error loading menu");
+                if(currentView === 'main') {
+                    renderHomeSections();
+                } else if(currentView === 'detail') {
+                    loadDetailProducts();
+                }
+                lucide.createIcons();
+            }, error => {
+                console.error("Error connecting to live products:", error);
             });
         });
 
@@ -427,12 +445,6 @@
             container.appendChild(toast); lucide.createIcons();
             requestAnimationFrame(() => { toast.classList.remove('translate-y-[-20px]', 'opacity-0'); });
             setTimeout(() => { toast.classList.add('translate-y-[-20px]', 'opacity-0'); setTimeout(() => toast.remove(), 400); }, 2500);
-        }
-
-        function triggerCartPulse() {
-            const btn = document.getElementById('nav-cart-btn');
-            if(btn) { btn.classList.remove('cart-bump'); void btn.offsetWidth; btn.classList.add('cart-bump'); }
-            if (window.navigator.vibrate) window.navigator.vibrate(10);
         }
 
         function showComingSoon(feature) { showToast(`${feature} is coming soon!`); }
@@ -616,12 +628,13 @@
         // ==========================================
         // CATEGORY DETAIL VIEW (Grid + Orange Pills)
         // ==========================================
-        function openCategoryDetail(typeName, fromView = 'categories', skipRestoreFilter = false) {
+        function openCategoryDetail(typeName, fromView = 'categories', skipScroll = false) {
             previousView = fromView; 
             currentView = 'detail';
             activeType = typeName;
             
-            if(!skipRestoreFilter) activeCat = 'All'; 
+            // Only reset filter if coming fresh
+            if(!skipScroll) activeCat = 'All'; 
             
             document.querySelectorAll('.view-page').forEach(v => v.classList.remove('active'));
             document.getElementById('view-category-detail').classList.add('active');
@@ -633,7 +646,7 @@
             loadDetailProducts();
             
             saveAppState();
-            if(!skipRestoreFilter) window.scrollTo(0,0);
+            if(!skipScroll) window.scrollTo(0,0);
         }
 
         function closeCategoryDetail() {
@@ -644,11 +657,12 @@
             }
         }
 
-        async function renderDetailSubNav() {
+        function renderDetailSubNav() {
             const nav = document.getElementById('detail-sub-nav');
             const cats = [{name: 'All'}];
-            const snap = await db.collection("categories").where("type", "==", activeType).get();
-            snap.forEach(doc => { cats.push(doc.data()); });
+            
+            // Pull instantly from globalCategories rather than Firebase fetch
+            globalCategories.filter(c => c.type === activeType).forEach(c => cats.push(c));
             
             nav.innerHTML = cats.map((cat, idx) => {
                 let isActive = activeCat === cat.name;
@@ -678,7 +692,7 @@
         }
 
         // ==========================================
-        // ORIGINAL STANDARD PRODUCT CARD GRID
+        // STANDARD PRODUCT CARD GRID
         // ==========================================
         function renderStandardGrid(products, targetElementId) {
             const grid = document.getElementById(targetElementId);
@@ -817,7 +831,7 @@
             if(existing) existing.qty += currentModalQty; 
             else cart.push({ id: complexId, name: p.name, price: unitPrice, image: p.image, sizeName: finalSizeName, extras: selectedExtras, sauce: sauce, notes: notes, qty: currentModalQty });
             
-            closeSheet(); saveCart(); syncUI(); showToast(`${p.name} added!`); triggerCartPulse();
+            closeSheet(); saveCart(); syncUI(); showToast(`${p.name} added!`);
         });
 
         function updateCartItemQty(id, change) {
@@ -854,7 +868,7 @@
             document.getElementById('drawer-subtotal').innerText = total + " DH";
             document.getElementById('drawer-total').innerText = (total > 0 ? total + livraisonFee : 0) + " DH";
             
-            // Fixed Cart Class Toggle
+            // Toggle Checkout Bar Visibility
             const checkoutBar = document.getElementById('checkout-bar');
             if (count > 0) { 
                 checkoutBar.classList.add('visible');
@@ -934,3 +948,4 @@
     </script>
 </body>
 </html>
+
