@@ -132,7 +132,7 @@
         .tab-pill { padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); white-space: nowrap; cursor: pointer; transition: 0.2s;}
         .tab-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* WIZARD */
+        /* WIZARD & TOGGLES */
         .stepper { display: flex; justify-content: space-between; position: relative; margin-bottom: 32px; padding: 0 20px; }
         .stepper::before { content: ''; position: absolute; top: 12px; left: 30px; right: 30px; height: 2px; background: var(--border); z-index: 1; }
         .step-dot { width: 26px; height: 26px; border-radius: 50%; background: var(--surface); border: 2px solid var(--border); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; position: relative; z-index: 2; transition:0.3s;}
@@ -145,18 +145,26 @@
         .upload-box { border: 2px dashed var(--border); border-radius: var(--radius-card); padding: 40px 20px; text-align: center; background: var(--surface); margin-bottom: 24px; cursor: pointer; transition: 0.2s;}
         .upload-box:active { background: var(--bg-main); }
         
-        /* Toggles & Chips UI */
-        .toggle-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 0; background: transparent; border: none; margin-bottom: 0; }
-        .switch { position: relative; display: inline-block; width: 44px; height: 26px; }
+        /* New Step 3 Toggle Card UI */
+        .toggle-card { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow-sm); }
+        .toggle-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 0; background: transparent; border: none; margin-bottom: 0; width: 100%;}
+        .toggle-icon-box { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 26px; flex-shrink: 0;}
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); transition: .3s; border-radius: 34px; }
         .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(18px); }
+        
+        .config-panel { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--border); animation: fadeIn 0.3s ease; }
 
-        .chip-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-        .v-chip { padding: 8px 12px; border-radius: 20px; background: var(--primary-light); color: var(--primary); border: 1px solid #FED7AA; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .v-chip span { cursor: pointer; display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; background: rgba(0,0,0,0.1); border-radius: 50%; }
+        .chip-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .v-chip { padding: 8px 12px; border-radius: 20px; background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border); font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .v-chip span { cursor: pointer; display: flex; align-items: center; justify-content: center; width: 18px; height: 18px; background: var(--danger-light); color: var(--danger); border-radius: 50%; font-weight:bold; }
+        
+        .list-row { display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-btn); margin-bottom: 8px; background: var(--bg-main);}
+        .list-info h5 { font-size: 14px; font-weight: 700; color: var(--text-main); }
+        .list-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
         /* ORDER DETAILS */
         .detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
@@ -336,16 +344,13 @@
             <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Add the main details for the dish or product.</p>
             
             <label style="font-size: 13px; font-weight: 700; display: block; margin-bottom: 12px;">Photo</label>
-            
             <div class="upload-box" onclick="document.getElementById('pImageFile').click()" id="uploadBoxUI">
                 <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                 <p>Upload a photo</p>
                 <span style="display: block; font-size: 11px; margin-top: 4px; color: var(--text-muted);">Tap to select file from your device</span>
             </div>
-            
             <input type="file" id="pImageFile" accept="image/*" style="display:none;" onchange="previewWizardImgFile(this)">
             <input type="hidden" id="pImg" value=""> 
-            
             <img id="previewImg" style="width: 100px; height: 100px; border-radius: 16px; object-fit: cover; margin-bottom: 24px; display: none; border: 1px solid var(--border); margin-left: auto; margin-right: auto;" src="">
 
             <div class="form-group">
@@ -413,50 +418,131 @@
             <h3 style="font-size: 16px; margin-bottom: 4px; font-weight:800;">Extras & Options</h3>
             <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Customize options for this item.</p>
             
-            <div class="card toggle-wrapper" style="margin-bottom:12px;">
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <svg viewBox="0 0 24 24" style="color:var(--warning); fill:var(--warning);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                    <div>
-                        <span class="toggle-label" style="display:block; font-size:14px;">Featured</span>
-                        <span style="font-size:11px; color:var(--text-muted); font-weight: 500;">Displayed at the top of the menu</span>
-                    </div>
-                </div>
-                <label class="switch"><input type="checkbox" id="pFeatured"><span class="slider"></span></label>
-            </div>
-
-            <div class="card" style="margin-bottom:12px;">
-                <div class="toggle-wrapper" style="padding:0; border:none; margin-bottom:16px;">
-                    <div style="display:flex; align-items:center; gap:8px; color:var(--purple);">
-                        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
-                        <span style="font-weight:800; font-size:14px; color:var(--text-main);">Sizes / Extras</span>
-                    </div>
-                    <label class="switch"><input type="checkbox" id="varToggle" onchange="document.getElementById('variantConfig').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
-                </div>
-                <div id="variantConfig" style="display:none;">
-                    <div class="form-group">
-                        <label>Option Type</label>
-                        <select class="form-control" id="varType" style="padding: 12px;">
-                            <option>Size (M, L, XL)</option>
-                            <option>Meats (Chicken, Beef)</option>
-                            <option>Other Extra</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Options (e.g., Garlic Mayo)</label>
-                        <div style="display:flex; gap:8px; margin-bottom: 12px;">
-                            <input type="text" id="vNameInput" class="form-control" placeholder="Add an option..." style="padding: 12px;">
-                            <button class="btn-outline" style="width:auto; padding:0 16px; font-size:13px;" onclick="addVariantOption()">+ Add</button>
+            <div class="toggle-card">
+                <div class="toggle-wrapper">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toggle-icon-box" style="background:var(--warning-light); color:var(--warning);"><svg viewBox="0 0 24 24" style="width:20px; fill:var(--warning);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+                        <div>
+                            <span style="display:block; font-size:14px; font-weight:700;">Featured</span>
+                            <span style="font-size:11px; color:var(--text-muted);">Display in top sales</span>
                         </div>
-                        <div class="chip-container" id="vChips"></div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="tglFeatured"><span class="slider"></span></label>
+                </div>
+            </div>
+
+            <div class="toggle-card">
+                <div class="toggle-wrapper">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toggle-icon-box" style="background:#FCE7F3; color:#DB2777;"><svg viewBox="0 0 24 24" style="width:20px;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg></div>
+                        <div>
+                            <span style="display:block; font-size:14px; font-weight:700;">Discount Price</span>
+                            <span style="font-size:11px; color:var(--text-muted);">Apply a special offer</span>
+                        </div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="tglPromo" onchange="document.getElementById('cfgPromo').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
+                </div>
+                <div class="config-panel" id="cfgPromo">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>New Price (DH)</label>
+                        <input type="number" id="vPromoPrice" class="form-control" placeholder="Ex: 35.00">
                     </div>
                 </div>
             </div>
 
-            <div class="card" style="margin-bottom:12px;">
-                <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; color:var(--primary);">
-                    <svg viewBox="0 0 24 24"><line x1="21" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="3" y2="18"></line></svg>
-                    <span style="font-weight:800; font-size:14px; color:var(--text-main);">Description (Ingredients)</span>
+            <div class="toggle-card">
+                <div class="toggle-wrapper">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toggle-icon-box" style="background:var(--danger-light); color:var(--danger);"><svg viewBox="0 0 24 24" style="width:20px;"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+                        <div>
+                            <span style="display:block; font-size:14px; font-weight:700;">Sauce Choice</span>
+                            <span style="font-size:11px; color:var(--text-muted);">Client can select sauces</span>
+                        </div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="tglSauce" onchange="document.getElementById('cfgSauce').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
                 </div>
+                <div class="config-panel" id="cfgSauce">
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="inpSauce" class="form-control" placeholder="Ex: Ketchup">
+                        <button class="btn-outline" style="width:auto; padding:0 16px; font-size:13px;" onclick="addSauce()">Add</button>
+                    </div>
+                    <div class="chip-container" id="listSauces"></div>
+                </div>
+            </div>
+
+            <div class="toggle-card">
+                <div class="toggle-wrapper">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toggle-icon-box" style="background:var(--purple-light); color:var(--purple);"><svg viewBox="0 0 24 24" style="width:20px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg></div>
+                        <div>
+                            <span style="display:block; font-size:14px; font-weight:700;">Sizes & Variations</span>
+                            <span style="font-size:11px; color:var(--text-muted);">Offer different sizes/prices</span>
+                        </div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="tglSize" onchange="document.getElementById('cfgSize').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
+                </div>
+                <div class="config-panel" id="cfgSize">
+                    <div style="display:flex; gap:8px; margin-bottom: 8px;">
+                        <input type="text" id="inpSizeName" class="form-control" placeholder="Name (e.g. XL)">
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <input type="number" id="inpSizeSell" class="form-control" placeholder="Sell Price">
+                        <input type="number" id="inpSizeCost" class="form-control" placeholder="Cost Price">
+                        <button class="btn-outline" style="width:auto; padding:0 16px; font-size:13px;" onclick="addSize()">Add</button>
+                    </div>
+                    <div style="margin-top: 16px;" id="listSizes"></div>
+                </div>
+            </div>
+
+            <div class="toggle-card">
+                <div class="toggle-wrapper">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toggle-icon-box" style="background:var(--blue-light); color:var(--blue);"><svg viewBox="0 0 24 24" style="width:20px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></div>
+                        <div>
+                            <span style="display:block; font-size:14px; font-weight:700;">Extras (Add-ons)</span>
+                            <span style="font-size:11px; color:var(--text-muted);">Paid additional options</span>
+                        </div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="tglExtra" onchange="document.getElementById('cfgExtra').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
+                </div>
+                <div class="config-panel" id="cfgExtra">
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="inpExtraName" class="form-control" placeholder="E.g. Extra Cheese" style="flex:2;">
+                        <input type="number" id="inpExtraPrice" class="form-control" placeholder="+ Price" style="flex:1;">
+                        <button class="btn-outline" style="width:auto; padding:0 16px; font-size:13px;" onclick="addExtra()">Add</button>
+                    </div>
+                    <div style="margin-top: 16px;" id="listExtras"></div>
+                </div>
+            </div>
+
+            <div class="toggle-card">
+                <div class="toggle-wrapper">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toggle-icon-box" style="background:#E0E7FF; color:#4338CA;"><svg viewBox="0 0 24 24" style="width:20px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
+                        <div>
+                            <span style="display:block; font-size:14px; font-weight:700;">Special Instructions</span>
+                            <span style="font-size:11px; color:var(--text-muted);">Allow client notes</span>
+                        </div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="tglNotes" checked><span class="slider"></span></label>
+                </div>
+            </div>
+
+            <div class="toggle-card" style="border-left: 4px solid var(--accent);">
+                <div class="toggle-wrapper">
+                    <div style="display:flex; align-items:center;">
+                        <div class="toggle-icon-box" style="background:var(--accent-light); color:var(--accent);"><svg viewBox="0 0 24 24" style="width:20px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
+                        <div>
+                            <span style="display:block; font-size:14px; font-weight:700;">Product Available</span>
+                            <span style="font-size:11px; color:var(--text-muted);">Visible on client app</span>
+                        </div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="tglAvailable" checked><span class="slider"></span></label>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 24px;">
+                <label style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; display:block;">Description / Ingredients</label>
                 <textarea id="pDesc" class="form-control" placeholder="List of ingredients or item description..." style="height: 100px; resize: none;"></textarea>
             </div>
 
@@ -527,8 +613,13 @@
 
         let allOrders = [], allProducts = [], globalCategoriesData = [];
         let currentOrderFilter = 'All', currentProductFilter = 'all', currentEditProductId = null; 
-        window.productVariants = []; let currentCatAddingType = ''; 
+        let currentCatAddingType = ''; 
         const safeNum = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
+
+        // DATA ARRAYS FOR STEP 3
+        window.productSauces = [];
+        window.productSizes = [];
+        window.productExtras = [];
 
         window.switchTab = (tabId) => {
             document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
@@ -566,50 +657,39 @@
             const text = document.getElementById('statusText');
             
             let isOnline = false;
-            if (docSnap.exists()) {
-                isOnline = docSnap.data().isOnline === true;
-            }
+            if (docSnap.exists()) { isOnline = docSnap.data().isOnline === true; }
             
             toggle.checked = isOnline;
             if(isOnline) {
                 dot.style.background = 'var(--accent)';
                 dot.style.boxShadow = '0 0 0 4px var(--accent-light)';
-                text.innerText = 'Store Open';
-                text.style.color = 'var(--accent)';
+                text.innerText = 'Store Open'; text.style.color = 'var(--accent)';
             } else {
                 dot.style.background = 'var(--danger)';
                 dot.style.boxShadow = '0 0 0 4px var(--danger-light)';
-                text.innerText = 'Store Closed';
-                text.style.color = 'var(--danger)';
+                text.innerText = 'Store Closed'; text.style.color = 'var(--danger)';
             }
         });
-        // ----------------------------------------------------
 
-        // Local Image Preview (Upload logic to be added later)
+        // ---------------- STEP 1 & 2 LOGIC ----------------
         window.previewWizardImgFile = (input) => {
             if (input.files && input.files[0]) {
                 const imgEl = document.getElementById('previewImg');
                 imgEl.src = URL.createObjectURL(input.files[0]);
-                imgEl.style.display = 'block';
-                document.getElementById('uploadBoxUI').style.display = 'none';
-                
-                // TODO: Here we will later upload to Firebase Storage and set document.getElementById('pImg').value to the secure URL.
+                imgEl.style.display = 'block'; document.getElementById('uploadBoxUI').style.display = 'none';
                 document.getElementById('pImg').value = "local_file_selected"; 
                 validateStep1();
             }
         };
 
         window.validateStep1 = () => {
-            const name = document.getElementById('pName').value.trim(); 
-            const cat = document.getElementById('pCat').value;
-            const btn = document.getElementById('btnNext1'); 
-            if(name && cat) { btn.disabled = false; } else { btn.disabled = true; }
+            const name = document.getElementById('pName').value.trim(); const cat = document.getElementById('pCat').value;
+            const btn = document.getElementById('btnNext1'); if(name && cat) { btn.disabled = false; } else { btn.disabled = true; }
         };
 
         window.validateStep2 = () => {
             const sell = document.getElementById('pSell').value; 
-            const btn = document.getElementById('btnNext2'); 
-            if(sell !== "") { btn.disabled = false; } else { btn.disabled = true; }
+            const btn = document.getElementById('btnNext2'); if(sell !== "") { btn.disabled = false; } else { btn.disabled = true; }
         };
 
         window.goToStep = (step) => {
@@ -621,19 +701,61 @@
             window.scrollTo(0,0);
         };
 
-        window.addVariantOption = () => {
-            const input = document.getElementById('vNameInput'); const name = input.value.trim();
-            if(name && !window.productVariants.find(v => v.name.toLowerCase() === name.toLowerCase())) { window.productVariants.push({ name: name, stock: 0 }); input.value = ''; renderVariantUI(); }
+        // ---------------- STEP 3 ADD-ONS LOGIC ----------------
+        // Sauces
+        window.addSauce = () => {
+            const input = document.getElementById('inpSauce'); const val = input.value.trim();
+            if(val && !window.productSauces.includes(val)) { window.productSauces.push(val); input.value = ''; renderSauces(); }
         };
-        window.removeVar = (index) => { window.productVariants.splice(index, 1); renderVariantUI(); };
-
-        function renderVariantUI() {
-            document.getElementById('vChips').innerHTML = window.productVariants.map((v, i) => `
-                <div class="v-chip">${v.name} <span onclick="removeVar(${i})"><svg viewBox="0 0 24 24" style="width:12px; height:12px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span></div>
+        window.removeSauce = (index) => { window.productSauces.splice(index, 1); renderSauces(); };
+        function renderSauces() {
+            document.getElementById('listSauces').innerHTML = window.productSauces.map((s, i) => `
+                <div class="v-chip">${s} <span onclick="removeSauce(${i})">×</span></div>
             `).join('');
         }
-        document.getElementById('varType').addEventListener('change', renderVariantUI);
 
+        // Sizes
+        window.addSize = () => {
+            const name = document.getElementById('inpSizeName').value.trim();
+            const sell = parseFloat(document.getElementById('inpSizeSell').value);
+            const cost = parseFloat(document.getElementById('inpSizeCost').value) || 0;
+            if(name && !isNaN(sell)) { 
+                window.productSizes.push({ name, sellPrice: sell, costPrice: cost }); 
+                document.getElementById('inpSizeName').value = ''; document.getElementById('inpSizeSell').value = ''; document.getElementById('inpSizeCost').value = '';
+                renderSizes(); 
+            }
+        };
+        window.removeSize = (index) => { window.productSizes.splice(index, 1); renderSizes(); };
+        function renderSizes() {
+            document.getElementById('listSizes').innerHTML = window.productSizes.map((s, i) => `
+                <div class="list-row">
+                    <div class="list-info"><h5>${s.name}</h5><p>Sell: ${s.sellPrice.toFixed(2)} DH | Cost: ${s.costPrice.toFixed(2)} DH</p></div>
+                    <button class="btn-icon-small" style="background:var(--danger-light); color:var(--danger);" onclick="removeSize(${i})"><svg viewBox="0 0 24 24" style="width:16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                </div>
+            `).join('');
+        }
+
+        // Extras
+        window.addExtra = () => {
+            const name = document.getElementById('inpExtraName').value.trim();
+            const price = parseFloat(document.getElementById('inpExtraPrice').value) || 0;
+            if(name) { 
+                window.productExtras.push({ name, price }); 
+                document.getElementById('inpExtraName').value = ''; document.getElementById('inpExtraPrice').value = '';
+                renderExtras(); 
+            }
+        };
+        window.removeExtra = (index) => { window.productExtras.splice(index, 1); renderExtras(); };
+        function renderExtras() {
+            document.getElementById('listExtras').innerHTML = window.productExtras.map((e, i) => `
+                <div class="list-row">
+                    <div class="list-info"><h5>${e.name}</h5><p>+ ${e.price.toFixed(2)} DH</p></div>
+                    <button class="btn-icon-small" style="background:var(--danger-light); color:var(--danger);" onclick="removeExtra(${i})"><svg viewBox="0 0 24 24" style="width:16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                </div>
+            `).join('');
+        }
+
+        // ---------------- CATEGORY LOGIC ----------------
         window.loadSubCats = () => {
             const main = document.getElementById('pCat').value; const subEl = document.getElementById('pSubCat');
             const catDoc = globalCategoriesData.find(c => c.name === main);
@@ -665,33 +787,18 @@
                     if(!globalCategoriesData.find(c => c.name.toLowerCase() === val.toLowerCase())) {
                         await addDoc(collection(db, "categories"), { name: val, subcategories: [] }); 
                         showToast("Category created!");
-                        
-                        // Optimistically update the UI so it shows up instantly
                         globalCategoriesData.push({ id: 'temp_id', name: val, subcategories: [] });
                         document.getElementById('pCat').innerHTML += `<option value="${val}">${val}</option>`;
-                        document.getElementById('pCat').value = val;
-                        loadSubCats();
-                        validateStep1();
-                    } else {
-                        showToast("Category already exists!");
-                    }
+                        document.getElementById('pCat').value = val; loadSubCats(); validateStep1();
+                    } else { showToast("Category already exists!"); }
                 } else {
-                    const mainCatName = document.getElementById('pCat').value; 
-                    const catDoc = globalCategoriesData.find(c => c.name === mainCatName);
+                    const mainCatName = document.getElementById('pCat').value; const catDoc = globalCategoriesData.find(c => c.name === mainCatName);
                     if(catDoc) {
                         let subs = catDoc.subcategories || [];
                         if(!subs.includes(val)) { 
-                            subs.push(val); 
-                            await updateDoc(doc(db, "categories", catDoc.id), { subcategories: subs }); 
-                            showToast("Subcategory added!"); 
-                            
-                            // Optimistically update the UI so it shows up instantly
-                            catDoc.subcategories = subs;
-                            loadSubCats();
-                            document.getElementById('pSubCat').value = val;
-                        } else {
-                            showToast("Subcategory already exists!");
-                        }
+                            subs.push(val); await updateDoc(doc(db, "categories", catDoc.id), { subcategories: subs }); showToast("Subcategory added!"); 
+                            catDoc.subcategories = subs; loadSubCats(); document.getElementById('pSubCat').value = val;
+                        } else { showToast("Subcategory already exists!"); }
                     }
                 }
                 closeModals();
@@ -718,12 +825,8 @@
                     }
 
                     if (order.status === 'Delivered') {
-                        let orderRev = 0, orderItems = 0;
-                        let orderShipping = safeNum(order.deliveryFee);
-
-                        if(order.cart && Array.isArray(order.cart)) {
-                            order.cart.forEach(item => { const p = item.product || {}; const sell = safeNum(item.unitPrice) || safeNum(p.sellPrice); const qty = parseInt(item.qty) || 0; orderRev += sell * qty; orderItems += qty; });
-                        }
+                        let orderRev = 0, orderItems = 0; let orderShipping = safeNum(order.deliveryFee);
+                        if(order.cart && Array.isArray(order.cart)) { order.cart.forEach(item => { const p = item.product || {}; const sell = safeNum(item.unitPrice) || safeNum(p.sellPrice); const qty = parseInt(item.qty) || 0; orderRev += sell * qty; orderItems += qty; }); }
                         if (isToday) { revenueToday += (orderRev + orderShipping); shippingToday += orderShipping; itemsToday += orderItems; }
                         if (isYesterday) { revenueYesterday += (orderRev + orderShipping); shippingYesterday += orderShipping; itemsYesterday += orderItems; }
                     }
@@ -731,10 +834,8 @@
 
                 const elStatRev = document.getElementById('statRevenue'); if(elStatRev) elStatRev.innerText = revenueToday.toFixed(2) + ' DH';
                 renderTrendArrow('statRevenueTrend', revenueToday, revenueYesterday, false);
-                
                 const elStatShipping = document.getElementById('statShipping'); if(elStatShipping) elStatShipping.innerText = shippingToday.toFixed(2) + ' DH';
                 renderTrendArrow('statShippingTrend', shippingToday, shippingYesterday, false);
-
                 const elStatOrders = document.getElementById('statOrders'); if(elStatOrders) elStatOrders.innerText = ordersToday;
                 renderTrendArrow('statOrdersTrend', ordersToday, ordersYesterday, false);
                 const elStatItems = document.getElementById('statItems'); if(elStatItems) elStatItems.innerText = itemsToday;
@@ -828,7 +929,6 @@
             let orderDate = new Date(); if (order.timestamp) { const parsed = new Date(order.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
             document.getElementById('det-date').innerText = orderDate.toLocaleDateString('en-US', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
             document.getElementById('det-client').innerText = order.customerName || 'Unknown';
-            
             document.getElementById('det-neighborhood').innerText = order.neighborhood || 'Not specified';
 
             let statusClass = 'b-pending'; 
@@ -845,9 +945,7 @@
                 return `<div class="item-row"><div class="item-img">${img}</div><div class="item-details"><div class="item-name">${p.name || 'Item'} ${vText}</div><div class="item-meta">x${item.qty}</div></div><div class="item-price">${(price * item.qty).toFixed(2)} DH</div></div>`;
             }).join('');
 
-            const deliveryFee = safeNum(order.deliveryFee);
-            const total = safeNum(order.totalPrice);
-            const subTotal = total - deliveryFee;
+            const deliveryFee = safeNum(order.deliveryFee); const total = safeNum(order.totalPrice); const subTotal = total - deliveryFee;
 
             document.getElementById('det-subtotal').innerText = `${subTotal.toFixed(2)} DH`; 
             document.getElementById('det-shipping').innerText = `${deliveryFee.toFixed(2)} DH`;
@@ -858,7 +956,6 @@
                 if(order.status === 'Pending') actionsHTML += `<button class="btn btn-info" onclick="promptOrderStatus('${order.id}', 'Preparing')">Accept (Preparing)</button>`;
                 if(order.status === 'Preparing') actionsHTML += `<button class="btn btn-warning" onclick="promptOrderStatus('${order.id}', 'Out for Delivery')">Dispatch (Out for Delivery)</button>`;
                 if(order.status === 'Out for Delivery') actionsHTML += `<button class="btn btn-success" onclick="promptOrderStatus('${order.id}', 'Delivered')">Mark as Delivered</button>`;
-                
                 actionsHTML += `<button class="btn btn-danger-outline" onclick="promptOrderStatus('${order.id}', 'Cancelled')">Cancel Order</button>`;
             } else if (order.status === 'Cancelled') { actionsHTML = `<div style="text-align:center; color:var(--danger); font-weight:700;">Order Cancelled</div>`; } 
             else { actionsHTML = `<div style="text-align:center; color:var(--success); font-weight:700;">Order Completed</div>`; }
@@ -869,8 +966,7 @@
 
         window.promptOrderStatus = (orderId, newStatus) => {
             document.getElementById('modalTitle').innerText = "Update Status"; document.getElementById('modalMsg').innerText = `Do you want to mark this order as ${newStatus.toLowerCase()}?`;
-            const btn = document.getElementById('modalConfirmBtn'); 
-            btn.className = 'btn btn-primary'; 
+            const btn = document.getElementById('modalConfirmBtn'); btn.className = 'btn btn-primary'; 
             if(newStatus === 'Cancelled') btn.style.background = 'var(--danger)';
             else if(newStatus === 'Out for Delivery') btn.style.background = 'var(--warning)';
             else if(newStatus === 'Delivered') btn.style.background = 'var(--accent)';
@@ -882,12 +978,7 @@
         window.promptDeleteOrder = (orderId) => {
             document.getElementById('modalTitle').innerText = "Delete Order"; document.getElementById('modalMsg').innerText = "This will permanently delete the order. Confirm?";
             const btn = document.getElementById('modalConfirmBtn'); btn.className = 'btn btn-primary'; btn.style.background = 'var(--danger)';
-            window.confirmActionCallback = async () => {
-                closeModals();
-                try { 
-                    await deleteDoc(doc(db, "orders", orderId)); showToast("Order deleted"); switchTab('commandes');
-                } catch(e) { console.error(e); alert("Error during deletion."); }
-            }; document.getElementById('confirmOverlay').classList.add('active');
+            window.confirmActionCallback = async () => { closeModals(); try { await deleteDoc(doc(db, "orders", orderId)); showToast("Order deleted"); switchTab('commandes'); } catch(e) { console.error(e); alert("Error during deletion."); } }; document.getElementById('confirmOverlay').classList.add('active');
         };
 
         function renderProductsAdminList(productsArray) {
@@ -898,7 +989,6 @@
 
                 container.innerHTML = filtered.map(p => {
                     const name = p.name || 'Unknown'; const img = p.imageUrl && p.imageUrl !== "local_file_selected" ? `<img src="${p.imageUrl}">` : `<span style="font-weight:800;color:var(--text-muted);">${name.charAt(0)}</span>`;
-                    
                     return `<div class="prod-card"><div class="prod-img-box">${img}</div><div class="prod-info"><h4>${name}</h4><div class="prod-meta">${p.category||'No cat'} • <strong style="color:var(--primary);">${safeNum(p.sellPrice)} DH</strong></div></div><div class="prod-actions"><button class="btn-icon-small btn-edit-prod" onclick="editProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button><button class="btn-icon-small btn-del-prod" onclick="promptDeleteProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div></div>`;
                 }).join('');
             } catch(e) { console.error("Prod List Error:", e); }
@@ -918,66 +1008,86 @@
         window.prepareAddProduct = () => {
             currentEditProductId = null; document.getElementById('wizardTitle').innerText = "Add Item"; document.querySelectorAll('#view-ajouter input').forEach(i => { if(i.type !== 'checkbox') i.value = '' });
             document.getElementById('previewImg').style.display = 'none'; document.getElementById('uploadBoxUI').style.display = 'flex';
-            document.getElementById('pImageFile').value = ""; // Reset file input
+            document.getElementById('pImageFile').value = "";
+            document.getElementById('pType').value = 'Resto'; document.getElementById('pDesc').value = '';
             
-            document.getElementById('pFeatured').checked = false;
-            document.getElementById('pType').value = 'Resto';
-            document.getElementById('pDesc').value = '';
-            
-            document.getElementById('varToggle').checked = false; document.getElementById('variantConfig').style.display = 'none'; window.productVariants = []; renderVariantUI();
-            
+            // Reset Step 3
+            document.getElementById('tglFeatured').checked = false;
+            document.getElementById('tglPromo').checked = false; document.getElementById('cfgPromo').style.display = 'none';
+            document.getElementById('tglSauce').checked = false; document.getElementById('cfgSauce').style.display = 'none'; window.productSauces = []; renderSauces();
+            document.getElementById('tglSize').checked = false; document.getElementById('cfgSize').style.display = 'none'; window.productSizes = []; renderSizes();
+            document.getElementById('tglExtra').checked = false; document.getElementById('cfgExtra').style.display = 'none'; window.productExtras = []; renderExtras();
+            document.getElementById('tglNotes').checked = true;
+            document.getElementById('tglAvailable').checked = true;
+
             switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
         };
 
         window.editProduct = (id) => {
             const p = allProducts.find(x => x.id === id); if(!p) return;
             currentEditProductId = id; document.getElementById('wizardTitle').innerText = "Edit Item";
+            
+            // Step 1
             document.getElementById('pName').value = p.name || ''; 
             document.getElementById('pType').value = p.productType || 'Resto';
             document.getElementById('pCat').value = p.category || '';
             loadSubCats(); setTimeout(() => document.getElementById('pSubCat').value = p.subCategory || '', 100);
-            
-            document.getElementById('pPrepTime').value = p.prepTime || '';
-            document.getElementById('pCost').value = p.costPrice || '';
-            document.getElementById('pSell').value = p.sellPrice || '';
-            document.getElementById('pImg').value = p.imageUrl || '';
-            document.getElementById('pImageFile').value = ""; // Reset file input
-            
-            document.getElementById('pFeatured').checked = p.featured || false; 
-            document.getElementById('pDesc').value = p.description || '';
+            document.getElementById('pImg').value = p.imageUrl || ''; document.getElementById('pImageFile').value = "";
             
             if(p.imageUrl && p.imageUrl !== "local_file_selected") {
-                const imgEl = document.getElementById('previewImg');
-                imgEl.src = p.imageUrl;
-                imgEl.style.display = 'block';
-                document.getElementById('uploadBoxUI').style.display = 'none';
-            } else {
-                document.getElementById('previewImg').style.display = 'none';
-                document.getElementById('uploadBoxUI').style.display = 'flex';
-            }
+                const imgEl = document.getElementById('previewImg'); imgEl.src = p.imageUrl;
+                imgEl.style.display = 'block'; document.getElementById('uploadBoxUI').style.display = 'none';
+            } else { document.getElementById('previewImg').style.display = 'none'; document.getElementById('uploadBoxUI').style.display = 'flex'; }
 
-            if(p.variants && p.variants.length > 0) { document.getElementById('varToggle').checked = true; document.getElementById('variantConfig').style.display = 'block'; window.productVariants = [...p.variants]; renderVariantUI(); } 
-            else { document.getElementById('varToggle').checked = false; document.getElementById('variantConfig').style.display = 'none'; window.productVariants = []; renderVariantUI(); }
+            // Step 2
+            document.getElementById('pSell').value = p.sellPrice || '';
+            document.getElementById('pCost').value = p.costPrice || '';
+            document.getElementById('pPrepTime').value = p.prepTime || '';
             
+            // Step 3
+            document.getElementById('tglFeatured').checked = p.featured || false; 
+            
+            document.getElementById('tglPromo').checked = (p.promoPrice !== null && p.promoPrice !== undefined);
+            document.getElementById('cfgPromo').style.display = document.getElementById('tglPromo').checked ? 'block' : 'none';
+            document.getElementById('vPromoPrice').value = p.promoPrice || '';
+
+            document.getElementById('tglSauce').checked = (p.sauces && p.sauces.length > 0);
+            document.getElementById('cfgSauce').style.display = document.getElementById('tglSauce').checked ? 'block' : 'none';
+            window.productSauces = p.sauces ? [...p.sauces] : []; renderSauces();
+
+            document.getElementById('tglSize').checked = (p.sizes && p.sizes.length > 0);
+            document.getElementById('cfgSize').style.display = document.getElementById('tglSize').checked ? 'block' : 'none';
+            window.productSizes = p.sizes ? [...p.sizes] : []; renderSizes();
+
+            document.getElementById('tglExtra').checked = (p.extras && p.extras.length > 0);
+            document.getElementById('cfgExtra').style.display = document.getElementById('tglExtra').checked ? 'block' : 'none';
+            window.productExtras = p.extras ? [...p.extras] : []; renderExtras();
+
+            document.getElementById('tglNotes').checked = p.allowNotes !== false;
+            document.getElementById('tglAvailable').checked = p.isAvailable !== false;
+            document.getElementById('pDesc').value = p.description || '';
+
             switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
         };
 
         window.saveProductData = async () => {
-            const hasVars = document.getElementById('varToggle').checked;
-            const type = document.getElementById('pType').value;
-            
             const data = {
                 name: document.getElementById('pName').value, 
-                productType: type,
+                productType: document.getElementById('pType').value,
                 category: document.getElementById('pCat').value || "Uncategorized", 
                 subCategory: document.getElementById('pSubCat').value || "", 
                 sellPrice: parseFloat(document.getElementById('pSell').value) || 0, 
                 costPrice: parseFloat(document.getElementById('pCost').value) || 0, 
                 prepTime: parseInt(document.getElementById('pPrepTime').value) || null,
                 imageUrl: document.getElementById('pImg').value, // This will be the Storage URL later
-                featured: document.getElementById('pFeatured').checked,
-                description: document.getElementById('pDesc').value,
-                variants: hasVars ? window.productVariants : []
+                featured: document.getElementById('tglFeatured').checked,
+                promoPrice: document.getElementById('tglPromo').checked ? (parseFloat(document.getElementById('vPromoPrice').value) || null) : null,
+                sauces: document.getElementById('tglSauce').checked ? window.productSauces : [],
+                sizes: document.getElementById('tglSize').checked ? window.productSizes : [],
+                extras: document.getElementById('tglExtra').checked ? window.productExtras : [],
+                allowNotes: document.getElementById('tglNotes').checked,
+                isAvailable: document.getElementById('tglAvailable').checked,
+                description: document.getElementById('pDesc').value
             };
 
             if(!data.name || !data.category) return alert("Please fill in the basic information.");
@@ -987,6 +1097,7 @@
                 switchTab('produits');
             } catch (e) { console.error(e); alert("Error saving the item."); }
         };
+        
         document.getElementById('modalConfirmBtn').addEventListener('click', () => { if(window.confirmActionCallback) window.confirmActionCallback(); });
         function showToast(msg) { const t = document.getElementById('toastBox'); document.getElementById('toastMsg').innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
     </script>
