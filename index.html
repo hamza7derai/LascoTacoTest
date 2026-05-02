@@ -74,8 +74,19 @@
         .nav-btn.active { color: var(--brand); }
         .nav-btn span { font-size: 10px; font-weight: 700; }
         
-        /* FLOATING CHECKOUT BAR (Fixed z-index to stay above nav) */
-        #checkout-bar { transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); bottom: 90px; } 
+        /* FIXED FLOATING CHECKOUT BAR */
+        #checkout-bar { 
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); 
+            bottom: 90px; 
+            transform: translateY(150px);
+            opacity: 0;
+            pointer-events: none;
+        } 
+        #checkout-bar.visible {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
 
         .view-page { display: none; animation: fadeIn 0.3s ease-out forwards; }
         .view-page.active { display: block; }
@@ -149,7 +160,7 @@
         </div>
 
 
-        <div id="checkout-bar" class="fixed left-5 right-5 max-w-[460px] mx-auto z-[1050] translate-y-[200%] premium-ease">
+        <div id="checkout-bar" class="fixed left-5 right-5 max-w-[460px] mx-auto z-[1050] premium-ease">
             <button onclick="toggleCart(true)" class="w-full text-white p-3.5 rounded-[24px] flex justify-between items-center shadow-[0_12px_30px_var(--brand-medium)] active:scale-[0.98] premium-ease relative overflow-hidden bg-[var(--brand)]">
                 <div class="flex items-center gap-3 pl-2 z-10">
                     <div class="relative">
@@ -321,10 +332,10 @@
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
         let cart = JSON.parse(localStorage.getItem('lasco_cart_v2')) || []; 
-        let activeNavTab = 'home'; // Bottom bar state
-        let currentView = 'main';  // 'main', 'categories_list', 'detail'
-        let activeType = 'Home';   // Home, Market, Fast Food, etc.
-        let activeCat = 'All';     // Sub-category filter
+        let activeNavTab = 'home'; 
+        let currentView = 'main';  
+        let activeType = 'Home';   
+        let activeCat = 'All';     
         let previousView = 'home'; 
         
         let livraisonFee = 20;
@@ -355,34 +366,57 @@
         }
 
         function restoreAppState() {
-            activeNavTab = sessionStorage.getItem('lasco_nav_tab') || 'home';
-            currentView = sessionStorage.getItem('lasco_view') || 'main';
-            activeType = sessionStorage.getItem('lasco_type') || 'Home';
-            activeCat = sessionStorage.getItem('lasco_cat') || 'All';
-            previousView = sessionStorage.getItem('lasco_prev') || 'home';
+            try {
+                activeNavTab = sessionStorage.getItem('lasco_nav_tab') || 'home';
+                currentView = sessionStorage.getItem('lasco_view') || 'main';
+                activeType = sessionStorage.getItem('lasco_type') || 'Home';
+                activeCat = sessionStorage.getItem('lasco_cat') || 'All';
+                previousView = sessionStorage.getItem('lasco_prev') || 'home';
 
-            if (currentView === 'detail') {
-                updateNavUI(activeNavTab);
-                openCategoryDetail(activeType, previousView, true);
-            } else if (currentView === 'categories_list') {
-                switchNav('categories');
-            } else {
-                switchNav(activeNavTab);
+                // Safeguard check
+                if (currentView === 'detail' && activeType === 'Home') {
+                    currentView = 'main'; activeNavTab = 'home';
+                }
+
+                if (currentView === 'detail') {
+                    updateNavUI(activeNavTab);
+                    openCategoryDetail(activeType, previousView, true);
+                } else if (currentView === 'categories_list') {
+                    switchNav('categories');
+                } else if (currentView === 'main' && activeType === 'Market') {
+                    switchNav('market');
+                } else {
+                    switchNav('home');
+                }
+            } catch(e) {
+                console.error("State restore failed, falling back to home.", e);
+                switchNav('home');
             }
         }
 
-        db.collection("products").get().then(snap => {
-            snap.forEach(doc => {
-                let data = doc.data();
-                if (data.isActive === false) return; 
-                if (!data.category) data.category = 'All'; 
-                globalProducts.push(data);
-            });
-            setTimeout(() => { 
-                renderCategoryCards(); // Pre-render cards
-                restoreAppState();     // Restore UI based on where user left off
+        // ==========================================
+        // APP INITIALIZATION
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Immediately render static icons to prevent blank screen
+            lucide.createIcons();
+
+            db.collection("products").get().then(snap => {
+                snap.forEach(doc => {
+                    let data = doc.data();
+                    if (data.isActive !== false) {
+                        if (!data.category) data.category = 'All'; 
+                        globalProducts.push(data);
+                    }
+                });
+                renderCategoryCards();
+                restoreAppState();
                 syncUI(); 
-            }, 300);
+                lucide.createIcons(); // Catch dynamic elements
+            }).catch(error => {
+                console.error("Error loading products:", error);
+                showToast("Connection error loading menu");
+            });
         });
 
         function showToast(message) {
@@ -587,7 +621,7 @@
             currentView = 'detail';
             activeType = typeName;
             
-            if(!skipRestoreFilter) activeCat = 'All'; // Reset filter unless restoring state
+            if(!skipRestoreFilter) activeCat = 'All'; 
             
             document.querySelectorAll('.view-page').forEach(v => v.classList.remove('active'));
             document.getElementById('view-category-detail').classList.add('active');
@@ -653,7 +687,6 @@
             
             let btnColor = activeType === 'Market' ? 'var(--market)' : 'var(--brand)';
 
-            // Restored Original Exact Design
             grid.innerHTML = products.map((p, index) => {
                 return `
                 <div class="product-card cursor-pointer p-2 flex flex-col" onclick="openProductByName('${p.name.replace(/'/g, "\\'")}')">
@@ -820,7 +853,14 @@
             document.getElementById('cart-header-count').innerText = count + (count > 1 ? " items" : " item");
             document.getElementById('drawer-subtotal').innerText = total + " DH";
             document.getElementById('drawer-total').innerText = (total > 0 ? total + livraisonFee : 0) + " DH";
-            document.getElementById('checkout-bar').style.transform = count > 0 ? 'translateY(0)' : 'translateY(200%)';
+            
+            // Fixed Cart Class Toggle
+            const checkoutBar = document.getElementById('checkout-bar');
+            if (count > 0) { 
+                checkoutBar.classList.add('visible');
+            } else {
+                checkoutBar.classList.remove('visible');
+            }
         }
 
         function renderDrawer() {
