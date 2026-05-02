@@ -54,13 +54,6 @@
         .msc-content p { font-size: 12px; color: rgba(255,255,255,0.8); line-height: 1.3;}
         .msc-arrow { background: white; color: var(--primary); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;}
 
-        .alert-card { border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; font-size: 13px; font-weight: 600; cursor: pointer; display: none; transition: 0.2s;}
-        .alert-card:active { transform: scale(0.98); }
-        .alert-card.active { display: flex; }
-        .alert-card.warning { background: var(--warning-light); color: #B45309; border: 1px solid #FDE68A; }
-        .alert-card.danger { background: var(--danger-light); color: #B91C1C; border: 1px solid #FECACA; }
-        .alert-content { display: flex; align-items: center; gap: 12px; }
-
         .card { background: var(--surface); border-radius: var(--radius-card); padding: 16px; box-shadow: var(--shadow-sm); margin-bottom: 16px; }
         .order-card { padding: 16px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; background: var(--surface); border-radius: var(--radius-card); margin-bottom: 12px; box-shadow: var(--shadow-sm); }
         .order-card:active { transform: scale(0.98); }
@@ -94,8 +87,6 @@
         .prod-info { flex: 1; display: flex; flex-direction: column; justify-content: center;}
         .prod-info h4 { font-size: 14px; font-weight: 800; color: var(--text-main); margin-bottom: 2px;}
         .prod-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 4px;}
-        .prod-stock { font-size: 11px; font-weight: 700; }
-        .stock-good { color: var(--accent); } .stock-low { color: var(--warning); } .stock-out { color: var(--danger); }
         .prod-actions { display: flex; gap: 8px; align-items: center; }
         .btn-icon-small { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: 0.2s;}
         .btn-icon-small:active { transform: scale(0.9); }
@@ -111,7 +102,6 @@
         .mc-val { font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 8px;}
         .mc-trend { font-size: 11px; font-weight: 700; display: flex; align-items:center; gap:4px; }
         .trend-up { color: var(--accent); } .trend-down { color: var(--danger); } .trend-flat { color: var(--text-muted); }
-        .info-banner { background: var(--primary-light); color: var(--primary); padding: 16px; border-radius: 16px; display: flex; align-items:flex-start; gap: 12px; font-size: 12px; font-weight: 600; line-height: 1.4; border: 1px solid #FED7AA; margin-bottom:20px;}
 
         /* FORMS & INPUTS */
         .search-box { position: relative; margin-bottom: 20px; display: flex; gap: 10px; }
@@ -141,9 +131,6 @@
         .tabs-scroll::-webkit-scrollbar { display: none; }
         .tab-pill { padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); white-space: nowrap; cursor: pointer; transition: 0.2s;}
         .tab-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .filter-banner { background: var(--primary-light); border: 1px solid #FED7AA; border-radius: 12px; padding: 10px 16px; justify-content: space-between; align-items: center; margin-bottom: 16px; font-size: 13px; font-weight: 700; color: var(--primary); display: none;}
-        .filter-banner.active { display: flex; }
-        .filter-close { background: white; border: none; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--primary);}
 
         /* WIZARD */
         .stepper { display: flex; justify-content: space-between; position: relative; margin-bottom: 32px; padding: 0 20px; }
@@ -170,14 +157,6 @@
         .chip-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
         .v-chip { padding: 8px 12px; border-radius: 20px; background: var(--primary-light); color: var(--primary); border: 1px solid #FED7AA; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         .v-chip span { cursor: pointer; display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; background: rgba(0,0,0,0.1); border-radius: 50%; }
-        
-        .tag-chip { padding: 8px 12px; border-radius: 8px; background: var(--accent-light); color: var(--accent); border: 1px solid #BBF7D0; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-
-        .v-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .v-row:last-child { border-bottom: none; }
-        .v-row-left { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; width: 100px;}
-        .v-dot { width: 12px; height: 12px; border-radius: 50%; }
-        .v-row-right { display: flex; align-items: center; gap: 12px; flex: 1;}
 
         /* ORDER DETAILS */
         .detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
@@ -267,22 +246,6 @@
             </div>
         </div>
 
-        <div class="alert-card warning" id="alertLowStock" onclick="filterProduits('faible')">
-            <div class="alert-content">
-                <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                <span id="lowStockText">0 item(s) low on stock</span>
-            </div>
-            <svg viewBox="0 0 24 24" style="width:16px; color:inherit;"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </div>
-        
-        <div class="alert-card danger" id="alertOutOfStock" onclick="filterProduits('rupture')">
-            <div class="alert-content">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                <span id="outOfStockText">0 item(s) out of stock</span>
-            </div>
-            <svg viewBox="0 0 24 24" style="width:16px; color:inherit;"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </div>
-
         <div class="section-title" style="margin-top: 32px;">
             Recent Orders
             <span class="section-link" onclick="switchTab('commandes')">See all</span>
@@ -350,10 +313,6 @@
             <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             <input type="text" id="searchProdInput" placeholder="Search items...">
         </div>
-        <div class="filter-banner" id="prodFilterBanner">
-            <span id="prodFilterText">Active Filter</span>
-            <button class="filter-close" onclick="filterProduits('all')"><svg viewBox="0 0 24 24" style="width:14px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-        </div>
         <div id="adminProductListContainer"></div>
         <button class="fab" onclick="prepareAddProduct()">
             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -396,8 +355,8 @@
 
             <div class="form-group">
                 <label>Product Type *</label>
-                <select id="pType" class="form-control" onchange="handleTypeChange(); validateStep1();">
-                    <option value="Fast Food">Fast Food (Menu)</option>
+                <select id="pType" class="form-control" onchange="validateStep1()">
+                    <option value="Resto">Resto</option>
                     <option value="Grocery">Grocery</option>
                 </select>
             </div>
@@ -426,8 +385,8 @@
         </div>
 
         <div id="wizard-2" class="wizard-step">
-            <h3 style="font-size: 16px; margin-bottom: 4px; font-weight:800;">Price & Inventory</h3>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Set the price and prep/stock details.</p>
+            <h3 style="font-size: 16px; margin-bottom: 4px; font-weight:800;">Price & Details</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Set the selling price, cost, and prep time.</p>
             
             <div class="form-group">
                 <label>Selling Price (DH) *</label>
@@ -435,19 +394,13 @@
             </div>
             
             <div class="form-group">
+                <label>Cost Price (DH)</label>
+                <input type="number" id="pCost" class="form-control" placeholder="Optional, for profit calculation">
+            </div>
+            
+            <div class="form-group">
                 <label>Estimated Prep Time (min)</label>
                 <input type="number" id="pPrepTime" class="form-control" placeholder="Ex: 15">
-            </div>
-
-            <div id="inventorySection" style="display: none;">
-                <div class="form-group" style="margin-top: 24px;">
-                    <label>Total Stock</label>
-                    <input type="number" id="pStock" class="form-control" placeholder="Leave empty if unlimited" oninput="validateStep2()">
-                </div>
-                <div class="form-group">
-                    <label>Low Stock Alert Threshold</label>
-                    <input type="number" id="pLowStock" class="form-control" placeholder="5" value="5">
-                </div>
             </div>
 
             <div class="wizard-footer">
@@ -509,7 +462,7 @@
 
             <div class="wizard-footer">
                 <button class="btn btn-outline" style="flex:0.5;" onclick="goToStep(2)"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="15 18 9 12 15 6"></polyline></svg> Previous</button>
-                <button class="btn btn-success" onclick="saveProductData()">Add to Menu <svg viewBox="0 0 24 24" style="width:18px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg></button>
+                <button class="btn btn-success" onclick="saveProductData()">Save Item <svg viewBox="0 0 24 24" style="width:18px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg></button>
             </div>
         </div>
     </div>
@@ -586,7 +539,7 @@
             if(navItem) navItem.classList.add('active');
             if(tabId !== 'order-detail') localStorage.setItem('lasGoAdminTab', tabId);
             if(tabId !== 'produits' && currentProductFilter !== 'all') {
-                currentProductFilter = 'all'; document.getElementById('prodFilterBanner').classList.remove('active');
+                currentProductFilter = 'all';
                 if(allProducts.length) renderProductsAdminList(allProducts);
             }
             window.scrollTo(0,0);
@@ -641,24 +594,9 @@
                 document.getElementById('uploadBoxUI').style.display = 'none';
                 
                 // TODO: Here we will later upload to Firebase Storage and set document.getElementById('pImg').value to the secure URL.
-                // For now, let's satisfy the validation requirement visually.
                 document.getElementById('pImg').value = "local_file_selected"; 
                 validateStep1();
             }
-        };
-
-        window.handleTypeChange = () => {
-            const type = document.getElementById('pType').value;
-            const invSection = document.getElementById('inventorySection');
-            if(type === 'Fast Food') {
-                invSection.style.display = 'none';
-                document.getElementById('pStock').value = '';
-                document.getElementById('pLowStock').value = '';
-            } else {
-                invSection.style.display = 'block';
-            }
-            validateStep1();
-            validateStep2();
         };
 
         window.validateStep1 = () => {
@@ -670,7 +608,8 @@
 
         window.validateStep2 = () => {
             const sell = document.getElementById('pSell').value; 
-            const btn = document.getElementById('btnNext2'); if(sell !== "") { btn.disabled = false; } else { btn.disabled = true; }
+            const btn = document.getElementById('btnNext2'); 
+            if(sell !== "") { btn.disabled = false; } else { btn.disabled = true; }
         };
 
         window.goToStep = (step) => {
@@ -721,20 +660,37 @@
             const btn = document.getElementById('btnSaveCategory'); btn.innerText = '...'; btn.disabled = true;
             try {
                 if(!globalCategoriesData) globalCategoriesData = [];
+                
                 if(currentCatAddingType === 'main') {
                     if(!globalCategoriesData.find(c => c.name.toLowerCase() === val.toLowerCase())) {
-                        await addDoc(collection(db, "categories"), { name: val, subcategories: [] }); showToast("Category created!");
-                        setTimeout(() => { document.getElementById('pCat').value = val; loadSubCats(); validateStep1(); }, 800);
+                        await addDoc(collection(db, "categories"), { name: val, subcategories: [] }); 
+                        showToast("Category created!");
+                        
+                        // Optimistically update the UI so it shows up instantly
+                        globalCategoriesData.push({ id: 'temp_id', name: val, subcategories: [] });
+                        document.getElementById('pCat').innerHTML += `<option value="${val}">${val}</option>`;
+                        document.getElementById('pCat').value = val;
+                        loadSubCats();
+                        validateStep1();
+                    } else {
+                        showToast("Category already exists!");
                     }
                 } else {
-                    const mainCatName = document.getElementById('pCat').value; const catDoc = globalCategoriesData.find(c => c.name === mainCatName);
+                    const mainCatName = document.getElementById('pCat').value; 
+                    const catDoc = globalCategoriesData.find(c => c.name === mainCatName);
                     if(catDoc) {
                         let subs = catDoc.subcategories || [];
                         if(!subs.includes(val)) { 
                             subs.push(val); 
                             await updateDoc(doc(db, "categories", catDoc.id), { subcategories: subs }); 
                             showToast("Subcategory added!"); 
-                            setTimeout(() => { document.getElementById('pSubCat').value = val; }, 800); 
+                            
+                            // Optimistically update the UI so it shows up instantly
+                            catDoc.subcategories = subs;
+                            loadSubCats();
+                            document.getElementById('pSubCat').value = val;
+                        } else {
+                            showToast("Subcategory already exists!");
                         }
                     }
                 }
@@ -833,21 +789,6 @@
 
         onSnapshot(collection(db, "products"), snap => {
             allProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
-            let lowCount = 0, outCount = 0;
-            allProducts.forEach(p => { 
-                if(p.productType !== 'Fast Food' && p.stock !== "" && p.stock !== null && p.stock !== undefined) {
-                    const stock = parseInt(p.stock) || 0; const limit = parseInt(p.lowStockThreshold) || 5; 
-                    if (stock <= 0) outCount++; else if (stock <= limit) lowCount++; 
-                }
-            });
-            const lowAlertCard = document.getElementById('alertLowStock');
-            if(lowAlertCard) {
-                if (lowCount > 0) { lowAlertCard.classList.add('active'); document.getElementById('lowStockText').innerText = `${lowCount} item${lowCount>1?'s':''} low on stock`; } else lowAlertCard.classList.remove('active');
-            }
-            const outAlertCard = document.getElementById('alertOutOfStock');
-            if(outAlertCard) {
-                if (outCount > 0) { outAlertCard.classList.add('active'); document.getElementById('outOfStockText').innerText = `${outCount} item${outCount>1?'s':''} out of stock`; } else outAlertCard.classList.remove('active');
-            }
             if(currentProductFilter === 'all') renderProductsAdminList(allProducts); else filterProduits(currentProductFilter);
         });
 
@@ -939,58 +880,32 @@
         };
 
         window.promptDeleteOrder = (orderId) => {
-            document.getElementById('modalTitle').innerText = "Delete Order"; document.getElementById('modalMsg').innerText = "This will permanently delete the order and restore stock (if tracked). Confirm?";
+            document.getElementById('modalTitle').innerText = "Delete Order"; document.getElementById('modalMsg').innerText = "This will permanently delete the order. Confirm?";
             const btn = document.getElementById('modalConfirmBtn'); btn.className = 'btn btn-primary'; btn.style.background = 'var(--danger)';
             window.confirmActionCallback = async () => {
                 closeModals();
                 try { 
-                    const order = allOrders.find(o => o.id === orderId);
-                    if(order && order.cart) {
-                        for(const item of order.cart) {
-                            if(item.product && item.product.id) {
-                                const currentProd = allProducts.find(p => p.id === item.product.id);
-                                if(currentProd && currentProd.productType !== 'Fast Food' && currentProd.stock !== "") {
-                                    let newStock = (parseInt(currentProd.stock) || 0) + item.qty; let updateData = { stock: newStock };
-                                    await updateDoc(doc(db, "products", item.product.id), updateData);
-                                }
-                            }
-                        }
-                    }
-                    await deleteDoc(doc(db, "orders", orderId)); showToast("Order deleted and stock restored"); switchTab('commandes');
+                    await deleteDoc(doc(db, "orders", orderId)); showToast("Order deleted"); switchTab('commandes');
                 } catch(e) { console.error(e); alert("Error during deletion."); }
             }; document.getElementById('confirmOverlay').classList.add('active');
         };
 
         function renderProductsAdminList(productsArray) {
             try {
-                let filtered = productsArray; const filterBanner = document.getElementById('prodFilterBanner');
-                if(!filterBanner) return;
-                if (currentProductFilter === 'rupture') { filtered = filtered.filter(p => p.productType !== 'Fast Food' && p.stock !== "" && (parseInt(p.stock)||0) <= 0); filterBanner.classList.add('active'); document.getElementById('prodFilterText').innerText = "Filter: Out of Stock"; } 
-                else if (currentProductFilter === 'faible') { filtered = filtered.filter(p => { if(p.productType === 'Fast Food' || p.stock === "") return false; const s = parseInt(p.stock)||0; return s > 0 && s <= (parseInt(p.lowStockThreshold)||5); }); filterBanner.classList.add('active'); document.getElementById('prodFilterText').innerText = "Filter: Low Stock"; } 
-                else { filterBanner.classList.remove('active'); }
-                
+                let filtered = productsArray;
                 document.getElementById('prodCountText').innerText = `${filtered.length} items`; const container = document.getElementById('adminProductListContainer');
                 if(filtered.length === 0) { container.innerHTML = `<div class="empty-state">No items found.</div>`; return; }
 
                 container.innerHTML = filtered.map(p => {
                     const name = p.name || 'Unknown'; const img = p.imageUrl && p.imageUrl !== "local_file_selected" ? `<img src="${p.imageUrl}">` : `<span style="font-weight:800;color:var(--text-muted);">${name.charAt(0)}</span>`;
                     
-                    let stockClass = 'stock-good', stockText = `Stock: ∞`;
-                    if(p.productType !== 'Fast Food' && p.stock !== "" && p.stock !== undefined) {
-                        const stock = parseInt(p.stock)||0; const limit = parseInt(p.lowStockThreshold)||5;
-                        stockText = `${stock} remaining`;
-                        if (stock <= 0) { stockClass = 'stock-out'; stockText = 'Out of Stock'; } else if (stock <= limit) { stockClass = 'stock-low'; stockText = `Stock: ${stock} (Low)`; }
-                    }
-
-                    return `<div class="prod-card"><div class="prod-img-box">${img}</div><div class="prod-info"><h4>${name}</h4><div class="prod-meta">${p.category||'No cat'} • <strong style="color:var(--primary);">${safeNum(p.sellPrice)} DH</strong></div><div class="prod-stock ${stockClass}">${stockText}</div></div><div class="prod-actions"><button class="btn-icon-small btn-edit-prod" onclick="editProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button><button class="btn-icon-small btn-del-prod" onclick="promptDeleteProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div></div>`;
+                    return `<div class="prod-card"><div class="prod-img-box">${img}</div><div class="prod-info"><h4>${name}</h4><div class="prod-meta">${p.category||'No cat'} • <strong style="color:var(--primary);">${safeNum(p.sellPrice)} DH</strong></div></div><div class="prod-actions"><button class="btn-icon-small btn-edit-prod" onclick="editProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button><button class="btn-icon-small btn-del-prod" onclick="promptDeleteProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div></div>`;
                 }).join('');
             } catch(e) { console.error("Prod List Error:", e); }
         }
 
         document.getElementById('searchProdInput').addEventListener('input', e => {
             const q = e.target.value.toLowerCase(); let subset = allProducts;
-            if (currentProductFilter === 'rupture') subset = subset.filter(p => p.productType !== 'Fast Food' && p.stock !== "" && (parseInt(p.stock)||0) <= 0); 
-            if (currentProductFilter === 'faible') subset = subset.filter(p => { if(p.productType === 'Fast Food' || p.stock === "") return false; const s = parseInt(p.stock)||0; return s > 0 && s <= (parseInt(p.lowStockThreshold)||5); });
             renderProductsAdminList(subset.filter(p => (p.name||'').toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q)));
         });
 
@@ -1002,16 +917,15 @@
 
         window.prepareAddProduct = () => {
             currentEditProductId = null; document.getElementById('wizardTitle').innerText = "Add Item"; document.querySelectorAll('#view-ajouter input').forEach(i => { if(i.type !== 'checkbox') i.value = '' });
-            document.getElementById('previewImg').style.display = 'none'; document.getElementById('uploadBoxUI').style.display = 'flex'; document.getElementById('pLowStock').value = 5;
+            document.getElementById('previewImg').style.display = 'none'; document.getElementById('uploadBoxUI').style.display = 'flex';
             document.getElementById('pImageFile').value = ""; // Reset file input
             
             document.getElementById('pFeatured').checked = false;
-            document.getElementById('pType').value = 'Fast Food';
+            document.getElementById('pType').value = 'Resto';
             document.getElementById('pDesc').value = '';
             
             document.getElementById('varToggle').checked = false; document.getElementById('variantConfig').style.display = 'none'; window.productVariants = []; renderVariantUI();
             
-            handleTypeChange(); // Hide inventory by default
             switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
         };
 
@@ -1019,14 +933,13 @@
             const p = allProducts.find(x => x.id === id); if(!p) return;
             currentEditProductId = id; document.getElementById('wizardTitle').innerText = "Edit Item";
             document.getElementById('pName').value = p.name || ''; 
-            document.getElementById('pType').value = p.productType || 'Fast Food';
+            document.getElementById('pType').value = p.productType || 'Resto';
             document.getElementById('pCat').value = p.category || '';
             loadSubCats(); setTimeout(() => document.getElementById('pSubCat').value = p.subCategory || '', 100);
             
             document.getElementById('pPrepTime').value = p.prepTime || '';
+            document.getElementById('pCost').value = p.costPrice || '';
             document.getElementById('pSell').value = p.sellPrice || '';
-            document.getElementById('pStock').value = p.stock || ''; 
-            document.getElementById('pLowStock').value = p.lowStockThreshold || 5;
             document.getElementById('pImg').value = p.imageUrl || '';
             document.getElementById('pImageFile').value = ""; // Reset file input
             
@@ -1046,7 +959,6 @@
             if(p.variants && p.variants.length > 0) { document.getElementById('varToggle').checked = true; document.getElementById('variantConfig').style.display = 'block'; window.productVariants = [...p.variants]; renderVariantUI(); } 
             else { document.getElementById('varToggle').checked = false; document.getElementById('variantConfig').style.display = 'none'; window.productVariants = []; renderVariantUI(); }
             
-            handleTypeChange(); // Show/hide inventory based on loaded type
             switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
         };
 
@@ -1060,9 +972,8 @@
                 category: document.getElementById('pCat').value || "Uncategorized", 
                 subCategory: document.getElementById('pSubCat').value || "", 
                 sellPrice: parseFloat(document.getElementById('pSell').value) || 0, 
+                costPrice: parseFloat(document.getElementById('pCost').value) || 0, 
                 prepTime: parseInt(document.getElementById('pPrepTime').value) || null,
-                stock: type === 'Fast Food' ? "" : (document.getElementById('pStock').value !== "" ? parseInt(document.getElementById('pStock').value) : ""),
-                lowStockThreshold: type === 'Fast Food' ? null : (parseInt(document.getElementById('pLowStock').value) || 5), 
                 imageUrl: document.getElementById('pImg').value, // This will be the Storage URL later
                 featured: document.getElementById('pFeatured').checked,
                 description: document.getElementById('pDesc').value,
