@@ -376,8 +376,8 @@
             <label style="font-size: 13px; font-weight: 700; display: block; margin-bottom: 12px;">Photo</label>
             <div class="upload-box" onclick="document.getElementById('pImageFile').click()" id="uploadBoxUI">
                 <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                <p>Upload a photo</p>
-                <span style="display: block; font-size: 11px; margin-top: 4px; color: var(--text-muted);">Tap to select file from your device</span>
+                <p id="uploadText">Upload a photo</p>
+                <span id="uploadSubText" style="display: block; font-size: 11px; margin-top: 4px; color: var(--text-muted);">Tap to select file from your device</span>
             </div>
             <input type="file" id="pImageFile" accept="image/*" style="display:none;" onchange="previewWizardImgFile(this)">
             <input type="hidden" id="pImg" value=""> 
@@ -628,6 +628,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        // NEW: FIREBASE STORAGE IMPORTS
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
         // ⚠️ REPLACE WITH YOUR ACTUAL FIREBASE CONFIG
         const firebaseConfig = {
@@ -640,6 +642,7 @@
         };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app); // NEW: Initialize Storage
 
         let allOrders = [], allProducts = [], globalCategoriesData = [];
         let currentOrderFilter = 'All', currentProductFilter = 'all', currentEditProductId = null; 
@@ -696,12 +699,58 @@
             }
         });
 
-        // ---------------- WIZARD LOGIC ----------------
+        // ---------------- WIZARD & IMAGE UPLOAD LOGIC ----------------
         window.previewWizardImgFile = (input) => {
             if (input.files && input.files[0]) {
-                const imgEl = document.getElementById('previewImg'); imgEl.src = URL.createObjectURL(input.files[0]);
-                imgEl.style.display = 'block'; document.getElementById('uploadBoxUI').style.display = 'none';
-                document.getElementById('pImg').value = "local_file_selected"; validateStep1();
+                const file = input.files[0];
+                const uploadBox = document.getElementById('uploadBoxUI');
+                const uploadText = document.getElementById('uploadText');
+                const uploadSubText = document.getElementById('uploadSubText');
+                const imgEl = document.getElementById('previewImg');
+                const nextBtn = document.getElementById('btnNext1');
+                
+                // Disable next button while uploading
+                nextBtn.disabled = true;
+                uploadText.innerText = "Uploading...";
+                uploadSubText.innerText = "0%";
+
+                // 1. Create a reference in Firebase Storage
+                const storageRef = ref(storage, 'products/' + Date.now() + '_' + file.name);
+                
+                // 2. Start the upload task
+                const uploadTask = uploadBytesResumable(storageRef, file);
+
+                uploadTask.on('state_changed', 
+                    (snapshot) => {
+                        // Observe state change events such as progress
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        uploadSubText.innerText = Math.round(progress) + "%";
+                    }, 
+                    (error) => {
+                        console.error("Upload failed", error);
+                        alert("Image upload failed. Please try again.");
+                        uploadText.innerText = "Upload a photo";
+                        uploadSubText.innerText = "Tap to select file from your device";
+                        nextBtn.disabled = false;
+                    }, 
+                    () => {
+                        // 3. Handle successful upload
+                        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                            imgEl.src = downloadURL;
+                            imgEl.style.display = 'block'; 
+                            uploadBox.style.display = 'none';
+                            
+                            // Save the real URL to the hidden input
+                            document.getElementById('pImg').value = downloadURL; 
+                            
+                            // Reset text for next time
+                            uploadText.innerText = "Upload a photo";
+                            uploadSubText.innerText = "Tap to select file from your device";
+                            
+                            validateStep1();
+                        });
+                    }
+                );
             }
         };
 
@@ -865,7 +914,6 @@
                     return; 
                 }
                 
-                // If there are products, wrap them in the standard card style
                 container.innerHTML = `<div class="card" style="padding-top: 4px; padding-bottom: 4px;">` + sortedProducts.map(item => {
                     const p = item.product || {}; const name = p.name || 'Unknown item'; const price = safeNum(p.sellPrice).toFixed(2);
                     const img = p.imageUrl && p.imageUrl !== "local_file_selected" ? `<img src="${p.imageUrl}">` : `<span style="font-weight:bold; color:var(--primary);">${name.charAt(0)}</span>`;
@@ -1106,4 +1154,3 @@
     </script>
 </body>
 </html>
-
