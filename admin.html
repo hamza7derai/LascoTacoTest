@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -238,8 +238,8 @@
     <div id="view-dashboard" class="app-view active container">
         <div class="header-top">
             <div>
-                <h1>Bonjour, LasGo 👋</h1>
-                <p>Aperçu de votre activité de livraison</p>
+                <h1>Hello, LasGo 👋</h1>
+                <p>Overview of your delivery activity</p>
             </div>
         </div>
 
@@ -247,8 +247,8 @@
             <div style="display:flex; align-items:center; gap:12px;">
                 <div id="statusDot" style="width: 14px; height: 14px; border-radius: 50%; background: var(--danger); box-shadow: 0 0 0 4px var(--danger-light); transition: 0.3s;"></div>
                 <div>
-                    <span class="toggle-label" style="display:block; font-size:15px; font-weight:800; color:var(--text-main);">Disponibilité</span>
-                    <span id="statusText" style="font-size:12px; font-weight: 700; color:var(--danger); transition: 0.3s;">Boutique fermée</span>
+                    <span class="toggle-label" style="display:block; font-size:15px; font-weight:800; color:var(--text-main);">Availability</span>
+                    <span id="statusText" style="font-size:12px; font-weight: 700; color:var(--danger); transition: 0.3s;">Store Closed</span>
                 </div>
             </div>
             <label class="switch"><input type="checkbox" id="storeStatusToggle" onchange="toggleStoreStatus(this.checked)"><span class="slider"></span></label>
@@ -259,8 +259,8 @@
                 <svg viewBox="0 0 24 24" style="width:28px; height:28px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line><line x1="13" y1="13" x2="17" y2="17"></line><line x1="17" y1="13" x2="17" y2="17"></line><line x1="13" y1="17" x2="17" y2="17"></line></svg>
             </div>
             <div class="msc-content">
-                <h3>Statistiques</h3>
-                <p>Consultez vos ventes, commandes et performances.</p>
+                <h3>Statistics</h3>
+                <p>View your sales, orders, and performance.</p>
             </div>
             <div class="msc-arrow">
                 <svg viewBox="0 0 24 24" style="width:20px; height:20px;"><polyline points="9 18 15 12 9 6"></polyline></svg>
@@ -270,7 +270,7 @@
         <div class="alert-card warning" id="alertLowStock" onclick="filterProduits('faible')">
             <div class="alert-content">
                 <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                <span id="lowStockText">0 ingrédient/produit en stock faible</span>
+                <span id="lowStockText">0 item(s) low on stock</span>
             </div>
             <svg viewBox="0 0 24 24" style="width:16px; color:inherit;"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </div>
@@ -278,38 +278,39 @@
         <div class="alert-card danger" id="alertOutOfStock" onclick="filterProduits('rupture')">
             <div class="alert-content">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                <span id="outOfStockText">0 ingrédient/produit en rupture</span>
+                <span id="outOfStockText">0 item(s) out of stock</span>
             </div>
             <svg viewBox="0 0 24 24" style="width:16px; color:inherit;"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </div>
 
         <div class="section-title" style="margin-top: 32px;">
-            Dernières commandes
-            <span class="section-link" onclick="switchTab('commandes')">Voir tout</span>
+            Recent Orders
+            <span class="section-link" onclick="switchTab('commandes')">See all</span>
         </div>
         <div id="dashRecentOrdersContainer"></div>
 
         <div class="section-title" style="margin-top: 32px;">
-            Plats & Produits populaires
-            <span class="section-link" onclick="switchTab('produits')">Voir tout</span>
+            Popular Items
+            <span class="section-link" onclick="switchTab('produits')">See all</span>
         </div>
         <div class="card" id="dashPopularProductsContainer" style="padding-top: 4px; padding-bottom: 4px;"></div>
     </div>
 
     <div id="view-commandes" class="app-view container">
         <div class="header-top">
-            <h1 style="font-size: 20px;">Commandes</h1>
+            <h1 style="font-size: 20px;">Orders</h1>
         </div>
         <div class="search-box">
             <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" placeholder="Rechercher une commande...">
+            <input type="text" placeholder="Search for an order...">
         </div>
         <div class="tabs-scroll">
-            <div class="tab-pill active" onclick="filterOrdersList('Toutes', this)">Toutes</div>
-            <div class="tab-pill" onclick="filterOrdersList('En attente', this)">En attente</div>
-            <div class="tab-pill" onclick="filterOrdersList('En préparation', this)">En prép.</div>
-            <div class="tab-pill" onclick="filterOrdersList('En route', this)">En route</div>
-            <div class="tab-pill" onclick="filterOrdersList('Livrée', this)">Livrées</div>
+            <div class="tab-pill active" onclick="filterOrdersList('All', this)">All</div>
+            <div class="tab-pill" onclick="filterOrdersList('Pending', this)">Pending</div>
+            <div class="tab-pill" onclick="filterOrdersList('Preparing', this)">Preparing</div>
+            <div class="tab-pill" onclick="filterOrdersList('Out for Delivery', this)">In Transit</div>
+            <div class="tab-pill" onclick="filterOrdersList('Delivered', this)">Delivered</div>
+            <div class="tab-pill" onclick="filterOrdersList('Cancelled', this)">Cancelled</div>
         </div>
         <div id="adminOrderListContainer"></div>
     </div>
@@ -319,20 +320,20 @@
             <div class="back-btn" onclick="switchTab('commandes')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
             <div style="flex:1; display: flex; justify-content: space-between; align-items: center;">
                 <h1 style="font-size: 20px; font-weight: 800;" id="det-id">#ID</h1>
-                <div class="badge" id="det-badge">STATUT</div>
+                <div class="badge" id="det-badge">STATUS</div>
             </div>
         </div>
         <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; font-weight: 500;" id="det-date">Date</p>
         <div class="card info-list">
-            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Client</div><div class="info-val" id="det-client">-</div></div>
-            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> Téléphone</div><div class="info-val">Non fourni</div></div>
-            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Adresse</div><div class="info-val" id="det-neighborhood">-</div></div>
-            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Paiement</div><div class="info-val">À la livraison</div></div>
+            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Customer</div><div class="info-val" id="det-client">-</div></div>
+            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> Phone</div><div class="info-val">Not provided</div></div>
+            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Address</div><div class="info-val" id="det-neighborhood">-</div></div>
+            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Payment</div><div class="info-val">Cash on Delivery</div></div>
         </div>
-        <div class="card"><h3 style="font-size: 14px; margin-bottom: 12px;" id="det-items-count">Articles (0)</h3><div id="det-items-list"></div></div>
+        <div class="card"><h3 style="font-size: 14px; margin-bottom: 12px;" id="det-items-count">Items (0)</h3><div id="det-items-list"></div></div>
         <div class="summary-box">
-            <div class="summary-row"><span>Sous-total</span><span id="det-subtotal">0.00 DH</span></div>
-            <div class="summary-row"><span>Frais de livraison</span><span id="det-shipping">0.00 DH</span></div>
+            <div class="summary-row"><span>Subtotal</span><span id="det-subtotal">0.00 DH</span></div>
+            <div class="summary-row"><span>Delivery Fee</span><span id="det-shipping">0.00 DH</span></div>
             <div class="summary-row total"><span>Total</span><span id="det-total">0.00 DH</span></div>
         </div>
         <div class="action-stack" id="det-actions"></div>
@@ -341,16 +342,16 @@
     <div id="view-produits" class="app-view container">
         <div class="header-top">
             <div>
-                <h1 style="font-size: 20px;">Menu & Épicerie</h1>
-                <p id="prodCountText">0 articles</p>
+                <h1 style="font-size: 20px;">Menu & Grocery</h1>
+                <p id="prodCountText">0 items</p>
             </div>
         </div>
         <div class="search-box">
             <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="searchProdInput" placeholder="Rechercher un plat, produit...">
+            <input type="text" id="searchProdInput" placeholder="Search items...">
         </div>
         <div class="filter-banner" id="prodFilterBanner">
-            <span id="prodFilterText">Filtre actif</span>
+            <span id="prodFilterText">Active Filter</span>
             <button class="filter-close" onclick="filterProduits('all')"><svg viewBox="0 0 24 24" style="width:14px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
         </div>
         <div id="adminProductListContainer"></div>
@@ -362,7 +363,7 @@
     <div id="view-ajouter" class="app-view container">
         <div class="header-top">
             <div class="back-btn" onclick="switchTab('produits')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
-            <h1 style="font-size: 20px; text-align: center; flex:1; margin-right: 40px;" id="wizardTitle">Ajouter un article</h1>
+            <h1 style="font-size: 20px; text-align: center; flex:1; margin-right: 40px;" id="wizardTitle">Add Item</h1>
         </div>
 
         <div class="stepper">
@@ -372,86 +373,99 @@
         </div>
 
         <div id="wizard-1" class="wizard-step active">
-            <h3 style="font-size: 16px; margin-bottom: 4px; font-weight:800;">Informations de base</h3>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Ajoutez les informations principales du plat ou produit.</p>
+            <h3 style="font-size: 16px; margin-bottom: 4px; font-weight:800;">Basic Information</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Add the main details for the dish or product.</p>
             
             <label style="font-size: 13px; font-weight: 700; display: block; margin-bottom: 12px;">Photo</label>
-            <div class="upload-box" onclick="document.getElementById('pImg').focus()" id="uploadBoxUI">
+            
+            <div class="upload-box" onclick="document.getElementById('pImageFile').click()" id="uploadBoxUI">
                 <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                <p>Ajouter une photo</p>
-                <span>Coller le lien ci-dessous</span>
+                <p>Upload a photo</p>
+                <span style="display: block; font-size: 11px; margin-top: 4px; color: var(--text-muted);">Tap to select file from your device</span>
             </div>
             
-            <div class="search-box" style="margin-bottom: 24px;">
-                <svg class="search-icon" viewBox="0 0 24 24" style="color:var(--primary);"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                <input type="text" id="pImg" placeholder="Coller l'URL de l'image" style="padding-left:44px;" oninput="previewWizardImg(); validateStep1();">
-            </div>
+            <input type="file" id="pImageFile" accept="image/*" style="display:none;" onchange="previewWizardImgFile(this)">
+            <input type="hidden" id="pImg" value=""> 
+            
             <img id="previewImg" style="width: 100px; height: 100px; border-radius: 16px; object-fit: cover; margin-bottom: 24px; display: none; border: 1px solid var(--border); margin-left: auto; margin-right: auto;" src="">
 
             <div class="form-group">
-                <label>Nom de l'article *</label>
-                <input type="text" id="pName" class="form-control" placeholder="Ex: Tacos Double Viande" oninput="validateStep1()">
+                <label>Item Name *</label>
+                <input type="text" id="pName" class="form-control" placeholder="Ex: Double Meat Tacos" oninput="validateStep1()">
             </div>
 
             <div class="form-group">
-                <label>Type de produit *</label>
-                <select id="pType" class="form-control" onchange="validateStep1()">
+                <label>Product Type *</label>
+                <select id="pType" class="form-control" onchange="handleTypeChange(); validateStep1();">
                     <option value="Fast Food">Fast Food (Menu)</option>
-                    <option value="Epicerie">Épicerie (Courses)</option>
+                    <option value="Grocery">Grocery</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Catégorie *</label>
+                <label>Category *</label>
                 <div class="input-with-action">
                     <select id="pCat" class="form-control" onchange="loadSubCats(); validateStep1();">
-                        <option value="">Sélectionner...</option>
+                        <option value="">Select...</option>
                     </select>
                     <div class="btn-plus-field" onclick="openAddCategoryModal('main')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
                 </div>
             </div>
 
-            <button class="btn btn-primary" id="btnNext1" style="margin-top: 30px;" onclick="goToStep(2)" disabled>Continuer <svg viewBox="0 0 24 24" style="width:18px;"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+            <div class="form-group">
+                <label>Subcategory</label>
+                <div class="input-with-action">
+                    <select id="pSubCat" class="form-control">
+                        <option value="">Select category first...</option>
+                    </select>
+                    <div class="btn-plus-field" onclick="openAddCategoryModal('sub')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="btnNext1" style="margin-top: 30px;" onclick="goToStep(2)" disabled>Continue <svg viewBox="0 0 24 24" style="width:18px;"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
         </div>
 
         <div id="wizard-2" class="wizard-step">
-            <h3 style="font-size: 16px; margin-bottom: 4px; font-weight:800;">Prix & Inventaire</h3>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Définissez le prix et les détails de préparation/stock.</p>
+            <h3 style="font-size: 16px; margin-bottom: 4px; font-weight:800;">Price & Inventory</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Set the price and prep/stock details.</p>
             
             <div class="form-group">
-                <label>Prix de vente (DH) *</label>
+                <label>Selling Price (DH) *</label>
                 <input type="number" id="pSell" class="form-control" placeholder="45.00" oninput="validateStep2()">
             </div>
+            
             <div class="form-group">
-                <label>Temps de préparation estimé (min)</label>
+                <label>Estimated Prep Time (min)</label>
                 <input type="number" id="pPrepTime" class="form-control" placeholder="Ex: 15">
             </div>
 
-            <div class="form-group" style="margin-top: 24px;">
-                <label>Stock global</label>
-                <input type="number" id="pStock" class="form-control" placeholder="Laisser vide si inépuisable (ex: Fast food)" oninput="validateStep2()">
-            </div>
-            <div class="form-group">
-                <label>Seuil d'alerte stock</label>
-                <input type="number" id="pLowStock" class="form-control" placeholder="5" value="5">
+            <div id="inventorySection" style="display: none;">
+                <div class="form-group" style="margin-top: 24px;">
+                    <label>Total Stock</label>
+                    <input type="number" id="pStock" class="form-control" placeholder="Leave empty if unlimited" oninput="validateStep2()">
+                </div>
+                <div class="form-group">
+                    <label>Low Stock Alert Threshold</label>
+                    <input type="number" id="pLowStock" class="form-control" placeholder="5" value="5">
+                </div>
             </div>
 
             <div class="wizard-footer">
-                <button class="btn btn-outline" style="flex:0.5;" onclick="goToStep(1)"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="15 18 9 12 15 6"></polyline></svg> Précédent</button>
-                <button class="btn btn-primary" id="btnNext2" onclick="goToStep(3)" disabled>Continuer <svg viewBox="0 0 24 24" style="width:18px;"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+                <button class="btn btn-outline" style="flex:0.5;" onclick="goToStep(1)"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="15 18 9 12 15 6"></polyline></svg> Previous</button>
+                <button class="btn btn-primary" id="btnNext2" onclick="goToStep(3)" disabled>Continue <svg viewBox="0 0 24 24" style="width:18px;"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
             </div>
         </div>
 
         <div id="wizard-3" class="wizard-step">
-            <h3 style="font-size: 16px; margin-bottom: 4px; font-weight:800;">Suppléments & Options</h3>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Personnalisez les options de ce plat/produit.</p>
+            <h3 style="font-size: 16px; margin-bottom: 4px; font-weight:800;">Extras & Options</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Customize options for this item.</p>
             
             <div class="card toggle-wrapper" style="margin-bottom:12px;">
                 <div style="display:flex; align-items:center; gap:12px;">
                     <svg viewBox="0 0 24 24" style="color:var(--warning); fill:var(--warning);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                     <div>
-                        <span class="toggle-label" style="display:block; font-size:14px;">Mettre en avant</span>
-                        <span style="font-size:11px; color:var(--text-muted); font-weight: 500;">Affiché en haut du menu</span>
+                        <span class="toggle-label" style="display:block; font-size:14px;">Featured</span>
+                        <span style="font-size:11px; color:var(--text-muted); font-weight: 500;">Displayed at the top of the menu</span>
                     </div>
                 </div>
                 <label class="switch"><input type="checkbox" id="pFeatured"><span class="slider"></span></label>
@@ -461,20 +475,24 @@
                 <div class="toggle-wrapper" style="padding:0; border:none; margin-bottom:16px;">
                     <div style="display:flex; align-items:center; gap:8px; color:var(--purple);">
                         <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
-                        <span style="font-weight:800; font-size:14px; color:var(--text-main);">Tailles / Suppléments</span>
+                        <span style="font-weight:800; font-size:14px; color:var(--text-main);">Sizes / Extras</span>
                     </div>
                     <label class="switch"><input type="checkbox" id="varToggle" onchange="document.getElementById('variantConfig').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
                 </div>
                 <div id="variantConfig" style="display:none;">
                     <div class="form-group">
-                        <label>Type d'option</label>
-                        <select class="form-control" id="varType" style="padding: 12px;"><option>Taille (M, L, XL)</option><option>Viandes (Poulet, Viande hachée)</option><option>Autre supplément</option></select>
+                        <label>Option Type</label>
+                        <select class="form-control" id="varType" style="padding: 12px;">
+                            <option>Size (M, L, XL)</option>
+                            <option>Meats (Chicken, Beef)</option>
+                            <option>Other Extra</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label>Options (ex: Sauce Algérienne)</label>
+                        <label>Options (e.g., Garlic Mayo)</label>
                         <div style="display:flex; gap:8px; margin-bottom: 12px;">
-                            <input type="text" id="vNameInput" class="form-control" placeholder="Ajouter une option..." style="padding: 12px;">
-                            <button class="btn-outline" style="width:auto; padding:0 16px; font-size:13px;" onclick="addVariantOption()">+ Ajouter</button>
+                            <input type="text" id="vNameInput" class="form-control" placeholder="Add an option..." style="padding: 12px;">
+                            <button class="btn-outline" style="width:auto; padding:0 16px; font-size:13px;" onclick="addVariantOption()">+ Add</button>
                         </div>
                         <div class="chip-container" id="vChips"></div>
                     </div>
@@ -484,39 +502,39 @@
             <div class="card" style="margin-bottom:12px;">
                 <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; color:var(--primary);">
                     <svg viewBox="0 0 24 24"><line x1="21" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="3" y2="18"></line></svg>
-                    <span style="font-weight:800; font-size:14px; color:var(--text-main);">Description (Ingrédients)</span>
+                    <span style="font-weight:800; font-size:14px; color:var(--text-main);">Description (Ingredients)</span>
                 </div>
-                <textarea id="pDesc" class="form-control" placeholder="Liste des ingrédients ou description du produit..." style="height: 100px; resize: none;"></textarea>
+                <textarea id="pDesc" class="form-control" placeholder="List of ingredients or item description..." style="height: 100px; resize: none;"></textarea>
             </div>
 
             <div class="wizard-footer">
-                <button class="btn btn-outline" style="flex:0.5;" onclick="goToStep(2)"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="15 18 9 12 15 6"></polyline></svg> Précédent</button>
-                <button class="btn btn-success" onclick="saveProductData()">Ajouter au Menu <svg viewBox="0 0 24 24" style="width:18px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg></button>
+                <button class="btn btn-outline" style="flex:0.5;" onclick="goToStep(2)"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="15 18 9 12 15 6"></polyline></svg> Previous</button>
+                <button class="btn btn-success" onclick="saveProductData()">Add to Menu <svg viewBox="0 0 24 24" style="width:18px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg></button>
             </div>
         </div>
     </div>
     
     <div id="view-analytics" class="app-view container">
         <div class="analytics-header">
-            <h1 style="font-size: 20px; font-weight:800;">Statistiques</h1>
+            <h1 style="font-size: 20px; font-weight:800;">Statistics</h1>
         </div>
-        <h3 style="font-size: 14px; margin-bottom: 12px;">Résumé</h3>
+        <h3 style="font-size: 14px; margin-bottom: 12px;">Summary</h3>
         <div class="analytics-grid">
-            <div class="metric-card"><div class="mc-icon" style="background:var(--accent-light); color:var(--accent);"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></div><div class="mc-title">Chiffre d'Affaires</div><div class="mc-val" id="statRevenue">0.00 DH</div><div class="mc-trend trend-flat" id="statRevenueTrend">-</div></div>
-            <div class="metric-card"><div class="mc-icon" style="background:var(--orange-light); color:var(--orange);"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div><div class="mc-title">Frais de livraison</div><div class="mc-val" id="statShipping">0.00 DH</div><div class="mc-trend trend-flat" id="statShippingTrend">-</div></div>
+            <div class="metric-card"><div class="mc-icon" style="background:var(--accent-light); color:var(--accent);"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></div><div class="mc-title">Revenue</div><div class="mc-val" id="statRevenue">0.00 DH</div><div class="mc-trend trend-flat" id="statRevenueTrend">-</div></div>
+            <div class="metric-card"><div class="mc-icon" style="background:var(--orange-light); color:var(--orange);"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div><div class="mc-title">Delivery Fees</div><div class="mc-val" id="statShipping">0.00 DH</div><div class="mc-trend trend-flat" id="statShippingTrend">-</div></div>
         </div>
-        <h3 style="font-size: 14px; margin-bottom: 12px;">Activité</h3>
+        <h3 style="font-size: 14px; margin-bottom: 12px;">Activity</h3>
         <div class="analytics-grid">
-            <div class="metric-card" style="display:flex; align-items:center; justify-content:space-between; grid-column:span 1;"><div class="mc-icon" style="background:var(--primary-light); color:var(--primary); margin:0;"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div><div style="text-align:right;"><div class="mc-val" style="margin-bottom:0;" id="statOrders">0</div><div class="mc-title">Commandes</div><div class="mc-trend trend-flat" id="statOrdersTrend" style="justify-content:flex-end;">-</div></div></div>
-            <div class="metric-card" style="display:flex; align-items:center; justify-content:space-between; grid-column:span 1;"><div class="mc-icon" style="background:var(--blue-light); color:var(--blue); margin:0;"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg></div><div style="text-align:right;"><div class="mc-val" style="margin-bottom:0;" id="statItems">0</div><div class="mc-title">Plats/Articles</div><div class="mc-trend trend-flat" id="statItemsTrend" style="justify-content:flex-end;">-</div></div></div>
+            <div class="metric-card" style="display:flex; align-items:center; justify-content:space-between; grid-column:span 1;"><div class="mc-icon" style="background:var(--primary-light); color:var(--primary); margin:0;"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div><div style="text-align:right;"><div class="mc-val" style="margin-bottom:0;" id="statOrders">0</div><div class="mc-title">Orders</div><div class="mc-trend trend-flat" id="statOrdersTrend" style="justify-content:flex-end;">-</div></div></div>
+            <div class="metric-card" style="display:flex; align-items:center; justify-content:space-between; grid-column:span 1;"><div class="mc-icon" style="background:var(--blue-light); color:var(--blue); margin:0;"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg></div><div style="text-align:right;"><div class="mc-val" style="margin-bottom:0;" id="statItems">0</div><div class="mc-title">Items Sold</div><div class="mc-trend trend-flat" id="statItemsTrend" style="justify-content:flex-end;">-</div></div></div>
         </div>
     </div>
 
     <nav class="bottom-nav">
         <div class="nav-item active" id="nav-dashboard" onclick="switchTab('dashboard')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg> Dashboard</div>
-        <div class="nav-item" id="nav-ajouter" onclick="prepareAddProduct()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg> Ajouter</div>
+        <div class="nav-item" id="nav-ajouter" onclick="prepareAddProduct()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg> Add</div>
         <div class="nav-item" id="nav-produits" onclick="switchTab('produits')"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> Menu</div>
-        <div class="nav-item" id="nav-commandes" onclick="switchTab('commandes')"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg> Commandes</div>
+        <div class="nav-item" id="nav-commandes" onclick="switchTab('commandes')"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg> Orders</div>
         <div class="nav-item" id="nav-analytics" onclick="switchTab('analytics')"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Analytics</div>
     </nav>
 
@@ -524,18 +542,18 @@
         <div class="modal">
             <div class="modal-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
             <h3 id="modalTitle">Confirmation</h3>
-            <p id="modalMsg">Êtes-vous sûr de vouloir effectuer cette action ?</p>
-            <div class="modal-actions"><button class="btn btn-outline" onclick="closeModals()">Annuler</button><button class="btn btn-primary" id="modalConfirmBtn">Confirmer</button></div>
+            <p id="modalMsg">Are you sure you want to perform this action?</p>
+            <div class="modal-actions"><button class="btn btn-outline" onclick="closeModals()">Cancel</button><button class="btn btn-primary" id="modalConfirmBtn">Confirm</button></div>
         </div>
     </div>
     <div class="overlay" id="addCatOverlay" onclick="if(event.target===this) closeModals()"></div>
     <div class="bottom-sheet" id="addCatModal">
-        <div class="sheet-handle"></div><h2 style="font-size: 18px; font-weight:800; margin-bottom:20px;" id="catModalTitle">Ajouter</h2>
-        <div class="form-group"><input type="text" id="newCatInput" class="form-control" placeholder="Nom de la catégorie..." autofocus></div>
-        <button class="btn btn-primary" id="btnSaveCategory">Ajouter</button>
+        <div class="sheet-handle"></div><h2 style="font-size: 18px; font-weight:800; margin-bottom:20px;" id="catModalTitle">Add</h2>
+        <div class="form-group"><input type="text" id="newCatInput" class="form-control" placeholder="Category name..." autofocus></div>
+        <button class="btn btn-primary" id="btnSaveCategory">Add</button>
     </div>
     <div class="toast" id="toastBox">
-        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg><span id="toastMsg">Action réussie</span>
+        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg><span id="toastMsg">Action successful</span>
     </div>
 
     <script type="module">
@@ -555,7 +573,7 @@
         const db = getFirestore(app);
 
         let allOrders = [], allProducts = [], globalCategoriesData = [];
-        let currentOrderFilter = 'Toutes', currentProductFilter = 'all', currentEditProductId = null; 
+        let currentOrderFilter = 'All', currentProductFilter = 'all', currentEditProductId = null; 
         window.productVariants = []; let currentCatAddingType = ''; 
         const safeNum = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
 
@@ -582,10 +600,10 @@
         window.toggleStoreStatus = async (isOnline) => {
             try {
                 await setDoc(doc(db, "settings", "store_status"), { isOnline: isOnline }, { merge: true });
-                showToast(isOnline ? "Boutique en ligne !" : "Boutique hors ligne !");
+                showToast(isOnline ? "Store is now online!" : "Store is offline!");
             } catch(e) {
                 console.error(e);
-                alert("Erreur lors de la mise à jour du statut.");
+                alert("Error updating store status.");
             }
         };
 
@@ -603,27 +621,52 @@
             if(isOnline) {
                 dot.style.background = 'var(--accent)';
                 dot.style.boxShadow = '0 0 0 4px var(--accent-light)';
-                text.innerText = 'Boutique ouverte';
+                text.innerText = 'Store Open';
                 text.style.color = 'var(--accent)';
             } else {
                 dot.style.background = 'var(--danger)';
                 dot.style.boxShadow = '0 0 0 4px var(--danger-light)';
-                text.innerText = 'Boutique fermée';
+                text.innerText = 'Store Closed';
                 text.style.color = 'var(--danger)';
             }
         });
         // ----------------------------------------------------
 
-        window.validateStep1 = () => {
-            const name = document.getElementById('pName').value.trim(); const cat = document.getElementById('pCat').value;
-            const btn = document.getElementById('btnNext1'); if(name && cat) { btn.disabled = false; } else { btn.disabled = true; }
+        // Local Image Preview (Upload logic to be added later)
+        window.previewWizardImgFile = (input) => {
+            if (input.files && input.files[0]) {
+                const imgEl = document.getElementById('previewImg');
+                imgEl.src = URL.createObjectURL(input.files[0]);
+                imgEl.style.display = 'block';
+                document.getElementById('uploadBoxUI').style.display = 'none';
+                
+                // TODO: Here we will later upload to Firebase Storage and set document.getElementById('pImg').value to the secure URL.
+                // For now, let's satisfy the validation requirement visually.
+                document.getElementById('pImg').value = "local_file_selected"; 
+                validateStep1();
+            }
         };
 
-        window.previewWizardImg = () => {
-            const url = document.getElementById('pImg').value; const imgEl = document.getElementById('previewImg');
-            if(url) { imgEl.src = url; imgEl.style.display = 'block'; document.getElementById('uploadBoxUI').style.display='none'; }
-            else { imgEl.style.display = 'none'; document.getElementById('uploadBoxUI').style.display='flex'; }
-        }
+        window.handleTypeChange = () => {
+            const type = document.getElementById('pType').value;
+            const invSection = document.getElementById('inventorySection');
+            if(type === 'Fast Food') {
+                invSection.style.display = 'none';
+                document.getElementById('pStock').value = '';
+                document.getElementById('pLowStock').value = '';
+            } else {
+                invSection.style.display = 'block';
+            }
+            validateStep1();
+            validateStep2();
+        };
+
+        window.validateStep1 = () => {
+            const name = document.getElementById('pName').value.trim(); 
+            const cat = document.getElementById('pCat').value;
+            const btn = document.getElementById('btnNext1'); 
+            if(name && cat) { btn.disabled = false; } else { btn.disabled = true; }
+        };
 
         window.validateStep2 = () => {
             const sell = document.getElementById('pSell').value; 
@@ -652,9 +695,20 @@
         }
         document.getElementById('varType').addEventListener('change', renderVariantUI);
 
+        window.loadSubCats = () => {
+            const main = document.getElementById('pCat').value; const subEl = document.getElementById('pSubCat');
+            const catDoc = globalCategoriesData.find(c => c.name === main);
+            if(catDoc && catDoc.subcategories && catDoc.subcategories.length > 0) { subEl.innerHTML = '<option value="">(Optional) Choose...</option>' + catDoc.subcategories.map(s => `<option value="${s}">${s}</option>`).join(''); } 
+            else { subEl.innerHTML = '<option value="">No subcategories</option>'; }
+        };
+
         window.openAddCategoryModal = (type) => {
             currentCatAddingType = type;
-            document.getElementById('catModalTitle').innerText = "Nouvelle catégorie"; 
+            if(type === 'main') { document.getElementById('catModalTitle').innerText = "New Category"; } 
+            else {
+                const mainCat = document.getElementById('pCat').value; if(!mainCat) return alert("Select a main category first.");
+                document.getElementById('catModalTitle').innerText = `New Subcategory for '${mainCat}'`;
+            }
             document.getElementById('newCatInput').value = '';
             document.getElementById('addCatOverlay').classList.add('active'); document.getElementById('addCatModal').classList.add('active');
             setTimeout(() => document.getElementById('newCatInput').focus(), 100);
@@ -667,12 +721,25 @@
             const btn = document.getElementById('btnSaveCategory'); btn.innerText = '...'; btn.disabled = true;
             try {
                 if(!globalCategoriesData) globalCategoriesData = [];
-                if(!globalCategoriesData.find(c => c.name.toLowerCase() === val.toLowerCase())) {
-                    await addDoc(collection(db, "categories"), { name: val }); showToast("Catégorie créée !");
-                    setTimeout(() => { document.getElementById('pCat').value = val; validateStep1(); }, 800);
+                if(currentCatAddingType === 'main') {
+                    if(!globalCategoriesData.find(c => c.name.toLowerCase() === val.toLowerCase())) {
+                        await addDoc(collection(db, "categories"), { name: val, subcategories: [] }); showToast("Category created!");
+                        setTimeout(() => { document.getElementById('pCat').value = val; loadSubCats(); validateStep1(); }, 800);
+                    }
+                } else {
+                    const mainCatName = document.getElementById('pCat').value; const catDoc = globalCategoriesData.find(c => c.name === mainCatName);
+                    if(catDoc) {
+                        let subs = catDoc.subcategories || [];
+                        if(!subs.includes(val)) { 
+                            subs.push(val); 
+                            await updateDoc(doc(db, "categories", catDoc.id), { subcategories: subs }); 
+                            showToast("Subcategory added!"); 
+                            setTimeout(() => { document.getElementById('pSubCat').value = val; }, 800); 
+                        }
+                    }
                 }
                 closeModals();
-            } catch (e) { console.error(e); showToast("Erreur. Vérifiez la connexion."); } finally { btn.innerText = 'Ajouter'; btn.disabled = false; }
+            } catch (e) { console.error(e); showToast("Error. Check connection."); } finally { btn.innerText = 'Add'; btn.disabled = false; }
         });
 
         function calculateDashboard() {
@@ -688,13 +755,13 @@
 
                     if (isToday) ordersToday++; if (isYesterday) ordersYesterday++;
 
-                    if (order.status !== 'Annulée') {
+                    if (order.status !== 'Cancelled') {
                         if(order.cart && Array.isArray(order.cart)) {
-                            order.cart.forEach(item => { const p = item.product || {}; const qty = parseInt(item.qty) || 0; const key = p.id || p.name || 'inconnu'; if (!productSalesCounter[key]) productSalesCounter[key] = { product: p, totalSold: 0 }; productSalesCounter[key].totalSold += qty; });
+                            order.cart.forEach(item => { const p = item.product || {}; const qty = parseInt(item.qty) || 0; const key = p.id || p.name || 'unknown'; if (!productSalesCounter[key]) productSalesCounter[key] = { product: p, totalSold: 0 }; productSalesCounter[key].totalSold += qty; });
                         }
                     }
 
-                    if (order.status === 'Livrée' || order.status === 'Livrées') {
+                    if (order.status === 'Delivered') {
                         let orderRev = 0, orderItems = 0;
                         let orderShipping = safeNum(order.deliveryFee);
 
@@ -738,11 +805,11 @@
             try {
                 const sortedProducts = Object.values(salesCounter).sort((a, b) => b.totalSold - a.totalSold).slice(0, 3); const container = document.getElementById('dashPopularProductsContainer');
                 if(!container) return;
-                if (sortedProducts.length === 0) { container.innerHTML = '<div class="empty-state">Aucune commande enregistrée.</div>'; return; }
+                if (sortedProducts.length === 0) { container.innerHTML = '<div class="empty-state">No orders recorded yet.</div>'; return; }
                 container.innerHTML = sortedProducts.map(item => {
-                    const p = item.product || {}; const name = p.name || 'Produit inconnu'; const price = safeNum(p.sellPrice).toFixed(2);
-                    const img = p.imageUrl ? `<img src="${p.imageUrl}">` : `<span style="font-weight:bold; color:var(--primary);">${name.charAt(0)}</span>`;
-                    return `<div class="top-product"><div class="tp-img">${img}</div><div class="tp-info"><h4>${name}</h4><p>${price} DH</p></div><div class="tp-sales">${item.totalSold} commandés</div></div>`;
+                    const p = item.product || {}; const name = p.name || 'Unknown item'; const price = safeNum(p.sellPrice).toFixed(2);
+                    const img = p.imageUrl && p.imageUrl !== "local_file_selected" ? `<img src="${p.imageUrl}">` : `<span style="font-weight:bold; color:var(--primary);">${name.charAt(0)}</span>`;
+                    return `<div class="top-product"><div class="tp-img">${img}</div><div class="tp-info"><h4>${name}</h4><p>${price} DH</p></div><div class="tp-sales">${item.totalSold} ordered</div></div>`;
                 }).join('');
             } catch (error) { console.error("PopProd Error:", error); }
         }
@@ -750,8 +817,9 @@
         onSnapshot(collection(db, "categories"), snap => {
             globalCategoriesData = snap.docs.map(d => ({id: d.id, ...d.data()})); globalCategoriesData.sort((a,b) => a.name.localeCompare(b.name));
             const currentSelected = document.getElementById('pCat').value;
-            document.getElementById('pCat').innerHTML = '<option value="">Sélectionner...</option>' + globalCategoriesData.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+            document.getElementById('pCat').innerHTML = '<option value="">Select...</option>' + globalCategoriesData.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
             if(currentSelected && globalCategoriesData.find(c => c.name === currentSelected)) document.getElementById('pCat').value = currentSelected;
+            loadSubCats();
         });
 
         onSnapshot(collection(db, "orders"), snap => {
@@ -767,18 +835,18 @@
             allProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
             let lowCount = 0, outCount = 0;
             allProducts.forEach(p => { 
-                if(p.stock !== "" && p.stock !== null && p.stock !== undefined) {
+                if(p.productType !== 'Fast Food' && p.stock !== "" && p.stock !== null && p.stock !== undefined) {
                     const stock = parseInt(p.stock) || 0; const limit = parseInt(p.lowStockThreshold) || 5; 
                     if (stock <= 0) outCount++; else if (stock <= limit) lowCount++; 
                 }
             });
             const lowAlertCard = document.getElementById('alertLowStock');
             if(lowAlertCard) {
-                if (lowCount > 0) { lowAlertCard.classList.add('active'); document.getElementById('lowStockText').innerText = `${lowCount} produit${lowCount>1?'s':''} en stock faible`; } else lowAlertCard.classList.remove('active');
+                if (lowCount > 0) { lowAlertCard.classList.add('active'); document.getElementById('lowStockText').innerText = `${lowCount} item${lowCount>1?'s':''} low on stock`; } else lowAlertCard.classList.remove('active');
             }
             const outAlertCard = document.getElementById('alertOutOfStock');
             if(outAlertCard) {
-                if (outCount > 0) { outAlertCard.classList.add('active'); document.getElementById('outOfStockText').innerText = `${outCount} produit${outCount>1?'s':''} en rupture de stock`; } else outAlertCard.classList.remove('active');
+                if (outCount > 0) { outAlertCard.classList.add('active'); document.getElementById('outOfStockText').innerText = `${outCount} item${outCount>1?'s':''} out of stock`; } else outAlertCard.classList.remove('active');
             }
             if(currentProductFilter === 'all') renderProductsAdminList(allProducts); else filterProduits(currentProductFilter);
         });
@@ -789,51 +857,51 @@
         function renderFullOrdersList() {
             const getTime = (ts) => { if (!ts) return 0; const t = new Date(ts).getTime(); return isNaN(t) ? 0 : t; };
             let filtered = [...allOrders].sort((a,b) => getTime(b.timestamp) - getTime(a.timestamp));
-            if (currentOrderFilter !== 'Toutes') { filtered = filtered.filter(o => o.status === currentOrderFilter || o.status + 's' === currentOrderFilter); }
+            if (currentOrderFilter !== 'All') { filtered = filtered.filter(o => o.status === currentOrderFilter); }
             const container = document.getElementById('adminOrderListContainer');
             if(container) container.innerHTML = generateOrdersHTML(filtered);
         }
 
         function generateOrdersHTML(ordersArray) {
             try {
-                if(!ordersArray || ordersArray.length === 0) return `<div class="empty-state">Aucune commande.</div>`;
+                if(!ordersArray || ordersArray.length === 0) return `<div class="empty-state">No orders.</div>`;
                 return ordersArray.map(o => {
                     let orderDate = new Date(); if (o.timestamp) { const parsed = new Date(o.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
-                    const date = orderDate.toLocaleDateString('fr-FR', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+                    const date = orderDate.toLocaleDateString('en-US', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
                     
                     let statusClass = 'b-pending'; 
-                    if(o.status === 'En préparation') statusClass = 'b-processing'; 
-                    if(o.status === 'En route') statusClass = 'b-transit'; 
-                    if(o.status === 'Livrée' || o.status === 'Livrées') statusClass = 'b-delivered'; 
-                    if(o.status === 'Annulée') statusClass = 'b-cancelled';
+                    if(o.status === 'Preparing') statusClass = 'b-processing'; 
+                    if(o.status === 'Out for Delivery') statusClass = 'b-transit'; 
+                    if(o.status === 'Delivered') statusClass = 'b-delivered'; 
+                    if(o.status === 'Cancelled') statusClass = 'b-cancelled';
                     
-                    const price = safeNum(o.totalPrice).toFixed(2); const items = parseInt(o.totalItems) || 0; const cName = o.customerName || 'Client';
-                    return `<div class="card order-card" onclick="window.viewOrder('${o.id}')"><div class="order-header"><div><div class="o-id">#${o.id.substring(0,6).toUpperCase()}</div><div class="o-date">${date}</div></div><div class="badge ${statusClass}">${o.status}</div></div><div style="display: flex; justify-content: space-between; align-items: flex-end;"><div><div class="o-client"><svg viewBox="0 0 24 24" style="width:14px; color:var(--text-muted);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${cName}</div><div class="o-items">${items} articles</div></div><div class="o-price">${price} DH</div></div></div>`;
+                    const price = safeNum(o.totalPrice).toFixed(2); const items = parseInt(o.totalItems) || 0; const cName = o.customerName || 'Customer';
+                    return `<div class="card order-card" onclick="window.viewOrder('${o.id}')"><div class="order-header"><div><div class="o-id">#${o.id.substring(0,6).toUpperCase()}</div><div class="o-date">${date}</div></div><div class="badge ${statusClass}">${o.status}</div></div><div style="display: flex; justify-content: space-between; align-items: flex-end;"><div><div class="o-client"><svg viewBox="0 0 24 24" style="width:14px; color:var(--text-muted);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${cName}</div><div class="o-items">${items} items</div></div><div class="o-price">${price} DH</div></div></div>`;
                 }).join('');
-            } catch (e) { console.error("Order HTML Error:", e); return `<div class="empty-state">Erreur d'affichage.</div>`; }
+            } catch (e) { console.error("Order HTML Error:", e); return `<div class="empty-state">Display error.</div>`; }
         }
 
         window.viewOrder = (orderId) => {
             const order = allOrders.find(o => o.id === orderId); if(!order) return;
             document.getElementById('det-id').innerText = "#" + order.id.substring(0,6).toUpperCase();
             let orderDate = new Date(); if (order.timestamp) { const parsed = new Date(order.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
-            document.getElementById('det-date').innerText = orderDate.toLocaleDateString('fr-FR', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
-            document.getElementById('det-client').innerText = order.customerName || 'Inconnu';
+            document.getElementById('det-date').innerText = orderDate.toLocaleDateString('en-US', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+            document.getElementById('det-client').innerText = order.customerName || 'Unknown';
             
-            document.getElementById('det-neighborhood').innerText = order.neighborhood || 'Non spécifié';
+            document.getElementById('det-neighborhood').innerText = order.neighborhood || 'Not specified';
 
             let statusClass = 'b-pending'; 
-            if(order.status === 'En préparation') statusClass = 'b-processing'; 
-            if(order.status === 'En route') statusClass = 'b-transit'; 
-            if(order.status === 'Livrée' || order.status === 'Livrées') statusClass = 'b-delivered'; 
-            if(order.status === 'Annulée') statusClass = 'b-cancelled';
+            if(order.status === 'Preparing') statusClass = 'b-processing'; 
+            if(order.status === 'Out for Delivery') statusClass = 'b-transit'; 
+            if(order.status === 'Delivered') statusClass = 'b-delivered'; 
+            if(order.status === 'Cancelled') statusClass = 'b-cancelled';
             
-            const badge = document.getElementById('det-badge'); badge.className = `badge ${statusClass}`; badge.innerText = (order.status || 'Inconnu').toUpperCase();
+            const badge = document.getElementById('det-badge'); badge.className = `badge ${statusClass}`; badge.innerText = (order.status || 'Unknown').toUpperCase();
 
-            document.getElementById('det-items-count').innerText = `Articles (${order.totalItems || 0})`;
+            document.getElementById('det-items-count').innerText = `Items (${order.totalItems || 0})`;
             document.getElementById('det-items-list').innerHTML = (order.cart || []).map(item => {
-                const p = item.product || {}; const img = p.imageUrl ? `<img src="${p.imageUrl}">` : ''; const vText = item.variantName ? `<span style="color:var(--primary);">${item.variantName}</span>` : ''; const price = safeNum(item.unitPrice) || safeNum(p.sellPrice);
-                return `<div class="item-row"><div class="item-img">${img}</div><div class="item-details"><div class="item-name">${p.name || 'Produit'} ${vText}</div><div class="item-meta">x${item.qty}</div></div><div class="item-price">${(price * item.qty).toFixed(2)} DH</div></div>`;
+                const p = item.product || {}; const img = p.imageUrl && p.imageUrl !== "local_file_selected" ? `<img src="${p.imageUrl}">` : ''; const vText = item.variantName ? `<span style="color:var(--primary);">${item.variantName}</span>` : ''; const price = safeNum(item.unitPrice) || safeNum(p.sellPrice);
+                return `<div class="item-row"><div class="item-img">${img}</div><div class="item-details"><div class="item-name">${p.name || 'Item'} ${vText}</div><div class="item-meta">x${item.qty}</div></div><div class="item-price">${(price * item.qty).toFixed(2)} DH</div></div>`;
             }).join('');
 
             const deliveryFee = safeNum(order.deliveryFee);
@@ -845,33 +913,33 @@
             document.getElementById('det-total').innerText = `${total.toFixed(2)} DH`;
 
             let actionsHTML = '';
-            if(order.status !== 'Annulée' && order.status !== 'Livrée' && order.status !== 'Livrées') {
-                if(order.status === 'En attente') actionsHTML += `<button class="btn btn-info" onclick="promptOrderStatus('${order.id}', 'En préparation')">Accepter (En préparation)</button>`;
-                if(order.status === 'En préparation') actionsHTML += `<button class="btn btn-warning" onclick="promptOrderStatus('${order.id}', 'En route')">Expédier (En route)</button>`;
-                if(order.status === 'En route') actionsHTML += `<button class="btn btn-success" onclick="promptOrderStatus('${order.id}', 'Livrée')">Marquer comme Livrée</button>`;
+            if(order.status !== 'Cancelled' && order.status !== 'Delivered') {
+                if(order.status === 'Pending') actionsHTML += `<button class="btn btn-info" onclick="promptOrderStatus('${order.id}', 'Preparing')">Accept (Preparing)</button>`;
+                if(order.status === 'Preparing') actionsHTML += `<button class="btn btn-warning" onclick="promptOrderStatus('${order.id}', 'Out for Delivery')">Dispatch (Out for Delivery)</button>`;
+                if(order.status === 'Out for Delivery') actionsHTML += `<button class="btn btn-success" onclick="promptOrderStatus('${order.id}', 'Delivered')">Mark as Delivered</button>`;
                 
-                actionsHTML += `<button class="btn btn-danger-outline" onclick="promptOrderStatus('${order.id}', 'Annulée')">Annuler la commande</button>`;
-            } else if (order.status === 'Annulée') { actionsHTML = `<div style="text-align:center; color:var(--danger); font-weight:700;">Commande annulée</div>`; } 
-            else { actionsHTML = `<div style="text-align:center; color:var(--success); font-weight:700;">Commande complétée</div>`; }
-            actionsHTML += `<button class="btn btn-outline" style="color:var(--danger); border-color:var(--danger-light); margin-top: 24px;" onclick="promptDeleteOrder('${order.id}')">Supprimer la commande</button>`;
+                actionsHTML += `<button class="btn btn-danger-outline" onclick="promptOrderStatus('${order.id}', 'Cancelled')">Cancel Order</button>`;
+            } else if (order.status === 'Cancelled') { actionsHTML = `<div style="text-align:center; color:var(--danger); font-weight:700;">Order Cancelled</div>`; } 
+            else { actionsHTML = `<div style="text-align:center; color:var(--success); font-weight:700;">Order Completed</div>`; }
+            actionsHTML += `<button class="btn btn-outline" style="color:var(--danger); border-color:var(--danger-light); margin-top: 24px;" onclick="promptDeleteOrder('${order.id}')">Delete Order</button>`;
             
             document.getElementById('det-actions').innerHTML = actionsHTML; switchTab('order-detail');
         };
 
         window.promptOrderStatus = (orderId, newStatus) => {
-            document.getElementById('modalTitle').innerText = "Mise à jour statut"; document.getElementById('modalMsg').innerText = `Voulez-vous marquer cette commande comme ${newStatus.toLowerCase()} ?`;
+            document.getElementById('modalTitle').innerText = "Update Status"; document.getElementById('modalMsg').innerText = `Do you want to mark this order as ${newStatus.toLowerCase()}?`;
             const btn = document.getElementById('modalConfirmBtn'); 
             btn.className = 'btn btn-primary'; 
-            if(newStatus === 'Annulée') btn.style.background = 'var(--danger)';
-            else if(newStatus === 'En route') btn.style.background = 'var(--warning)';
-            else if(newStatus === 'Livrée') btn.style.background = 'var(--accent)';
+            if(newStatus === 'Cancelled') btn.style.background = 'var(--danger)';
+            else if(newStatus === 'Out for Delivery') btn.style.background = 'var(--warning)';
+            else if(newStatus === 'Delivered') btn.style.background = 'var(--accent)';
             else btn.style.background = 'var(--blue)';
             
-            window.confirmActionCallback = async () => { closeModals(); try { await updateDoc(doc(db, "orders", orderId), { status: newStatus }); showToast(`Statut mis à jour`); } catch(e) { alert("Erreur réseau"); } }; document.getElementById('confirmOverlay').classList.add('active');
+            window.confirmActionCallback = async () => { closeModals(); try { await updateDoc(doc(db, "orders", orderId), { status: newStatus }); showToast(`Status updated`); } catch(e) { alert("Network error"); } }; document.getElementById('confirmOverlay').classList.add('active');
         };
 
         window.promptDeleteOrder = (orderId) => {
-            document.getElementById('modalTitle').innerText = "Supprimer la commande"; document.getElementById('modalMsg').innerText = "Cette action supprimera la commande et restaurera automatiquement le stock des articles (si suivi). Confirmer ?";
+            document.getElementById('modalTitle').innerText = "Delete Order"; document.getElementById('modalMsg').innerText = "This will permanently delete the order and restore stock (if tracked). Confirm?";
             const btn = document.getElementById('modalConfirmBtn'); btn.className = 'btn btn-primary'; btn.style.background = 'var(--danger)';
             window.confirmActionCallback = async () => {
                 closeModals();
@@ -881,15 +949,15 @@
                         for(const item of order.cart) {
                             if(item.product && item.product.id) {
                                 const currentProd = allProducts.find(p => p.id === item.product.id);
-                                if(currentProd && currentProd.stock !== "") {
+                                if(currentProd && currentProd.productType !== 'Fast Food' && currentProd.stock !== "") {
                                     let newStock = (parseInt(currentProd.stock) || 0) + item.qty; let updateData = { stock: newStock };
                                     await updateDoc(doc(db, "products", item.product.id), updateData);
                                 }
                             }
                         }
                     }
-                    await deleteDoc(doc(db, "orders", orderId)); showToast("Commande supprimée et stock restauré"); switchTab('commandes');
-                } catch(e) { console.error(e); alert("Erreur lors de la suppression."); }
+                    await deleteDoc(doc(db, "orders", orderId)); showToast("Order deleted and stock restored"); switchTab('commandes');
+                } catch(e) { console.error(e); alert("Error during deletion."); }
             }; document.getElementById('confirmOverlay').classList.add('active');
         };
 
@@ -897,97 +965,116 @@
             try {
                 let filtered = productsArray; const filterBanner = document.getElementById('prodFilterBanner');
                 if(!filterBanner) return;
-                if (currentProductFilter === 'rupture') { filtered = filtered.filter(p => p.stock !== "" && (parseInt(p.stock)||0) <= 0); filterBanner.classList.add('active'); document.getElementById('prodFilterText').innerText = "Filtre: Rupture de stock"; } 
-                else if (currentProductFilter === 'faible') { filtered = filtered.filter(p => { if(p.stock === "") return false; const s = parseInt(p.stock)||0; return s > 0 && s <= (parseInt(p.lowStockThreshold)||5); }); filterBanner.classList.add('active'); document.getElementById('prodFilterText').innerText = "Filtre: Stock faible"; } 
+                if (currentProductFilter === 'rupture') { filtered = filtered.filter(p => p.productType !== 'Fast Food' && p.stock !== "" && (parseInt(p.stock)||0) <= 0); filterBanner.classList.add('active'); document.getElementById('prodFilterText').innerText = "Filter: Out of Stock"; } 
+                else if (currentProductFilter === 'faible') { filtered = filtered.filter(p => { if(p.productType === 'Fast Food' || p.stock === "") return false; const s = parseInt(p.stock)||0; return s > 0 && s <= (parseInt(p.lowStockThreshold)||5); }); filterBanner.classList.add('active'); document.getElementById('prodFilterText').innerText = "Filter: Low Stock"; } 
                 else { filterBanner.classList.remove('active'); }
                 
-                document.getElementById('prodCountText').innerText = `${filtered.length} articles`; const container = document.getElementById('adminProductListContainer');
-                if(filtered.length === 0) { container.innerHTML = `<div class="empty-state">Aucun produit trouvé.</div>`; return; }
+                document.getElementById('prodCountText').innerText = `${filtered.length} items`; const container = document.getElementById('adminProductListContainer');
+                if(filtered.length === 0) { container.innerHTML = `<div class="empty-state">No items found.</div>`; return; }
 
                 container.innerHTML = filtered.map(p => {
-                    const name = p.name || 'Inconnu'; const img = p.imageUrl ? `<img src="${p.imageUrl}">` : `<span style="font-weight:800;color:var(--text-muted);">${name.charAt(0)}</span>`;
+                    const name = p.name || 'Unknown'; const img = p.imageUrl && p.imageUrl !== "local_file_selected" ? `<img src="${p.imageUrl}">` : `<span style="font-weight:800;color:var(--text-muted);">${name.charAt(0)}</span>`;
                     
                     let stockClass = 'stock-good', stockText = `Stock: ∞`;
-                    if(p.stock !== "" && p.stock !== undefined) {
+                    if(p.productType !== 'Fast Food' && p.stock !== "" && p.stock !== undefined) {
                         const stock = parseInt(p.stock)||0; const limit = parseInt(p.lowStockThreshold)||5;
-                        stockText = `${stock} restants`;
-                        if (stock <= 0) { stockClass = 'stock-out'; stockText = 'Rupture'; } else if (stock <= limit) { stockClass = 'stock-low'; stockText = `Stock: ${stock} (Faible)`; }
+                        stockText = `${stock} remaining`;
+                        if (stock <= 0) { stockClass = 'stock-out'; stockText = 'Out of Stock'; } else if (stock <= limit) { stockClass = 'stock-low'; stockText = `Stock: ${stock} (Low)`; }
                     }
 
-                    return `<div class="prod-card"><div class="prod-img-box">${img}</div><div class="prod-info"><h4>${name}</h4><div class="prod-meta">${p.category||'Sans cat'} • <strong style="color:var(--primary);">${safeNum(p.sellPrice)} DH</strong></div><div class="prod-stock ${stockClass}">${stockText}</div></div><div class="prod-actions"><button class="btn-icon-small btn-edit-prod" onclick="editProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button><button class="btn-icon-small btn-del-prod" onclick="promptDeleteProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div></div>`;
+                    return `<div class="prod-card"><div class="prod-img-box">${img}</div><div class="prod-info"><h4>${name}</h4><div class="prod-meta">${p.category||'No cat'} • <strong style="color:var(--primary);">${safeNum(p.sellPrice)} DH</strong></div><div class="prod-stock ${stockClass}">${stockText}</div></div><div class="prod-actions"><button class="btn-icon-small btn-edit-prod" onclick="editProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button><button class="btn-icon-small btn-del-prod" onclick="promptDeleteProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div></div>`;
                 }).join('');
             } catch(e) { console.error("Prod List Error:", e); }
         }
 
         document.getElementById('searchProdInput').addEventListener('input', e => {
             const q = e.target.value.toLowerCase(); let subset = allProducts;
-            if (currentProductFilter === 'rupture') subset = subset.filter(p => p.stock !== "" && (parseInt(p.stock)||0) <= 0); 
-            if (currentProductFilter === 'faible') subset = subset.filter(p => { if(p.stock === "") return false; const s = parseInt(p.stock)||0; return s > 0 && s <= (parseInt(p.lowStockThreshold)||5); });
+            if (currentProductFilter === 'rupture') subset = subset.filter(p => p.productType !== 'Fast Food' && p.stock !== "" && (parseInt(p.stock)||0) <= 0); 
+            if (currentProductFilter === 'faible') subset = subset.filter(p => { if(p.productType === 'Fast Food' || p.stock === "") return false; const s = parseInt(p.stock)||0; return s > 0 && s <= (parseInt(p.lowStockThreshold)||5); });
             renderProductsAdminList(subset.filter(p => (p.name||'').toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q)));
         });
 
         window.promptDeleteProduct = (id) => {
-            document.getElementById('modalTitle').innerText = "Supprimer le produit"; document.getElementById('modalMsg').innerText = "Cette action est irréversible. Confirmer ?";
+            document.getElementById('modalTitle').innerText = "Delete Item"; document.getElementById('modalMsg').innerText = "This action is irreversible. Confirm?";
             const btn = document.getElementById('modalConfirmBtn'); btn.style.background = 'var(--danger)';
-            window.confirmActionCallback = async () => { closeModals(); await deleteDoc(doc(db, "products", id)); showToast("Produit supprimé"); }; document.getElementById('confirmOverlay').classList.add('active');
+            window.confirmActionCallback = async () => { closeModals(); await deleteDoc(doc(db, "products", id)); showToast("Item deleted"); }; document.getElementById('confirmOverlay').classList.add('active');
         }
 
         window.prepareAddProduct = () => {
-            currentEditProductId = null; document.getElementById('wizardTitle').innerText = "Ajouter un article"; document.querySelectorAll('#view-ajouter input').forEach(i => { if(i.type !== 'checkbox') i.value = '' });
+            currentEditProductId = null; document.getElementById('wizardTitle').innerText = "Add Item"; document.querySelectorAll('#view-ajouter input').forEach(i => { if(i.type !== 'checkbox') i.value = '' });
             document.getElementById('previewImg').style.display = 'none'; document.getElementById('uploadBoxUI').style.display = 'flex'; document.getElementById('pLowStock').value = 5;
+            document.getElementById('pImageFile').value = ""; // Reset file input
             
             document.getElementById('pFeatured').checked = false;
             document.getElementById('pType').value = 'Fast Food';
             document.getElementById('pDesc').value = '';
             
             document.getElementById('varToggle').checked = false; document.getElementById('variantConfig').style.display = 'none'; window.productVariants = []; renderVariantUI();
+            
+            handleTypeChange(); // Hide inventory by default
             switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
         };
 
         window.editProduct = (id) => {
             const p = allProducts.find(x => x.id === id); if(!p) return;
-            currentEditProductId = id; document.getElementById('wizardTitle').innerText = "Modifier l'article";
+            currentEditProductId = id; document.getElementById('wizardTitle').innerText = "Edit Item";
             document.getElementById('pName').value = p.name || ''; 
             document.getElementById('pType').value = p.productType || 'Fast Food';
             document.getElementById('pCat').value = p.category || '';
-            document.getElementById('pPrepTime').value = p.prepTime || '';
+            loadSubCats(); setTimeout(() => document.getElementById('pSubCat').value = p.subCategory || '', 100);
             
+            document.getElementById('pPrepTime').value = p.prepTime || '';
             document.getElementById('pSell').value = p.sellPrice || '';
             document.getElementById('pStock').value = p.stock || ''; 
             document.getElementById('pLowStock').value = p.lowStockThreshold || 5;
             document.getElementById('pImg').value = p.imageUrl || '';
+            document.getElementById('pImageFile').value = ""; // Reset file input
+            
             document.getElementById('pFeatured').checked = p.featured || false; 
             document.getElementById('pDesc').value = p.description || '';
-            window.previewWizardImg();
+            
+            if(p.imageUrl && p.imageUrl !== "local_file_selected") {
+                const imgEl = document.getElementById('previewImg');
+                imgEl.src = p.imageUrl;
+                imgEl.style.display = 'block';
+                document.getElementById('uploadBoxUI').style.display = 'none';
+            } else {
+                document.getElementById('previewImg').style.display = 'none';
+                document.getElementById('uploadBoxUI').style.display = 'flex';
+            }
 
             if(p.variants && p.variants.length > 0) { document.getElementById('varToggle').checked = true; document.getElementById('variantConfig').style.display = 'block'; window.productVariants = [...p.variants]; renderVariantUI(); } 
             else { document.getElementById('varToggle').checked = false; document.getElementById('variantConfig').style.display = 'none'; window.productVariants = []; renderVariantUI(); }
+            
+            handleTypeChange(); // Show/hide inventory based on loaded type
             switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
         };
 
         window.saveProductData = async () => {
             const hasVars = document.getElementById('varToggle').checked;
+            const type = document.getElementById('pType').value;
             
             const data = {
                 name: document.getElementById('pName').value, 
-                productType: document.getElementById('pType').value,
-                category: document.getElementById('pCat').value || "Non classé", 
+                productType: type,
+                category: document.getElementById('pCat').value || "Uncategorized", 
+                subCategory: document.getElementById('pSubCat').value || "", 
                 sellPrice: parseFloat(document.getElementById('pSell').value) || 0, 
                 prepTime: parseInt(document.getElementById('pPrepTime').value) || null,
-                stock: document.getElementById('pStock').value !== "" ? parseInt(document.getElementById('pStock').value) : "",
-                lowStockThreshold: parseInt(document.getElementById('pLowStock').value) || 5, 
-                imageUrl: document.getElementById('pImg').value, 
+                stock: type === 'Fast Food' ? "" : (document.getElementById('pStock').value !== "" ? parseInt(document.getElementById('pStock').value) : ""),
+                lowStockThreshold: type === 'Fast Food' ? null : (parseInt(document.getElementById('pLowStock').value) || 5), 
+                imageUrl: document.getElementById('pImg').value, // This will be the Storage URL later
                 featured: document.getElementById('pFeatured').checked,
                 description: document.getElementById('pDesc').value,
                 variants: hasVars ? window.productVariants : []
             };
 
-            if(!data.name || !data.category) return alert("Veuillez remplir les informations de base.");
+            if(!data.name || !data.category) return alert("Please fill in the basic information.");
             try {
-                if(currentEditProductId) { await updateDoc(doc(db, "products", currentEditProductId), data); showToast("Article modifié !"); } 
-                else { data.timestamp = new Date().toISOString(); await addDoc(collection(db, "products"), data); showToast("Nouvel article ajouté au menu !"); }
+                if(currentEditProductId) { await updateDoc(doc(db, "products", currentEditProductId), data); showToast("Item updated!"); } 
+                else { data.timestamp = new Date().toISOString(); await addDoc(collection(db, "products"), data); showToast("New item added to menu!"); }
                 switchTab('produits');
-            } catch (e) { console.error(e); alert("Erreur lors de l'enregistrement."); }
+            } catch (e) { console.error(e); alert("Error saving the item."); }
         };
         document.getElementById('modalConfirmBtn').addEventListener('click', () => { if(window.confirmActionCallback) window.confirmActionCallback(); });
         function showToast(msg) { const t = document.getElementById('toastBox'); document.getElementById('toastMsg').innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
