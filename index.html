@@ -37,9 +37,7 @@
         .type-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; scroll-snap-align: start; transition: transform 0.2s; }
         .type-btn:active { transform: scale(0.95); }
         .type-circle { width: 64px; height: 64px; border-radius: 50%; background: #F4F5F7; display: flex; align-items: center; justify-content: center; border: 2px solid transparent; transition: all 0.3s ease; }
-        .type-btn.active .type-circle { background: #FFF0E6; border-color: var(--brand); box-shadow: 0 4px 12px var(--brand-soft); }
-        .type-btn.active span { color: var(--brand); font-weight: 800; }
-
+        
         /* CATEGORY PILLS */
         .category-scroll { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 20px 16px 20px; scroll-padding-left: 20px; scroll-behavior: smooth; }
         .category-pill { position: relative; flex: 0 0 auto; scroll-snap-align: start; transition: all 0.2s ease; border: 1px solid transparent; }
@@ -103,13 +101,9 @@
                 </div>
             </div>
 
-            <div id="types-container" class="bg-white">
-                <div class="type-scroll no-scrollbar" id="type-scroll-nav"></div>
-            </div>
-
-            <div id="sub-nav-wrapper" class="bg-white relative z-20 mt-2">
-                <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
-                <div id="sub-nav" class="category-scroll no-scrollbar"></div>
+            <div id="types-container" class="bg-white mt-1">
+                <div class="type-scroll no-scrollbar" id="type-scroll-nav">
+                    </div>
             </div>
 
             <div class="px-5 pb-4 mt-2">
@@ -121,14 +115,14 @@
                         <h4 class="font-black text-[16px] text-gray-900 leading-tight">Fast Delivery</h4>
                         <p class="text-[13px] font-semibold text-gray-600 mt-0.5">to your door in under <span class="text-[var(--brand)] font-black">30 min</span></p>
                     </div>
-                    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/delivery-boy-riding-scooter-5349141-4466249.png" class="absolute right-[-10px] bottom-[-15px] w-[130px] h-[130px] object-contain z-0 opacity-90 drop-shadow-md" alt="Livraison">
+                    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/delivery-boy-riding-scooter-5349141-4466249.png" class="absolute right-[-10px] bottom-[-15px] w-[130px] h-[130px] object-contain z-0 opacity-90 drop-shadow-md" alt="Delivery">
                     <i data-lucide="chevron-right" class="w-5 h-5 text-[var(--brand)] relative z-10"></i>
                 </div>
             </div>
 
-            <div class="px-5 flex justify-between items-end mb-2">
-                <h2 id="section-title" class="text-xl font-black text-gray-900 tracking-tight">Top Sales</h2>
-                <button onclick="switchNav('categories')" class="text-[12px] font-bold text-gray-400 hover:text-[var(--brand)]">See all ></button>
+            <div class="px-5 flex justify-between items-end mb-2 mt-2">
+                <h2 id="section-title" class="text-[20px] font-black text-gray-900 tracking-tight flex items-center gap-2">🔥 Top Sales</h2>
+                <button onclick="switchNav('categories')" class="text-[12px] font-bold text-gray-400 hover:text-[var(--brand)] transition-colors">See all categories ></button>
             </div>
             <main id="product-grid" class="p-5 pt-2 grid grid-cols-2 gap-4 pb-20"></main>
         </div>
@@ -153,7 +147,7 @@
              <div class="bg-white pt-3 pb-4 sticky top-[72px] z-40 shadow-sm">
                  <div class="category-scroll no-scrollbar" id="detail-sub-nav"></div>
              </div>
-             <main id="detail-product-grid" class="p-5 grid grid-cols-2 gap-4"></main>
+             <main id="detail-product-grid" class="p-5 pt-2 grid grid-cols-2 gap-4"></main>
         </div>
 
 
@@ -326,8 +320,10 @@
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
         let cart = JSON.parse(localStorage.getItem('lasco_cart_v2')) || []; 
-        let activeType = 'Fast Food'; 
-        let activeCat = '🔥 Top Sales';
+        let activeType = 'Home'; // Track current page focus
+        let activeCat = 'All';   // Track sub-category in detail view
+        let previousView = 'home'; // Track back button path
+        
         let livraisonFee = 20;
         let globalProducts = []; 
         let currentItemForSheet = null;
@@ -342,21 +338,6 @@
             { name: 'Drinks', icon: 'cup-soda', desc: 'Cold beverages', color: '#E3F2FD', emoji: '🥤' },
             { name: 'Desserts', icon: 'cake', desc: 'Sweet treats', color: '#FCE4EC', emoji: '🍰' }
         ];
-
-        function getCategoryIcon(catName) {
-            const n = catName.toLowerCase();
-            if(n.includes('top')) return 'flame';
-            if(n.includes('pasticcio')) return 'pie-chart';
-            if(n.includes('drink') || n.includes('boisson')) return 'cup-soda';
-            if(n.includes('taco')) return 'sandwich';
-            if(n.includes('burger')) return 'utensils';
-            if(n.includes('pizza')) return 'pizza';
-            if(n.includes('fruit')) return 'apple';
-            if(n.includes('veg')) return 'carrot';
-            if(n.includes('dessert') || n.includes('cake')) return 'cake';
-            if(n.includes('snack')) return 'cookie';
-            return 'tag';
-        }
 
         function renderSkeletons(targetGrid = 'product-grid') {
             const grid = document.getElementById(targetGrid);
@@ -380,13 +361,12 @@
             snap.forEach(doc => {
                 let data = doc.data();
                 if (data.isActive === false) return; 
-                if (!data.category) data.category = '🔥 Top Sales'; 
+                if (!data.category) data.category = 'All'; 
                 globalProducts.push(data);
             });
             setTimeout(() => { 
                 renderTypeCircles(); 
-                renderLabels(); 
-                loadProducts(false); 
+                loadHomeProducts(false); 
                 renderCategoryCards();
                 syncUI(); 
             }, 500);
@@ -411,24 +391,23 @@
         function showComingSoon(feature) { showToast(`${feature} is coming soon!`); }
 
         // ==========================================
-        // SINGLE PAGE APP (SPA) NAVIGATION LOGIC
+        // SPA NAVIGATION LOGIC
         // ==========================================
         function switchNav(tab) {
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById('market-icon-bg').classList.remove('scale-110');
             document.getElementById('market-text').classList.remove('text-[var(--market)]');
             
-            // Hide all views
             document.querySelectorAll('.view-page').forEach(v => v.classList.remove('active'));
             
             if(tab === 'home') {
                 document.getElementById('nav-home').classList.add('active');
                 document.getElementById('view-home').classList.add('active');
-                if(activeType === 'Market') activeType = 'Fast Food'; // Reset
-                activeCat = '🔥 Top Sales';
-                renderTypeCircles();
-                renderLabels();
-                loadProducts(false);
+                document.getElementById('types-container').classList.remove('hidden');
+                
+                activeType = 'Home';
+                document.getElementById('section-title').innerHTML = '🔥 Top Sales';
+                loadHomeProducts(false);
             } 
             else if(tab === 'categories') {
                 document.getElementById('nav-cat').classList.add('active');
@@ -437,92 +416,59 @@
             else if (tab === 'market') {
                 document.getElementById('market-icon-bg').classList.add('scale-110');
                 document.getElementById('market-text').classList.add('text-[var(--market)]');
-                document.getElementById('view-home').classList.add('active'); // Market uses Home view layout
-                document.getElementById('types-container').classList.add('hidden'); // Hide types scroll
+                document.getElementById('view-home').classList.add('active'); 
+                document.getElementById('types-container').classList.add('hidden'); // Hide circles in market mode
+                
                 activeType = 'Market';
-                activeCat = '🔥 Top Sales';
-                renderLabels();
-                loadProducts(true);
+                document.getElementById('section-title').innerHTML = '<i data-lucide="shopping-basket" class="w-5 h-5 text-[var(--market)]"></i> Market Products';
+                loadHomeProducts(true);
             }
+            lucide.createIcons();
         }
 
         // ==========================================
         // HOME VIEW FUNCTIONS
         // ==========================================
+        
+        // The Top Circles on the Home page now link DIRECTLY to the detail page
         function renderTypeCircles() {
-            document.getElementById('types-container').classList.remove('hidden');
             const container = document.getElementById('type-scroll-nav');
             container.innerHTML = mainTypes.map(type => {
-                let isActive = activeType === type.name;
                 return `
-                <button onclick="handleTypeClick('${type.name}')" class="type-btn ${isActive ? 'active' : ''}">
-                    <div class="type-circle">
-                        <i data-lucide="${type.icon}" class="w-7 h-7 ${isActive ? 'text-[var(--brand)]' : 'text-gray-400'}"></i>
+                <button onclick="openCategoryDetail('${type.name}', 'home')" class="type-btn">
+                    <div class="type-circle hover:bg-[#FFF0E6] hover:border-[var(--brand)] transition-colors">
+                        <i data-lucide="${type.icon}" class="w-7 h-7 text-gray-500 hover:text-[var(--brand)] transition-colors"></i>
                     </div>
-                    <span class="text-[11px] font-semibold text-gray-500">${type.name}</span>
+                    <span class="text-[11px] font-semibold text-gray-600">${type.name}</span>
                 </button>`;
             }).join('');
             lucide.createIcons();
         }
 
-        function handleTypeClick(typeName) {
-            activeType = typeName;
-            activeCat = '🔥 Top Sales';
-            document.getElementById('search-input').value = '';
-            renderTypeCircles();
-            renderLabels(); 
-            loadProducts(true);
+        function loadHomeProducts(withSkeleton = false) {
+            // If Market, show Market items. Otherwise, show global Top Sales across all categories.
+            let filtered = activeType === 'Market' ? 
+                globalProducts.filter(p => p.type === 'Market') : 
+                globalProducts.filter(p => p.isTop === true);
+
+            if(withSkeleton) { 
+                renderSkeletons('product-grid'); 
+                setTimeout(() => renderProductGrid(filtered, 'product-grid'), 400); 
+            } else { 
+                renderProductGrid(filtered, 'product-grid'); 
+            }
         }
 
-        async function renderLabels() {
-            const nav = document.getElementById('sub-nav');
-            const cats = [{name: '🔥 Top Sales'}];
-            const snap = await db.collection("categories").where("type", "==", activeType).get();
-            snap.forEach(doc => { cats.push(doc.data()); });
-            
-            document.getElementById('section-title').innerText = activeType === 'Market' ? 'Market Products' : activeType;
-
-            nav.innerHTML = cats.map((cat, idx) => {
-                let isTop = cat.name === '🔥 Top Sales';
-                let isActive = activeCat === cat.name;
-                let iconName = getCategoryIcon(cat.name);
-                let brandColor = activeType === 'Market' ? 'var(--market)' : 'var(--brand)';
-                
-                return `
-                <button id="btn-cat-${idx}" onclick="handleCatClick('${cat.name}', 'btn-cat-${idx}')" class="category-pill flex items-center gap-2 px-5 py-2.5 text-[14px] font-bold whitespace-nowrap rounded-[16px] transition-all duration-200 ${isActive ? 'text-white shadow-md' : 'bg-[#F4F5F7] text-[#64748b] hover:bg-gray-100'}" style="${isActive ? `background-color: ${brandColor}; border-color: ${brandColor};` : 'border-color: transparent;'}">
-                    <i data-lucide="${iconName}" class="w-4 h-4 ${isActive ? 'text-white' : 'text-gray-400'}"></i>
-                    ${isTop ? 'Top Sales' : cat.name}
-                </button>`;
-            }).join('');
-            lucide.createIcons();
-        }
-
-        function handleCatClick(catName, elementId) {
-            const el = document.getElementById(elementId);
-            if(el) { el.classList.add('tab-bounce'); setTimeout(() => el.classList.remove('tab-bounce'), 250); }
-            activeCat = catName; document.getElementById('search-input').value = '';
-            renderLabels(); loadProducts(true);
-            const nav = document.getElementById('sub-nav');
-            if (document.getElementById(elementId)) { nav.scrollTo({ left: document.getElementById(elementId).offsetLeft - 20, behavior: 'smooth' }); }
-        }
-
+        // Home Page Search Logic
         document.getElementById('search-input').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             if(term.length > 0) { 
-                const filtered = globalProducts.filter(p => p.name.toLowerCase().includes(term));
+                let filtered = globalProducts.filter(p => p.name.toLowerCase().includes(term));
+                if (activeType === 'Market') { filtered = filtered.filter(p => p.type === 'Market'); }
                 renderProductGrid(filtered, 'product-grid'); 
             } 
-            else { loadProducts(false); }
+            else { loadHomeProducts(false); }
         });
-
-        function loadProducts(withSkeleton = false) {
-            let filtered = activeCat === '🔥 Top Sales' ? 
-                globalProducts.filter(p => p.type === activeType && p.isTop === true) : 
-                globalProducts.filter(p => p.type === activeType && p.category === activeCat);
-
-            if(withSkeleton) { renderSkeletons('product-grid'); setTimeout(() => renderProductGrid(filtered, 'product-grid'), 400); } 
-            else { renderProductGrid(filtered, 'product-grid'); }
-        }
 
         // ==========================================
         // CATEGORY LIST VIEW (The Big Cards)
@@ -532,7 +478,7 @@
             container.innerHTML = mainTypes.map(c => {
                 const count = globalProducts.filter(p => p.type === c.name).length;
                 return `
-                <div onclick="openCategoryDetail('${c.name}')" class="flex justify-between items-center p-6 rounded-[24px] cursor-pointer active:scale-95 transition-transform shadow-sm" style="background-color: ${c.color};">
+                <div onclick="openCategoryDetail('${c.name}', 'categories')" class="flex justify-between items-center p-6 rounded-[24px] cursor-pointer active:scale-95 transition-transform shadow-sm" style="background-color: ${c.color};">
                     <div>
                         <h3 class="font-black text-[20px] text-gray-900 tracking-tight">${c.name}</h3>
                         <p class="text-[13px] font-bold text-gray-600 mt-1 opacity-80">${c.desc}</p>
@@ -544,9 +490,11 @@
         }
 
         // ==========================================
-        // CATEGORY DETAIL VIEW (Buro Pill style)
+        // CATEGORY DETAIL VIEW (Grid + Orange Pills)
         // ==========================================
-        function openCategoryDetail(typeName) {
+        function openCategoryDetail(typeName, fromView = 'categories') {
+            previousView = fromView; // Remember where the user came from for the back button
+            
             document.querySelectorAll('.view-page').forEach(v => v.classList.remove('active'));
             document.getElementById('view-category-detail').classList.add('active');
             
@@ -560,7 +508,12 @@
 
         function closeCategoryDetail() {
             document.querySelectorAll('.view-page').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-categories-list').classList.add('active');
+            if(previousView === 'home') {
+                document.getElementById('view-home').classList.add('active');
+                // Optional: refresh home data if needed
+            } else {
+                document.getElementById('view-categories-list').classList.add('active');
+            }
         }
 
         async function renderDetailSubNav() {
@@ -571,8 +524,9 @@
             
             nav.innerHTML = cats.map((cat, idx) => {
                 let isActive = activeCat === cat.name;
+                // CHANGED: Active pill is now warm orange instead of black
                 return `
-                <button id="btn-detail-cat-${idx}" onclick="handleDetailCatClick('${cat.name}', 'btn-detail-cat-${idx}')" class="category-pill flex items-center px-5 py-2 text-[14px] font-bold whitespace-nowrap rounded-full transition-all duration-200 border ${isActive ? 'bg-[#1A1A1A] text-white border-[#1A1A1A] shadow-md' : 'bg-white text-gray-600 border-gray-200'}">
+                <button id="btn-detail-cat-${idx}" onclick="handleDetailCatClick('${cat.name}', 'btn-detail-cat-${idx}')" class="category-pill flex items-center px-5 py-2 text-[14px] font-bold whitespace-nowrap rounded-full transition-all duration-200 border ${isActive ? 'bg-[var(--brand)] text-white border-[var(--brand)] shadow-md' : 'bg-white text-gray-600 border-gray-200'}">
                     ${cat.name}
                 </button>`;
             }).join('');
@@ -593,8 +547,12 @@
                 globalProducts.filter(p => p.type === activeType) : 
                 globalProducts.filter(p => p.type === activeType && p.category === activeCat);
 
-            if(withSkeleton) { renderSkeletons('detail-product-grid'); setTimeout(() => renderProductGrid(filtered, 'detail-product-grid'), 300); } 
-            else { renderProductGrid(filtered, 'detail-product-grid'); }
+            if(withSkeleton) { 
+                renderSkeletons('detail-product-grid'); 
+                setTimeout(() => renderProductGrid(filtered, 'detail-product-grid'), 300); 
+            } else { 
+                renderProductGrid(filtered, 'detail-product-grid'); 
+            }
         }
 
         // ==========================================
@@ -839,4 +797,3 @@
     </script>
 </body>
 </html>
-
