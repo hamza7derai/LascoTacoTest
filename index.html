@@ -323,15 +323,15 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, addDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // ⚠️ REPLACE WITH YOUR ACTUAL FIREBASE CONFIG
         const firebaseConfig = {
-            apiKey: "AIzaSyCKY59mqLqD4GqQpkDEFqNybKIkwLvgId0",
-            authDomain: "lasgobd.firebaseapp.com",
-            projectId: "lasgobd",
-            storageBucket: "lasgobd.firebasestorage.app",
-            messagingSenderId: "918363477454",
-            appId: "1:918363477454:web:ef0a991d24de1ea992879f"
+          apiKey: "AIzaSyAaaR52bvyQfkxmZL16lcg4Bd4M76OtbI4",
+          authDomain: "lesgo-cd7f9.firebaseapp.com",
+          projectId: "lesgo-cd7f9",
+          storageBucket: "lesgo-cd7f9.firebasestorage.app",
+          messagingSenderId: "618932234525",
+          appId: "1:618932234525:web:8eb0b934b1bfd1060059f4"
         };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
@@ -403,7 +403,7 @@
             }
 
             // Update titles
-            document.getElementById('topSalesTitle').innerText = mode === 'Resto' ? 'Nos meilleures ventes' : 'Frais du jour';
+            document.getElementById('topSalesTitle').innerText = mode === 'Resto' ? 'Top Sales' : 'Daily Fresh';
 
             renderUI();
         };
@@ -845,7 +845,8 @@
                 
                 waText += `\n*Subtotal:* ${subtotal.toFixed(2)} DH\n*Delivery:* ${deliveryFee.toFixed(2)} DH\n*TOTAL:* ${total.toFixed(2)} DH`;
                 
-                const waUrl = `https://wa.me/212600000000?text=${encodeURIComponent(waText)}`; // REPACE PHONE NUMBER HERE
+                // ⚠️ REPLACE THE NUMBER BELOW WITH YOUR ACTUAL WHATSAPP NUMBER
+                const waUrl = `https://wa.me/212635791674?text=${encodeURIComponent(waText)}`; 
                 
                 // 3. Clear Cart & Redirect
                 cart = []; updateFloatingCart(); closeModals();
