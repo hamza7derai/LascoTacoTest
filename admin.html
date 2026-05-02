@@ -374,13 +374,16 @@
             <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Add the main details for the dish or product.</p>
             
             <label style="font-size: 13px; font-weight: 700; display: block; margin-bottom: 12px;">Photo</label>
-            <div class="upload-box" onclick="document.getElementById('pImageFile').click()" id="uploadBoxUI">
+            <div class="upload-box" onclick="document.getElementById('pImg').focus()" id="uploadBoxUI">
                 <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                <p id="uploadText">Upload a photo</p>
-                <span id="uploadSubText" style="display: block; font-size: 11px; margin-top: 4px; color: var(--text-muted);">Tap to select file from your device</span>
+                <p>Add a photo</p>
+                <span style="display: block; font-size: 11px; margin-top: 4px; color: var(--text-muted);">Paste the link below</span>
             </div>
-            <input type="file" id="pImageFile" accept="image/*" style="display:none;" onchange="previewWizardImgFile(this)">
-            <input type="hidden" id="pImg" value=""> 
+            
+            <div class="search-box" style="margin-bottom: 24px;">
+                <svg class="search-icon" viewBox="0 0 24 24" style="color:var(--primary);"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                <input type="text" id="pImg" placeholder="Paste image URL here" style="padding-left:44px;" oninput="previewWizardImg(); validateStep1();">
+            </div>
             <img id="previewImg" style="width: 100px; height: 100px; border-radius: 16px; object-fit: cover; margin-bottom: 24px; display: none; border: 1px solid var(--border); margin-left: auto; margin-right: auto;" src="">
 
             <div class="form-group">
@@ -628,21 +631,17 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        // NEW: FIREBASE STORAGE IMPORTS
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
-        // ⚠️ REPLACE WITH YOUR ACTUAL FIREBASE CONFIG
         const firebaseConfig = {
-            apiKey: "AIzaSyCKY59mqLqD4GqQpkDEFqNybKIkwLvgId0",
-            authDomain: "lasgobd.firebaseapp.com",
-            projectId: "lasgobd",
-            storageBucket: "lasgobd.firebasestorage.app",
-            messagingSenderId: "918363477454",
-            appId: "1:918363477454:web:ef0a991d24de1ea992879f"
+          apiKey: "AIzaSyAaaR52bvyQfkxmZL16lcg4Bd4M76OtbI4",
+          authDomain: "lesgo-cd7f9.firebaseapp.com",
+          projectId: "lesgo-cd7f9",
+          storageBucket: "lesgo-cd7f9.firebasestorage.app",
+          messagingSenderId: "618932234525",
+          appId: "1:618932234525:web:8eb0b934b1bfd1060059f4"
         };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const storage = getStorage(app); // NEW: Initialize Storage
 
         let allOrders = [], allProducts = [], globalCategoriesData = [];
         let currentOrderFilter = 'All', currentProductFilter = 'all', currentEditProductId = null; 
@@ -699,60 +698,19 @@
             }
         });
 
-        // ---------------- WIZARD & IMAGE UPLOAD LOGIC ----------------
-        window.previewWizardImgFile = (input) => {
-            if (input.files && input.files[0]) {
-                const file = input.files[0];
-                const uploadBox = document.getElementById('uploadBoxUI');
-                const uploadText = document.getElementById('uploadText');
-                const uploadSubText = document.getElementById('uploadSubText');
-                const imgEl = document.getElementById('previewImg');
-                const nextBtn = document.getElementById('btnNext1');
-                
-                // Disable next button while uploading
-                nextBtn.disabled = true;
-                uploadText.innerText = "Uploading...";
-                uploadSubText.innerText = "0%";
-
-                // 1. Create a reference in Firebase Storage
-                const storageRef = ref(storage, 'products/' + Date.now() + '_' + file.name);
-                
-                // 2. Start the upload task
-                const uploadTask = uploadBytesResumable(storageRef, file);
-
-                uploadTask.on('state_changed', 
-                    (snapshot) => {
-                        // Observe state change events such as progress
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        uploadSubText.innerText = Math.round(progress) + "%";
-                    }, 
-                    (error) => {
-                        console.error("Upload failed", error);
-                        alert("Image upload failed. Please try again.");
-                        uploadText.innerText = "Upload a photo";
-                        uploadSubText.innerText = "Tap to select file from your device";
-                        nextBtn.disabled = false;
-                    }, 
-                    () => {
-                        // 3. Handle successful upload
-                        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                            imgEl.src = downloadURL;
-                            imgEl.style.display = 'block'; 
-                            uploadBox.style.display = 'none';
-                            
-                            // Save the real URL to the hidden input
-                            document.getElementById('pImg').value = downloadURL; 
-                            
-                            // Reset text for next time
-                            uploadText.innerText = "Upload a photo";
-                            uploadSubText.innerText = "Tap to select file from your device";
-                            
-                            validateStep1();
-                        });
-                    }
-                );
+        // ---------------- WIZARD (IMAGE VIA LINK) LOGIC ----------------
+        window.previewWizardImg = () => {
+            const url = document.getElementById('pImg').value; 
+            const imgEl = document.getElementById('previewImg');
+            if(url) { 
+                imgEl.src = url; 
+                imgEl.style.display = 'block'; 
+                document.getElementById('uploadBoxUI').style.display='none'; 
+            } else { 
+                imgEl.style.display = 'none'; 
+                document.getElementById('uploadBoxUI').style.display='flex'; 
             }
-        };
+        }
 
         window.validateStep1 = () => {
             const name = document.getElementById('pName').value.trim(); const cat = document.getElementById('pCat').value;
@@ -840,7 +798,7 @@
                 const now = new Date(); const todayStr = now.toDateString(); const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1); const yesterdayStr = yesterday.toDateString(); 
                 let revenueToday = 0, revenueYesterday = 0, ordersToday = 0, ordersYesterday = 0, itemsToday = 0, itemsYesterday = 0; let productSalesCounter = {}; 
                 let shippingToday = 0, shippingYesterday = 0;
-                let customersToday = new Set(); // For unique customers calculation
+                let customersToday = new Set(); 
 
                 allOrders.forEach(order => {
                     if(!order) return; let orderDate = new Date();
@@ -864,13 +822,11 @@
                     }
                 });
 
-                // Update New Dashboard UI
                 document.getElementById('dashStatOrders').innerText = ordersToday;
                 document.getElementById('dashStatRevenue').innerText = revenueToday.toFixed(2) + ' DH';
                 document.getElementById('dashStatItems').innerText = itemsToday;
                 document.getElementById('dashStatCustomers').innerText = customersToday.size;
 
-                // Update Analytics UI
                 const elStatRev = document.getElementById('statRevenue'); if(elStatRev) elStatRev.innerText = revenueToday.toFixed(2) + ' DH';
                 renderTrendArrow('statRevenueTrend', revenueToday, revenueYesterday, false);
                 const elStatShipping = document.getElementById('statShipping'); if(elStatShipping) elStatShipping.innerText = shippingToday.toFixed(2) + ' DH';
@@ -884,7 +840,6 @@
                 const getTime = (ts) => { if (!ts) return 0; const t = new Date(ts).getTime(); return isNaN(t) ? 0 : t; };
                 const recentOrders = [...allOrders].sort((a,b) => getTime(b.timestamp) - getTime(a.timestamp)).slice(0, 2);
                 
-                // Dashboard Recent Orders with Beautiful Empty State
                 const dashRecentContainer = document.getElementById('dashRecentOrdersContainer');
                 if(dashRecentContainer) {
                     if(recentOrders.length === 0) {
@@ -916,7 +871,7 @@
                 
                 container.innerHTML = `<div class="card" style="padding-top: 4px; padding-bottom: 4px;">` + sortedProducts.map(item => {
                     const p = item.product || {}; const name = p.name || 'Unknown item'; const price = safeNum(p.sellPrice).toFixed(2);
-                    const img = p.imageUrl && p.imageUrl !== "local_file_selected" ? `<img src="${p.imageUrl}">` : `<span style="font-weight:bold; color:var(--primary);">${name.charAt(0)}</span>`;
+                    const img = p.imageUrl ? `<img src="${p.imageUrl}">` : `<span style="font-weight:bold; color:var(--primary);">${name.charAt(0)}</span>`;
                     return `<div class="top-product"><div class="tp-img">${img}</div><div class="tp-info"><h4>${name}</h4><p>${price} DH</p></div><div class="tp-sales">${item.totalSold} ordered</div></div>`;
                 }).join('') + `</div>`;
             } catch (error) { console.error("PopProd Error:", error); }
@@ -992,7 +947,7 @@
 
             document.getElementById('det-items-count').innerText = `Items (${order.totalItems || 0})`;
             document.getElementById('det-items-list').innerHTML = (order.cart || []).map(item => {
-                const p = item.product || {}; const img = p.imageUrl && p.imageUrl !== "local_file_selected" ? `<img src="${p.imageUrl}">` : ''; const vText = item.variantName ? `<span style="color:var(--primary);">${item.variantName}</span>` : ''; const price = safeNum(item.unitPrice) || safeNum(p.sellPrice);
+                const p = item.product || {}; const img = p.imageUrl ? `<img src="${p.imageUrl}">` : ''; const vText = item.variantName ? `<span style="color:var(--primary);">${item.variantName}</span>` : ''; const price = safeNum(item.unitPrice) || safeNum(p.sellPrice);
                 return `<div class="item-row"><div class="item-img">${img}</div><div class="item-details"><div class="item-name">${p.name || 'Item'} ${vText}</div><div class="item-meta">x${item.qty}</div></div><div class="item-price">${(price * item.qty).toFixed(2)} DH</div></div>`;
             }).join('');
 
@@ -1039,7 +994,7 @@
                 if(filtered.length === 0) { container.innerHTML = `<div class="empty-state">No items found.</div>`; return; }
 
                 container.innerHTML = filtered.map(p => {
-                    const name = p.name || 'Unknown'; const img = p.imageUrl && p.imageUrl !== "local_file_selected" ? `<img src="${p.imageUrl}">` : `<span style="font-weight:800;color:var(--text-muted);">${name.charAt(0)}</span>`;
+                    const name = p.name || 'Unknown'; const img = p.imageUrl ? `<img src="${p.imageUrl}">` : `<span style="font-weight:800;color:var(--text-muted);">${name.charAt(0)}</span>`;
                     return `<div class="prod-card"><div class="prod-img-box">${img}</div><div class="prod-info"><h4>${name}</h4><div class="prod-meta">${p.category||'No cat'} • <strong style="color:var(--primary);">${safeNum(p.sellPrice)} DH</strong></div></div><div class="prod-actions"><button class="btn-icon-small btn-edit-prod" onclick="editProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button><button class="btn-icon-small btn-del-prod" onclick="promptDeleteProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div></div>`;
                 }).join('');
             } catch(e) { console.error("Prod List Error:", e); }
@@ -1059,7 +1014,6 @@
         window.prepareAddProduct = () => {
             currentEditProductId = null; document.getElementById('wizardTitle').innerText = "Add Item"; document.querySelectorAll('#view-ajouter input').forEach(i => { if(i.type !== 'checkbox') i.value = '' });
             document.getElementById('previewImg').style.display = 'none'; document.getElementById('uploadBoxUI').style.display = 'flex';
-            document.getElementById('pImageFile').value = "";
             document.getElementById('pType').value = 'Resto'; document.getElementById('pDesc').value = '';
             
             // Reset Step 3
@@ -1083,9 +1037,9 @@
             document.getElementById('pType').value = p.productType || 'Resto';
             document.getElementById('pCat').value = p.category || '';
             loadSubCats(); setTimeout(() => document.getElementById('pSubCat').value = p.subCategory || '', 100);
-            document.getElementById('pImg').value = p.imageUrl || ''; document.getElementById('pImageFile').value = "";
+            document.getElementById('pImg').value = p.imageUrl || ''; 
             
-            if(p.imageUrl && p.imageUrl !== "local_file_selected") {
+            if(p.imageUrl) {
                 const imgEl = document.getElementById('previewImg'); imgEl.src = p.imageUrl;
                 imgEl.style.display = 'block'; document.getElementById('uploadBoxUI').style.display = 'none';
             } else { document.getElementById('previewImg').style.display = 'none'; document.getElementById('uploadBoxUI').style.display = 'flex'; }
