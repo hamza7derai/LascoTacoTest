@@ -28,13 +28,12 @@
             --text-muted: #8A8D99;
             --border: #E8EBEF; 
             
-            /* Tag Colors matching the exact screenshot */
             --warning: #D97706; --warning-light: #FEF3C7; 
             --promo: #DB2777; --promo-light: #FCE7F3; 
 
             --radius-card: 16px; 
             --radius-btn: 12px;
-            --shadow-sm: 0 4px 12px rgba(0,0,0,0.03); 
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.04); 
             --shadow-modal: 0 -10px 40px rgba(0,0,0,0.08);
             --shadow-floating: 0 10px 25px rgba(0,0,0,0.12);
         }
@@ -92,39 +91,39 @@
         
         /* SECTION HEADERS */
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .section-header h2 { font-size: 16px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        .section-header h2 { font-size: 18px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
         .section-header h2 svg { color: var(--theme-color); transition: color 0.3s ease;}
         .section-header span { font-size: 12px; font-weight: 700; color: var(--theme-color); cursor: pointer; transition: color 0.3s ease; display: flex; align-items: center; gap: 3px;}
 
-        /* EXACT 3-COLUMN PRODUCT GRID (Matching Screenshot) */
-        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 32px;}
+        /* 2-COLUMN PRODUCT GRID (Minimal Padding, Square Buttons) */
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 32px;}
         
-        .prod-card { background: var(--surface); border-radius: 16px; padding: 10px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.04); display: flex; flex-direction: column; cursor: pointer; transition: 0.2s; overflow: hidden;} 
+        .prod-card { background: var(--surface); border-radius: 16px; padding: 6px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.04); display: flex; flex-direction: column; cursor: pointer; transition: 0.2s; overflow: hidden;} 
         .prod-card:active { transform: scale(0.98); }
         
-        /* Image wrapped perfectly */
-        .prod-img-wrap { width: 100%; aspect-ratio: 1 / 1; overflow: hidden; background: transparent; transition: transform 0.3s; margin-bottom: 8px; display: flex; align-items: center; justify-content: center;}
+        /* Edge-to-Edge Image Wrapper */
+        .prod-img-wrap { width: 100%; aspect-ratio: 1 / 1; overflow: hidden; background: transparent; transition: transform 0.3s; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; padding: 0;}
         .prod-img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; display: block; }
         .prod-card:hover .prod-img-wrap { transform: scale(1.05); }
         
-        /* Exact Tag Styling */
-        .prod-tag { position: absolute; top: 10px; left: 10px; font-size: 9px; font-weight: 800; padding: 4px 6px; border-radius: 6px; z-index: 2; display: flex; align-items: center; gap: 2px; letter-spacing: 0.5px;}
+        /* Tags */
+        .prod-tag { position: absolute; top: 8px; left: 8px; font-size: 9px; font-weight: 800; padding: 4px 8px; border-radius: 8px; z-index: 2; display: flex; align-items: center; gap: 3px; letter-spacing: 0.5px;}
         .tag-resto { background: var(--warning-light); color: var(--warning); }
         .tag-promo { background: var(--promo-light); color: var(--promo); }
         
-        /* Information Block */
-        .prod-info-block { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; }
-        .prod-title { font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;} 
+        /* Tighter Info Block */
+        .prod-info-block { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; padding: 4px; }
+        .prod-title { font-size: 14px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;} 
         
-        /* Category text replacing rating */
+        /* Category text */
         .prod-category { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         
-        /* Bottom Row with perfectly round button */
+        /* Bottom Row with Square Button */
         .prod-bottom-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto;}
-        .prod-price { font-size: 14px; font-weight: 800; color: var(--theme-color); transition: color 0.3s ease;} 
+        .prod-price { font-size: 15px; font-weight: 800; color: var(--text-main); transition: color 0.3s ease;} 
         
-        .btn-add { width: 30px; height: 30px; background: var(--theme-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background-color 0.3s ease; } 
-        .btn-add svg { width: 16px; height: 16px; stroke-width: 2.5;}
+        .btn-add { width: 32px; height: 32px; background: var(--theme-color); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background-color 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.1);} 
+        .btn-add svg { width:18px; height:18px;}
 
         /* FLOATING CART SUMMARY */
         .floating-cart { position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 560px; margin: 0 auto; background: var(--theme-color); border-radius: 20px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; color: white; box-shadow: var(--shadow-floating); z-index: 90; cursor: pointer; transform: translateY(200%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1), background-color 0.3s ease; }
@@ -150,7 +149,7 @@
         .bottom-sheet::-webkit-scrollbar { display: none; }
         .bottom-sheet.active { transform: translateY(0); }
         .sheet-handle { width: 36px; height: 4px; background: #E2E8F0; border-radius: 10px; margin: 0 auto 16px; }
-        .sheet-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: var(--bg-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; border: 1px solid var(--border);}
+        .sheet-close { position: absolute; top: 16px; right: 16px; width: 30px; height: 30px; background: var(--bg-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; border: 1px solid var(--border);}
 
         /* PRODUCT MODAL SPECIFICS */
         .pm-img { width: 100%; aspect-ratio: 1.2 / 1; border-radius: 20px; object-fit: cover; margin-bottom: 16px; background: var(--bg-main);}
@@ -360,30 +359,30 @@
         <div class="sheet-handle"></div>
         <div class="sheet-close" onclick="closeModals()"><svg viewBox="0 0 24 24" style="width:16px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>
         
-        <h2>My Cart</h2>
-        <p class="cart-subtitle"><span id="cartCountHeader">1 item</span> • Delivery in ~30 min</p>
+        <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 4px; color: var(--text-main);">Mon Panier</h2>
+        <p class="cart-subtitle"><span id="cartCountHeader">1 article</span> • Livraison en ~30 min</p>
 
         <div id="cartItemsList">
             </div>
 
         <div class="cart-summary">
-            <div class="cs-row"><span>Subtotal</span><span id="cartSubtotal">0 DH</span></div>
-            <div class="cs-row"><span>Delivery</span><span id="cartDelivery">15 DH</span></div>
+            <div class="cs-row"><span>Sous-total</span><span id="cartSubtotal">0 DH</span></div>
+            <div class="cs-row"><span>Frais de livraison</span><span id="cartDelivery">15 DH</span></div>
             <div class="cs-row total"><span>Total</span><span id="cartTotal">0 DH</span></div>
         </div>
 
         <div id="checkoutForm">
-            <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 16px; color:var(--text-main);">Delivery Details</h3>
+            <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 16px; color:var(--text-main);">Détails de livraison</h3>
             <div class="form-group">
-                <label class="form-label">Full Name *</label>
-                <input type="text" id="custName" class="form-input" placeholder="Enter your name">
+                <label class="form-label">Nom Complet *</label>
+                <input type="text" id="custName" class="form-input" placeholder="Entrez votre nom">
             </div>
             <div class="form-group">
-                <label class="form-label">Phone Number *</label>
+                <label class="form-label">Numéro de téléphone *</label>
                 <input type="tel" id="custPhone" class="form-input" placeholder="06 XX XX XX XX">
             </div>
             <div class="form-group">
-                <label class="form-label">Neighborhood (Marrakech) *</label>
+                <label class="form-label">Quartier (Marrakech) *</label>
                 <select id="custArea" class="form-input" onchange="updateCartTotals()">
                     <option value="Gueliz|15">Gueliz (15 DH)</option>
                     <option value="Medina|20">Medina (20 DH)</option>
@@ -396,7 +395,7 @@
 
         <button class="btn-main" id="btnSubmitOrder" onclick="submitOrder()" style="margin-top: 20px;">
             <svg viewBox="0 0 24 24" style="width:20px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-            Order via WhatsApp
+            Commander via WhatsApp
         </button>
     </div>
 
@@ -420,9 +419,16 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // --- SMART PRICE FORMATTER ---
+        // Shows "40 DH" if whole number, "40.50 DH" if it has decimals
+        const formatPrice = (num) => {
+            const p = Number(num);
+            return p % 1 === 0 ? p.toString() : p.toFixed(2);
+        };
+
         // --- STATE VARIABLES ---
         let allProducts = [];
-        let currentMode = 'Resto'; // 'Resto' or 'Grocery'
+        let currentMode = 'Resto'; 
         let activeCategoryFilter = null;
         let isStoreOnline = true;
         
@@ -430,7 +436,7 @@
         let currentProductData = null;
         let modalState = { qty: 1, basePrice: 0, sizePrice: null, extrasTotal: 0 };
 
-        // --- HARDCODED ASSET MAPPING (Use emojis until images are ready) ---
+        // --- HARDCODED ASSET MAPPING ---
         const categoryAssets = {
             "Breakfast": "🥐", "Petit-déjeuner": "🥐",
             "Tacos": "🌮", "Fast Food": "🍔", "Burger": "🍔",
@@ -469,7 +475,6 @@
                 root.style.setProperty('--theme-color', 'var(--grocery-color)');
                 root.style.setProperty('--theme-light', 'var(--grocery-light)');
                 
-                // Grocery Leaf Icon
                 document.getElementById('brandIconBox').innerHTML = `<svg class="brand-icon" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22L6.66 19.7C7.14 19.87 7.64 20 8 20C19 20 22 3 22 3C21 5 14 5.25 9 6.25C4 7.25 2 11.5 2 13.35L3.15 12.2C4.3 11.05 6.2 9.5 9.5 9C13.2 8.44 19.2 8.44 22 6.5C22 6.5 20.3 8 17 8Z"></path></svg>`;
                 document.getElementById('sectionIconBox').innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:18px;"><path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22L6.66 19.7C7.14 19.87 7.64 20 8 20C19 20 22 3 22 3C21 5 14 5.25 9 6.25C4 7.25 2 11.5 2 13.35L3.15 12.2C4.3 11.05 6.2 9.5 9.5 9C13.2 8.44 19.2 8.44 22 6.5C22 6.5 20.3 8 17 8Z"></path></svg>`;
                 document.getElementById('topSalesTitle').innerText = 'Best sellers';
@@ -481,7 +486,6 @@
                 root.style.setProperty('--theme-color', 'var(--resto-color)');
                 root.style.setProperty('--theme-light', 'var(--resto-light)');
                 
-                // Resto Fire Icon
                 document.getElementById('brandIconBox').innerHTML = `<svg class="brand-icon" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M17.66 11.2C17.43 10.9 17.15 10.64 16.89 10.38C16.22 9.78 15.46 9.35 14.82 8.72C13.33 7.26 13.07 4.8 14.56 3.11C14.72 2.93 14.57 2.66 14.33 2.7C13.25 2.89 12.06 3.46 11.23 4.29C9.17 6.36 9.07 9.87 10.73 12.06C10.87 12.24 10.64 12.47 10.45 12.33C9.4 11.59 8.87 10.23 9.04 8.93C9.07 8.68 8.77 8.52 8.6 8.7C7.45 9.84 6.75 11.55 7.03 13.33C7.4 15.65 9.02 17.5 11.24 18.23C13.56 18.99 16.27 18.35 17.84 16.39C19.11 14.81 18.9 12.63 17.66 11.2Z"></path></svg>`;
                 document.getElementById('sectionIconBox').innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:18px;"><path d="M17.66 11.2C17.43 10.9 17.15 10.64 16.89 10.38C16.22 9.78 15.46 9.35 14.82 8.72C13.33 7.26 13.07 4.8 14.56 3.11C14.72 2.93 14.57 2.66 14.33 2.7C13.25 2.89 12.06 3.46 11.23 4.29C9.17 6.36 9.07 9.87 10.73 12.06C10.87 12.24 10.64 12.47 10.45 12.33C9.4 11.59 8.87 10.23 9.04 8.93C9.07 8.68 8.77 8.52 8.6 8.7C7.45 9.84 6.75 11.55 7.03 13.33C7.4 15.65 9.02 17.5 11.24 18.23C13.56 18.99 16.27 18.35 17.84 16.39C19.11 14.81 18.9 12.63 17.66 11.2Z"></path></svg>`;
                 document.getElementById('topSalesTitle').innerText = 'Top ventes';
@@ -539,7 +543,6 @@
         }
 
         function renderDynamicSections(modeProducts) {
-            // 1. Time Based (Example: Breakfast)
             const hour = new Date().getHours();
             const timeSection = document.getElementById('timeBasedSection');
             
@@ -553,12 +556,11 @@
 
             if(timeFiltered.length > 0) {
                 timeSection.style.display = 'block';
-                renderProductGrid('timeBasedGrid', timeFiltered.slice(0,3)); // Max 3 for time based
+                renderProductGrid('timeBasedGrid', timeFiltered.slice(0,4)); 
             } else {
                 timeSection.style.display = 'none';
             }
 
-            // 2. Top Sales (Featured)
             const featured = modeProducts.filter(p => p.featured === true);
             if(featured.length > 0) {
                 document.getElementById('topSalesSection').style.display = 'block';
@@ -575,7 +577,6 @@
             container.innerHTML = products.map(p => {
                 const price = p.promoPrice ? p.promoPrice : p.sellPrice;
                 
-                // NO PADDING AND MIX-BLEND-MODE for perfect white background rendering
                 const imgTag = p.imageUrl ? `<img src="${p.imageUrl}" class="prod-img">` : `<span style="font-weight:800; color:var(--text-muted); font-size:24px;">${p.name.charAt(0)}</span>`;
                 
                 let tagHtml = '';
@@ -594,7 +595,7 @@
                         <h3 class="prod-title">${p.name}</h3>
                         <p class="prod-category">${catText}</p>
                         <div class="prod-bottom-row">
-                            <span class="prod-price">${price.toFixed(2)} DH</span>
+                            <span class="prod-price">${formatPrice(price)} DH</span>
                             <div class="btn-add"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
                         </div>
                     </div>
@@ -626,7 +627,7 @@
             
             document.getElementById('modalTitle').innerText = p.name;
             document.getElementById('modalDesc').innerText = p.description || '';
-            document.getElementById('modalPrice').innerText = `${modalState.basePrice.toFixed(2)} DH`;
+            document.getElementById('modalPrice').innerText = `${formatPrice(modalState.basePrice)} DH`;
             
             const imgEl = document.getElementById('modalImg');
             if(p.imageUrl) { imgEl.src = p.imageUrl; imgEl.style.display = 'block'; } else { imgEl.style.display = 'none'; }
@@ -644,7 +645,7 @@
                         ${p.sizes.map((s, i) => `
                         <label class="option-row ${i===0?'selected':''}" onclick="selectSize(this, ${s.sellPrice})">
                             <span class="option-name">${s.name}</span>
-                            <span class="option-price">${s.sellPrice.toFixed(2)} DH</span>
+                            <span class="option-price">${formatPrice(s.sellPrice)} DH</span>
                             <input type="radio" name="msize" value="${s.name}" ${i===0?'checked':''}>
                         </label>`).join('')}
                     </div>
@@ -660,7 +661,7 @@
                         ${p.extras.map((e, i) => `
                         <label class="option-row" onclick="toggleExtra(this, ${e.price})">
                             <span class="option-name">${e.name}</span>
-                            <span class="option-price">+${e.price.toFixed(2)} DH</span>
+                            <span class="option-price">+${formatPrice(e.price)} DH</span>
                             <input type="checkbox" name="mextra" value="${e.name}" data-price="${e.price}">
                         </label>`).join('')}
                     </div>
@@ -726,7 +727,7 @@
             document.getElementById('modalQty').innerText = modalState.qty;
             let unitPrice = (modalState.sizePrice !== null ? modalState.sizePrice : modalState.basePrice) + modalState.extrasTotal;
             let total = unitPrice * modalState.qty;
-            document.getElementById('modalBtnTotal').innerText = `${total.toFixed(2)} DH`;
+            document.getElementById('modalBtnTotal').innerText = `${formatPrice(total)} DH`;
         }
 
         window.closeModals = () => { 
@@ -798,7 +799,7 @@
 
             document.getElementById('floatCartBadge').innerText = totalItems;
             document.getElementById('floatCartItems').innerText = `${totalItems} article${totalItems>1?'s':''}`;
-            document.getElementById('floatCartTotal').innerText = `${totalPrice.toFixed(2)} DH`;
+            document.getElementById('floatCartTotal').innerText = `${formatPrice(totalPrice)} DH`;
 
             banner.classList.add('visible');
         }
@@ -820,7 +821,7 @@
 
         function renderCartItems() {
             let totalItems = 0; cart.forEach(i => totalItems += i.qty);
-            document.getElementById('cartCountHeader').innerText = `${totalItems} item${totalItems>1?'s':''}`;
+            document.getElementById('cartCountHeader').innerText = `${totalItems} article${totalItems>1?'s':''}`;
 
             document.getElementById('cartItemsList').innerHTML = cart.map((item, i) => {
                 const imgHtml = item.product.imageUrl ? `<img src="${item.product.imageUrl}" class="ci-img">` : `<div class="ci-img" style="display:flex;align-items:center;justify-content:center;font-size:10px; font-weight:bold; color:var(--text-muted);">${item.product.name.charAt(0)}</div>`;
@@ -836,7 +837,8 @@
                     ${imgHtml}
                     <div class="ci-details">
                         <div class="ci-name">${item.product.name}</div>
-                        <div class="ci-price">${(item.unitPrice * item.qty).toFixed(2)} DH</div>
+                        <div class="ci-meta">${metaText.join('<br>')}</div>
+                        <div class="ci-price">${formatPrice(item.unitPrice * item.qty)} DH</div>
                     </div>
                     <div class="ci-actions">
                         <div class="ci-qty-pill">
@@ -845,7 +847,7 @@
                             <button class="ci-qty-btn" onclick="updateCartItemQty(${i}, 1)">+</button>
                         </div>
                         <div class="ci-remove" onclick="updateCartItemQty(${i}, -999)">
-                            <svg viewBox="0 0 24 24" style="width:14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> Remove
+                            <svg viewBox="0 0 24 24" style="width:14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> Supprimer
                         </div>
                     </div>
                 </div>`;
@@ -858,9 +860,9 @@
             const deliveryFee = parseInt(areaSelect.split('|')[1]) || 0;
             const total = subtotal + deliveryFee;
 
-            document.getElementById('cartSubtotal').innerText = `${subtotal.toFixed(2)} DH`;
-            document.getElementById('cartDelivery').innerText = `${deliveryFee.toFixed(2)} DH`;
-            document.getElementById('cartTotal').innerText = `${total.toFixed(2)} DH`;
+            document.getElementById('cartSubtotal').innerText = `${formatPrice(subtotal)} DH`;
+            document.getElementById('cartDelivery').innerText = `${formatPrice(deliveryFee)} DH`;
+            document.getElementById('cartTotal').innerText = `${formatPrice(total)} DH`;
         };
 
         // --- CHECKOUT & SUBMIT LOGIC ---
@@ -897,11 +899,11 @@
                 let waText = `*Nouvelle Commande - Lasco*\n\n`;
                 waText += `*Nom:* ${name}\n*Tél:* ${phone}\n*Quartier:* ${areaName}\n\n*Détails:*\n`;
                 cart.forEach(c => {
-                    waText += `▪ ${c.qty}x ${c.product.name} (${(c.unitPrice * c.qty).toFixed(2)} DH)\n`;
+                    waText += `▪ ${c.qty}x ${c.product.name} (${formatPrice(c.unitPrice * c.qty)} DH)\n`;
                     let mods = []; if(c.size) mods.push(`Taille: ${c.size}`); if(c.extras.length) mods.push(`+ ${c.extras.join(', ')}`); if(c.sauces.length) mods.push(`Sauce: ${c.sauces.join(', ')}`); if(c.note) mods.push(`Note: ${c.note}`);
                     if(mods.length) waText += `   _${mods.join(' | ')}_\n`;
                 });
-                waText += `\n*Sous-total:* ${subtotal.toFixed(2)} DH\n*Livraison:* ${deliveryFee.toFixed(2)} DH\n*TOTAL:* ${total.toFixed(2)} DH`;
+                waText += `\n*Sous-total:* ${formatPrice(subtotal)} DH\n*Livraison:* ${formatPrice(deliveryFee)} DH\n*TOTAL:* ${formatPrice(total)} DH`;
                 
                 // ⚠️ REPLACE THE NUMBER BELOW WITH YOUR ACTUAL WHATSAPP NUMBER
                 const waUrl = `https://wa.me/212600000000?text=${encodeURIComponent(waText)}`; 
@@ -910,7 +912,7 @@
                 cart = []; updateCartHeader(); updateFloatingCart(); closeModals(); window.location.href = waUrl;
             } catch (e) {
                 console.error(e); alert("Erreur lors de la commande.");
-                btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg> Order via WhatsApp`; 
+                btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg> Commander via WhatsApp`; 
                 btn.disabled = false;
             }
         };
