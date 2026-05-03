@@ -294,7 +294,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // ⚠️ SAME FIREBASE CONFIG AS ADMIN/INDEX
         const firebaseConfig = {
           apiKey: "AIzaSyAaaR52bvyQfkxmZL16lcg4Bd4M76OtbI4",
           authDomain: "lesgo-cd7f9.firebaseapp.com",
@@ -307,11 +306,18 @@
         const db = getFirestore(app);
 
         let allOrders = [];
-        let currentTab = 'available'; // 'available' (Preparing) or 'active' (Out for Delivery)
+        let allProducts = []; // Needed to calculate accurate cost price from DB
+        let currentTab = 'available'; 
         let openedOrderId = null;
         const safeNum = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
 
         // --- LISTENERS ---
+        // Load Products to calculate accurate cost for wallet
+        onSnapshot(collection(db, "products"), snap => {
+            allProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
+            if(document.getElementById('view-wallet').classList.contains('active')) renderWallet();
+        });
+
         onSnapshot(collection(db, "orders"), snap => {
             allOrders = snap.docs.map(d => ({id: d.id, ...d.data()}));
             
@@ -321,11 +327,10 @@
                 renderWallet();
             }
             
-            // Auto-update detail view if open
             if(openedOrderId) {
                 const stillExists = allOrders.find(o => o.id === openedOrderId);
                 if(stillExists) openOrder(stillExists.id);
-                else goBack(); // Order deleted or fully processed
+                else goBack(); 
             }
         });
 
@@ -335,7 +340,14 @@
             document.getElementById(`view-${tabId}`).classList.add('active');
             window.scrollTo(0,0);
             if(tabId === 'wallet') renderWallet();
+            
+            localStorage.setItem('lasGoDriverTab', tabId);
         };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTab = localStorage.getItem('lasGoDriverTab') || 'dashboard'; 
+            switchTab(savedTab);
+        });
 
         window.switchList = (tab) => {
             currentTab = tab;
@@ -349,15 +361,12 @@
         };
 
         window.goBack = () => {
-            document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-dashboard').classList.add('active');
+            switchTab('dashboard');
             openedOrderId = null;
-            window.scrollTo(0,0);
         };
 
         // --- RENDERING DASHBOARD ---
         function renderDashboard() {
-            // Sort by time
             const sortedOrders = [...allOrders].sort((a,b) => {
                 return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
             });
@@ -365,7 +374,6 @@
             const available = sortedOrders.filter(o => o.status === 'Preparing');
             const active = sortedOrders.filter(o => o.status === 'Out for Delivery');
             
-            // For recent activity (Delivered or Cancelled Today)
             const todayStr = new Date().toDateString();
             const recent = sortedOrders.filter(o => {
                 let orderDate = o.timestamp ? new Date(o.timestamp) : new Date();
@@ -378,7 +386,6 @@
             const container = document.getElementById('ordersContainer');
             const displayList = currentTab === 'available' ? available : active;
 
-            // MAIN LIST RENDERING
             if(displayList.length === 0) {
                 container.innerHTML = `
                 <div class="empty-state">
@@ -466,13 +473,34 @@
             const unsettledDeliveries = allOrders.filter(o => o.status === 'Delivered' && o.driverSettled !== true);
 
             let totalEarned = 0; // Sum of delivery fees
-            let totalToReturn = 0; // Sum of subtotals (TotalPrice - DeliveryFee)
+            let totalToReturn = 0; // Margin = Subtotal - Total Cost
 
             unsettledDeliveries.forEach(o => {
                 const fee = safeNum(o.deliveryFee);
                 const total = safeNum(o.totalPrice);
+                const subtotal = total - fee;
+                
+                // Calculate Exact Cost of Ingredients for this order
+                let orderCost = 0;
+                if(o.cart && Array.isArray(o.cart)) {
+                    o.cart.forEach(item => {
+                        const dbProduct = allProducts.find(x => x.id === item.product.id);
+                        let unitCost = dbProduct ? safeNum(dbProduct.costPrice) : 0;
+                        
+                        // Check if a size was selected that might have a different cost
+                        if(dbProduct && dbProduct.sizes && item.variantName) {
+                            const sizeData = dbProduct.sizes.find(s => s.name === item.variantName);
+                            if(sizeData && sizeData.costPrice) {
+                                unitCost = safeNum(sizeData.costPrice);
+                            }
+                        }
+                        
+                        orderCost += (unitCost * item.qty);
+                    });
+                }
+
                 totalEarned += fee;
-                totalToReturn += (total - fee);
+                totalToReturn += (subtotal - orderCost);
             });
 
             document.getElementById('walletEarned').innerHTML = `${totalEarned.toFixed(2)} <span style="font-size:16px;">DH</span>`;
@@ -511,7 +539,6 @@
             btn.innerText = "Processing...";
             
             try {
-                // Update all unsettled orders in Firebase to settled
                 for(let order of unsettledDeliveries) {
                     await updateDoc(doc(db, "orders", order.id), { driverSettled: true });
                 }
@@ -551,7 +578,7 @@
             
             // Map Link
             const mapQuery = encodeURIComponent(`${o.neighborhood || ''}, Marrakech, Morocco`);
-            btnNav.href = `http://maps.google.com/?q=${mapQuery}`;
+            btnNav.href = `http://googleusercontent.com/maps.google.com/?q=${mapQuery}`;
             
             if(o.customerPhone) {
                 let cleanPhone = o.customerPhone.replace(/^0+/, '');
@@ -633,4 +660,3 @@
     </script>
 </body>
 </html>
-
