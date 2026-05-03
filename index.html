@@ -99,7 +99,8 @@
         .prod-card:active { transform: scale(0.98); }
         
         /* NO PADDING - Let the image fill the top half */
-        .prod-img-wrap { width: 100%; aspect-ratio: 1 / 1; overflow: hidden; display: flex; align-items: center; justify-content: center; transition: transform 0.3s;}
+        /* Tall Portrait Image Container */
+        .prod-img-wrap { width: 100%; aspect-ratio: 4 / 5; border-radius: 20px 20px 0 0; overflow: hidden; background: transparent; display: flex; align-items: center; justify-content: center; padding: 12px; transition: transform 0.3s;}
         .prod-img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; }
         .prod-card:hover .prod-img-wrap { transform: scale(1.03); }
         
