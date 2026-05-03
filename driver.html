@@ -12,11 +12,11 @@
         ========================================= */
         :root {
             --bg-main: #F8F9FB; --surface: #FFFFFF;
-            --primary: #0D5DFF; /* Vibrant Blue from Mockup */
+            --primary: #0D5DFF; 
             --primary-light: #EFF6FF;
-            --accent: #16A34A; /* Success Green */
+            --accent: #16A34A; 
             --accent-light: #DCFCE7;
-            --warning: #EA580C; /* Orange */
+            --warning: #EA580C; 
             --warning-light: #FFEDD5;
             --danger: #EF4444; --danger-light: #FEE2E2;
             --text-main: #0F172A; --text-muted: #64748B;
@@ -26,7 +26,6 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        /* BUG FIX: Removed padding-bottom that was causing the weird scroll */
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-main); }
         .container { padding: 20px; max-width: 600px; margin: 0 auto; position: relative; min-height: 100vh;}
         svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -168,9 +167,6 @@
         .item-meta { font-size: 12px; color: var(--text-muted); line-height: 1.3; }
         .item-qty-badge { background: var(--accent-light); color: var(--accent); font-size: 13px; font-weight: 800; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
 
-        .btn-finish { width: 100%; background: var(--accent); color: white; border-radius: 16px; padding: 18px; font-size: 16px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3); transition: 0.2s;}
-        .btn-finish:active { transform: scale(0.98); }
-
         /* WALLET VIEW */
         .wallet-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-top: 20px;}
         .wallet-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 32px; }
@@ -222,7 +218,7 @@
                 <label>Email Address</label>
                 <div class="input-wrapper">
                     <svg class="input-icon-left" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                    <input type="email" id="loginEmail" class="login-input" placeholder="driver2@getlasco.ma">
+                    <input type="email" id="loginEmail" class="login-input" placeholder="driver@getlasco.ma">
                 </div>
             </div>
 
@@ -255,8 +251,10 @@
     <div id="view-dashboard" class="app-view container">
         <div class="header-top">
             <div>
-                <h1>Driver Hub 🛵</h1>
-                <p>Manage your deliveries</p>
+                <h1 style="font-size: 24px; font-weight: 800; color: var(--text-main); line-height: 1.2; display: flex; align-items: center; gap: 8px;">
+                    Hi, <span id="driverNameDisplay" style="color: var(--primary); text-transform: capitalize;">Driver</span> 🛵
+                </h1>
+                <p style="font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 4px;">Manage your deliveries</p>
             </div>
             <button class="btn-wallet" onclick="switchTab('wallet')">
                 <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
@@ -365,12 +363,12 @@
             Give back shop money at the end of your shift to clear your wallet.
         </div>
 
-        <button class="btn-main" onclick="markAsPaid()" style="width: 100%; background: var(--accent); color: white; border-radius: 16px; padding: 18px; font-size: 16px; font-weight: 800; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 16px; cursor: pointer; border: none; transition: 0.2s;">
+        <button onclick="markAsPaid()" style="width: 100%; background: var(--accent); color: white; border-radius: 16px; padding: 18px; font-size: 16px; font-weight: 800; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 16px; cursor: pointer; border: none; transition: 0.2s;">
             <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
             Mark as Paid
         </button>
 
-        <button class="btn-main" onclick="logoutDriver()" style="width: 100%; background: transparent; color: var(--danger); border: 1px solid var(--danger-light); border-radius: 16px; padding: 18px; font-size: 16px; font-weight: 800; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s;">
+        <button onclick="logoutDriver()" style="width: 100%; background: transparent; color: var(--danger); border: 1px solid var(--danger-light); border-radius: 16px; padding: 18px; font-size: 16px; font-weight: 800; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s;">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
             Log Out
         </button>
@@ -382,7 +380,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         // ⚠️ SAME FIREBASE CONFIG AS ADMIN/INDEX
@@ -419,9 +417,22 @@
         };
 
         // --- AUTHENTICATION STATE ---
-        onAuthStateChanged(auth, user => {
+        onAuthStateChanged(auth, async user => {
             if (user) {
                 currentDriver = user;
+                
+                // Extract name from email (zakaria@lasco.ma -> zakaria)
+                const dName = user.email.split('@')[0];
+                const displayEl = document.getElementById('driverNameDisplay');
+                if(displayEl) displayEl.innerText = dName;
+
+                // Register driver in DB so Admin can see them
+                await setDoc(doc(db, "drivers", user.email), {
+                    email: user.email,
+                    name: dName,
+                    lastActive: new Date().toISOString()
+                }, { merge: true });
+
                 const savedTab = localStorage.getItem('lasGoDriverTab') || 'dashboard';
                 if(savedTab === 'login') {
                     switchTab('dashboard');
@@ -517,7 +528,10 @@
         function renderDashboard() {
             if(!currentDriver) return;
             
-            const sortedOrders = [...allOrders].sort((a,b) => {
+            // Filter to ONLY show orders assigned to this specific driver
+            const myOrders = allOrders.filter(o => o.driverEmail === currentDriver.email);
+            
+            const sortedOrders = [...myOrders].sort((a,b) => {
                 return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
             });
 
@@ -621,7 +635,9 @@
         function renderWallet() {
             if(!currentDriver) return;
             
-            const unsettledDeliveries = allOrders.filter(o => o.status === 'Delivered' && o.driverSettled !== true);
+            // Filter to ONLY show orders assigned to this specific driver
+            const myOrders = allOrders.filter(o => o.driverEmail === currentDriver.email);
+            const unsettledDeliveries = myOrders.filter(o => o.status === 'Delivered' && o.driverSettled !== true);
 
             let totalEarned = 0; 
             let totalToReturn = 0; 
@@ -680,7 +696,8 @@
         }
 
         window.markAsPaid = async () => {
-            const unsettledDeliveries = allOrders.filter(o => o.status === 'Delivered' && o.driverSettled !== true);
+            const myOrders = allOrders.filter(o => o.driverEmail === currentDriver.email);
+            const unsettledDeliveries = myOrders.filter(o => o.status === 'Delivered' && o.driverSettled !== true);
             if(unsettledDeliveries.length === 0) return showToast("No deliveries to settle.");
             
             const btn = document.querySelector('.btn-finish');
@@ -774,23 +791,23 @@
             const actionContainer = document.getElementById('action-container');
             if(o.status === 'Preparing') {
                 actionContainer.innerHTML = `
-                    <button class="btn-main btn-start" onclick="updateOrderStatus('${o.id}', 'Out for Delivery')" style="width: 100%; border: none; padding: 18px; border-radius: 16px; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <button style="width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 20px rgba(13, 93, 255, 0.3); transition: 0.2s; cursor: pointer;" onclick="updateOrderStatus('${o.id}', 'Out for Delivery')">
                         <svg viewBox="0 0 24 24" style="width:20px;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                         Start Delivery
                     </button>`;
             } else if (o.status === 'Out for Delivery') {
                 actionContainer.innerHTML = `
-                    <button class="btn-main" style="width: 100%; background: var(--accent); color: white; border: none; border-radius: 16px; padding: 18px; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3); margin-bottom: 12px; transition: 0.2s;" onclick="updateOrderStatus('${o.id}', 'Delivered')">
+                    <button style="width: 100%; background: var(--accent); color: white; border: none; border-radius: 16px; padding: 18px; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3); margin-bottom: 12px; transition: 0.2s; cursor: pointer;" onclick="updateOrderStatus('${o.id}', 'Delivered')">
                         <svg viewBox="0 0 24 24" style="width:22px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
                         Mark as Delivered
                     </button>
-                    <button class="btn-main" style="width: 100%; background: transparent; color: var(--danger); border: 1px solid var(--danger-light); border-radius: 16px; padding: 18px; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;" onclick="updateOrderStatus('${o.id}', 'Cancelled')">
+                    <button style="width: 100%; background: transparent; color: var(--danger); border: 1px solid var(--danger-light); border-radius: 16px; padding: 18px; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; cursor: pointer;" onclick="updateOrderStatus('${o.id}', 'Cancelled')">
                         <svg viewBox="0 0 24 24" style="width:20px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                         Delivery Failed / Returned
                     </button>
                 `;
             } else {
-                actionContainer.innerHTML = ``; // Hide button if done
+                actionContainer.innerHTML = ``; 
             }
         };
 
