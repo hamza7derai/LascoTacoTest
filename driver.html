@@ -108,7 +108,7 @@
         .action-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow-sm); cursor: pointer; transition: 0.2s;}
         .action-btn:active { transform: scale(0.95); background: var(--bg-main); }
         .action-btn svg { width: 24px; height: 24px; }
-        .action-btn span { font-size: 12px; font-weight: 700; color: var(--text-main); }
+        .action-btn span { font-size: 12px; font-weight: 700; color: var(--text-main); text-align: center;}
         .ab-call { color: var(--accent); } .ab-wa { color: #25D366; } .ab-nav { color: var(--primary); }
 
         .info-card { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); padding: 20px; margin-bottom: 24px; box-shadow: var(--shadow-sm);}
@@ -208,11 +208,11 @@
             </a>
             <a href="#" class="action-btn ab-wa" id="btnWa" target="_blank">
                 <svg viewBox="0 0 24 24" stroke="currentColor" fill="none"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                <span>WhatsApp</span>
+                <span>Ask Location</span>
             </a>
             <a href="#" class="action-btn ab-nav" id="btnNav" target="_blank">
                 <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
-                <span>Navigate</span>
+                <span>Map App</span>
             </a>
         </div>
 
@@ -264,7 +264,7 @@
                 <div class="w-info">
                     <p>To give back</p>
                     <h2 id="walletDebt">0.00 <span style="font-size:16px;">DH</span></h2>
-                    <span>Shop profit (margin)</span>
+                    <span>Cash for shop (Subtotal)</span>
                 </div>
             </div>
         </div>
@@ -294,6 +294,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // ⚠️ SAME FIREBASE CONFIG AS ADMIN/INDEX
         const firebaseConfig = {
           apiKey: "AIzaSyAaaR52bvyQfkxmZL16lcg4Bd4M76OtbI4",
           authDomain: "lesgo-cd7f9.firebaseapp.com",
@@ -367,6 +368,7 @@
 
         // --- RENDERING DASHBOARD ---
         function renderDashboard() {
+            // Sort by time
             const sortedOrders = [...allOrders].sort((a,b) => {
                 return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
             });
@@ -374,6 +376,7 @@
             const available = sortedOrders.filter(o => o.status === 'Preparing');
             const active = sortedOrders.filter(o => o.status === 'Out for Delivery');
             
+            // For recent activity (Delivered or Cancelled Today)
             const todayStr = new Date().toDateString();
             const recent = sortedOrders.filter(o => {
                 let orderDate = o.timestamp ? new Date(o.timestamp) : new Date();
@@ -386,6 +389,7 @@
             const container = document.getElementById('ordersContainer');
             const displayList = currentTab === 'available' ? available : active;
 
+            // MAIN LIST RENDERING
             if(displayList.length === 0) {
                 container.innerHTML = `
                 <div class="empty-state">
@@ -539,6 +543,7 @@
             btn.innerText = "Processing...";
             
             try {
+                // Update all unsettled orders in Firebase to settled
                 for(let order of unsettledDeliveries) {
                     await updateDoc(doc(db, "orders", order.id), { driverSettled: true });
                 }
@@ -582,8 +587,13 @@
             
             if(o.customerPhone) {
                 let cleanPhone = o.customerPhone.replace(/^0+/, '');
+                
+                // NEW: Advanced WhatsApp Request Location Message
+                let waMsg = `Bonjour ${o.customerName || ''}, c'est LasGo ! 🛵\nNous préparons votre commande #${o.id.substring(0,6).toUpperCase()} d'un total de ${Number(o.totalPrice).toFixed(2)} DH.\n\nPouvez-vous nous envoyer votre position exacte (localisation) ici s'il vous plaît ? 📍`;
+                
                 btnCall.href = `tel:${o.customerPhone}`;
-                btnWa.href = `https://wa.me/212${cleanPhone}`;
+                btnWa.href = `https://wa.me/212${cleanPhone}?text=${encodeURIComponent(waMsg)}`;
+                
                 btnCall.style.opacity = "1"; btnWa.style.opacity = "1";
                 btnCall.style.pointerEvents = "auto"; btnWa.style.pointerEvents = "auto";
             } else {
