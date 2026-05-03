@@ -12,11 +12,11 @@
         ========================================= */
         :root {
             --bg-main: #F8F9FB; --surface: #FFFFFF;
-            --primary: #0D5DFF; 
+            --primary: #0D5DFF; /* Vibrant Blue from Mockup */
             --primary-light: #EFF6FF;
-            --accent: #16A34A; 
+            --accent: #16A34A; /* Success Green */
             --accent-light: #DCFCE7;
-            --warning: #EA580C; 
+            --warning: #EA580C; /* Orange */
             --warning-light: #FFEDD5;
             --danger: #EF4444; --danger-light: #FEE2E2;
             --text-main: #0F172A; --text-muted: #64748B;
@@ -218,7 +218,7 @@
                 <label>Email Address</label>
                 <div class="input-wrapper">
                     <svg class="input-icon-left" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                    <input type="email" id="loginEmail" class="login-input" placeholder="driver@getlasco.ma">
+                    <input type="email" id="loginEmail" class="login-input" placeholder="driver2@getlasco.ma">
                 </div>
             </div>
 
@@ -527,7 +527,7 @@
         // --- RENDERING DASHBOARD ---
         function renderDashboard() {
             if(!currentDriver) return;
-            
+
             // Filter to ONLY show orders assigned to this specific driver
             const myOrders = allOrders.filter(o => o.driverEmail === currentDriver.email);
             
@@ -634,9 +634,10 @@
         // --- WALLET LOGIC ---
         function renderWallet() {
             if(!currentDriver) return;
-            
+
             // Filter to ONLY show orders assigned to this specific driver
             const myOrders = allOrders.filter(o => o.driverEmail === currentDriver.email);
+            
             const unsettledDeliveries = myOrders.filter(o => o.status === 'Delivered' && o.driverSettled !== true);
 
             let totalEarned = 0; 
@@ -807,7 +808,7 @@
                     </button>
                 `;
             } else {
-                actionContainer.innerHTML = ``; 
+                actionContainer.innerHTML = ``; // Hide button if done
             }
         };
 
