@@ -269,15 +269,15 @@
             </div>
         </div>
 
-        <h3 class="w-list-header">Today Summary</h3>
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;" id="walletCount">0 deliveries completed</p>
+        <h3 class="w-list-header">Unsettled Deliveries</h3>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;" id="walletCount">0 deliveries to settle</p>
         
         <div class="w-list" id="walletList">
             </div>
 
         <div style="background: var(--primary-light); color: var(--primary); padding: 16px; border-radius: 12px; font-size: 13px; font-weight: 600; display: flex; gap: 12px; margin-bottom: 24px;">
             <svg viewBox="0 0 24 24" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-            Give back shop money at the end of your shift.
+            Give back shop money at the end of your shift to clear your wallet.
         </div>
 
         <button class="btn-finish" onclick="markAsPaid()" style="margin-top:0;">
@@ -309,6 +309,7 @@
         let allOrders = [];
         let currentTab = 'available'; // 'available' (Preparing) or 'active' (Out for Delivery)
         let openedOrderId = null;
+        const safeNum = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
 
         // --- LISTENERS ---
         onSnapshot(collection(db, "orders"), snap => {
@@ -461,18 +462,13 @@
 
         // --- WALLET LOGIC ---
         function renderWallet() {
-            const todayStr = new Date().toDateString();
-            
-            // Only look at TODAY'S DELIVERED orders
-            const todayDelivered = allOrders.filter(o => {
-                let orderDate = o.timestamp ? new Date(o.timestamp) : new Date();
-                return o.status === 'Delivered' && orderDate.toDateString() === todayStr;
-            });
+            // Filter delivered orders that haven't been settled yet
+            const unsettledDeliveries = allOrders.filter(o => o.status === 'Delivered' && o.driverSettled !== true);
 
             let totalEarned = 0; // Sum of delivery fees
             let totalToReturn = 0; // Sum of subtotals (TotalPrice - DeliveryFee)
 
-            todayDelivered.forEach(o => {
+            unsettledDeliveries.forEach(o => {
                 const fee = safeNum(o.deliveryFee);
                 const total = safeNum(o.totalPrice);
                 totalEarned += fee;
@@ -481,13 +477,13 @@
 
             document.getElementById('walletEarned').innerHTML = `${totalEarned.toFixed(2)} <span style="font-size:16px;">DH</span>`;
             document.getElementById('walletDebt').innerHTML = `${totalToReturn.toFixed(2)} <span style="font-size:16px;">DH</span>`;
-            document.getElementById('walletCount').innerText = `${todayDelivered.length} deliveries completed today`;
+            document.getElementById('walletCount').innerText = `${unsettledDeliveries.length} deliveries to settle`;
 
             const listContainer = document.getElementById('walletList');
-            if(todayDelivered.length === 0) {
-                listContainer.innerHTML = `<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:13px; font-weight:600; border-bottom: none;">No deliveries yet.</div>`;
+            if(unsettledDeliveries.length === 0) {
+                listContainer.innerHTML = `<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:13px; font-weight:600; border-bottom: none;">All settled! No pending deliveries.</div>`;
             } else {
-                listContainer.innerHTML = todayDelivered.map(o => {
+                listContainer.innerHTML = unsettledDeliveries.map(o => {
                     let orderDate = new Date(); if (o.timestamp) orderDate = new Date(o.timestamp);
                     const time = orderDate.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
                     const fee = safeNum(o.deliveryFee).toFixed(2);
@@ -507,10 +503,25 @@
             }
         }
 
-        window.markAsPaid = () => {
-            // For now, this just shows a toast to confirm visual clearance of shift.
-            // Connecting this to a DB "Settled" system can be done in the future.
-            showToast("Shift balances marked as settled!");
+        window.markAsPaid = async () => {
+            const unsettledDeliveries = allOrders.filter(o => o.status === 'Delivered' && o.driverSettled !== true);
+            if(unsettledDeliveries.length === 0) return showToast("No deliveries to settle.");
+            
+            const btn = document.querySelector('.btn-finish');
+            btn.innerText = "Processing...";
+            
+            try {
+                // Update all unsettled orders in Firebase to settled
+                for(let order of unsettledDeliveries) {
+                    await updateDoc(doc(db, "orders", order.id), { driverSettled: true });
+                }
+                showToast("Wallet settled successfully!");
+            } catch(e) {
+                console.error(e);
+                alert("Error settling wallet.");
+            } finally {
+                btn.innerHTML = `<svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> Mark as Paid`;
+            }
         }
 
         // --- ORDER DETAILS ---
@@ -540,7 +551,7 @@
             
             // Map Link
             const mapQuery = encodeURIComponent(`${o.neighborhood || ''}, Marrakech, Morocco`);
-            btnNav.href = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+            btnNav.href = `http://maps.google.com/?q=${mapQuery}`;
             
             if(o.customerPhone) {
                 let cleanPhone = o.customerPhone.replace(/^0+/, '');
@@ -622,3 +633,4 @@
     </script>
 </body>
 </html>
+
