@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LasGo | Driver Hub</title>
+    <title>Getlasco | Driver Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
@@ -104,7 +104,7 @@
         .detail-id { font-size: 20px; font-weight: 800; margin-left: 12px; flex: 1; }
         .detail-badge { background: var(--primary-light); color: var(--primary); font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase;}
         
-        .action-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
         .action-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow-sm); cursor: pointer; transition: 0.2s;}
         .action-btn:active { transform: scale(0.95); background: var(--bg-main); }
         .action-btn svg { width: 24px; height: 24px; }
@@ -159,11 +159,43 @@
 
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: var(--text-main); color: white; padding: 12px 24px; border-radius: 50px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-sm); z-index: 1100; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* FORM INPUTS */
+        .form-group { margin-bottom: 20px; }
+        .form-control { width: 100%; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-btn); background: var(--surface); outline: none; font-size: 14px; font-weight: 500; transition: 0.2s; }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+        .btn-main { width: 100%; padding: 18px; border-radius: 16px; font-size: 16px; font-weight: 800; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; border: none; }
+        .btn-start { background: var(--primary); color: white; box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3);}
+        .btn-start:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
-    <div id="view-dashboard" class="app-view active container">
+    <div id="view-login" class="app-view container" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-bottom: 20px;">
+        <div style="text-align: center; margin-bottom: 32px;">
+            <div style="background: var(--primary-light); width: 80px; height: 80px; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--primary); box-shadow: var(--shadow-sm);">
+                <svg viewBox="0 0 24 24" style="width: 40px; height: 40px;"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+            </div>
+            <h1 style="font-size: 28px; font-weight: 800; color: var(--text-main);">Getlasco Driver</h1>
+            <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Log in to manage your deliveries</p>
+        </div>
+
+        <div class="order-card" style="padding: 24px; box-shadow: var(--shadow-card);">
+            <div class="form-group">
+                <label style="font-size: 13px; font-weight: 700; margin-bottom: 8px; display: block; color: var(--text-main);">Email Address</label>
+                <input type="email" id="loginEmail" class="form-control" placeholder="driver@getlasco.ma">
+            </div>
+            <div class="form-group" style="margin-bottom: 24px;">
+                <label style="font-size: 13px; font-weight: 700; margin-bottom: 8px; display: block; color: var(--text-main);">Password</label>
+                <input type="password" id="loginPass" class="form-control" placeholder="••••••••">
+            </div>
+            <button class="btn-main btn-start" id="btnLoginBtn" onclick="loginDriver()" style="margin-top: 0;">
+                Sign In
+            </button>
+        </div>
+    </div>
+
+    <div id="view-dashboard" class="app-view container">
         <div class="header-top">
             <div>
                 <h1>Driver Hub 🛵</h1>
@@ -209,10 +241,6 @@
             <a href="#" class="action-btn ab-wa" id="btnWa" target="_blank">
                 <svg viewBox="0 0 24 24" stroke="currentColor" fill="none"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                 <span>Ask Location</span>
-            </a>
-            <a href="#" class="action-btn ab-nav" id="btnNav" target="_blank">
-                <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
-                <span>Map App</span>
             </a>
         </div>
 
@@ -280,9 +308,14 @@
             Give back shop money at the end of your shift to clear your wallet.
         </div>
 
-        <button class="btn-finish" onclick="markAsPaid()" style="margin-top:0;">
+        <button class="btn-finish" onclick="markAsPaid()" style="margin-top:0; margin-bottom: 16px;">
             <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
             Mark as Paid
+        </button>
+
+        <button class="btn-main" onclick="logoutDriver()" style="background: transparent; color: var(--danger); border: 1px solid var(--danger-light); box-shadow: none; margin-top: 0;">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            Log Out
         </button>
     </div>
 
@@ -293,6 +326,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        // NEW AUTH IMPORTS
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         // ⚠️ SAME FIREBASE CONFIG AS ADMIN/INDEX
         const firebaseConfig = {
@@ -305,33 +340,82 @@
         };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
 
         let allOrders = [];
-        let allProducts = []; // Needed to calculate accurate cost price from DB
+        let allProducts = []; 
         let currentTab = 'available'; 
         let openedOrderId = null;
+        let currentDriver = null;
         const safeNum = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
 
+        // --- AUTHENTICATION STATE ---
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                currentDriver = user;
+                // Auto-route past the login screen
+                const savedTab = localStorage.getItem('lasGoDriverTab') || 'dashboard';
+                if(savedTab === 'login') {
+                    switchTab('dashboard');
+                } else {
+                    switchTab(savedTab);
+                }
+            } else {
+                currentDriver = null;
+                switchTab('login');
+            }
+        });
+
+        window.loginDriver = async () => {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+            
+            if(!email || !pass) return showToast("Enter email and password");
+            
+            const btn = document.getElementById('btnLoginBtn');
+            btn.innerText = "Signing in..."; btn.disabled = true;
+            
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                showToast("Logged in successfully");
+            } catch(e) {
+                showToast("Invalid credentials");
+            } finally {
+                btn.innerText = "Sign In"; btn.disabled = false;
+            }
+        };
+
+        window.logoutDriver = async () => {
+            try {
+                await signOut(auth);
+                localStorage.setItem('lasGoDriverTab', 'login');
+                showToast("Logged out");
+            } catch(e) {
+                console.error(e);
+            }
+        };
+
         // --- LISTENERS ---
-        // Load Products to calculate accurate cost for wallet
         onSnapshot(collection(db, "products"), snap => {
             allProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
-            if(document.getElementById('view-wallet').classList.contains('active')) renderWallet();
+            if(document.getElementById('view-wallet').classList.contains('active') && currentDriver) renderWallet();
         });
 
         onSnapshot(collection(db, "orders"), snap => {
             allOrders = snap.docs.map(d => ({id: d.id, ...d.data()}));
             
-            if(document.getElementById('view-dashboard').classList.contains('active')) {
-                renderDashboard();
-            } else if (document.getElementById('view-wallet').classList.contains('active')) {
-                renderWallet();
-            }
-            
-            if(openedOrderId) {
-                const stillExists = allOrders.find(o => o.id === openedOrderId);
-                if(stillExists) openOrder(stillExists.id);
-                else goBack(); 
+            if(currentDriver) {
+                if(document.getElementById('view-dashboard').classList.contains('active')) {
+                    renderDashboard();
+                } else if (document.getElementById('view-wallet').classList.contains('active')) {
+                    renderWallet();
+                }
+                
+                if(openedOrderId) {
+                    const stillExists = allOrders.find(o => o.id === openedOrderId);
+                    if(stillExists) openOrder(stillExists.id);
+                    else goBack(); 
+                }
             }
         });
 
@@ -341,14 +425,10 @@
             document.getElementById(`view-${tabId}`).classList.add('active');
             window.scrollTo(0,0);
             if(tabId === 'wallet') renderWallet();
+            if(tabId === 'dashboard') renderDashboard();
             
             localStorage.setItem('lasGoDriverTab', tabId);
         };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTab = localStorage.getItem('lasGoDriverTab') || 'dashboard'; 
-            switchTab(savedTab);
-        });
 
         window.switchList = (tab) => {
             currentTab = tab;
@@ -368,7 +448,8 @@
 
         // --- RENDERING DASHBOARD ---
         function renderDashboard() {
-            // Sort by time
+            if(!currentDriver) return;
+            
             const sortedOrders = [...allOrders].sort((a,b) => {
                 return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
             });
@@ -376,7 +457,6 @@
             const available = sortedOrders.filter(o => o.status === 'Preparing');
             const active = sortedOrders.filter(o => o.status === 'Out for Delivery');
             
-            // For recent activity (Delivered or Cancelled Today)
             const todayStr = new Date().toDateString();
             const recent = sortedOrders.filter(o => {
                 let orderDate = o.timestamp ? new Date(o.timestamp) : new Date();
@@ -389,7 +469,6 @@
             const container = document.getElementById('ordersContainer');
             const displayList = currentTab === 'available' ? available : active;
 
-            // MAIN LIST RENDERING
             if(displayList.length === 0) {
                 container.innerHTML = `
                 <div class="empty-state">
@@ -473,32 +552,30 @@
 
         // --- WALLET LOGIC ---
         function renderWallet() {
-            // Filter delivered orders that haven't been settled yet
+            if(!currentDriver) return;
+            
             const unsettledDeliveries = allOrders.filter(o => o.status === 'Delivered' && o.driverSettled !== true);
 
-            let totalEarned = 0; // Sum of delivery fees
-            let totalToReturn = 0; // Margin = Subtotal - Total Cost
+            let totalEarned = 0; 
+            let totalToReturn = 0; 
 
             unsettledDeliveries.forEach(o => {
                 const fee = safeNum(o.deliveryFee);
                 const total = safeNum(o.totalPrice);
                 const subtotal = total - fee;
                 
-                // Calculate Exact Cost of Ingredients for this order
                 let orderCost = 0;
                 if(o.cart && Array.isArray(o.cart)) {
                     o.cart.forEach(item => {
                         const dbProduct = allProducts.find(x => x.id === item.product.id);
                         let unitCost = dbProduct ? safeNum(dbProduct.costPrice) : 0;
                         
-                        // Check if a size was selected that might have a different cost
                         if(dbProduct && dbProduct.sizes && item.variantName) {
                             const sizeData = dbProduct.sizes.find(s => s.name === item.variantName);
                             if(sizeData && sizeData.costPrice) {
                                 unitCost = safeNum(sizeData.costPrice);
                             }
                         }
-                        
                         orderCost += (unitCost * item.qty);
                     });
                 }
@@ -543,7 +620,6 @@
             btn.innerText = "Processing...";
             
             try {
-                // Update all unsettled orders in Firebase to settled
                 for(let order of unsettledDeliveries) {
                     await updateDoc(doc(db, "orders", order.id), { driverSettled: true });
                 }
@@ -579,16 +655,10 @@
             // Action Buttons Setup
             const btnCall = document.getElementById('btnCall');
             const btnWa = document.getElementById('btnWa');
-            const btnNav = document.getElementById('btnNav');
-            
-            // Map Link
-            const mapQuery = encodeURIComponent(`${o.neighborhood || ''}, Marrakech, Morocco`);
-            btnNav.href = `http://googleusercontent.com/maps.google.com/?q=${mapQuery}`;
             
             if(o.customerPhone) {
                 let cleanPhone = o.customerPhone.replace(/^0+/, '');
                 
-                // NEW: Advanced WhatsApp Request Location Message
                 let waMsg = `Bonjour ${o.customerName || ''}, c'est LasGo ! 🛵\nNous préparons votre commande #${o.id.substring(0,6).toUpperCase()} d'un total de ${Number(o.totalPrice).toFixed(2)} DH.\n\nPouvez-vous nous envoyer votre position exacte (localisation) ici s'il vous plaît ? 📍`;
                 
                 btnCall.href = `tel:${o.customerPhone}`;
