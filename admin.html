@@ -129,7 +129,7 @@
         .btn-plus-field { width: 50px; height: 50px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-btn); display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; flex-shrink: 0; transition: 0.2s;}
         .btn-plus-field:active { background: var(--border); }
         
-        .btn { width: 100%; padding: 16px; border-radius: var(--radius-btn); font-size: 15px; font-weight: 700; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn { width: 100%; padding: 16px; border-radius: var(--radius-btn); font-size: 15px; font-weight: 700; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; border: none; }
         .btn:active { transform: scale(0.98); }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         .btn-primary { background: var(--primary); color: white; }
@@ -643,7 +643,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let allOrders = [], allProducts = [], globalCategoriesData = [];
+        let allOrders = [], allProducts = [], globalCategoriesData = [], allDrivers = [];
         let currentOrderFilter = 'All', currentProductFilter = 'all', currentEditProductId = null; 
         let currentCatAddingType = ''; 
         const safeNum = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
@@ -877,6 +877,11 @@
             } catch (error) { console.error("PopProd Error:", error); }
         }
 
+        // --- NEW DRIVER LISTENER ---
+        onSnapshot(collection(db, "drivers"), snap => {
+            allDrivers = snap.docs.map(d => d.data());
+        });
+
         onSnapshot(collection(db, "categories"), snap => {
             globalCategoriesData = snap.docs.map(d => ({id: d.id, ...d.data()})); globalCategoriesData.sort((a,b) => a.name.localeCompare(b.name));
             const currentSelected = document.getElementById('pCat').value;
@@ -958,10 +963,30 @@
             document.getElementById('det-total').innerText = `${total.toFixed(2)} DH`;
 
             let actionsHTML = '';
+            
+            // DISPATCH DROPDOWN (Only show if Pending or Preparing)
+            if(order.status === 'Pending' || order.status === 'Preparing') {
+                const driverOptions = allDrivers.map(d => {
+                    const activeCount = allOrders.filter(o => o.driverEmail === d.email && o.status === 'Out for Delivery').length;
+                    const statusText = activeCount > 0 ? `(Busy: ${activeCount})` : `(Free)`;
+                    const isSelected = order.driverEmail === d.email ? 'selected' : '';
+                    return `<option value="${d.email}" ${isSelected}>${d.name.toUpperCase()} ${statusText}</option>`;
+                }).join('');
+                
+                actionsHTML += `
+                <div style="margin-bottom: 16px; background: var(--bg-main); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                    <label style="font-size:12px; font-weight:800; color:var(--text-main); margin-bottom:8px; display:block;">Assign to Driver:</label>
+                    <select class="form-control" onchange="assignDriver('${order.id}', this.value)" style="padding:12px; font-weight:700; color:var(--primary);">
+                        <option value="">-- Unassigned --</option>
+                        ${driverOptions}
+                    </select>
+                </div>`;
+            }
+
             if(order.status !== 'Cancelled' && order.status !== 'Delivered') {
                 if(order.status === 'Pending') actionsHTML += `<button class="btn btn-info" onclick="promptOrderStatus('${order.id}', 'Preparing')">Accept (Preparing)</button>`;
-                if(order.status === 'Preparing') actionsHTML += `<button class="btn btn-warning" onclick="promptOrderStatus('${order.id}', 'Out for Delivery')">Dispatch (Out for Delivery)</button>`;
-                if(order.status === 'Out for Delivery') actionsHTML += `<button class="btn btn-success" onclick="promptOrderStatus('${order.id}', 'Delivered')">Mark as Delivered</button>`;
+                if(order.status === 'Preparing') actionsHTML += `<button class="btn btn-warning" onclick="promptOrderStatus('${order.id}', 'Out for Delivery')">Force Dispatch</button>`;
+                if(order.status === 'Out for Delivery') actionsHTML += `<button class="btn btn-success" onclick="promptOrderStatus('${order.id}', 'Delivered')">Force Delivered</button>`;
                 actionsHTML += `<button class="btn btn-danger-outline" onclick="promptOrderStatus('${order.id}', 'Cancelled')">Cancel Order</button>`;
             } else if (order.status === 'Cancelled') { actionsHTML = `<div style="text-align:center; color:var(--danger); font-weight:700;">Order Cancelled</div>`; } 
             else { actionsHTML = `<div style="text-align:center; color:var(--success); font-weight:700;">Order Completed</div>`; }
@@ -979,6 +1004,15 @@
             else btn.style.background = 'var(--blue)';
             
             window.confirmActionCallback = async () => { closeModals(); try { await updateDoc(doc(db, "orders", orderId), { status: newStatus }); showToast(`Status updated`); } catch(e) { alert("Network error"); } }; document.getElementById('confirmOverlay').classList.add('active');
+        };
+
+        window.assignDriver = async (orderId, driverEmail) => {
+            try {
+                await updateDoc(doc(db, "orders", orderId), { driverEmail: driverEmail });
+                showToast("Driver assigned!");
+            } catch(e) {
+                console.error(e); alert("Failed to assign driver.");
+            }
         };
 
         window.promptDeleteOrder = (orderId) => {
@@ -1108,3 +1142,4 @@
     </script>
 </body>
 </html>
+
