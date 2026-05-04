@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lasco Admin - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           VARIABLES & RESET
+        ========================================= */
+        :root {
+            --bg-main: #F8F9FB; 
+            --surface: #FFFFFF;
+            --primary: #FF4500; /* Lasco Orange */
+            --primary-light: #FFF0EB;
+            --text-main: #111827; 
+            --text-muted: #6B7280;
+            --border: #E5E7EB; 
+            --radius-card: 24px; 
+            --radius-btn: 16px;
+            --shadow-modal: 0 20px 40px rgba(0,0,0,0.06);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-main); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        input, button { font-family: inherit; outline: none; border: none; background: none; }
+        
+        /* LOGIN CARD */
+        .login-card { background: var(--surface); width: 100%; max-width: 400px; border-radius: var(--radius-card); padding: 40px 30px; box-shadow: var(--shadow-modal); border: 1px solid rgba(0,0,0,0.02); text-align: center; }
+        
+        /* BRANDING */
+        .brand-logo { display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: var(--primary-light); border-radius: 20px; margin-bottom: 24px; color: var(--primary); font-size: 32px; font-weight: 800; font-style: italic; letter-spacing: -2px;}
+        .login-title { font-size: 24px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; letter-spacing: -0.5px;}
+        .login-subtitle { font-size: 14px; color: var(--text-muted); font-weight: 500; margin-bottom: 32px; }
+
+        /* FORMS */
+        .form-group { margin-bottom: 20px; text-align: left; position: relative;}
+        .form-label { font-size: 13px; font-weight: 800; margin-bottom: 8px; display: block; color: var(--text-main); }
+        .form-input { width: 100%; padding: 16px 16px 16px 44px; border-radius: 14px; border: 1px solid var(--border); background: var(--bg-main); font-size: 14px; font-weight: 500; color: var(--text-main); transition: 0.2s; }
+        .form-input:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 3px var(--primary-light); }
+        
+        .input-icon { position: absolute; left: 16px; top: 41px; width: 18px; height: 18px; color: var(--text-muted); transition: 0.2s; }
+        .form-input:focus + .input-icon { color: var(--primary); }
+
+        /* BUTTON */
+        .btn-login { width: 100%; padding: 18px; background: var(--primary); color: white; font-size: 16px; font-weight: 800; border-radius: var(--radius-btn); cursor: pointer; transition: 0.2s; box-shadow: 0 8px 20px rgba(255, 69, 0, 0.2); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;}
+        .btn-login:active { transform: scale(0.98); }
+        .btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        /* SECURITY TEXT */
+        .secure-badge { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 24px; }
+        .secure-badge svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.2;}
+
+        /* SPINNER ANIMATION */
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; display: none; }
+        .btn-login.loading .btn-text { display: none; }
+        .btn-login.loading .spinner { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="brand-logo">S</div>
+        <h1 class="login-title">Welcome Back</h1>
+        <p class="login-subtitle">Sign in to the Lasco Admin Portal</p>
+
+        <form id="loginForm" onsubmit="handleDummyLogin(event)">
+            
+            <div class="form-group">
+                <label class="form-label">Admin Email</label>
+                <input type="email" id="adminEmail" class="form-input" placeholder="admin@lasco.com" required>
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" id="adminPassword" class="form-input" placeholder="••••••••" required>
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+
+            <button type="submit" class="btn-login" id="loginBtn">
+                <span class="btn-text">Sign In</span>
+                <div class="spinner"></div>
+            </button>
+
+            <div class="secure-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                Secured via Firebase Auth
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Tomorrow we will replace this with real Firebase Authentication!
+        function handleDummyLogin(e) {
+            e.preventDefault(); // Stop page from refreshing
+            
+            const btn = document.getElementById('loginBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            // Fake 1.5 second loading delay to show you the UI design
+            setTimeout(() => {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                
+                // In tomorrow's code, this is where we will redirect to admin.html
+                alert("This is just the design! Tomorrow we will link Firebase to log you in.");
+                
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
