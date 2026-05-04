@@ -43,6 +43,7 @@
         .header-top h1 { font-size: 24px; font-weight: 800; color: var(--text-main); line-height: 1.2; letter-spacing: -0.5px;}
         .header-top p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
         .btn-exit { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: var(--surface); padding: 8px 12px; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); color: var(--text-main); font-size: 10px; font-weight: 700; cursor: pointer;}
+        .icon-btn { width: 44px; height: 44px; background: var(--surface); border-radius: var(--radius-btn); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); border: 1px solid var(--border); color: var(--text-main); cursor: pointer;}
         .section-title { font-size: 16px; font-weight: 800; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
         .section-link { font-size: 13px; color: var(--primary); font-weight: 700; text-decoration: none; cursor: pointer; }
 
@@ -72,7 +73,7 @@
         .d-info p { font-size: 12px; color: var(--text-muted); font-weight: 500; }
         .d-debt { font-size: 15px; font-weight: 800; color: var(--primary); }
 
-        /* RECENT ORDERS (Minimalist) */
+        /* ORDERS LISTS */
         .order-card { padding: 16px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; background: var(--surface); border-radius: var(--radius-card); margin-bottom: 12px; box-shadow: var(--shadow-sm); }
         .order-card:active { transform: scale(0.98); }
         .order-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;}
@@ -89,12 +90,16 @@
         .b-delivered { background: var(--accent-light); color: var(--accent); }
         .b-cancelled { background: var(--danger-light); color: var(--danger); }
 
-        /* CATALOG TOGGLE */
+        .tabs-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -20px 20px; padding: 0 20px; }
+        .tabs-scroll::-webkit-scrollbar { display: none; }
+        .tab-pill { padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); white-space: nowrap; cursor: pointer; transition: 0.2s;}
+        .tab-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* CATALOG TOGGLE & ACCORDIONS */
         .cat-toggle-wrapper { background: var(--surface); border-radius: 50px; padding: 4px; display: flex; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 20px;}
-        .cat-toggle-btn { flex: 1; padding: 10px; font-size: 13px; font-weight: 700; color: var(--text-muted); border-radius: 50px; transition: 0.3s; text-align: center; display: flex; justify-content: center; align-items: center; gap: 6px;}
+        .cat-toggle-btn { flex: 1; padding: 10px; font-size: 13px; font-weight: 700; color: var(--text-muted); border-radius: 50px; transition: 0.3s; text-align: center; display: flex; justify-content: center; align-items: center; gap: 6px; cursor: pointer;}
         .cat-toggle-btn.active { background: var(--primary); color: white; }
 
-        /* CATALOG ACCORDIONS & CARDS */
         .accordion-group { margin-bottom: 12px; background: var(--surface); border-radius: var(--radius-card); border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm);}
         .accordion-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: var(--surface); }
         .accordion-title { font-size: 15px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px;}
@@ -119,7 +124,7 @@
         
         /* Edit Actions directly on card */
         .card-actions { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; z-index: 5;}
-        .btn-mini { width: 28px; height: 28px; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid var(--border); transition: 0.2s;}
+        .btn-mini { width: 28px; height: 28px; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid var(--border); transition: 0.2s; cursor: pointer;}
         .btn-mini:active { transform: scale(0.9); }
 
         /* ANALYTICS VIEW */
@@ -138,7 +143,7 @@
         .compare-label { font-size: 14px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 12px;}
         .compare-val { font-size: 16px; font-weight: 800; color: var(--text-main); }
 
-        /* WIZARD (SAAS STYLE - Preserved exactly as requested) */
+        /* WIZARD (SAAS STYLE) */
         .wizard-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .stepper-container { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 32px; }
         .step-pill { font-size: 12px; font-weight: 800; color: var(--text-muted); display: flex; align-items: center; gap: 6px;}
@@ -179,7 +184,12 @@
         .btn { width: 100%; padding: 16px; border-radius: var(--radius-btn); font-size: 15px; font-weight: 800; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; border: none; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--accent); color: white; }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-info { background: #3B82F6; color: white; }
+        .btn-danger-outline { background: transparent; color: var(--danger); border: 1px solid var(--danger-light); }
         .btn-outline { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); }
+        
         .wizard-footer { display: flex; gap: 12px; align-items: center; margin-top: 32px;}
         .wizard-footer .btn-outline { width: 30%; }
         .wizard-footer .btn-primary { width: 70%; }
@@ -189,6 +199,29 @@
         .list-row { display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-btn); margin-bottom: 8px; background: var(--bg-main);}
         .list-info h5 { font-size: 14px; font-weight: 700; color: var(--text-main); }
         .list-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        /* ORDER DETAILS */
+        .detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .back-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--surface); border-radius: 50%; box-shadow: var(--shadow-sm); cursor: pointer; flex-shrink: 0;}
+        .info-list { padding: 8px 16px; margin-bottom: 24px;}
+        .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+        .info-val { font-weight: 600; text-align: right; }
+        
+        .item-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .item-row:last-child { border-bottom: none; padding-bottom: 0;}
+        .item-img { width: 48px; height: 48px; background: var(--bg-main); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 2px;}
+        .item-img img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply;}
+        .item-details { flex: 1; }
+        .item-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+        .item-meta { font-size: 12px; color: var(--text-muted); }
+        .item-price { font-size: 13px; font-weight: 700; text-align: right; }
+        
+        .summary-box { background: var(--surface); border-radius: var(--radius-btn); padding: 16px; margin-top: 24px; border: 1px solid var(--border); }
+        .summary-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px; color: var(--text-muted); font-weight: 500; }
+        .summary-row.total { font-size: 16px; font-weight: 800; color: var(--primary); margin-bottom: 0; padding-top: 12px; border-top: 1px dashed var(--border); }
+        .action-stack { display: flex; flex-direction: column; gap: 12px; margin-top: 32px; }
 
         /* FAB & BOTTOM NAV */
         .fab { position: fixed; bottom: 100px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(234, 88, 12, 0.4); border: none; cursor: pointer; z-index: 80;}
@@ -227,7 +260,7 @@
         <div class="card toggle-wrapper" style="padding: 16px; margin-bottom: 24px;">
             <div style="display:flex; align-items:center; gap:16px;">
                 <div id="statusIconBox" style="width: 44px; height: 44px; border-radius: 12px; background: var(--danger-light); color: var(--danger); display: flex; align-items: center; justify-content: center; transition: 0.3s;">
-                    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 </div>
                 <div>
                     <span id="statusTextMain" style="display:block; font-size:15px; font-weight:800; color:var(--text-main);">Store Closed</span>
@@ -273,15 +306,42 @@
         <div class="header-top">
             <h1 style="font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Orders</h1>
         </div>
+        <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" placeholder="Search for an order...">
+        </div>
+        <div class="tabs-scroll">
+            <div class="tab-pill active" onclick="filterOrdersList('All', this)">All</div>
+            <div class="tab-pill" onclick="filterOrdersList('Pending', this)">Pending</div>
+            <div class="tab-pill" onclick="filterOrdersList('Preparing', this)">Preparing</div>
+            <div class="tab-pill" onclick="filterOrdersList('Out for Delivery', this)">In Transit</div>
+            <div class="tab-pill" onclick="filterOrdersList('Delivered', this)">Delivered</div>
+        </div>
         <div id="adminOrderListContainer"></div>
     </div>
 
     <div id="view-order-detail" class="app-view container">
-        <div class="header-top">
-            <div class="icon-btn" style="border-radius:50%;" onclick="switchTab('commandes')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
-            <h1 id="det-id" style="font-size: 20px;">#ID</h1>
+        <div class="detail-header">
+            <div class="back-btn" onclick="switchTab('commandes')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
+            <div style="flex:1; display: flex; justify-content: space-between; align-items: center;">
+                <h1 style="font-size: 20px; font-weight: 800;" id="det-id">#ID</h1>
+                <div class="badge" id="det-badge">STATUS</div>
+            </div>
         </div>
-        <div id="det-actions"></div>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; font-weight: 500;" id="det-date">Date</p>
+        <div class="card info-list">
+            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Customer</div><div class="info-val" id="det-client">-</div></div>
+            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> Phone</div><div class="info-val">Not provided</div></div>
+            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Address</div><div class="info-val" id="det-neighborhood">-</div></div>
+            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Payment</div><div class="info-val">Cash on Delivery</div></div>
+        </div>
+        <div class="card"><h3 style="font-size: 14px; margin-bottom: 12px;" id="det-items-count">Items (0)</h3><div id="det-items-list"></div></div>
+        <div class="summary-box" style="background: var(--surface); border-radius: 12px; padding: 16px; margin-top: 24px; border: 1px solid var(--border);">
+            <div class="summary-row" style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px; color: var(--text-muted);"><span>Subtotal</span><span id="det-subtotal">0.00 DH</span></div>
+            <div class="summary-row" style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px; color: var(--text-muted);"><span>Delivery Fee</span><span id="det-shipping">0.00 DH</span></div>
+            <div class="summary-row total" style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; color: var(--primary); padding-top: 12px; border-top: 1px dashed var(--border);"><span>Total</span><span id="det-total">0.00 DH</span></div>
+        </div>
+        <div class="action-stack" id="det-actions" style="display: flex; flex-direction: column; gap: 12px; margin-top: 32px;"></div>
     </div>
 
     <div id="view-produits" class="app-view container">
@@ -296,6 +356,11 @@
         <div class="cat-toggle-wrapper">
             <div class="cat-toggle-btn active" id="catBtnResto" onclick="setCatalogMode('Resto')">Resto (Food)</div>
             <div class="cat-toggle-btn" id="catBtnGrocery" onclick="setCatalogMode('Grocery')">Grocery</div>
+        </div>
+
+        <div class="search-box" style="margin-bottom: 24px;">
+            <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="searchCatalogInput" placeholder="Search catalog items...">
         </div>
 
         <div id="adminProductListContainer">
@@ -613,7 +678,7 @@
         let allOrders = [], allProducts = [], globalCategoriesData = [], allDrivers = [];
         let currentOrderFilter = 'All', currentCatalogMode = 'Resto', currentEditProductId = null; 
         let currentCatAddingType = ''; 
-        let selectedProductType = 'Resto'; // Default for the wizard
+        let selectedProductType = 'Resto'; 
         const safeNum = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
         const formatPrice = (num) => { const p = Number(num); return p % 1 === 0 ? p.toString() : p.toFixed(2); };
 
@@ -795,15 +860,19 @@
             const container = document.getElementById('adminProductListContainer');
             if(!container) return;
 
+            // Optional search filter
+            const searchQ = document.getElementById('searchCatalogInput') ? document.getElementById('searchCatalogInput').value.toLowerCase() : '';
+
             let filteredProducts = allProducts.filter(p => p.productType === currentCatalogMode);
+            if(searchQ) filteredProducts = filteredProducts.filter(p => p.name.toLowerCase().includes(searchQ));
+
             document.getElementById('prodCountText').innerText = `${filteredProducts.length} items • Updated just now`;
 
             if(filteredProducts.length === 0) {
-                container.innerHTML = `<div class="empty-state-card" style="margin-top:20px;">No items in ${currentCatalogMode}.</div>`;
+                container.innerHTML = `<div class="empty-state-card" style="margin-top:20px;">No items found.</div>`;
                 return;
             }
 
-            // Group by category
             const grouped = {};
             filteredProducts.forEach(p => {
                 const cat = p.category || "Uncategorized";
@@ -811,7 +880,6 @@
                 grouped[cat].push(p);
             });
 
-            // Sort categories alphabetically
             const sortedCats = Object.keys(grouped).sort();
 
             let html = '';
@@ -820,14 +888,13 @@
                 const groupId = `accordion-${index}`;
                 const icon = getIconForCat(catName);
 
-                // Build cards for this category
                 const cardsHtml = items.map(p => {
                     const price = p.promoPrice ? p.promoPrice : p.sellPrice;
                     const imgTag = p.imageUrl ? `<img src="${p.imageUrl}" class="prod-img">` : `<span style="font-weight:800; color:var(--text-muted); font-size:24px;">${p.name.charAt(0)}</span>`;
                     const isAvail = p.isAvailable !== false;
                     const statusHtml = isAvail 
-                        ? `<div class="prod-status status-avail">● Available</div>` 
-                        : `<div class="prod-status status-unavail">● Hidden</div>`;
+                        ? `<div class="prod-status status-avail"><svg viewBox="0 0 24 24" style="width:10px; fill:var(--accent); stroke:none;"><circle cx="12" cy="12" r="10"></circle></svg> Available</div>` 
+                        : `<div class="prod-status status-unavail"><svg viewBox="0 0 24 24" style="width:10px; fill:var(--danger); stroke:none;"><circle cx="12" cy="12" r="10"></circle></svg> Hidden</div>`;
 
                     return `
                     <div class="prod-card">
@@ -846,12 +913,11 @@
                     </div>`;
                 }).join('');
 
-                // Accordion HTML
                 html += `
                 <div class="accordion-group open" id="${groupId}">
                     <div class="accordion-header" onclick="toggleAccordion('${groupId}')">
                         <div class="accordion-title">
-                            <div style="width:28px;height:28px; background:var(--primary-light); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:14px;">${icon}</div>
+                            <div style="width:28px;height:28px; background:var(--primary-light); color:var(--primary); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:14px;">${icon}</div>
                             ${catName}
                             <span class="accordion-badge">${items.length} items</span>
                         </div>
@@ -866,6 +932,12 @@
             });
 
             container.innerHTML = html;
+        }
+
+        if(document.getElementById('searchCatalogInput')) {
+            document.getElementById('searchCatalogInput').addEventListener('input', () => {
+                renderCatalog();
+            });
         }
 
         // ---------------- LISTENERS ----------------
@@ -911,15 +983,12 @@
                 let itemsToday = 0, itemsYest = 0; 
                 let shippingToday = 0, shippingYest = 0; 
                 let customersToday = new Set(); 
-                let customersTotal = new Set(); // For all time
 
                 allOrders.forEach(order => {
                     if(!order) return; let orderDate = new Date();
                     if (order.timestamp) { const parsed = new Date(order.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
                     const isToday = orderDate.toDateString() === todayStr; 
                     const isYesterday = orderDate.toDateString() === yesterdayStr;
-
-                    if(order.customerName) customersTotal.add(order.customerName);
 
                     if (isToday) { ordersToday++; if(order.customerName) customersToday.add(order.customerName); }
                     if (isYesterday) ordersYest++;
@@ -935,12 +1004,11 @@
                                 const p = item.product || {}; 
                                 const qty = parseInt(item.qty) || 0; 
                                 orderItems += qty; 
-                                // Fetch cost from allProducts catalog based on item ID, fallback to 0
+                                
                                 const catalogProduct = allProducts.find(prod => prod.id === p.id);
                                 let itemCost = 0;
                                 if(catalogProduct) {
                                     itemCost = safeNum(catalogProduct.costPrice);
-                                    // Check if variant was selected, if so use variant cost
                                     if(item.variantName && catalogProduct.sizes) {
                                         const variant = catalogProduct.sizes.find(s => s.name === item.variantName);
                                         if(variant && variant.costPrice) itemCost = safeNum(variant.costPrice);
@@ -948,7 +1016,6 @@
                                 }
                                 orderCost += (itemCost * qty);
                                 
-                                // Add extra costs
                                 if(item.extras && item.extras.length > 0 && catalogProduct && catalogProduct.extras) {
                                     item.extras.forEach(extName => {
                                         const extra = catalogProduct.extras.find(e => e.name === extName);
@@ -978,12 +1045,10 @@
                     }
                 });
 
-                // Update Dashboard Quick Stats
                 document.getElementById('dashStatOrders').innerText = ordersToday;
                 document.getElementById('dashStatRevenue').innerText = formatPrice(grossToday) + ' DH';
                 document.getElementById('dashStatItems').innerText = itemsToday;
 
-                // Update Analytics View
                 document.getElementById('statGrossRevenue').innerText = formatPrice(grossToday) + ' DH';
                 document.getElementById('statNetProfit').innerHTML = `<svg viewBox="0 0 24 24" style="width:16px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> Profit: ${formatPrice(profitToday)} DH`;
                 document.getElementById('yestProfit').innerText = formatPrice(profitYest) + ' DH';
@@ -1008,6 +1073,7 @@
             } catch (error) { console.error("Dashboard Error:", error); }
         }
 
+        // PROFIT LOGIC FOR ACTIVE DRIVERS (SUBTOTAL - COST OF GOODS)
         function renderDriverSettlements() {
             const container = document.getElementById('dashDriversContainer');
             if(!container) return;
@@ -1020,11 +1086,40 @@
                 
                 let debt = 0;
                 driverOrders.forEach(o => {
+                    let orderCost = 0;
+                    
+                    if(o.cart && Array.isArray(o.cart)) {
+                        o.cart.forEach(item => {
+                            const p = item.product || {};
+                            const qty = parseInt(item.qty) || 0;
+                            const catalogProduct = allProducts.find(prod => prod.id === p.id);
+                            
+                            let itemCost = 0;
+                            if(catalogProduct) {
+                                itemCost = safeNum(catalogProduct.costPrice);
+                                if(item.variantName && catalogProduct.sizes) {
+                                    const variant = catalogProduct.sizes.find(s => s.name === item.variantName);
+                                    if(variant && variant.costPrice) itemCost = safeNum(variant.costPrice);
+                                }
+                            }
+                            orderCost += (itemCost * qty);
+                            
+                            if(item.extras && item.extras.length > 0 && catalogProduct && catalogProduct.extras) {
+                                item.extras.forEach(extName => {
+                                    const extra = catalogProduct.extras.find(e => e.name === extName);
+                                    if(extra && extra.costPrice) orderCost += (safeNum(extra.costPrice) * qty);
+                                });
+                            }
+                        });
+                    }
+                    
                     const fee = safeNum(o.deliveryFee);
                     const total = safeNum(o.totalPrice);
                     const subtotal = total - fee;
-                    // Driver keeps delivery fee, gives back subtotal to Admin
-                    debt += subtotal; 
+                    
+                    // Admin Profit = Subtotal - Restaurant Cost
+                    const adminProfit = subtotal - orderCost;
+                    if (adminProfit > 0) debt += adminProfit;
                 });
 
                 if(debt > 0) {
@@ -1052,9 +1147,12 @@
             }
         }
 
+        window.filterOrdersList = (status, tabElement) => { document.querySelectorAll('#view-commandes .tab-pill').forEach(t => t.classList.remove('active')); tabElement.classList.add('active'); currentOrderFilter = status; renderFullOrdersList(); };
+
         function renderFullOrdersList() {
             const getTime = (ts) => { if (!ts) return 0; const t = new Date(ts).getTime(); return isNaN(t) ? 0 : t; };
             let filtered = [...allOrders].sort((a,b) => getTime(b.timestamp) - getTime(a.timestamp));
+            if (currentOrderFilter !== 'All') { filtered = filtered.filter(o => o.status === currentOrderFilter); }
             const container = document.getElementById('adminOrderListContainer');
             if(container) container.innerHTML = generateOrdersHTML(filtered);
         }
@@ -1098,10 +1196,32 @@
         window.viewOrder = (orderId) => {
             const order = allOrders.find(o => o.id === orderId); if(!order) return;
             document.getElementById('det-id').innerText = "#" + order.id.substring(0,6).toUpperCase();
+            let orderDate = new Date(); if (order.timestamp) { const parsed = new Date(order.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
+            document.getElementById('det-date').innerText = orderDate.toLocaleDateString('en-US', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+            document.getElementById('det-client').innerText = order.customerName || 'Unknown';
+            document.getElementById('det-neighborhood').innerText = order.neighborhood || 'Not specified';
+
+            let statusClass = 'b-pending'; 
+            if(order.status === 'Preparing') statusClass = 'b-processing'; 
+            if(order.status === 'Out for Delivery') statusClass = 'b-transit'; 
+            if(order.status === 'Delivered') statusClass = 'b-delivered'; 
+            if(order.status === 'Cancelled') statusClass = 'b-cancelled';
+            
+            const badge = document.getElementById('det-badge'); badge.className = `badge ${statusClass}`; badge.innerText = (order.status || 'Unknown').toUpperCase();
+
+            document.getElementById('det-items-count').innerText = `Items (${order.totalItems || 0})`;
+            document.getElementById('det-items-list').innerHTML = (order.cart || []).map(item => {
+                const p = item.product || {}; const img = p.imageUrl ? `<img src="${p.imageUrl}">` : ''; const vText = item.variantName ? `<span style="color:var(--primary);">${item.variantName}</span>` : ''; const price = safeNum(item.unitPrice) || safeNum(p.sellPrice);
+                return `<div class="item-row"><div class="item-img">${img}</div><div class="item-details"><div class="item-name">${p.name || 'Item'} ${vText}</div><div class="item-meta">x${item.qty}</div></div><div class="item-price">${(price * item.qty).toFixed(2)} DH</div></div>`;
+            }).join('');
+
+            const deliveryFee = safeNum(order.deliveryFee); const total = safeNum(order.totalPrice); const subTotal = total - deliveryFee;
+            document.getElementById('det-subtotal').innerText = `${subTotal.toFixed(2)} DH`; 
+            document.getElementById('det-shipping').innerText = `${deliveryFee.toFixed(2)} DH`;
+            document.getElementById('det-total').innerText = `${total.toFixed(2)} DH`;
 
             let actionsHTML = '';
             
-            // DISPATCH DROPDOWN
             if(order.status === 'Pending' || order.status === 'Preparing') {
                 const driverOptions = allDrivers.map(d => {
                     const activeCount = allOrders.filter(o => o.driverEmail === d.email && o.status === 'Out for Delivery').length;
