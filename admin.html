@@ -49,6 +49,7 @@
 
         /* CARDS & TOGGLES */
         .card { background: var(--surface); border-radius: var(--radius-card); padding: 16px; box-shadow: var(--shadow-sm); margin-bottom: 16px; border: 1px solid rgba(0,0,0,0.02);}
+        
         .toggle-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 0; background: transparent; border: none; margin-bottom: 0; width: 100%;}
         .switch { position: relative; display: inline-block; width: 44px; height: 26px; flex-shrink: 0;}
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -164,7 +165,7 @@
         .type-card h5 { font-size: 15px; font-weight: 800; color: var(--text-main); }
         .radio-dot { position: absolute; top: 12px; right: 12px; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; background: white;}
         
-        /* Fixed Grocery Green Styling */
+        /* Resto (Orange) vs Grocery (Green) Styling */
         .type-card.tc-resto.active { border-color: var(--primary); background: var(--primary-light); }
         .type-card.tc-resto.active .type-icon { color: var(--primary); }
         .type-card.tc-resto.active .radio-dot { border-color: var(--primary); background: var(--primary); }
@@ -349,7 +350,6 @@
                 <h1>Menu & Catalog</h1>
                 <p id="prodCountText">0 items • Updated just now</p>
             </div>
-            <div class="icon-btn" onclick="showToast('Filter options coming soon')"><svg viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg></div>
         </div>
 
         <div class="cat-toggle-wrapper">
@@ -1293,7 +1293,7 @@
             document.getElementById('tglSauce').checked = false; document.getElementById('cfgSauce').style.display = 'none'; window.productSauces = []; renderSauces();
             document.getElementById('tglSize').checked = false; document.getElementById('cfgSize').style.display = 'none'; window.productSizes = []; renderSizes();
             document.getElementById('tglExtra').checked = false; document.getElementById('cfgExtra').style.display = 'none'; window.productExtras = []; renderExtras();
-            document.getElementById('tglNotes').checked = true; document.getElementById('tglAvailable').checked = true;
+            document.getElementById('tglAvailable').checked = true;
 
             switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
         };
@@ -1333,7 +1333,6 @@
             document.getElementById('cfgExtra').style.display = document.getElementById('tglExtra').checked ? 'block' : 'none';
             window.productExtras = p.extras ? [...p.extras] : []; renderExtras();
 
-            document.getElementById('tglNotes').checked = p.allowNotes !== false;
             document.getElementById('tglAvailable').checked = p.isAvailable !== false;
             document.getElementById('pDesc').value = p.description || '';
 
@@ -1355,7 +1354,6 @@
                 sauces: document.getElementById('tglSauce').checked ? window.productSauces : [],
                 sizes: document.getElementById('tglSize').checked ? window.productSizes : [],
                 extras: document.getElementById('tglExtra').checked ? window.productExtras : [],
-                allowNotes: document.getElementById('tglNotes').checked,
                 isAvailable: document.getElementById('tglAvailable').checked,
                 description: document.getElementById('pDesc').value
             };
