@@ -55,12 +55,13 @@
         .location-pill select { appearance: none; border: none; background: transparent; font-family: inherit; font-size: 12px; font-weight: 700; color: var(--text-main); outline: none; padding-right: 14px; cursor: pointer; width: 110px;}
         .location-pill::after { content: ''; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 4px solid var(--text-main); pointer-events: none;}
 
-        /* MODE TOGGLE */
+        /* ANIMATED MODE TOGGLE */
         .mode-toggle-wrapper { display: flex; justify-content: center; margin-bottom: 20px; }
-        .mode-toggle { display: flex; background: #F8F9FB; border-radius: 50px; padding: 4px; border: 1px solid var(--border-dark); }
-        .m-btn { padding: 10px 24px; border-radius: 50px; font-size: 14px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 8px; transition: 0.3s; cursor: pointer; }
-        .m-btn svg { width: 16px; }
-        .m-btn.active { background: var(--surface); color: var(--text-main); box-shadow: var(--shadow-sm); }
+        .mode-toggle { position: relative; display: flex; width: 100%; max-width: 320px; background: #F8F9FB; border-radius: 50px; padding: 4px; border: 1px solid var(--border-dark); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .toggle-bg { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); background: var(--theme-color); border-radius: 50px; transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s ease; z-index: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.15);}
+        .m-btn { flex: 1; position: relative; z-index: 2; padding: 12px 16px; border-radius: 50px; font-size: 14px; font-weight: 800; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 8px; transition: color 0.3s; cursor: pointer; }
+        .m-btn svg { width: 18px; stroke-width: 2.5; }
+        .m-btn.active { color: white; }
         
         /* SEARCH */
         .search-box { position: relative; margin-bottom: 24px; }
@@ -69,7 +70,7 @@
         .search-box .s-icon { position: absolute; left: 16px; top: 16px; color: var(--text-muted); width: 20px; }
 
         /* TIER 1: MAIN CATEGORIES */
-        .main-cats { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px 20px; padding: 0 16px; }
+        .main-cats { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px 20px; padding: 0 16px; scroll-behavior: smooth; }
         .main-cats::-webkit-scrollbar { display: none; }
         .mc-card { min-width: 85px; background: var(--surface); border: 1px solid var(--border-dark); border-radius: 16px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.02);}
         .mc-card:active { transform: scale(0.95); }
@@ -79,7 +80,7 @@
         .mc-card.active .mc-text { color: var(--theme-color); }
         
         /* TIER 2: SUBCATEGORIES */
-        .sub-cats { display: none; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px 24px; padding: 0 16px; }
+        .sub-cats { display: none; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px 24px; padding: 0 16px; scroll-behavior: smooth; }
         .sub-cats::-webkit-scrollbar { display: none; }
         .sc-pill { padding: 8px 16px; border-radius: 50px; background: var(--surface); border: 1px solid var(--border-dark); font-size: 13px; font-weight: 600; color: var(--text-muted); white-space: nowrap; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
         .sc-pill.active { background: var(--theme-color); color: white; border-color: var(--theme-color); }
@@ -128,7 +129,7 @@
         /* =========================================
            PRODUCT MODAL SHEET
         ========================================= */
-        .product-sheet { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-radius: 28px 28px 0 0; z-index: 1001; transform: translateY(100%); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); max-width: 600px; margin: 0 auto; box-shadow: var(--shadow-modal); max-height: 95vh; display: flex; flex-direction: column; overflow: hidden; padding: 0;}
+        .product-sheet { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-radius: 28px 28px 0 0; z-index: 1001; transform: translateY(100%); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); max-width: 600px; margin: 0 auto; box-shadow: var(--shadow-modal); max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; padding: 0;}
         .product-sheet.active { transform: translateY(0); }
         
         .pm-header-img-wrap { position: relative; width: 100%; height: 260px; background: #F8F9FB; flex-shrink: 0;}
@@ -207,7 +208,7 @@
         .ci-qty-pill { display: flex; align-items: center; gap: 12px; border: 1px solid var(--border-dark); border-radius: 50px; padding: 4px 8px; background: var(--surface); }
         .ci-qty-btn { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; color: var(--text-main); border:none; background:transparent;}
         .ci-qty-val { font-size: 14px; font-weight: 800; min-width: 14px; text-align: center;}
-        .ci-remove { font-size: 12px; color: var(--text-main); font-weight: 600; cursor: pointer; display: flex; align-items:center; gap: 4px; transition: 0.2s;}
+        .ci-remove { font-size: 12px; color: var(--text-main); font-weight: 600; cursor: pointer; display: flex; align-items:center; gap: 4px; transition: 0.2s; border:none; background:transparent;}
         .ci-remove svg { color: var(--text-muted); }
         
         .cart-summary { background: var(--bg-main); border-radius: 16px; padding: 20px; margin-top: 16px; margin-bottom: 28px; border: 1px solid var(--border-dark);}
@@ -218,7 +219,6 @@
         .form-input { width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--border-dark); background: #F8F9FB; font-size: 14px; outline: none; font-weight: 500; transition: 0.2s; color: var(--text-main); font-family: inherit;}
         .form-input:focus { border-color: var(--theme-color); background: var(--surface); box-shadow: 0 0 0 3px var(--theme-light); }
         
-        /* Select Dropdown Styling Fix */
         select.form-input { appearance: none; cursor: pointer; }
         .select-wrapper { position: relative; }
         .select-wrapper::after { content: ''; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid var(--text-main); pointer-events: none;}
@@ -226,7 +226,6 @@
         .btn-main-cart { width: 100%; padding: 18px; background: var(--theme-color); color: white; font-size: 16px; font-weight: 800; border-radius: 16px; border: none; margin-top: 20px; box-shadow: 0 8px 20px rgba(255, 69, 0, 0.2); cursor: pointer; transition: 0.2s;}
         .btn-main-cart:active { transform: scale(0.98); }
 
-        /* Security Line */
         .secure-text { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 16px; }
         .secure-text svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 2.5;}
 
@@ -260,6 +259,7 @@
 
         <div class="mode-toggle-wrapper">
             <div class="mode-toggle">
+                <div class="toggle-bg" id="toggleBg"></div>
                 <div class="m-btn active" id="btnResto" onclick="setMode('Resto')">
                     <svg viewBox="0 0 24 24"><path d="M11 4v16"></path><path d="M11 4C11 2.9 8.31 2 5 2S-1 2.9-1 4v6c0 2.21 2.69 4 6 4s6-1.79 6-4V4z"></path><path d="M19 2v20"></path><path d="M15 6h8"></path><path d="M15 10h8"></path></svg>
                     Resto
@@ -410,7 +410,7 @@
         let cart = [];
         let currentProductData = null;
         
-        let customModalState = { qty: 1, basePrice: 0, size: null, extras: [], sauces: [] };
+        let customModalState = { qty: 1, basePrice: 0, size: null, extras: [], sauces: [], drinks: [] };
 
         const categoryAssets = {
             "Breakfast": "🥐", "Petit-déjeuner": "🥐", "Tacos": "🌮", "Fast Food": "🍔", "Burger": "🍔", "Pizza": "🍕", "Drinks": "🥤", "Boissons": "🥤", "Desserts": "🍰", "Sucré": "🍰", "Produce": "🥗", "Fruits & Légumes": "🍎", "Meat": "🥩", "Viande": "🥩", "Dairy": "🥛", "Laitiers": "🥛", "Bakery": "🥖", "Boulangerie": "🥖", "Cleaning": "🧼", "Épicerie": "🍝"
@@ -424,7 +424,7 @@
         window.syncZone = (value) => {
             document.getElementById('headerZoneSelect').value = value;
             document.getElementById('custArea').value = value;
-            updateCartTotals(); // Recalculate totals immediately
+            updateCartTotals(); 
         };
 
         window.setMode = (mode) => {
@@ -439,11 +439,13 @@
             const root = document.documentElement;
             if(mode === 'Grocery') {
                 btnGrocery.classList.add('active');
+                document.getElementById('toggleBg').style.transform = 'translateX(100%)';
                 root.style.setProperty('--theme-color', 'var(--grocery-color)');
                 root.style.setProperty('--theme-light', 'var(--grocery-light)');
                 document.getElementById('brandIconBox').innerText = '🛒';
             } else {
                 btnResto.classList.add('active');
+                document.getElementById('toggleBg').style.transform = 'translateX(0)';
                 root.style.setProperty('--theme-color', 'var(--resto-color)');
                 root.style.setProperty('--theme-light', 'var(--resto-light)');
                 document.getElementById('brandIconBox').innerText = '🔥';
@@ -476,14 +478,19 @@
             
             uniqueCats.forEach(cat => { html += createMainCard(cat, getIconForCat(cat), activeMainCategory === cat); });
             container.innerHTML = html;
+            
+            setTimeout(() => {
+                const activeItem = document.querySelector('#mainCatContainer .mc-card.active');
+                if(activeItem && container) { container.scrollTo({ left: activeItem.offsetLeft - 16, behavior: 'smooth' }); }
+            }, 50);
         }
 
         function createMainCard(name, icon, isActive) {
             const activeClass = isActive ? 'active' : '';
-            return `<div class="mc-card ${activeClass}" onclick="selectMainCategory('${name}')"><div class="mc-icon">${icon}</div><div class="mc-text">${name}</div></div>`;
+            return `<div class="mc-card ${activeClass}" onclick="selectMainCategory('${name}', this)"><div class="mc-icon">${icon}</div><div class="mc-text">${name}</div></div>`;
         }
 
-        window.selectMainCategory = (name) => { activeMainCategory = name; activeSubCategory = 'All'; renderUI(); };
+        window.selectMainCategory = (name, element) => { activeMainCategory = name; activeSubCategory = 'All'; renderUI(); };
 
         function renderSubCategories() {
             const container = document.getElementById('subCatContainer');
@@ -495,12 +502,17 @@
             if(uniqueSubs.length === 0) { container.style.display = 'none'; return; }
 
             container.style.display = 'flex';
-            let html = `<div class="sc-pill ${activeSubCategory === 'All' ? 'active' : ''}" onclick="selectSubCategory('All')">All</div>`;
-            uniqueSubs.forEach(sub => { html += `<div class="sc-pill ${activeSubCategory === sub ? 'active' : ''}" onclick="selectSubCategory('${sub}')">${sub}</div>`; });
+            let html = `<div class="sc-pill ${activeSubCategory === 'All' ? 'active' : ''}" onclick="selectSubCategory('All', this)">All</div>`;
+            uniqueSubs.forEach(sub => { html += `<div class="sc-pill ${activeSubCategory === sub ? 'active' : ''}" onclick="selectSubCategory('${sub}', this)">${sub}</div>`; });
             container.innerHTML = html;
+            
+            setTimeout(() => {
+                const activeItem = document.querySelector('#subCatContainer .sc-pill.active');
+                if(activeItem && container) { container.scrollTo({ left: activeItem.offsetLeft - 16, behavior: 'smooth' }); }
+            }, 50);
         }
 
-        window.selectSubCategory = (name) => { activeSubCategory = name; renderProductGrid(); renderSubCategories(); };
+        window.selectSubCategory = (name, element) => { activeSubCategory = name; renderProductGrid(); renderSubCategories(); };
 
         function renderProductGrid() {
             let displayProducts = [];
@@ -567,7 +579,7 @@
         
         document.getElementById('searchInput').addEventListener('blur', e => { if(e.target.value.trim() === '') { document.getElementById('mainCatContainer').style.display = 'flex'; renderUI(); } });
 
-        // --- NEW CUSTOM MODAL UI (NO DOUBLE TAP HTML BUGS) ---
+        // --- NEW CUSTOM MODAL UI ---
         window.openProductModal = (id) => {
             const p = allProducts.find(x => x.id === id); if(!p) return;
             currentProductData = p;
@@ -578,7 +590,8 @@
                 basePrice: p.promoPrice || p.sellPrice, 
                 size: p.sizes && p.sizes.length > 0 ? {name: p.sizes[0].name, price: p.sizes[0].sellPrice} : null, 
                 extras: [], 
-                sauces: [] 
+                sauces: [],
+                drinks: []
             };
             
             document.getElementById('modalTitle').innerText = p.name;
@@ -623,6 +636,21 @@
                 </div>`;
             }
 
+            // DRINKS
+            if(p.drinks && p.drinks.length > 0) {
+                sectionsHtml += `
+                <div class="pm-section">
+                    <div class="pm-section-header"><span class="pm-section-title">DRINKS</span><span class="badge-opt">OPTIONAL</span></div>
+                    <div class="sauce-scroll">
+                        ${p.drinks.map((d, i) => `
+                        <div class="sauce-pill" onclick="toggleCustomDrink(this, '${d}')">
+                            <span class="sauce-name">${d}</span>
+                            <div class="sauce-check"></div>
+                        </div>`).join('')}
+                    </div>
+                </div>`;
+            }
+
             // EXTRAS
             if(p.extras && p.extras.length > 0) {
                 sectionsHtml += `
@@ -659,6 +687,12 @@
             else { customModalState.sauces.push(name); element.classList.add('selected'); }
         };
 
+        window.toggleCustomDrink = (element, name) => {
+            const idx = customModalState.drinks.indexOf(name);
+            if(idx > -1) { customModalState.drinks.splice(idx, 1); element.classList.remove('selected'); } 
+            else { customModalState.drinks.push(name); element.classList.add('selected'); }
+        };
+
         window.toggleCustomExtra = (element, name, price) => {
             const idx = customModalState.extras.findIndex(e => e.name === name);
             if(idx > -1) { customModalState.extras.splice(idx, 1); element.classList.remove('selected'); } 
@@ -693,12 +727,13 @@
             let selSize = customModalState.size ? customModalState.size.name : null;
             let selExtras = customModalState.extras.map(e => e.name);
             let selSauces = customModalState.sauces;
+            let selDrinks = customModalState.drinks;
             const note = document.getElementById('modalNotes').value.trim();
 
             let extrasTotal = 0; customModalState.extras.forEach(e => extrasTotal += e.price);
             let unitPrice = (customModalState.size !== null ? customModalState.size.price : customModalState.basePrice) + extrasTotal;
 
-            const cartItemId = p.id + '_' + (selSize||'') + '_' + selExtras.join('-') + '_' + selSauces.join('-');
+            const cartItemId = p.id + '_' + (selSize||'') + '_' + selExtras.join('-') + '_' + selSauces.join('-') + '_' + selDrinks.join('-');
 
             const existingIndex = cart.findIndex(item => item.cartItemId === cartItemId && item.note === note);
             if(existingIndex > -1) { cart[existingIndex].qty += customModalState.qty; } 
@@ -706,7 +741,7 @@
                 cart.push({
                     cartItemId: cartItemId, product: { id: p.id, name: p.name, imageUrl: p.imageUrl },
                     qty: customModalState.qty, unitPrice: unitPrice, size: selSize,
-                    extras: selExtras, sauces: selSauces, note: note
+                    extras: selExtras, sauces: selSauces, drinks: selDrinks, note: note
                 });
             }
 
@@ -748,7 +783,8 @@
                 let metaText = [];
                 if(item.size) metaText.push(`Taille: ${item.size}`);
                 if(item.extras.length > 0) metaText.push(`+ ${item.extras.join(', ')}`);
-                if(item.sauces.length > 0) metaText.push(`Inclus: ${item.sauces.join(', ')}`);
+                if(item.sauces.length > 0) metaText.push(`Sauce: ${item.sauces.join(', ')}`);
+                if(item.drinks && item.drinks.length > 0) metaText.push(`Boisson: ${item.drinks.join(', ')}`);
                 if(item.note) metaText.push(`Note: ${item.note}`);
 
                 return `
@@ -808,7 +844,7 @@
                 cart: cart.map(c => ({
                     product: { id: c.product.id, name: c.product.name, imageUrl: c.product.imageUrl },
                     qty: c.qty, unitPrice: c.unitPrice, variantName: c.size || '',
-                    extras: c.extras || [], sauces: c.sauces || [], note: c.note || ''
+                    extras: c.extras || [], sauces: c.sauces || [], drinks: c.drinks || [], note: c.note || ''
                 }))
             };
 
@@ -819,7 +855,7 @@
                 waText += `*Nom:* ${name}\n*Tél:* ${phone}\n*Quartier:* ${areaName}\n\n*Détails:*\n`;
                 cart.forEach(c => {
                     waText += `▪ ${c.qty}x ${c.product.name} (${formatPrice(c.unitPrice * c.qty)} DH)\n`;
-                    let mods = []; if(c.size) mods.push(`Taille: ${c.size}`); if(c.extras.length) mods.push(`+ ${c.extras.join(', ')}`); if(c.sauces.length) mods.push(`Inclus: ${c.sauces.join(', ')}`); if(c.note) mods.push(`Note: ${c.note}`);
+                    let mods = []; if(c.size) mods.push(`Taille: ${c.size}`); if(c.extras.length) mods.push(`+ ${c.extras.join(', ')}`); if(c.sauces.length) mods.push(`Sauce: ${c.sauces.join(', ')}`); if(c.drinks && c.drinks.length) mods.push(`Boisson: ${c.drinks.join(', ')}`); if(c.note) mods.push(`Note: ${c.note}`);
                     if(mods.length) waText += `   _${mods.join(' | ')}_\n`;
                 });
                 waText += `\n*Sous-total:* ${formatPrice(subtotal)} DH\n*Livraison:* ${formatPrice(deliveryFee)} DH\n*TOTAL:* ${formatPrice(total)} DH`;
@@ -836,6 +872,7 @@
 
         function showToast(msg) { const t = document.getElementById('toastBox'); document.getElementById('toastMsg').innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 
+        // Start App
         setMode('Resto');
     </script>
 </body>
