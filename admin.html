@@ -90,33 +90,24 @@
         .b-delivered { background: var(--accent-light); color: var(--accent); }
         .b-cancelled { background: var(--danger-light); color: var(--danger); }
 
+        /* TABS SCROLL */
         .tabs-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -20px 20px; padding: 0 20px; position: relative; z-index: 10; }
         .tabs-scroll::-webkit-scrollbar { display: none; }
         .tab-pill { padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); white-space: nowrap; cursor: pointer; transition: 0.2s;}
         .tab-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* CATALOG TOGGLE & ACCORDIONS */
+        /* CATALOG TOGGLE */
         .cat-toggle-wrapper { background: var(--surface); border-radius: 50px; padding: 4px; display: flex; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 20px;}
         .cat-toggle-btn { flex: 1; padding: 10px; font-size: 13px; font-weight: 700; color: var(--text-muted); border-radius: 50px; transition: 0.3s; text-align: center; display: flex; justify-content: center; align-items: center; gap: 6px; cursor: pointer;}
         .cat-toggle-btn.active { background: var(--primary); color: white; }
-
-        .accordion-group { margin-bottom: 12px; background: var(--surface); border-radius: var(--radius-card); border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm);}
-        .accordion-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: var(--surface); }
-        .accordion-title { font-size: 15px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px;}
-        .accordion-badge { font-size: 11px; color: var(--text-muted); font-weight: 600; background: var(--bg-main); padding: 4px 8px; border-radius: 50px;}
-        .accordion-icon { transition: transform 0.3s; color: var(--text-muted);}
-        .accordion-group.open .accordion-icon { transform: rotate(180deg); }
-        .accordion-content { display: none; padding: 0 16px 16px; border-top: 1px solid var(--bg-main); background: #FAFAFA;}
-        .accordion-group.open .accordion-content { display: block; }
         
-        /* HORIZONTAL LIST CATALOG (Matched to Image 3) */
-        .catalog-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px;}
+        /* HORIZONTAL LIST CATALOG */
+        .catalog-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px;}
         .cat-list-item { display: flex; align-items: center; gap: 12px; padding: 10px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); box-shadow: 0 2px 8px rgba(0,0,0,0.02);}
         .cat-list-img { width: 56px; height: 56px; border-radius: 12px; background: var(--bg-main); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: var(--text-muted); overflow: hidden; flex-shrink: 0;}
         .cat-list-img img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply;}
         .cat-list-info { flex: 1; overflow: hidden; }
         .cat-list-info h4 { font-size: 15px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-        .cat-list-info p { font-size: 12px; color: var(--text-muted); font-weight: 500; }
         .cat-list-actions { display: flex; gap: 8px; align-items: center;}
         .btn-action { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: 0.2s; flex-shrink: 0;}
         .btn-action:active { transform: scale(0.9); }
@@ -226,8 +217,7 @@
         .summary-row.total { font-size: 16px; font-weight: 800; color: var(--primary); margin-bottom: 0; padding-top: 12px; border-top: 1px dashed var(--border); }
         .action-stack { display: flex; flex-direction: column; gap: 12px; margin-top: 32px; }
 
-        /* FAB & BOTTOM NAV */
-        .fab { position: fixed; bottom: 100px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(234, 88, 12, 0.4); border: none; cursor: pointer; z-index: 80;}
+        /* BOTTOM NAV */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 10px 24px; z-index: 100; box-shadow: var(--shadow-nav); max-width: 600px; margin: 0 auto; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94A3B8; font-size: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; width: 20%; }
         .nav-item.active { color: var(--primary); }
@@ -357,12 +347,11 @@
             <div class="cat-toggle-btn" id="catBtnGrocery" onclick="setCatalogMode('Grocery')">Grocery</div>
         </div>
 
-        <div id="adminProductListContainer">
+        <div class="tabs-scroll" id="catalogCategoryTabs">
             </div>
 
-        <button class="fab" onclick="prepareAddProduct()">
-            <svg viewBox="0 0 24 24" style="stroke-width: 2.5;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        </button>
+        <div id="adminProductListContainer">
+            </div>
     </div>
 
     <div id="view-ajouter" class="app-view container" style="background: var(--surface); min-height: 100vh;">
@@ -687,7 +676,7 @@
         const db = getFirestore(app);
 
         let allOrders = [], allProducts = [], globalCategoriesData = [], allDrivers = [];
-        let currentOrderFilter = 'All', currentCatalogMode = 'Resto', currentEditProductId = null; 
+        let currentOrderFilter = 'All', currentCatalogMode = 'Resto', currentCatalogCategory = 'All', currentEditProductId = null; 
         let currentCatAddingType = ''; 
         let selectedProductType = 'Resto'; 
         const safeNum = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
@@ -853,89 +842,85 @@
             } catch (e) { console.error(e); showToast("Error connecting."); } finally { btn.innerText = 'Add'; btn.disabled = false; }
         });
 
-        // ---------------- NEW CATALOG ACCORDION LOGIC ----------------
+        // ---------------- NEW HORIZONTAL LIST CATALOG LOGIC ----------------
         window.setCatalogMode = (mode) => {
             currentCatalogMode = mode;
+            currentCatalogCategory = 'All'; // Reset category filter on mode switch
             document.getElementById('catBtnResto').classList.remove('active');
             document.getElementById('catBtnGrocery').classList.remove('active');
             document.getElementById(`catBtn${mode}`).classList.add('active');
+            renderCatalogTabs();
             renderCatalog();
         };
 
-        window.toggleAccordion = (id) => {
-            const el = document.getElementById(id);
-            if(el) el.classList.toggle('open');
+        window.filterCatalog = (catName, element) => {
+            currentCatalogCategory = catName;
+            document.querySelectorAll('#catalogCategoryTabs .tab-pill').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+            renderCatalog();
         };
+
+        function renderCatalogTabs() {
+            const container = document.getElementById('catalogCategoryTabs');
+            if(!container) return;
+            
+            const modeProducts = allProducts.filter(p => p.productType === currentCatalogMode);
+            const uniqueCats = [...new Set(modeProducts.map(p => p.category || "Uncategorized"))].sort();
+            
+            let html = `<div class="tab-pill ${currentCatalogCategory === 'All' ? 'active' : ''}" onclick="filterCatalog('All', this)">All</div>`;
+            uniqueCats.forEach(cat => {
+                const isActive = currentCatalogCategory === cat ? 'active' : '';
+                html += `<div class="tab-pill ${isActive}" onclick="filterCatalog('${cat}', this)">${cat}</div>`;
+            });
+            container.innerHTML = html;
+        }
 
         function renderCatalog() {
             const container = document.getElementById('adminProductListContainer');
             if(!container) return;
 
             let filteredProducts = allProducts.filter(p => p.productType === currentCatalogMode);
+            
+            // Apply category filter if not "All"
+            if (currentCatalogCategory !== 'All') {
+                filteredProducts = filteredProducts.filter(p => (p.category || "Uncategorized") === currentCatalogCategory);
+            }
+
             document.getElementById('prodCountText').innerText = `${filteredProducts.length} items • Updated just now`;
 
             if(filteredProducts.length === 0) {
-                container.innerHTML = `<div class="empty-state-card" style="margin-top:20px;">No items in ${currentCatalogMode}.</div>`;
+                container.innerHTML = `<div class="empty-state-card" style="margin-top:20px;">No items found.</div>`;
                 return;
             }
 
-            const grouped = {};
-            filteredProducts.forEach(p => {
-                const cat = p.category || "Uncategorized";
-                if(!grouped[cat]) grouped[cat] = [];
-                grouped[cat].push(p);
-            });
-
-            const sortedCats = Object.keys(grouped).sort();
-
-            let html = '';
-            sortedCats.forEach((catName, index) => {
-                const items = grouped[catName];
-                const groupId = `accordion-${index}`;
+            const cardsHtml = filteredProducts.map(p => {
+                const price = p.promoPrice ? p.promoPrice : p.sellPrice;
+                const imgTag = p.imageUrl ? `<img src="${p.imageUrl}">` : `${p.name.charAt(0)}`;
+                const isAvail = p.isAvailable !== false;
                 
-                let icon = currentCatalogMode === 'Resto' ? "🍽️" : "🛒";
+                // Reversed status: Price first, then Available status
+                const statusHtml = isAvail 
+                    ? `<span style="color:var(--accent); font-size:11px; font-weight:600; display:flex; align-items:center; gap:4px;"><svg viewBox="0 0 24 24" style="width:8px; fill:var(--accent); stroke:none;"><circle cx="12" cy="12" r="10"></circle></svg> Available</span>` 
+                    : `<span style="color:var(--danger); font-size:11px; font-weight:600; display:flex; align-items:center; gap:4px;"><svg viewBox="0 0 24 24" style="width:8px; fill:var(--danger); stroke:none;"><circle cx="12" cy="12" r="10"></circle></svg> Hidden</span>`;
 
-                const cardsHtml = items.map(p => {
-                    const price = p.promoPrice ? p.promoPrice : p.sellPrice;
-                    const imgTag = p.imageUrl ? `<img src="${p.imageUrl}">` : `${p.name.charAt(0)}`;
-                    const isAvail = p.isAvailable !== false;
-                    const statusHtml = isAvail 
-                        ? `<span style="color:var(--accent);">● Available</span>` 
-                        : `<span style="color:var(--danger);">● Hidden</span>`;
-
-                    return `
-                    <div class="cat-list-item">
-                        <div class="cat-list-img">${imgTag}</div>
-                        <div class="cat-list-info">
-                            <h4>${p.name}</h4>
-                            <p>${statusHtml} &nbsp; <strong style="color:var(--primary); margin-left:4px;">${formatPrice(price)} DH</strong></p>
+                return `
+                <div class="cat-list-item">
+                    <div class="cat-list-img">${imgTag}</div>
+                    <div class="cat-list-info">
+                        <h4>${p.name}</h4>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <strong style="color:var(--primary); font-size:13px;">${formatPrice(price)} DH</strong>
+                            ${statusHtml}
                         </div>
-                        <div class="cat-list-actions">
-                            <button class="btn-action edit" onclick="editProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:16px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
-                            <button class="btn-action del" onclick="promptDeleteProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-                        </div>
-                    </div>`;
-                }).join('');
-
-                html += `
-                <div class="accordion-group open" id="${groupId}">
-                    <div class="accordion-header" onclick="toggleAccordion('${groupId}')">
-                        <div class="accordion-title">
-                            <div style="width:28px;height:28px; background:var(--primary-light); color:var(--primary); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:14px;">${icon}</div>
-                            ${catName}
-                            <span class="accordion-badge">${items.length} items</span>
-                        </div>
-                        <svg class="accordion-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </div>
-                    <div class="accordion-content">
-                        <div class="catalog-list">
-                            ${cardsHtml}
-                        </div>
+                    <div class="cat-list-actions">
+                        <button class="btn-action edit" onclick="editProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:16px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
+                        <button class="btn-action del" onclick="promptDeleteProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
                     </div>
                 </div>`;
-            });
+            }).join('');
 
-            container.innerHTML = html;
+            container.innerHTML = `<div class="catalog-list">${cardsHtml}</div>`;
         }
 
         // ---------------- LISTENERS ----------------
@@ -953,6 +938,7 @@
         onSnapshot(collection(db, "products"), snap => {
             allProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
             if(document.getElementById('view-produits').classList.contains('active')) {
+                renderCatalogTabs();
                 renderCatalog();
             }
         });
@@ -1290,7 +1276,6 @@
 
             document.getElementById('tglFeatured').checked = false;
             document.getElementById('tglPromo').checked = false; document.getElementById('cfgPromo').style.display = 'none';
-            document.getElementById('tglSauce').checked = false; document.getElementById('cfgSauce').style.display = 'none'; window.productSauces = []; renderSauces();
             document.getElementById('tglSize').checked = false; document.getElementById('cfgSize').style.display = 'none'; window.productSizes = []; renderSizes();
             document.getElementById('tglExtra').checked = false; document.getElementById('cfgExtra').style.display = 'none'; window.productExtras = []; renderExtras();
             document.getElementById('tglAvailable').checked = true;
@@ -1321,10 +1306,6 @@
             document.getElementById('cfgPromo').style.display = document.getElementById('tglPromo').checked ? 'block' : 'none';
             document.getElementById('vPromoPrice').value = p.promoPrice || '';
 
-            document.getElementById('tglSauce').checked = (p.sauces && p.sauces.length > 0);
-            document.getElementById('cfgSauce').style.display = document.getElementById('tglSauce').checked ? 'block' : 'none';
-            window.productSauces = p.sauces ? [...p.sauces] : []; renderSauces();
-
             document.getElementById('tglSize').checked = (p.sizes && p.sizes.length > 0);
             document.getElementById('cfgSize').style.display = document.getElementById('tglSize').checked ? 'block' : 'none';
             window.productSizes = p.sizes ? [...p.sizes] : []; renderSizes();
@@ -1351,7 +1332,6 @@
                 imageUrl: document.getElementById('pImg').value, 
                 featured: document.getElementById('tglFeatured').checked,
                 promoPrice: document.getElementById('tglPromo').checked ? (parseFloat(document.getElementById('vPromoPrice').value) || null) : null,
-                sauces: document.getElementById('tglSauce').checked ? window.productSauces : [],
                 sizes: document.getElementById('tglSize').checked ? window.productSizes : [],
                 extras: document.getElementById('tglExtra').checked ? window.productExtras : [],
                 isAvailable: document.getElementById('tglAvailable').checked,
