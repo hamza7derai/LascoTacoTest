@@ -90,24 +90,33 @@
         .b-delivered { background: var(--accent-light); color: var(--accent); }
         .b-cancelled { background: var(--danger-light); color: var(--danger); }
 
-        /* TABS SCROLL */
         .tabs-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -20px 20px; padding: 0 20px; position: relative; z-index: 10; }
         .tabs-scroll::-webkit-scrollbar { display: none; }
         .tab-pill { padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); white-space: nowrap; cursor: pointer; transition: 0.2s;}
         .tab-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* CATALOG TOGGLE */
+        /* CATALOG TOGGLE & ACCORDIONS */
         .cat-toggle-wrapper { background: var(--surface); border-radius: 50px; padding: 4px; display: flex; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 20px;}
         .cat-toggle-btn { flex: 1; padding: 10px; font-size: 13px; font-weight: 700; color: var(--text-muted); border-radius: 50px; transition: 0.3s; text-align: center; display: flex; justify-content: center; align-items: center; gap: 6px; cursor: pointer;}
         .cat-toggle-btn.active { background: var(--primary); color: white; }
+
+        .accordion-group { margin-bottom: 12px; background: var(--surface); border-radius: var(--radius-card); border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm);}
+        .accordion-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: var(--surface); }
+        .accordion-title { font-size: 15px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px;}
+        .accordion-badge { font-size: 11px; color: var(--text-muted); font-weight: 600; background: var(--bg-main); padding: 4px 8px; border-radius: 50px;}
+        .accordion-icon { transition: transform 0.3s; color: var(--text-muted);}
+        .accordion-group.open .accordion-icon { transform: rotate(180deg); }
+        .accordion-content { display: none; padding: 0 16px 16px; border-top: 1px solid var(--bg-main); background: #FAFAFA;}
+        .accordion-group.open .accordion-content { display: block; }
         
         /* HORIZONTAL LIST CATALOG */
-        .catalog-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px;}
+        .catalog-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px;}
         .cat-list-item { display: flex; align-items: center; gap: 12px; padding: 10px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); box-shadow: 0 2px 8px rgba(0,0,0,0.02);}
         .cat-list-img { width: 56px; height: 56px; border-radius: 12px; background: var(--bg-main); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: var(--text-muted); overflow: hidden; flex-shrink: 0;}
         .cat-list-img img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply;}
         .cat-list-info { flex: 1; overflow: hidden; }
         .cat-list-info h4 { font-size: 15px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .cat-list-info p { font-size: 12px; color: var(--text-muted); font-weight: 500; }
         .cat-list-actions { display: flex; gap: 8px; align-items: center;}
         .btn-action { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: 0.2s; flex-shrink: 0;}
         .btn-action:active { transform: scale(0.9); }
@@ -217,7 +226,8 @@
         .summary-row.total { font-size: 16px; font-weight: 800; color: var(--primary); margin-bottom: 0; padding-top: 12px; border-top: 1px dashed var(--border); }
         .action-stack { display: flex; flex-direction: column; gap: 12px; margin-top: 32px; }
 
-        /* BOTTOM NAV */
+        /* FAB & BOTTOM NAV */
+        .fab { position: fixed; bottom: 100px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(234, 88, 12, 0.4); border: none; cursor: pointer; z-index: 80;}
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 10px 24px; z-index: 100; box-shadow: var(--shadow-nav); max-width: 600px; margin: 0 auto; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94A3B8; font-size: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; width: 20%; }
         .nav-item.active { color: var(--primary); }
@@ -347,11 +357,8 @@
             <div class="cat-toggle-btn" id="catBtnGrocery" onclick="setCatalogMode('Grocery')">Grocery</div>
         </div>
 
-        <div class="tabs-scroll" id="catalogCategoryTabs">
-            </div>
-
-        <div id="adminProductListContainer">
-            </div>
+        <div class="tabs-scroll" id="catalogCategoryTabs"></div>
+        <div id="adminProductListContainer"></div>
     </div>
 
     <div id="view-ajouter" class="app-view container" style="background: var(--surface); min-height: 100vh;">
@@ -359,7 +366,8 @@
         <div class="wizard-header-top">
             <div class="icon-btn" onclick="switchTab('produits')" style="width:40px; height:40px; border-radius: 50%; border:none; box-shadow:none; background: var(--bg-main);"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
             <h1 style="font-size: 16px; font-weight:800;" id="wizardTitle">Add Item</h1>
-            <div style="width:40px;"></div> </div>
+            <div style="width:40px;"></div>
+        </div>
 
         <div class="stepper-container">
             <div class="step-pill active" id="step-nav-1">Step 1 of 3</div>
@@ -503,8 +511,8 @@
                 <div class="toggle-card-config">
                     <div class="toggle-wrapper">
                         <div>
-                            <span style="display:block; font-size:14px; font-weight:800;">Free Additions / Sauces</span>
-                            <span style="font-size:11px; color:var(--text-muted);">Client can select freely</span>
+                            <span style="display:block; font-size:14px; font-weight:800;">Sauces</span>
+                            <span style="font-size:11px; color:var(--text-muted);">Free sauce choices</span>
                         </div>
                         <label class="switch"><input type="checkbox" id="tglSauce" onchange="document.getElementById('cfgSauce').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
                     </div>
@@ -514,6 +522,23 @@
                             <button class="btn-outline" style="width:auto; padding:0 20px; font-size:13px; border-radius:12px;" onclick="addSauce()">Add</button>
                         </div>
                         <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px;" id="listSauces"></div>
+                    </div>
+                </div>
+
+                <div class="toggle-card-config">
+                    <div class="toggle-wrapper">
+                        <div>
+                            <span style="display:block; font-size:14px; font-weight:800;">Drinks (Included)</span>
+                            <span style="font-size:11px; color:var(--text-muted);">Free drink choices for combos</span>
+                        </div>
+                        <label class="switch"><input type="checkbox" id="tglDrink" onchange="document.getElementById('cfgDrink').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
+                    </div>
+                    <div class="config-panel" id="cfgDrink">
+                        <div style="display:flex; gap:8px;">
+                            <input type="text" id="inpDrink" class="form-control" placeholder="Ex: Coca-Cola">
+                            <button class="btn-outline" style="width:auto; padding:0 20px; font-size:13px; border-radius:12px;" onclick="addDrink()">Add</button>
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px;" id="listDrinks"></div>
                     </div>
                 </div>
 
@@ -682,7 +707,7 @@
         const safeNum = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
         const formatPrice = (num) => { const p = Number(num); return p % 1 === 0 ? p.toString() : p.toFixed(2); };
 
-        window.productSauces = []; window.productSizes = []; window.productExtras = [];
+        window.productSauces = []; window.productSizes = []; window.productExtras = []; window.productDrinks = [];
 
         window.switchTab = (tabId) => {
             document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
@@ -772,6 +797,10 @@
         window.removeSauce = (index) => { window.productSauces.splice(index, 1); renderSauces(); };
         function renderSauces() { document.getElementById('listSauces').innerHTML = window.productSauces.map((s, i) => `<div style="padding:6px 12px; background:var(--bg-main); border:1px solid var(--border); border-radius:50px; font-size:12px; font-weight:600; display:flex; gap:6px; align-items:center;">${s} <span style="color:var(--danger); cursor:pointer; font-size:14px;" onclick="removeSauce(${i})">×</span></div>`).join(''); }
 
+        window.addDrink = () => { const input = document.getElementById('inpDrink'); const val = input.value.trim(); if(val && !window.productDrinks.includes(val)) { window.productDrinks.push(val); input.value = ''; renderDrinks(); } };
+        window.removeDrink = (index) => { window.productDrinks.splice(index, 1); renderDrinks(); };
+        function renderDrinks() { document.getElementById('listDrinks').innerHTML = window.productDrinks.map((s, i) => `<div style="padding:6px 12px; background:var(--bg-main); border:1px solid var(--border); border-radius:50px; font-size:12px; font-weight:600; display:flex; gap:6px; align-items:center;">${s} <span style="color:var(--danger); cursor:pointer; font-size:14px;" onclick="removeDrink(${i})">×</span></div>`).join(''); }
+
         window.addSize = () => {
             const name = document.getElementById('inpSizeName').value.trim(); const sell = parseFloat(document.getElementById('inpSizeSell').value); const cost = parseFloat(document.getElementById('inpSizeCost').value) || 0;
             if(name && !isNaN(sell)) { window.productSizes.push({ name, sellPrice: sell, costPrice: cost }); document.getElementById('inpSizeName').value = ''; document.getElementById('inpSizeSell').value = ''; document.getElementById('inpSizeCost').value = ''; renderSizes(); }
@@ -845,7 +874,7 @@
         // ---------------- NEW HORIZONTAL LIST CATALOG LOGIC ----------------
         window.setCatalogMode = (mode) => {
             currentCatalogMode = mode;
-            currentCatalogCategory = 'All'; // Reset category filter on mode switch
+            currentCatalogCategory = 'All'; 
             document.getElementById('catBtnResto').classList.remove('active');
             document.getElementById('catBtnGrocery').classList.remove('active');
             document.getElementById(`catBtn${mode}`).classList.add('active');
@@ -881,7 +910,6 @@
 
             let filteredProducts = allProducts.filter(p => p.productType === currentCatalogMode);
             
-            // Apply category filter if not "All"
             if (currentCatalogCategory !== 'All') {
                 filteredProducts = filteredProducts.filter(p => (p.category || "Uncategorized") === currentCatalogCategory);
             }
@@ -898,7 +926,6 @@
                 const imgTag = p.imageUrl ? `<img src="${p.imageUrl}">` : `${p.name.charAt(0)}`;
                 const isAvail = p.isAvailable !== false;
                 
-                // Reversed status: Price first, then Available status
                 const statusHtml = isAvail 
                     ? `<span style="color:var(--accent); font-size:11px; font-weight:600; display:flex; align-items:center; gap:4px;"><svg viewBox="0 0 24 24" style="width:8px; fill:var(--accent); stroke:none;"><circle cx="12" cy="12" r="10"></circle></svg> Available</span>` 
                     : `<span style="color:var(--danger); font-size:11px; font-weight:600; display:flex; align-items:center; gap:4px;"><svg viewBox="0 0 24 24" style="width:8px; fill:var(--danger); stroke:none;"><circle cx="12" cy="12" r="10"></circle></svg> Hidden</span>`;
@@ -1057,7 +1084,7 @@
             } catch (error) { console.error("Dashboard Error:", error); }
         }
 
-        // PROFIT LOGIC FOR ACTIVE DRIVERS (SUBTOTAL - COST OF GOODS)
+        // PROFIT LOGIC FOR ACTIVE DRIVERS
         function renderDriverSettlements() {
             const container = document.getElementById('dashDriversContainer');
             if(!container) return;
@@ -1071,7 +1098,6 @@
                 let debt = 0;
                 driverOrders.forEach(o => {
                     let orderCost = 0;
-                    
                     if(o.cart && Array.isArray(o.cart)) {
                         o.cart.forEach(item => {
                             const p = item.product || {};
@@ -1096,12 +1122,9 @@
                             }
                         });
                     }
-                    
                     const fee = safeNum(o.deliveryFee);
                     const total = safeNum(o.totalPrice);
                     const subtotal = total - fee;
-                    
-                    // Admin Profit = Subtotal - Restaurant Cost
                     const adminProfit = subtotal - orderCost;
                     if (adminProfit > 0) debt += adminProfit;
                 });
@@ -1183,10 +1206,7 @@
             let orderDate = new Date(); if (order.timestamp) { const parsed = new Date(order.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
             document.getElementById('det-date').innerText = orderDate.toLocaleDateString('en-US', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
             document.getElementById('det-client').innerText = order.customerName || 'Unknown';
-            
-            // Customer Phone Injection
             document.getElementById('det-phone').innerText = order.customerPhone || 'Not provided';
-            
             document.getElementById('det-neighborhood').innerText = order.neighborhood || 'Not specified';
 
             let statusClass = 'b-pending'; 
@@ -1278,6 +1298,8 @@
             document.getElementById('tglPromo').checked = false; document.getElementById('cfgPromo').style.display = 'none';
             document.getElementById('tglSize').checked = false; document.getElementById('cfgSize').style.display = 'none'; window.productSizes = []; renderSizes();
             document.getElementById('tglExtra').checked = false; document.getElementById('cfgExtra').style.display = 'none'; window.productExtras = []; renderExtras();
+            document.getElementById('tglSauce').checked = false; document.getElementById('cfgSauce').style.display = 'none'; window.productSauces = []; renderSauces();
+            document.getElementById('tglDrink').checked = false; document.getElementById('cfgDrink').style.display = 'none'; window.productDrinks = []; renderDrinks();
             document.getElementById('tglAvailable').checked = true;
 
             switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
@@ -1314,6 +1336,14 @@
             document.getElementById('cfgExtra').style.display = document.getElementById('tglExtra').checked ? 'block' : 'none';
             window.productExtras = p.extras ? [...p.extras] : []; renderExtras();
 
+            document.getElementById('tglSauce').checked = (p.sauces && p.sauces.length > 0);
+            document.getElementById('cfgSauce').style.display = document.getElementById('tglSauce').checked ? 'block' : 'none';
+            window.productSauces = p.sauces ? [...p.sauces] : []; renderSauces();
+
+            document.getElementById('tglDrink').checked = (p.drinks && p.drinks.length > 0);
+            document.getElementById('cfgDrink').style.display = document.getElementById('tglDrink').checked ? 'block' : 'none';
+            window.productDrinks = p.drinks ? [...p.drinks] : []; renderDrinks();
+
             document.getElementById('tglAvailable').checked = p.isAvailable !== false;
             document.getElementById('pDesc').value = p.description || '';
 
@@ -1321,6 +1351,25 @@
         };
 
         window.saveProductData = async () => {
+            // Auto-capture pending inputs if user forgot to click "Add"
+            const pendingSauce = document.getElementById('inpSauce').value.trim();
+            if(document.getElementById('tglSauce').checked && pendingSauce) { if(!window.productSauces.includes(pendingSauce)) window.productSauces.push(pendingSauce); }
+            
+            const pendingDrink = document.getElementById('inpDrink').value.trim();
+            if(document.getElementById('tglDrink').checked && pendingDrink) { if(!window.productDrinks.includes(pendingDrink)) window.productDrinks.push(pendingDrink); }
+            
+            const pendingSizeName = document.getElementById('inpSizeName').value.trim();
+            if(document.getElementById('tglSize').checked && pendingSizeName) {
+                const pSell = parseFloat(document.getElementById('inpSizeSell').value);
+                if(!isNaN(pSell)) window.productSizes.push({name: pendingSizeName, sellPrice: pSell, costPrice: parseFloat(document.getElementById('inpSizeCost').value)||0});
+            }
+            
+            const pendingExtraName = document.getElementById('inpExtraName').value.trim();
+            if(document.getElementById('tglExtra').checked && pendingExtraName) {
+                const eSell = parseFloat(document.getElementById('inpExtraSell').value)||0;
+                window.productExtras.push({name: pendingExtraName, price: eSell, costPrice: parseFloat(document.getElementById('inpExtraCost').value)||0});
+            }
+
             const data = {
                 name: document.getElementById('pName').value, 
                 subtitle: document.getElementById('pSubtitle').value,
@@ -1334,6 +1383,8 @@
                 promoPrice: document.getElementById('tglPromo').checked ? (parseFloat(document.getElementById('vPromoPrice').value) || null) : null,
                 sizes: document.getElementById('tglSize').checked ? window.productSizes : [],
                 extras: document.getElementById('tglExtra').checked ? window.productExtras : [],
+                sauces: document.getElementById('tglSauce').checked ? window.productSauces : [],
+                drinks: document.getElementById('tglDrink').checked ? window.productDrinks : [],
                 isAvailable: document.getElementById('tglAvailable').checked,
                 description: document.getElementById('pDesc').value
             };
