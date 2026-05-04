@@ -73,7 +73,7 @@
         .d-info p { font-size: 12px; color: var(--text-muted); font-weight: 500; }
         .d-debt { font-size: 15px; font-weight: 800; color: var(--primary); }
 
-        /* ORDERS LISTS */
+        /* RECENT ORDERS (Minimalist) */
         .order-card { padding: 16px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; background: var(--surface); border-radius: var(--radius-card); margin-bottom: 12px; box-shadow: var(--shadow-sm); }
         .order-card:active { transform: scale(0.98); }
         .order-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;}
@@ -306,10 +306,7 @@
         <div class="header-top">
             <h1 style="font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Orders</h1>
         </div>
-        <div class="search-box">
-            <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" placeholder="Search for an order...">
-        </div>
+        
         <div class="tabs-scroll">
             <div class="tab-pill active" onclick="filterOrdersList('All', this)">All</div>
             <div class="tab-pill" onclick="filterOrdersList('Pending', this)">Pending</div>
@@ -331,7 +328,7 @@
         <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; font-weight: 500;" id="det-date">Date</p>
         <div class="card info-list">
             <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Customer</div><div class="info-val" id="det-client">-</div></div>
-            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> Phone</div><div class="info-val">Not provided</div></div>
+            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> Phone</div><div class="info-val" id="det-phone">Not provided</div></div>
             <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Address</div><div class="info-val" id="det-neighborhood">-</div></div>
             <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Payment</div><div class="info-val">Cash on Delivery</div></div>
         </div>
@@ -356,11 +353,6 @@
         <div class="cat-toggle-wrapper">
             <div class="cat-toggle-btn active" id="catBtnResto" onclick="setCatalogMode('Resto')">Resto (Food)</div>
             <div class="cat-toggle-btn" id="catBtnGrocery" onclick="setCatalogMode('Grocery')">Grocery</div>
-        </div>
-
-        <div class="search-box" style="margin-bottom: 24px;">
-            <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="searchCatalogInput" placeholder="Search catalog items...">
         </div>
 
         <div id="adminProductListContainer">
@@ -682,7 +674,7 @@
         const safeNum = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
         const formatPrice = (num) => { const p = Number(num); return p % 1 === 0 ? p.toString() : p.toFixed(2); };
 
-        window.productSauces = []; window.productSizes = []; window.productExtras = [];
+        window.productSizes = []; window.productExtras = [];
 
         window.switchTab = (tabId) => {
             document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
@@ -768,10 +760,6 @@
         };
 
         // ---------------- STEP 2 LIST LOGIC ----------------
-        window.addSauce = () => { const input = document.getElementById('inpSauce'); const val = input.value.trim(); if(val && !window.productSauces.includes(val)) { window.productSauces.push(val); input.value = ''; renderSauces(); } };
-        window.removeSauce = (index) => { window.productSauces.splice(index, 1); renderSauces(); };
-        function renderSauces() { document.getElementById('listSauces').innerHTML = window.productSauces.map((s, i) => `<div style="padding:6px 12px; background:var(--bg-main); border:1px solid var(--border); border-radius:50px; font-size:12px; font-weight:600; display:flex; gap:6px; align-items:center;">${s} <span style="color:var(--danger); cursor:pointer; font-size:14px;" onclick="removeSauce(${i})">×</span></div>`).join(''); }
-
         window.addSize = () => {
             const name = document.getElementById('inpSizeName').value.trim(); const sell = parseFloat(document.getElementById('inpSizeSell').value); const cost = parseFloat(document.getElementById('inpSizeCost').value) || 0;
             if(name && !isNaN(sell)) { window.productSizes.push({ name, sellPrice: sell, costPrice: cost }); document.getElementById('inpSizeName').value = ''; document.getElementById('inpSizeSell').value = ''; document.getElementById('inpSizeCost').value = ''; renderSizes(); }
@@ -860,16 +848,11 @@
             const container = document.getElementById('adminProductListContainer');
             if(!container) return;
 
-            // Optional search filter
-            const searchQ = document.getElementById('searchCatalogInput') ? document.getElementById('searchCatalogInput').value.toLowerCase() : '';
-
             let filteredProducts = allProducts.filter(p => p.productType === currentCatalogMode);
-            if(searchQ) filteredProducts = filteredProducts.filter(p => p.name.toLowerCase().includes(searchQ));
-
             document.getElementById('prodCountText').innerText = `${filteredProducts.length} items • Updated just now`;
 
             if(filteredProducts.length === 0) {
-                container.innerHTML = `<div class="empty-state-card" style="margin-top:20px;">No items found.</div>`;
+                container.innerHTML = `<div class="empty-state-card" style="margin-top:20px;">No items in ${currentCatalogMode}.</div>`;
                 return;
             }
 
@@ -886,7 +869,8 @@
             sortedCats.forEach((catName, index) => {
                 const items = grouped[catName];
                 const groupId = `accordion-${index}`;
-                const icon = getIconForCat(catName);
+                
+                let icon = currentCatalogMode === 'Resto' ? "🍽️" : "🛒";
 
                 const cardsHtml = items.map(p => {
                     const price = p.promoPrice ? p.promoPrice : p.sellPrice;
@@ -934,12 +918,6 @@
             container.innerHTML = html;
         }
 
-        if(document.getElementById('searchCatalogInput')) {
-            document.getElementById('searchCatalogInput').addEventListener('input', () => {
-                renderCatalog();
-            });
-        }
-
         // ---------------- LISTENERS ----------------
         onSnapshot(collection(db, "drivers"), snap => {
             allDrivers = snap.docs.map(d => d.data());
@@ -983,12 +961,15 @@
                 let itemsToday = 0, itemsYest = 0; 
                 let shippingToday = 0, shippingYest = 0; 
                 let customersToday = new Set(); 
+                let customersTotal = new Set(); // For all time
 
                 allOrders.forEach(order => {
                     if(!order) return; let orderDate = new Date();
                     if (order.timestamp) { const parsed = new Date(order.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
                     const isToday = orderDate.toDateString() === todayStr; 
                     const isYesterday = orderDate.toDateString() === yesterdayStr;
+
+                    if(order.customerName) customersTotal.add(order.customerName);
 
                     if (isToday) { ordersToday++; if(order.customerName) customersToday.add(order.customerName); }
                     if (isYesterday) ordersYest++;
@@ -1045,10 +1026,12 @@
                     }
                 });
 
+                // Update Dashboard Quick Stats
                 document.getElementById('dashStatOrders').innerText = ordersToday;
                 document.getElementById('dashStatRevenue').innerText = formatPrice(grossToday) + ' DH';
                 document.getElementById('dashStatItems').innerText = itemsToday;
 
+                // Update Analytics View
                 document.getElementById('statGrossRevenue').innerText = formatPrice(grossToday) + ' DH';
                 document.getElementById('statNetProfit').innerHTML = `<svg viewBox="0 0 24 24" style="width:16px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> Profit: ${formatPrice(profitToday)} DH`;
                 document.getElementById('yestProfit').innerText = formatPrice(profitYest) + ' DH';
@@ -1147,8 +1130,6 @@
             }
         }
 
-        window.filterOrdersList = (status, tabElement) => { document.querySelectorAll('#view-commandes .tab-pill').forEach(t => t.classList.remove('active')); tabElement.classList.add('active'); currentOrderFilter = status; renderFullOrdersList(); };
-
         function renderFullOrdersList() {
             const getTime = (ts) => { if (!ts) return 0; const t = new Date(ts).getTime(); return isNaN(t) ? 0 : t; };
             let filtered = [...allOrders].sort((a,b) => getTime(b.timestamp) - getTime(a.timestamp));
@@ -1199,6 +1180,10 @@
             let orderDate = new Date(); if (order.timestamp) { const parsed = new Date(order.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
             document.getElementById('det-date').innerText = orderDate.toLocaleDateString('en-US', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
             document.getElementById('det-client').innerText = order.customerName || 'Unknown';
+            
+            // Customer Phone Injection
+            document.getElementById('det-phone').innerText = order.customerPhone || 'Not provided';
+            
             document.getElementById('det-neighborhood').innerText = order.neighborhood || 'Not specified';
 
             let statusClass = 'b-pending'; 
@@ -1288,10 +1273,9 @@
 
             document.getElementById('tglFeatured').checked = false;
             document.getElementById('tglPromo').checked = false; document.getElementById('cfgPromo').style.display = 'none';
-            document.getElementById('tglSauce').checked = false; document.getElementById('cfgSauce').style.display = 'none'; window.productSauces = []; renderSauces();
             document.getElementById('tglSize').checked = false; document.getElementById('cfgSize').style.display = 'none'; window.productSizes = []; renderSizes();
             document.getElementById('tglExtra').checked = false; document.getElementById('cfgExtra').style.display = 'none'; window.productExtras = []; renderExtras();
-            document.getElementById('tglNotes').checked = true; document.getElementById('tglAvailable').checked = true;
+            document.getElementById('tglAvailable').checked = true;
 
             switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
         };
@@ -1319,10 +1303,6 @@
             document.getElementById('cfgPromo').style.display = document.getElementById('tglPromo').checked ? 'block' : 'none';
             document.getElementById('vPromoPrice').value = p.promoPrice || '';
 
-            document.getElementById('tglSauce').checked = (p.sauces && p.sauces.length > 0);
-            document.getElementById('cfgSauce').style.display = document.getElementById('tglSauce').checked ? 'block' : 'none';
-            window.productSauces = p.sauces ? [...p.sauces] : []; renderSauces();
-
             document.getElementById('tglSize').checked = (p.sizes && p.sizes.length > 0);
             document.getElementById('cfgSize').style.display = document.getElementById('tglSize').checked ? 'block' : 'none';
             window.productSizes = p.sizes ? [...p.sizes] : []; renderSizes();
@@ -1331,7 +1311,6 @@
             document.getElementById('cfgExtra').style.display = document.getElementById('tglExtra').checked ? 'block' : 'none';
             window.productExtras = p.extras ? [...p.extras] : []; renderExtras();
 
-            document.getElementById('tglNotes').checked = p.allowNotes !== false;
             document.getElementById('tglAvailable').checked = p.isAvailable !== false;
             document.getElementById('pDesc').value = p.description || '';
 
@@ -1350,10 +1329,8 @@
                 imageUrl: document.getElementById('pImg').value, 
                 featured: document.getElementById('tglFeatured').checked,
                 promoPrice: document.getElementById('tglPromo').checked ? (parseFloat(document.getElementById('vPromoPrice').value) || null) : null,
-                sauces: document.getElementById('tglSauce').checked ? window.productSauces : [],
                 sizes: document.getElementById('tglSize').checked ? window.productSizes : [],
                 extras: document.getElementById('tglExtra').checked ? window.productExtras : [],
-                allowNotes: document.getElementById('tglNotes').checked,
                 isAvailable: document.getElementById('tglAvailable').checked,
                 description: document.getElementById('pDesc').value
             };
