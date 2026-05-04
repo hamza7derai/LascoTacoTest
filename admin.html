@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lasco Admin</title>
+    <title>Lasco Admin Mobile</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
-           VARIABLES & RESET (Admin Theme)
+           VARIABLES & RESET (Lasco Theme)
         ========================================= */
         :root {
             --bg-main: #F8F9FB; --surface: #FFFFFF;
-            --primary: #EA580C; /* Vibrant Orange matching the wizard */
+            --primary: #EA580C; /* Appetizing Orange */
             --primary-light: #FFEDD5;
             --accent: #16A34A; /* Fresh Green */
             --accent-light: #DCFCE7;
             --warning: #F59E0B; --warning-light: #FEF3C7;
             --danger: #EF4444; --danger-light: #FEE2E2;
-            --text-main: #111827; --text-muted: #6B7280;
-            --border: #E5E7EB; --radius-card: 16px; --radius-btn: 12px;
-            --shadow-sm: 0 4px 12px rgba(0,0,0,0.03); 
-            --shadow-nav: 0 -4px 20px rgba(0,0,0,0.05); 
-            --shadow-modal: 0 10px 40px rgba(0,0,0,0.1);
+            --purple: #8B5CF6; --purple-light: #EDE9FE;
+            --blue: #3B82F6; --blue-light: #DBEAFE;
+            --text-main: #1E293B; --text-muted: #64748B;
+            --border: #E2E8F0; --radius-card: 20px; --radius-btn: 12px;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.03); --shadow-nav: 0 -4px 20px rgba(0,0,0,0.05); --shadow-modal: 0 10px 40px rgba(0,0,0,0.1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -45,8 +45,7 @@
         .section-title { font-size: 16px; font-weight: 800; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
         .section-link { font-size: 13px; color: var(--primary); font-weight: 700; text-decoration: none; cursor: pointer; }
 
-        /* CARDS & DASHBOARD */
-        .card { background: var(--surface); border-radius: var(--radius-card); padding: 16px; box-shadow: var(--shadow-sm); margin-bottom: 16px; }
+        /* DASHBOARD ELEMENTS */
         .dash-stats-row { display: flex; justify-content: space-between; background: var(--surface); border-radius: var(--radius-card); padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
         .dash-stat-col { flex: 1; text-align: center; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
         .dash-stat-col:last-child { border-right: none; }
@@ -61,11 +60,22 @@
         .empty-state-card { background: var(--surface); border-radius: var(--radius-card); padding: 32px 20px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
         .empty-icon-wrap { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
         .btn-outline-primary { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 10px 24px; border-radius: 50px; font-size: 13px; font-weight: 700; display: inline-flex; justify-content: center; align-items: center; transition: 0.2s; }
-        .btn-outline-primary:active { background: var(--primary-light); }
+        
+        .card { background: var(--surface); border-radius: var(--radius-card); padding: 16px; box-shadow: var(--shadow-sm); margin-bottom: 16px; }
+        
+        /* TOGGLE STORE STATUS */
+        .toggle-card { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow-sm); }
+        .toggle-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 0; background: transparent; border: none; margin-bottom: 0; width: 100%;}
+        .toggle-icon-box { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 26px; flex-shrink: 0;}
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); transition: .3s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(18px); }
 
-        /* LISTS */
+        /* LISTS (Orders & Products) */
         .order-card { padding: 16px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; background: var(--surface); border-radius: var(--radius-card); margin-bottom: 12px; box-shadow: var(--shadow-sm); }
-        .order-card:active { transform: scale(0.98); }
         .order-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; border-bottom: 1px solid var(--bg-main); padding-bottom: 12px;}
         .o-id { font-size: 15px; font-weight: 800; }
         .o-date { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
@@ -75,7 +85,7 @@
         
         .badge { padding: 6px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
         .b-pending { background: var(--warning-light); color: #D97706; }
-        .b-processing { background: #DBEAFE; color: #3B82F6; }
+        .b-processing { background: var(--blue-light); color: var(--blue); }
         .b-transit { background: var(--primary-light); color: var(--primary); }
         .b-delivered { background: var(--accent-light); color: #15803D; }
         .b-cancelled { background: var(--danger-light); color: #DC2626; }
@@ -88,9 +98,17 @@
         .prod-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 4px;}
         .prod-actions { display: flex; gap: 8px; align-items: center; }
         .btn-icon-small { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: 0.2s;}
-        .btn-icon-small:active { transform: scale(0.9); }
         .btn-edit-prod { background: var(--primary-light); color: var(--primary); }
         .btn-del-prod { background: var(--danger-light); color: var(--danger); }
+
+        /* ANALYTICS GRID */
+        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;}
+        .metric-card { background: var(--surface); border-radius: 16px; padding: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+        .mc-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items:center; justify-content: center; margin-bottom: 12px;}
+        .mc-title { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+        .mc-val { font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 8px;}
+        .mc-trend { font-size: 11px; font-weight: 700; display: flex; align-items:center; gap:4px; }
+        .trend-up { color: var(--accent); } .trend-down { color: var(--danger); } .trend-flat { color: var(--text-muted); }
 
         /* FORMS & INPUTS */
         .search-box { position: relative; margin-bottom: 20px; display: flex; gap: 10px; }
@@ -102,23 +120,24 @@
         .form-control { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-btn); background: var(--surface); outline: none; font-size: 14px; font-weight: 500; transition: 0.2s; color: var(--text-main); }
         .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
         .input-with-action { display: flex; gap: 10px; }
-        .btn-plus-field { width: 48px; height: 48px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-btn); display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; flex-shrink: 0; transition: 0.2s;}
-        .btn-plus-field:active { background: var(--border); }
+        .btn-plus-field { width: 48px; height: 48px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-btn); display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; flex-shrink: 0;}
         .help-text { font-size: 11px; color: var(--text-muted); margin-top: 6px; display: block; }
         
         .btn { width: 100%; padding: 16px; border-radius: var(--radius-btn); font-size: 15px; font-weight: 700; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; border: none; }
-        .btn:active { transform: scale(0.98); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: var(--accent); color: white; }
         .btn-warning { background: var(--warning); color: white; }
         .btn-info { background: #3B82F6; color: white; }
         .btn-danger-outline { background: transparent; color: var(--danger); border: 1px solid var(--danger-light); }
         .btn-outline { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); }
+        
+        .tabs-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -20px 20px; padding: 0 20px; }
+        .tabs-scroll::-webkit-scrollbar { display: none; }
+        .tab-pill { padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); white-space: nowrap; cursor: pointer; transition: 0.2s;}
+        .tab-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* =========================================
-           NEW SAAS-STYLE WIZARD (Matching Reference)
-        ========================================= */
+        /* WIZARD (SAAS STYLE) */
         .wizard-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .wizard-btn-draft { background: var(--surface); border: 1px solid var(--border); padding: 8px 16px; border-radius: 50px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; color: var(--text-main); }
         
@@ -136,16 +155,13 @@
         .wizard-step { display: none; animation: fadeIn 0.3s; }
         .wizard-step.active { display: block; }
         
-        /* Dual Photo Upload Layout */
         .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
         .upload-card { border: 1.5px dashed var(--border); border-radius: 16px; padding: 24px 12px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 8px; background: var(--bg-main); }
         .upload-card:hover { border-color: var(--primary); background: var(--primary-light); }
         .upload-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--surface); display: flex; align-items: center; justify-content: center; color: var(--primary); box-shadow: var(--shadow-sm); }
         .upload-card h5 { font-size: 13px; font-weight: 800; color: var(--text-main); }
         .upload-card p { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
-        .upload-badge { font-size: 9px; font-weight: 800; color: var(--primary); background: var(--primary-light); padding: 3px 8px; border-radius: 6px; margin-top: 4px; }
         
-        /* Product Type Radio Cards */
         .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
         .type-card { border: 2px solid var(--border); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; background: var(--surface); }
         .type-card.active { border-color: var(--primary); background: #FFFaf5; }
@@ -162,28 +178,38 @@
         .wizard-footer .btn-outline { width: auto; padding: 16px 24px; }
         .wizard-footer .btn-primary { flex: 1; }
 
-        /* Toggles inside Wizard */
-        .toggle-card { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow-sm); }
-        .toggle-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 0; background: transparent; border: none; margin-bottom: 0; width: 100%;}
-        .toggle-icon-box { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .switch { position: relative; display: inline-block; width: 44px; height: 26px; flex-shrink: 0;}
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); transition: .3s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        input:checked + .slider { background-color: var(--accent); }
-        input:checked + .slider:before { transform: translateX(18px); }
-        
         .config-panel { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--border); animation: fadeIn 0.3s ease; }
         .list-row { display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-btn); margin-bottom: 8px; background: var(--bg-main);}
         .list-info h5 { font-size: 14px; font-weight: 700; color: var(--text-main); }
         .list-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-        /* FAB & BOTTOM NAV */
-        .fab { position: fixed; bottom: 100px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(234, 88, 12, 0.4); border: none; cursor: pointer; z-index: 80; transition: 0.2s;}
-        .fab:active { transform: scale(0.9); }
+        /* ORDER DETAILS */
+        .detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .back-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--surface); border-radius: 50%; box-shadow: var(--shadow-sm); cursor: pointer; flex-shrink: 0;}
+        .info-list { padding: 8px 16px; margin-bottom: 24px;}
+        .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+        .info-val { font-weight: 600; text-align: right; }
         
+        .item-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .item-row:last-child { border-bottom: none; padding-bottom: 0;}
+        .item-img { width: 48px; height: 48px; background: var(--primary-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 2px;}
+        .item-img img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply;}
+        .item-details { flex: 1; }
+        .item-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+        .item-meta { font-size: 12px; color: var(--text-muted); }
+        .item-price { font-size: 13px; font-weight: 700; text-align: right; }
+        
+        .summary-box { background: var(--surface); border-radius: var(--radius-btn); padding: 16px; margin-top: 24px; border: 1px solid var(--border); }
+        .summary-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px; color: var(--text-muted); font-weight: 500; }
+        .summary-row.total { font-size: 16px; font-weight: 800; color: var(--primary); margin-bottom: 0; padding-top: 12px; border-top: 1px dashed var(--border); }
+        .action-stack { display: flex; flex-direction: column; gap: 12px; margin-top: 32px; }
+
+        /* FAB & BOTTOM NAV */
+        .fab { position: fixed; bottom: 100px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(234, 88, 12, 0.4); border: none; cursor: pointer; z-index: 80;}
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 10px 24px; z-index: 100; box-shadow: var(--shadow-nav); max-width: 600px; margin: 0 auto; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94A3B8; text-decoration: none; font-size: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; width: 20%; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94A3B8; font-size: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; width: 20%; }
         .nav-item.active { color: var(--primary); }
         .nav-item svg { width: 22px; height: 22px; stroke-width: 2.2; }
         .nav-item.active svg { fill: var(--primary-light); }
@@ -193,13 +219,18 @@
         .overlay.active { opacity: 1; pointer-events: auto; }
         .modal { background: var(--surface); width: 100%; max-width: 340px; border-radius: 24px; padding: 24px; box-shadow: var(--shadow-modal); transform: scale(0.95); transition: 0.3s; text-align: center; display: none;}
         .overlay.active .modal { display: block; transform: scale(1); }
-        
         .bottom-sheet { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-radius: 30px 30px 0 0; padding: 25px 20px 40px; z-index: 1001; transform: translateY(100%); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); max-width: 600px; margin: 0 auto; box-shadow: var(--shadow-modal);}
         .bottom-sheet.active { transform: translateY(0); }
         .sheet-handle { width: 40px; height: 5px; background: #CBD5E1; border-radius: 10px; margin: 0 auto 20px; }
-
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: var(--text-main); color: white; padding: 12px 24px; border-radius: 50px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-modal); z-index: 1100; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* DRIVER BALANCE LIST */
+        .driver-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--bg-main); }
+        .driver-row:last-child { border-bottom: none; }
+        .d-info h4 { font-size: 14px; font-weight: 800; color: var(--text-main); text-transform: capitalize; margin-bottom: 2px;}
+        .d-info p { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+        .d-debt { font-size: 15px; font-weight: 800; color: var(--warning); }
     </style>
 </head>
 <body>
@@ -210,6 +241,19 @@
                 <h1>Hello, Lasco 👋</h1>
                 <p>Here's what's happening with your store today.</p>
             </div>
+        </div>
+
+        <div class="card toggle-wrapper" style="padding: 16px; margin-bottom: 16px;">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <div id="statusIconBox" style="width: 44px; height: 44px; border-radius: 12px; background: var(--danger-light); color: var(--danger); display: flex; align-items: center; justify-content: center; transition: 0.3s;">
+                    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                </div>
+                <div>
+                    <span id="statusTextMain" style="display:block; font-size:15px; font-weight:800; color:var(--text-main);">Store Closed</span>
+                    <span id="statusTextSub" style="font-size:12px; font-weight: 500; color:var(--text-muted);">You are not receiving orders</span>
+                </div>
+            </div>
+            <label class="switch"><input type="checkbox" id="storeStatusToggle" onchange="toggleStoreStatus(this.checked)"><span class="slider"></span></label>
         </div>
 
         <div class="dash-stats-row">
@@ -226,20 +270,78 @@
             <div class="dash-stat-col">
                 <div class="dash-stat-icon" style="background:#EDE9FE; color:#8B5CF6;"><svg viewBox="0 0 24 24" style="width:16px;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg></div>
                 <div class="dash-stat-val" id="dashStatItems">0</div>
-                <div class="dash-stat-label">Items Sold<br>Today</div>
+                <div class="dash-stat-label">Items<br>Today</div>
+            </div>
+            <div class="dash-stat-col">
+                <div class="dash-stat-icon" style="background:#DBEAFE; color:#3B82F6;"><svg viewBox="0 0 24 24" style="width:16px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+                <div class="dash-stat-val" id="dashStatCustomers">0</div>
+                <div class="dash-stat-label">New<br>Customers</div>
             </div>
         </div>
+
+        <div class="performance-banner">
+            <div class="perf-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></div>
+            <div class="perf-text" style="flex:1;">
+                <h4>Track your performance</h4>
+                <p>See your sales, orders, and insights in real time.</p>
+            </div>
+            <button class="btn-perf" onclick="switchTab('analytics')">View Statistics</button>
+        </div>
+
+        <div class="section-title">
+            Active Drivers (Cash to Collect)
+        </div>
+        <div class="card" id="dashDriversContainer" style="padding: 12px 16px;">
+            </div>
 
         <div class="section-title" style="margin-top: 32px;">
             Recent Orders
             <span class="section-link" onclick="switchTab('commandes')">View all</span>
         </div>
         <div id="dashRecentOrdersContainer"></div>
+
     </div>
 
     <div id="view-commandes" class="app-view container">
-        <div class="header-top"><h1 style="font-size: 20px;">Orders</h1></div>
+        <div class="header-top">
+            <h1 style="font-size: 20px;">Orders</h1>
+        </div>
+        <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" placeholder="Search for an order...">
+        </div>
+        <div class="tabs-scroll">
+            <div class="tab-pill active" onclick="filterOrdersList('All', this)">All</div>
+            <div class="tab-pill" onclick="filterOrdersList('Pending', this)">Pending</div>
+            <div class="tab-pill" onclick="filterOrdersList('Preparing', this)">Preparing</div>
+            <div class="tab-pill" onclick="filterOrdersList('Out for Delivery', this)">In Transit</div>
+            <div class="tab-pill" onclick="filterOrdersList('Delivered', this)">Delivered</div>
+        </div>
         <div id="adminOrderListContainer"></div>
+    </div>
+
+    <div id="view-order-detail" class="app-view container">
+        <div class="detail-header">
+            <div class="back-btn" onclick="switchTab('commandes')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
+            <div style="flex:1; display: flex; justify-content: space-between; align-items: center;">
+                <h1 style="font-size: 20px; font-weight: 800;" id="det-id">#ID</h1>
+                <div class="badge" id="det-badge">STATUS</div>
+            </div>
+        </div>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; font-weight: 500;" id="det-date">Date</p>
+        <div class="card info-list">
+            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Customer</div><div class="info-val" id="det-client">-</div></div>
+            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> Phone</div><div class="info-val">Not provided</div></div>
+            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Address</div><div class="info-val" id="det-neighborhood">-</div></div>
+            <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Payment</div><div class="info-val">Cash on Delivery</div></div>
+        </div>
+        <div class="card"><h3 style="font-size: 14px; margin-bottom: 12px;" id="det-items-count">Items (0)</h3><div id="det-items-list"></div></div>
+        <div class="summary-box">
+            <div class="summary-row"><span>Subtotal</span><span id="det-subtotal">0.00 DH</span></div>
+            <div class="summary-row"><span>Delivery Fee</span><span id="det-shipping">0.00 DH</span></div>
+            <div class="summary-row total"><span>Total</span><span id="det-total">0.00 DH</span></div>
+        </div>
+        <div class="action-stack" id="det-actions"></div>
     </div>
 
     <div id="view-produits" class="app-view container">
@@ -248,6 +350,10 @@
                 <h1 style="font-size: 20px;">Menu & Catalog</h1>
                 <p id="prodCountText">0 items</p>
             </div>
+        </div>
+        <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="searchProdInput" placeholder="Search items...">
         </div>
         <div id="adminProductListContainer"></div>
         <button class="fab" onclick="prepareAddProduct()">
@@ -420,9 +526,10 @@
                         <label class="switch"><input type="checkbox" id="tglExtra" onchange="document.getElementById('cfgExtra').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
                     </div>
                     <div class="config-panel" id="cfgExtra">
+                        <input type="text" id="inpExtraName" class="form-control" placeholder="E.g. Extra Cheese" style="margin-bottom:8px;">
                         <div style="display:flex; gap:8px;">
-                            <input type="text" id="inpExtraName" class="form-control" placeholder="E.g. Extra Cheese" style="flex:2;">
-                            <input type="number" id="inpExtraPrice" class="form-control" placeholder="+ Price" style="flex:1;">
+                            <input type="number" id="inpExtraSell" class="form-control" placeholder="Sell (DH)">
+                            <input type="number" id="inpExtraCost" class="form-control" placeholder="Cost (DH)">
                             <button class="btn-outline" style="width:auto; padding:0 20px; font-size:13px; border-radius:12px;" onclick="addExtra()">Add</button>
                         </div>
                         <div style="margin-top: 16px;" id="listExtras"></div>
@@ -531,11 +638,28 @@
         </div>
     </div>
 
+    <div id="view-analytics" class="app-view container">
+        <div class="header-top">
+            <h1 style="font-size: 20px; font-weight:800;">Statistics</h1>
+        </div>
+        <h3 style="font-size: 14px; margin-bottom: 12px;">Summary</h3>
+        <div class="analytics-grid">
+            <div class="metric-card"><div class="mc-icon" style="background:var(--accent-light); color:var(--accent);"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></div><div class="mc-title">Revenue</div><div class="mc-val" id="statRevenue">0.00 DH</div><div class="mc-trend trend-flat" id="statRevenueTrend">-</div></div>
+            <div class="metric-card"><div class="mc-icon" style="background:var(--warning-light); color:var(--warning);"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div><div class="mc-title">Delivery Fees</div><div class="mc-val" id="statShipping">0.00 DH</div><div class="mc-trend trend-flat" id="statShippingTrend">-</div></div>
+        </div>
+        <h3 style="font-size: 14px; margin-bottom: 12px;">Activity</h3>
+        <div class="analytics-grid">
+            <div class="metric-card" style="display:flex; align-items:center; justify-content:space-between; grid-column:span 1;"><div class="mc-icon" style="background:var(--primary-light); color:var(--primary); margin:0;"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div><div style="text-align:right;"><div class="mc-val" style="margin-bottom:0;" id="statOrders">0</div><div class="mc-title">Orders</div><div class="mc-trend trend-flat" id="statOrdersTrend" style="justify-content:flex-end;">-</div></div></div>
+            <div class="metric-card" style="display:flex; align-items:center; justify-content:space-between; grid-column:span 1;"><div class="mc-icon" style="background:var(--blue-light); color:var(--blue); margin:0;"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg></div><div style="text-align:right;"><div class="mc-val" style="margin-bottom:0;" id="statItems">0</div><div class="mc-title">Items Sold</div><div class="mc-trend trend-flat" id="statItemsTrend" style="justify-content:flex-end;">-</div></div></div>
+        </div>
+    </div>
+
     <nav class="bottom-nav">
         <div class="nav-item active" id="nav-dashboard" onclick="switchTab('dashboard')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg> Dashboard</div>
         <div class="nav-item" id="nav-ajouter" onclick="prepareAddProduct()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg> Add</div>
         <div class="nav-item" id="nav-produits" onclick="switchTab('produits')"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> Catalog</div>
         <div class="nav-item" id="nav-commandes" onclick="switchTab('commandes')"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg> Orders</div>
+        <div class="nav-item" id="nav-analytics" onclick="switchTab('analytics')"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Analytics</div>
     </nav>
 
     <div class="overlay" id="confirmOverlay">
@@ -596,6 +720,33 @@
             const savedTab = localStorage.getItem('lasGoAdminTab') || 'dashboard'; switchTab(savedTab);
         });
 
+        // ---------------- STORE STATUS LOGIC ---------------- 
+        window.toggleStoreStatus = async (isOnline) => {
+            try {
+                await setDoc(doc(db, "settings", "store_status"), { isOnline: isOnline }, { merge: true });
+                showToast(isOnline ? "Store is now online!" : "Store is offline!");
+            } catch(e) { console.error(e); alert("Error updating store status."); }
+        };
+
+        onSnapshot(doc(db, "settings", "store_status"), (docSnap) => {
+            const toggle = document.getElementById('storeStatusToggle');
+            const iconBox = document.getElementById('statusIconBox');
+            const textMain = document.getElementById('statusTextMain');
+            const textSub = document.getElementById('statusTextSub');
+            
+            let isOnline = false;
+            if (docSnap.exists()) { isOnline = docSnap.data().isOnline === true; }
+            
+            toggle.checked = isOnline;
+            if(isOnline) {
+                iconBox.style.background = 'var(--accent-light)'; iconBox.style.color = 'var(--accent)';
+                textMain.innerText = 'Store Open'; textSub.innerText = 'You are receiving orders';
+            } else {
+                iconBox.style.background = 'var(--danger-light)'; iconBox.style.color = 'var(--danger)';
+                textMain.innerText = 'Store Closed'; textSub.innerText = 'You are not receiving orders';
+            }
+        });
+
         // ---------------- WIZARD LOGIC ----------------
         window.selectProductType = (type) => {
             selectedProductType = type;
@@ -609,11 +760,8 @@
         window.previewWizardImg = () => {
             const url = document.getElementById('pImg').value; 
             const imgEl = document.getElementById('previewImg');
-            if(url) { 
-                imgEl.src = url; imgEl.style.display = 'block'; 
-            } else { 
-                imgEl.style.display = 'none'; 
-            }
+            if(url) { imgEl.src = url; imgEl.style.display = 'block'; } 
+            else { imgEl.style.display = 'none'; }
         }
 
         window.validateStep1 = () => {
@@ -652,26 +800,28 @@
         function renderSizes() { document.getElementById('listSizes').innerHTML = window.productSizes.map((s, i) => `<div class="list-row"><div class="list-info"><h5>${s.name}</h5><p>Sell: ${s.sellPrice.toFixed(2)} DH | Cost: ${s.costPrice.toFixed(2)} DH</p></div><button class="btn-icon-small btn-del-prod" onclick="removeSize(${i})"><svg viewBox="0 0 24 24" style="width:14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div>`).join(''); }
 
         window.addExtra = () => {
-            const name = document.getElementById('inpExtraName').value.trim(); const price = parseFloat(document.getElementById('inpExtraPrice').value) || 0;
-            if(name) { window.productExtras.push({ name, price }); document.getElementById('inpExtraName').value = ''; document.getElementById('inpExtraPrice').value = ''; renderExtras(); }
+            const name = document.getElementById('inpExtraName').value.trim(); 
+            const sell = parseFloat(document.getElementById('inpExtraSell').value) || 0;
+            const cost = parseFloat(document.getElementById('inpExtraCost').value) || 0;
+            if(name) { 
+                window.productExtras.push({ name, price: sell, costPrice: cost }); 
+                document.getElementById('inpExtraName').value = ''; 
+                document.getElementById('inpExtraSell').value = ''; 
+                document.getElementById('inpExtraCost').value = ''; 
+                renderExtras(); 
+            }
         };
         window.removeExtra = (index) => { window.productExtras.splice(index, 1); renderExtras(); };
-        function renderExtras() { document.getElementById('listExtras').innerHTML = window.productExtras.map((e, i) => `<div class="list-row"><div class="list-info"><h5>${e.name}</h5><p>+ ${e.price.toFixed(2)} DH</p></div><button class="btn-icon-small btn-del-prod" onclick="removeExtra(${i})"><svg viewBox="0 0 24 24" style="width:14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div>`).join(''); }
+        function renderExtras() { document.getElementById('listExtras').innerHTML = window.productExtras.map((e, i) => `<div class="list-row"><div class="list-info"><h5>${e.name}</h5><p>Sell: +${e.price.toFixed(2)} DH | Cost: ${e.costPrice !== undefined ? e.costPrice.toFixed(2) : '0.00'} DH</p></div><button class="btn-icon-small btn-del-prod" onclick="removeExtra(${i})"><svg viewBox="0 0 24 24" style="width:14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div>`).join(''); }
 
         // ---------------- CATEGORY CASCADING LOGIC ----------------
         function loadMainCats() {
-            // Filter categories based on the visually selected Product Type (Resto vs Grocery)
             const filteredCats = globalCategoriesData.filter(c => c.type === selectedProductType || !c.type); 
             const currentSelected = document.getElementById('pCat').value;
             
             document.getElementById('pCat').innerHTML = '<option value="">Select...</option>' + filteredCats.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
-            
-            // Try to keep selection if valid
-            if(currentSelected && filteredCats.find(c => c.name === currentSelected)) {
-                document.getElementById('pCat').value = currentSelected;
-            } else {
-                document.getElementById('pCat').value = '';
-            }
+            if(currentSelected && filteredCats.find(c => c.name === currentSelected)) { document.getElementById('pCat').value = currentSelected; } 
+            else { document.getElementById('pCat').value = ''; }
             loadSubCats();
         }
 
@@ -697,7 +847,6 @@
             try {
                 if(currentCatAddingType === 'main') {
                     if(!globalCategoriesData.find(c => c.name.toLowerCase() === val.toLowerCase())) {
-                        // Secretly tag the category to the current Product Type
                         await addDoc(collection(db, "categories"), { name: val, subcategories: [], type: selectedProductType }); 
                         showToast("Category created!");
                     } else { showToast("Category already exists!"); }
@@ -716,6 +865,11 @@
         });
 
         // ---------------- LISTENERS ----------------
+        onSnapshot(collection(db, "drivers"), snap => {
+            allDrivers = snap.docs.map(d => d.data());
+            renderDriverSettlements();
+        });
+
         onSnapshot(collection(db, "categories"), snap => {
             globalCategoriesData = snap.docs.map(d => ({id: d.id, ...d.data()})); 
             globalCategoriesData.sort((a,b) => a.name.localeCompare(b.name));
@@ -725,7 +879,7 @@
         onSnapshot(collection(db, "products"), snap => {
             allProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
             const container = document.getElementById('adminProductListContainer');
-            if(container && document.getElementById('view-produits').classList.contains('active')) {
+            if(container) {
                 document.getElementById('prodCountText').innerText = `${allProducts.length} items catalog`;
                 container.innerHTML = allProducts.map(p => {
                     const img = p.imageUrl ? `<img src="${p.imageUrl}">` : `<span style="font-weight:800;color:var(--text-muted);">${p.name.charAt(0)}</span>`;
@@ -734,12 +888,229 @@
             }
         });
 
-        // Add dummy data for orders dashboard so it doesn't break
         onSnapshot(collection(db, "orders"), snap => {
-            allOrders = snap.docs.map(d => ({id: d.id, ...d.data()}));
-            document.getElementById('dashStatOrders').innerText = allOrders.length;
-            // Real dashboard calculation logic remains unchanged in production
+            allOrders = snap.docs.map(d => ({id: d.id, ...d.data()})); 
+            calculateDashboard(); 
+            renderDriverSettlements();
+            renderFullOrdersList(); 
+            if (document.getElementById('view-order-detail').classList.contains('active')) {
+                const currentId = document.getElementById('det-id').innerText.replace('#', '').toLowerCase();
+                const stillExists = allOrders.find(o => o.id.toLowerCase() === currentId || o.id.substring(0,6).toLowerCase() === currentId);
+                if(stillExists) window.viewOrder(stillExists.id); else switchTab('commandes');
+            }
         });
+
+        // ---------------- DASHBOARD & FULL LISTS ----------------
+        function calculateDashboard() {
+            try {
+                const now = new Date(); const todayStr = now.toDateString(); const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1); const yesterdayStr = yesterday.toDateString(); 
+                let revenueToday = 0, revenueYesterday = 0, ordersToday = 0, ordersYesterday = 0, itemsToday = 0, itemsYesterday = 0; let productSalesCounter = {}; 
+                let shippingToday = 0, shippingYesterday = 0; let customersToday = new Set(); 
+
+                allOrders.forEach(order => {
+                    if(!order) return; let orderDate = new Date();
+                    if (order.timestamp) { const parsed = new Date(order.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
+                    const isToday = orderDate.toDateString() === todayStr; const isYesterday = orderDate.toDateString() === yesterdayStr;
+
+                    if (isToday) { ordersToday++; if(order.customerName) customersToday.add(order.customerName); }
+                    if (isYesterday) ordersYesterday++;
+
+                    if (order.status !== 'Cancelled') {
+                        if(order.cart && Array.isArray(order.cart)) {
+                            order.cart.forEach(item => { const p = item.product || {}; const qty = parseInt(item.qty) || 0; const key = p.id || p.name || 'unknown'; if (!productSalesCounter[key]) productSalesCounter[key] = { product: p, totalSold: 0 }; productSalesCounter[key].totalSold += qty; });
+                        }
+                    }
+
+                    if (order.status === 'Delivered') {
+                        let orderRev = 0, orderItems = 0; let orderShipping = safeNum(order.deliveryFee);
+                        if(order.cart && Array.isArray(order.cart)) { order.cart.forEach(item => { const p = item.product || {}; const sell = safeNum(item.unitPrice) || safeNum(p.sellPrice); const qty = parseInt(item.qty) || 0; orderRev += sell * qty; orderItems += qty; }); }
+                        if (isToday) { revenueToday += (orderRev + orderShipping); shippingToday += orderShipping; itemsToday += orderItems; }
+                        if (isYesterday) { revenueYesterday += (orderRev + orderShipping); shippingYesterday += orderShipping; itemsYesterday += orderItems; }
+                    }
+                });
+
+                document.getElementById('dashStatOrders').innerText = ordersToday;
+                document.getElementById('dashStatRevenue').innerText = revenueToday.toFixed(2) + ' DH';
+                document.getElementById('dashStatItems').innerText = itemsToday;
+                document.getElementById('dashStatCustomers').innerText = customersToday.size;
+
+                const elStatRev = document.getElementById('statRevenue'); if(elStatRev) elStatRev.innerText = revenueToday.toFixed(2) + ' DH';
+                renderTrendArrow('statRevenueTrend', revenueToday, revenueYesterday, false);
+                const elStatShipping = document.getElementById('statShipping'); if(elStatShipping) elStatShipping.innerText = shippingToday.toFixed(2) + ' DH';
+                renderTrendArrow('statShippingTrend', shippingToday, shippingYesterday, false);
+                const elStatOrders = document.getElementById('statOrders'); if(elStatOrders) elStatOrders.innerText = ordersToday;
+                renderTrendArrow('statOrdersTrend', ordersToday, ordersYesterday, false);
+                const elStatItems = document.getElementById('statItems'); if(elStatItems) elStatItems.innerText = itemsToday;
+                renderTrendArrow('statItemsTrend', itemsToday, itemsYesterday, false);
+
+                const getTime = (ts) => { if (!ts) return 0; const t = new Date(ts).getTime(); return isNaN(t) ? 0 : t; };
+                const recentOrders = [...allOrders].sort((a,b) => getTime(b.timestamp) - getTime(a.timestamp)).slice(0, 3);
+                
+                const dashRecentContainer = document.getElementById('dashRecentOrdersContainer');
+                if(dashRecentContainer) {
+                    if(recentOrders.length === 0) { dashRecentContainer.innerHTML = `<div class="empty-state-card"><div class="empty-icon-wrap" style="background:#FFEDD5; color:#EA580C;"><svg viewBox="0 0 24 24" style="width:28px;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></div><h4>No orders yet</h4></div>`; } 
+                    else { dashRecentContainer.innerHTML = generateOrdersHTML(recentOrders); }
+                }
+            } catch (error) { console.error("Dashboard Error:", error); }
+        }
+
+        function renderDriverSettlements() {
+            const container = document.getElementById('dashDriversContainer');
+            if(!container) return;
+
+            let html = '';
+            let totalDriversOwe = 0;
+
+            allDrivers.forEach(driver => {
+                const driverOrders = allOrders.filter(o => o.driverEmail === driver.email && o.status === 'Delivered' && o.driverSettled !== true);
+                
+                let debt = 0;
+                driverOrders.forEach(o => {
+                    const fee = safeNum(o.deliveryFee);
+                    const total = safeNum(o.totalPrice);
+                    const subtotal = total - fee;
+                    // Driver keeps delivery fee, gives back subtotal
+                    debt += subtotal; 
+                });
+
+                if(debt > 0) {
+                    totalDriversOwe += debt;
+                    html += `
+                    <div class="driver-row">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div style="width:36px;height:36px; border-radius:10px; background:var(--primary-light); color:var(--primary); display:flex; align-items:center; justify-content:center;">
+                                <svg viewBox="0 0 24 24" style="width:18px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            </div>
+                            <div class="d-info">
+                                <h4>${driver.name || driver.email.split('@')[0]}</h4>
+                                <p>${driverOrders.length} order(s)</p>
+                            </div>
+                        </div>
+                        <div class="d-debt">${debt.toFixed(2)} DH</div>
+                    </div>`;
+                }
+            });
+
+            if(html === '') {
+                container.innerHTML = `<div style="text-align:center; padding:12px; color:var(--text-muted); font-size:13px; font-weight:500;">No pending settlements.</div>`;
+            } else {
+                container.innerHTML = html + `<div style="padding-top:12px; margin-top:4px; border-top:1px dashed var(--border); display:flex; justify-content:space-between; font-weight:800; font-size:14px;"><span>Total Expected:</span><span style="color:var(--primary);">${totalDriversOwe.toFixed(2)} DH</span></div>`;
+            }
+        }
+
+        function renderTrendArrow(elementId, todayVal, yesterdayVal, invertColors = false) {
+            const el = document.getElementById(elementId); if (!el) return;
+            if (yesterdayVal === 0 && todayVal === 0) { el.className = 'mc-trend trend-flat'; el.innerText = '-'; return; }
+            let percentChange = (yesterdayVal === 0 && todayVal > 0) ? 100 : ((todayVal - yesterdayVal) / yesterdayVal) * 100;
+            let colorClass = percentChange >= 0 ? 'trend-up' : 'trend-down'; if(invertColors) colorClass = percentChange >= 0 ? 'trend-down' : 'trend-up';
+            el.className = `mc-trend ${colorClass}`;
+            el.innerHTML = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;"><polyline points="${percentChange >= 0 ? '23 6 13.5 15.5 8.5 10.5 1 18' : '23 18 13.5 8.5 8.5 13.5 1 6'}"></polyline><polyline points="${percentChange >= 0 ? '17 6 23 6 23 12' : '17 18 23 18 23 12'}"></polyline></svg> ${Math.abs(percentChange).toFixed(0)}%`;
+        }
+
+        window.filterOrdersList = (status, tabElement) => { document.querySelectorAll('#view-commandes .tab-pill').forEach(t => t.classList.remove('active')); tabElement.classList.add('active'); currentOrderFilter = status; renderFullOrdersList(); };
+
+        function renderFullOrdersList() {
+            const getTime = (ts) => { if (!ts) return 0; const t = new Date(ts).getTime(); return isNaN(t) ? 0 : t; };
+            let filtered = [...allOrders].sort((a,b) => getTime(b.timestamp) - getTime(a.timestamp));
+            if (currentOrderFilter !== 'All') { filtered = filtered.filter(o => o.status === currentOrderFilter); }
+            const container = document.getElementById('adminOrderListContainer');
+            if(container) container.innerHTML = generateOrdersHTML(filtered);
+        }
+
+        function generateOrdersHTML(ordersArray) {
+            if(!ordersArray || ordersArray.length === 0) return `<div class="empty-state-card" style="margin-top:20px;">No orders found.</div>`;
+            return ordersArray.map(o => {
+                let orderDate = new Date(); if (o.timestamp) { const parsed = new Date(o.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
+                const date = orderDate.toLocaleDateString('en-US', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+                
+                let statusClass = 'b-pending'; 
+                if(o.status === 'Preparing') statusClass = 'b-processing'; 
+                if(o.status === 'Out for Delivery') statusClass = 'b-transit'; 
+                if(o.status === 'Delivered') statusClass = 'b-delivered'; 
+                if(o.status === 'Cancelled') statusClass = 'b-cancelled';
+                
+                const price = safeNum(o.totalPrice).toFixed(2); const items = parseInt(o.totalItems) || 0; const cName = o.customerName || 'Customer';
+                return `<div class="order-card" onclick="window.viewOrder('${o.id}')"><div class="order-header"><div><div class="o-id">#${o.id.substring(0,6).toUpperCase()}</div><div class="o-date">${date}</div></div><div class="badge ${statusClass}">${o.status}</div></div><div style="display: flex; justify-content: space-between; align-items: flex-end;"><div><div class="o-client"><svg viewBox="0 0 24 24" style="width:14px; color:var(--text-muted);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${cName}</div><div class="o-items">${items} items</div></div><div class="o-price">${price} DH</div></div></div>`;
+            }).join('');
+        }
+
+        window.viewOrder = (orderId) => {
+            const order = allOrders.find(o => o.id === orderId); if(!order) return;
+            document.getElementById('det-id').innerText = "#" + order.id.substring(0,6).toUpperCase();
+            let orderDate = new Date(); if (order.timestamp) { const parsed = new Date(order.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
+            document.getElementById('det-date').innerText = orderDate.toLocaleDateString('en-US', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+            document.getElementById('det-client').innerText = order.customerName || 'Unknown';
+            document.getElementById('det-neighborhood').innerText = order.neighborhood || 'Not specified';
+
+            let statusClass = 'b-pending'; 
+            if(order.status === 'Preparing') statusClass = 'b-processing'; 
+            if(order.status === 'Out for Delivery') statusClass = 'b-transit'; 
+            if(order.status === 'Delivered') statusClass = 'b-delivered'; 
+            if(order.status === 'Cancelled') statusClass = 'b-cancelled';
+            
+            const badge = document.getElementById('det-badge'); badge.className = `badge ${statusClass}`; badge.innerText = (order.status || 'Unknown').toUpperCase();
+
+            document.getElementById('det-items-count').innerText = `Items (${order.totalItems || 0})`;
+            document.getElementById('det-items-list').innerHTML = (order.cart || []).map(item => {
+                const p = item.product || {}; const img = p.imageUrl ? `<img src="${p.imageUrl}">` : ''; const vText = item.variantName ? `<span style="color:var(--primary);">${item.variantName}</span>` : ''; const price = safeNum(item.unitPrice) || safeNum(p.sellPrice);
+                return `<div class="item-row"><div class="item-img">${img}</div><div class="item-details"><div class="item-name">${p.name || 'Item'} ${vText}</div><div class="item-meta">x${item.qty}</div></div><div class="item-price">${(price * item.qty).toFixed(2)} DH</div></div>`;
+            }).join('');
+
+            const deliveryFee = safeNum(order.deliveryFee); const total = safeNum(order.totalPrice); const subTotal = total - deliveryFee;
+            document.getElementById('det-subtotal').innerText = `${subTotal.toFixed(2)} DH`; 
+            document.getElementById('det-shipping').innerText = `${deliveryFee.toFixed(2)} DH`;
+            document.getElementById('det-total').innerText = `${total.toFixed(2)} DH`;
+
+            let actionsHTML = '';
+            
+            // DISPATCH DROPDOWN
+            if(order.status === 'Pending' || order.status === 'Preparing') {
+                const driverOptions = allDrivers.map(d => {
+                    const activeCount = allOrders.filter(o => o.driverEmail === d.email && o.status === 'Out for Delivery').length;
+                    const statusText = activeCount > 0 ? `(Busy: ${activeCount})` : `(Free)`;
+                    const isSelected = order.driverEmail === d.email ? 'selected' : '';
+                    return `<option value="${d.email}" ${isSelected}>${d.name ? d.name.toUpperCase() : d.email.split('@')[0].toUpperCase()} ${statusText}</option>`;
+                }).join('');
+                
+                actionsHTML += `
+                <div style="margin-bottom: 16px; background: var(--bg-main); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                    <label style="font-size:12px; font-weight:800; color:var(--text-main); margin-bottom:8px; display:block;">Assign to Driver:</label>
+                    <select class="form-control" onchange="assignDriver('${order.id}', this.value)" style="padding:12px; font-weight:700; color:var(--primary);">
+                        <option value="">-- Unassigned --</option>
+                        ${driverOptions}
+                    </select>
+                </div>`;
+            }
+
+            if(order.status !== 'Cancelled' && order.status !== 'Delivered') {
+                if(order.status === 'Pending') actionsHTML += `<button class="btn btn-info" onclick="promptOrderStatus('${order.id}', 'Preparing')">Accept (Preparing)</button>`;
+                if(order.status === 'Preparing') actionsHTML += `<button class="btn btn-warning" onclick="promptOrderStatus('${order.id}', 'Out for Delivery')">Force Dispatch</button>`;
+                if(order.status === 'Out for Delivery') actionsHTML += `<button class="btn btn-success" onclick="promptOrderStatus('${order.id}', 'Delivered')">Force Delivered</button>`;
+                actionsHTML += `<button class="btn btn-danger-outline" onclick="promptOrderStatus('${order.id}', 'Cancelled')">Cancel Order</button>`;
+            } else if (order.status === 'Cancelled') { actionsHTML = `<div style="text-align:center; color:var(--danger); font-weight:700; padding:12px; background:var(--danger-light); border-radius:12px;">Order Cancelled</div>`; } 
+            else { actionsHTML = `<div style="text-align:center; color:var(--accent); font-weight:700; padding:12px; background:var(--accent-light); border-radius:12px;">Order Completed</div>`; }
+            
+            actionsHTML += `<button class="btn btn-outline" style="color:var(--danger); border-color:var(--danger-light); margin-top: 24px;" onclick="promptDeleteOrder('${order.id}')">Delete Order</button>`;
+            
+            document.getElementById('det-actions').innerHTML = actionsHTML; switchTab('order-detail');
+        };
+
+        window.promptOrderStatus = (orderId, newStatus) => {
+            document.getElementById('modalTitle').innerText = "Update Status"; document.getElementById('modalMsg').innerText = `Mark this order as ${newStatus}?`;
+            const btn = document.getElementById('modalConfirmBtn'); btn.className = 'btn btn-primary'; btn.style.border = 'none';
+            if(newStatus === 'Cancelled') btn.style.background = 'var(--danger)'; else if(newStatus === 'Out for Delivery') btn.style.background = 'var(--warning)'; else if(newStatus === 'Delivered') btn.style.background = 'var(--accent)'; else btn.style.background = 'var(--blue)';
+            window.confirmActionCallback = async () => { closeModals(); try { await updateDoc(doc(db, "orders", orderId), { status: newStatus }); showToast(`Status updated`); } catch(e) { alert("Network error"); } }; document.getElementById('confirmOverlay').classList.add('active');
+        };
+
+        window.assignDriver = async (orderId, driverEmail) => {
+            try { await updateDoc(doc(db, "orders", orderId), { driverEmail: driverEmail }); showToast("Driver assigned!"); } catch(e) { console.error(e); alert("Failed to assign driver."); }
+        };
+
+        window.promptDeleteOrder = (orderId) => {
+            document.getElementById('modalTitle').innerText = "Delete Order"; document.getElementById('modalMsg').innerText = "This will permanently delete the order. Confirm?";
+            const btn = document.getElementById('modalConfirmBtn'); btn.style.background = 'var(--danger)'; btn.style.border = 'none';
+            window.confirmActionCallback = async () => { closeModals(); try { await deleteDoc(doc(db, "orders", orderId)); showToast("Order deleted"); switchTab('commandes'); } catch(e) { console.error(e); alert("Error during deletion."); } }; document.getElementById('confirmOverlay').classList.add('active');
+        };
 
         // ---------------- ADD / EDIT EXECUTION ----------------
         window.promptDeleteProduct = (id) => {
@@ -754,16 +1125,14 @@
             document.getElementById('previewImg').style.display = 'none'; 
             document.getElementById('pDesc').value = '';
             
-            selectProductType('Resto'); // Default
+            selectProductType('Resto'); 
 
-            // Reset Step 3
             document.getElementById('tglFeatured').checked = false;
             document.getElementById('tglPromo').checked = false; document.getElementById('cfgPromo').style.display = 'none';
             document.getElementById('tglSauce').checked = false; document.getElementById('cfgSauce').style.display = 'none'; window.productSauces = []; renderSauces();
             document.getElementById('tglSize').checked = false; document.getElementById('cfgSize').style.display = 'none'; window.productSizes = []; renderSizes();
             document.getElementById('tglExtra').checked = false; document.getElementById('cfgExtra').style.display = 'none'; window.productExtras = []; renderExtras();
-            document.getElementById('tglNotes').checked = true;
-            document.getElementById('tglAvailable').checked = true;
+            document.getElementById('tglNotes').checked = true; document.getElementById('tglAvailable').checked = true;
 
             switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
         };
@@ -787,9 +1156,8 @@
             document.getElementById('pSell').value = p.sellPrice || '';
             document.getElementById('pCost').value = p.costPrice || '';
             
-            // Step 3 Configs
+            // Configs
             document.getElementById('tglFeatured').checked = p.featured || false; 
-            
             document.getElementById('tglPromo').checked = (p.promoPrice !== null && p.promoPrice !== undefined);
             document.getElementById('cfgPromo').style.display = document.getElementById('tglPromo').checked ? 'block' : 'none';
             document.getElementById('vPromoPrice').value = p.promoPrice || '';
