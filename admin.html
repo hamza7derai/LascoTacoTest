@@ -8,7 +8,7 @@
     
     <style>
         /* =========================================
-           VARIABLES & RESET
+           VARIABLES & RESET (Admin Theme)
         ========================================= */
         :root {
             --bg-main: #F8F9FB; --surface: #FFFFFF;
@@ -19,49 +19,36 @@
             --purple: #8B5CF6; --purple-light: #EDE9FE;
             --blue: #3B82F6; --blue-light: #DBEAFE;
             --text-main: #111827; --text-muted: #6B7280;
-            --border: #E5E7EB; --radius-card: 20px; --radius-btn: 12px;
-            --shadow-sm: 0 4px 12px rgba(0,0,0,0.03); --shadow-nav: 0 -4px 20px rgba(0,0,0,0.05); --shadow-modal: 0 10px 40px rgba(0,0,0,0.1);
+            --border: #E5E7EB; 
+            --radius-card: 20px; --radius-btn: 12px;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.03); 
+            --shadow-nav: 0 -4px 20px rgba(0,0,0,0.05); 
+            --shadow-modal: 0 10px 40px rgba(0,0,0,0.1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-main); padding-bottom: 90px; }
         .container { padding: 20px; max-width: 600px; margin: 0 auto; position: relative; min-height: 100vh;}
-        svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        button, input, select, textarea { font-family: inherit; outline: none; border: none; background: none; }
-        button { cursor: pointer; }
+        svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+        button { font-family: inherit; cursor: pointer; outline: none; border: none; background: none; }
+        input, select, textarea { font-family: inherit; }
 
         /* SPA VIEWS */
         .app-view { display: none; animation: fadeIn 0.3s ease; }
         .app-view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* LOGIN SCREEN */
-        #view-login { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: var(--surface); padding: 30px;}
-        .login-box { width: 100%; max-width: 400px; text-align: center; }
-        .login-box h1 { font-size: 28px; font-weight: 800; color: var(--primary); margin-bottom: 8px; letter-spacing: -1px;}
-        .login-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 32px; font-weight: 500;}
-        .login-form .form-group { text-align: left; }
-        
         /* HEADERS */
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .header-top h1 { font-size: 22px; font-weight: 800; color: var(--text-main); line-height: 1.2; }
+        .header-top h1 { font-size: 24px; font-weight: 800; color: var(--text-main); line-height: 1.2; letter-spacing: -0.5px;}
         .header-top p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
-        .btn-exit { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 12px; box-shadow: var(--shadow-sm);}
-        .btn-exit:active { transform: scale(0.95); }
+        .btn-exit { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: var(--surface); padding: 8px 12px; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); color: var(--text-main); font-size: 10px; font-weight: 700; cursor: pointer;}
         .section-title { font-size: 16px; font-weight: 800; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
         .section-link { font-size: 13px; color: var(--primary); font-weight: 700; text-decoration: none; cursor: pointer; }
 
-        /* DASHBOARD ELEMENTS */
-        .card { background: var(--surface); border-radius: var(--radius-card); padding: 16px; box-shadow: var(--shadow-sm); margin-bottom: 16px; border: 1px solid var(--border); }
+        /* CARDS & TOGGLES */
+        .card { background: var(--surface); border-radius: var(--radius-card); padding: 16px; box-shadow: var(--shadow-sm); margin-bottom: 16px; border: 1px solid rgba(0,0,0,0.02);}
         
-        .dash-stats-row { display: flex; justify-content: space-between; background: var(--surface); border-radius: var(--radius-card); padding: 16px; margin-bottom: 24px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
-        .dash-stat-col { flex: 1; text-align: center; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 0 8px;}
-        .dash-stat-col:last-child { border-right: none; }
-        .dash-stat-icon { width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
-        .dash-stat-val { font-size: 18px; font-weight: 800; color: var(--text-main); line-height: 1; margin-bottom: 4px; }
-        .dash-stat-label { font-size: 11px; color: var(--text-muted); font-weight: 600; line-height: 1.2; }
-
-        /* TOGGLE STORE STATUS */
         .toggle-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 0; background: transparent; border: none; margin-bottom: 0; width: 100%;}
         .switch { position: relative; display: inline-block; width: 44px; height: 26px; flex-shrink: 0;}
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -70,135 +57,140 @@
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(18px); }
 
-        /* DRIVER CASH LIST */
+        /* DASHBOARD STATS */
+        .dash-stats-row { display: flex; justify-content: space-between; background: var(--surface); border-radius: var(--radius-card); padding: 16px; margin-bottom: 24px; box-shadow: var(--shadow-sm); }
+        .dash-stat-col { flex: 1; text-align: center; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+        .dash-stat-col:last-child { border-right: none; }
+        .dash-stat-icon { width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+        .dash-stat-val { font-size: 18px; font-weight: 800; color: var(--text-main); line-height: 1; margin-bottom: 4px; }
+        .dash-stat-label { font-size: 11px; color: var(--text-muted); font-weight: 600; line-height: 1.2; }
+
+        /* DRIVER BALANCES */
         .driver-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--bg-main); }
         .driver-row:last-child { border-bottom: none; padding-bottom: 0;}
         .d-info h4 { font-size: 14px; font-weight: 800; color: var(--text-main); text-transform: capitalize; margin-bottom: 2px;}
-        .d-info p { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+        .d-info p { font-size: 12px; color: var(--text-muted); font-weight: 500; }
         .d-debt { font-size: 15px; font-weight: 800; color: var(--primary); }
 
-        /* ORDERS LIST */
+        /* RECENT ORDERS (Minimalist) */
         .order-card { padding: 16px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; background: var(--surface); border-radius: var(--radius-card); margin-bottom: 12px; box-shadow: var(--shadow-sm); }
         .order-card:active { transform: scale(0.98); }
-        .order-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; border-bottom: 1px solid var(--bg-main); padding-bottom: 12px;}
-        .o-id { font-size: 15px; font-weight: 800; }
-        .o-date { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-weight: 500;}
-        .o-client { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-        .o-items { font-size: 12px; color: var(--text-muted); font-weight:500;}
-        .o-price { font-size: 16px; font-weight: 800; text-align: right; }
+        .order-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;}
+        .o-id { font-size: 15px; font-weight: 800; color: var(--text-main);}
+        .o-date { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 500;}
+        .o-client { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; color: var(--text-main);}
+        .o-items { font-size: 12px; color: var(--text-muted); font-weight: 500;}
+        .o-price { font-size: 16px; font-weight: 800; color: var(--text-main); text-align: right; }
         
-        .badge { padding: 6px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-        .b-pending { background: var(--warning-light); color: #D97706; }
+        .badge { padding: 6px 10px; border-radius: 8px; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .b-pending { background: var(--warning-light); color: var(--warning); }
         .b-processing { background: var(--blue-light); color: var(--blue); }
         .b-transit { background: var(--primary-light); color: var(--primary); }
-        .b-delivered { background: var(--accent-light); color: #15803D; }
-        .b-cancelled { background: var(--danger-light); color: #DC2626; }
+        .b-delivered { background: var(--accent-light); color: var(--accent); }
+        .b-cancelled { background: var(--danger-light); color: var(--danger); }
 
-        /* CATALOG ACCORDIONS */
-        .cat-toggle-wrap { display: flex; background: var(--surface); border-radius: 50px; padding: 4px; border: 1px solid var(--border); margin-bottom: 20px;}
-        .cat-toggle-btn { flex: 1; padding: 10px; font-size: 13px; font-weight: 700; text-align: center; border-radius: 50px; color: var(--text-muted); transition: 0.3s; cursor: pointer; }
-        .cat-toggle-btn.active { background: var(--primary-light); color: var(--primary); }
+        /* CATALOG TOGGLE */
+        .cat-toggle-wrapper { background: var(--surface); border-radius: 50px; padding: 4px; display: flex; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 20px;}
+        .cat-toggle-btn { flex: 1; padding: 10px; font-size: 13px; font-weight: 700; color: var(--text-muted); border-radius: 50px; transition: 0.3s; text-align: center; display: flex; justify-content: center; align-items: center; gap: 6px;}
+        .cat-toggle-btn.active { background: var(--primary); color: white; }
 
-        .accordion-item { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); margin-bottom: 12px; overflow: hidden; box-shadow: var(--shadow-sm); transition: 0.3s;}
+        /* CATALOG ACCORDIONS & CARDS */
+        .accordion-group { margin-bottom: 12px; background: var(--surface); border-radius: var(--radius-card); border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm);}
         .accordion-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: var(--surface); }
-        .accordion-header h3 { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 10px;}
-        .acc-count { font-size: 11px; color: var(--text-muted); background: var(--bg-main); padding: 4px 8px; border-radius: 20px; font-weight: 600;}
-        .accordion-chevron { transition: 0.3s; color: var(--text-muted); }
-        .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: var(--bg-main);}
-        .accordion-item.open .accordion-body { max-height: 2000px; padding: 12px; border-top: 1px solid var(--border); }
-        .accordion-item.open .accordion-chevron { transform: rotate(180deg); }
+        .accordion-title { font-size: 15px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px;}
+        .accordion-badge { font-size: 11px; color: var(--text-muted); font-weight: 600; background: var(--bg-main); padding: 4px 8px; border-radius: 50px;}
+        .accordion-icon { transition: transform 0.3s; color: var(--text-muted);}
+        .accordion-group.open .accordion-icon { transform: rotate(180deg); }
+        .accordion-content { display: none; padding: 0 16px 16px; border-top: 1px solid var(--bg-main); background: #FAFAFA;}
+        .accordion-group.open .accordion-content { display: block; }
+        
+        /* Product Card inside Catalog */
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;}
+        .prod-card { background: var(--surface); border-radius: 16px; padding: 6px; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden;} 
+        .prod-img-wrap { width: 100%; aspect-ratio: 5 / 4; overflow: hidden; background: transparent; margin-bottom: 8px; display: flex; align-items: center; justify-content: center;}
+        .prod-img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+        .prod-info-block { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; padding: 4px; }
+        .prod-title { font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;} 
+        .prod-status { font-size: 10px; font-weight: 600; display: flex; align-items: center; gap: 4px; margin-bottom: 12px;}
+        .status-avail { color: var(--accent); }
+        .status-unavail { color: var(--danger); }
+        .prod-bottom-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto;}
+        .prod-price { font-size: 14px; font-weight: 800; color: var(--primary); } 
+        
+        /* Edit Actions directly on card */
+        .card-actions { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; z-index: 5;}
+        .btn-mini { width: 28px; height: 28px; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid var(--border); transition: 0.2s;}
+        .btn-mini:active { transform: scale(0.9); }
 
-        .prod-card-list { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--surface); border-radius: 14px; border: 1px solid var(--border); margin-bottom: 8px; box-shadow: var(--shadow-sm);}
-        .prod-img-box { width: 50px; height: 50px; background: var(--bg-main); border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden;}
-        .prod-img-box img { max-width: 100%; max-height: 100%; mix-blend-mode: multiply; object-fit: contain;}
-        .prod-info { flex: 1; display: flex; flex-direction: column; justify-content: center;}
-        .prod-info h4 { font-size: 14px; font-weight: 800; color: var(--text-main); margin-bottom: 2px;}
-        .prod-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; display: flex; align-items: center; gap: 6px;}
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block;}
-        .dot-on { background: var(--accent); } .dot-off { background: var(--danger); }
-        .prod-actions { display: flex; gap: 8px; align-items: center; }
-        .btn-icon-small { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: 0.2s;}
-        .btn-icon-small:active { transform: scale(0.9); }
-        .btn-edit-prod { background: var(--primary-light); color: var(--primary); }
-        .btn-del-prod { background: var(--danger-light); color: var(--danger); }
-
-        /* ANALYTICS (Zero-Inventory Model) */
-        .stat-hero { background: var(--surface); border-radius: 24px; padding: 24px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); display: flex; justify-content: space-between; align-items: center;}
-        .stat-hero-left h4 { font-size: 13px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
-        .stat-hero-left h2 { font-size: 28px; font-weight: 800; color: var(--text-main); line-height: 1.1; margin-bottom: 8px;}
-        .stat-hero-left p { font-size: 12px; color: var(--text-muted); font-weight: 500;}
-        .profit-badge { background: var(--accent-light); color: var(--accent); padding: 8px 16px; border-radius: 50px; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 6px;}
-
-        .analytics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;}
-        .metric-card { background: var(--surface); border-radius: 16px; padding: 16px 12px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); text-align: center; }
-        .mc-icon { width: 32px; height: 32px; border-radius: 10px; display: flex; align-items:center; justify-content: center; margin: 0 auto 12px;}
-        .mc-val { font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 4px;}
+        /* ANALYTICS VIEW */
+        .analytics-hero { background: var(--surface); border-radius: 24px; padding: 24px; margin-bottom: 24px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 12px;}
+        .hero-title { font-size: 13px; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 8px;}
+        .hero-val { font-size: 36px; font-weight: 800; color: var(--text-main); letter-spacing: -1px;}
+        .hero-profit { background: var(--accent-light); color: var(--accent); padding: 10px 16px; border-radius: 12px; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; align-self: flex-start;}
+        
+        .analytics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;}
+        .metric-card { background: var(--surface); border-radius: 16px; padding: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); text-align: center; display: flex; flex-direction: column; align-items: center;}
+        .mc-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items:center; justify-content: center; margin-bottom: 12px;}
+        .mc-val { font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; line-height: 1;}
         .mc-title { font-size: 11px; color: var(--text-muted); font-weight: 600; }
-
-        .fee-card { background: var(--surface); border-radius: 16px; padding: 20px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); box-shadow: var(--shadow-sm);}
-        .fee-icon-wrap { display: flex; align-items: center; gap: 12px;}
-        .fee-icon { width: 44px; height: 44px; background: var(--warning-light); color: var(--warning); border-radius: 12px; display: flex; align-items: center; justify-content: center;}
-
-        /* FORMS & INPUTS */
-        .search-box { position: relative; margin-bottom: 20px; display: flex; gap: 10px; }
-        .search-box input { flex: 1; padding: 14px 16px 14px 44px; border: 1px solid var(--border); border-radius: var(--radius-btn); background: var(--surface); outline: none; font-size: 14px; }
-        .search-box svg.search-icon { position: absolute; left: 16px; top: 14px; color: var(--text-muted); width: 18px; }
         
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
-        .form-control { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-btn); background: var(--surface); outline: none; font-size: 14px; font-weight: 500; transition: 0.2s; color: var(--text-main); }
-        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
-        .input-with-action { display: flex; gap: 10px; }
-        .btn-plus-field { width: 48px; height: 48px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-btn); display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; flex-shrink: 0;}
-        .help-text { font-size: 11px; color: var(--text-muted); margin-top: 6px; display: block; }
-        
-        .btn { width: 100%; padding: 16px; border-radius: var(--radius-btn); font-size: 15px; font-weight: 700; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; border: none; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-success { background: var(--accent); color: white; }
-        .btn-warning { background: var(--warning); color: white; }
-        .btn-danger-outline { background: transparent; color: var(--danger); border: 1px solid var(--danger-light); }
-        .btn-outline { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); }
-        
-        .tabs-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -20px 20px; padding: 0 20px; }
-        .tabs-scroll::-webkit-scrollbar { display: none; }
-        .tab-pill { padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); white-space: nowrap; cursor: pointer; transition: 0.2s;}
-        .tab-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .compare-row { background: var(--surface); border-radius: 16px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); box-shadow: var(--shadow-sm); margin-bottom: 12px;}
+        .compare-label { font-size: 14px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 12px;}
+        .compare-val { font-size: 16px; font-weight: 800; color: var(--text-main); }
 
-        /* WIZARD (SAAS STYLE ADD ITEM) */
-        .stepper-container { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 32px; }
-        .step-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); transition: 0.3s; }
-        .step-dot.active { background: var(--primary); width: 24px; border-radius: 10px;}
-        .step-text { font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-align: center;}
+        /* WIZARD (SAAS STYLE - Preserved exactly as requested) */
+        .wizard-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .stepper-container { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 32px; }
+        .step-pill { font-size: 12px; font-weight: 800; color: var(--text-muted); display: flex; align-items: center; gap: 6px;}
+        .step-pill.active { color: var(--primary); }
+        .step-dots { display: flex; gap: 6px; }
+        .s-dot { width: 20px; height: 4px; border-radius: 4px; background: var(--border); }
+        .s-dot.active { background: var(--primary); }
 
-        .wizard-box { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); padding: 24px; margin-bottom: 30px; box-shadow: var(--shadow-sm); }
+        .wizard-box { margin-bottom: 30px; }
         .wizard-step { display: none; animation: fadeIn 0.3s; }
         .wizard-step.active { display: block; }
         
-        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-        .upload-card { border: 1.5px dashed var(--border); border-radius: 16px; padding: 20px 10px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 8px; background: var(--bg-main); }
+        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px; }
+        .upload-card { border: 1.5px dashed var(--border); border-radius: 16px; padding: 20px 12px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 8px; background: var(--surface); }
         .upload-card:hover { border-color: var(--primary); background: var(--primary-light); }
-        .upload-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--surface); display: flex; align-items: center; justify-content: center; color: var(--primary); box-shadow: var(--shadow-sm); }
-        .upload-card h5 { font-size: 12px; font-weight: 800; color: var(--text-main); }
-        .upload-card p { font-size: 10px; color: var(--text-muted); line-height: 1.3; }
+        .upload-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--primary-light); display: flex; align-items: center; justify-content: center; color: var(--primary); }
+        .upload-card h5 { font-size: 13px; font-weight: 800; color: var(--text-main); }
+        .upload-card p { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
         
         .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
-        .type-card { border: 2px solid var(--border); border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s; background: var(--surface); }
-        .type-card.active { border-color: var(--primary); background: #FFFaf5; }
-        .type-icon-box { display: flex; align-items: center; gap: 10px; }
-        .type-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .tc-resto .type-icon { background: var(--primary-light); color: var(--primary); }
-        .tc-grocery .type-icon { background: var(--accent-light); color: var(--accent); }
-        .type-card h5 { font-size: 14px; font-weight: 800; color: var(--text-main); margin-bottom: 0; }
-        .radio-dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; }
+        .type-card { border: 2px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: 0.2s; background: var(--surface); text-align: center; position: relative;}
+        .type-card.active { border-color: var(--primary); background: var(--primary-light); }
+        .type-icon { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
+        .type-card.active .type-icon { color: var(--primary); }
+        .type-card h5 { font-size: 15px; font-weight: 800; color: var(--text-main); }
+        .radio-dot { position: absolute; top: 12px; right: 12px; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; background: white;}
         .type-card.active .radio-dot { border-color: var(--primary); background: var(--primary); }
-        .type-card.active .radio-dot::after { content: '✓'; color: white; font-size: 12px; font-weight: bold; }
+        .type-card.active .radio-dot::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: white; }
 
-        .wizard-footer { display: flex; gap: 12px; align-items: center; margin-top: 24px;}
-        .wizard-footer .btn-outline { width: auto; padding: 16px 24px; }
-        .wizard-footer .btn-primary { flex: 1; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
+        .form-control { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-btn); background: var(--surface); outline: none; font-size: 14px; font-weight: 500; transition: 0.2s; color: var(--text-main); }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+        .input-with-action { display: flex; gap: 10px; }
+        .btn-plus-field { width: 48px; height: 48px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-btn); display: flex; align-items: center; justify-content: center; color: var(--text-main); cursor: pointer; flex-shrink: 0; font-size: 20px; font-weight: 400;}
+        .help-text { font-size: 11px; color: var(--text-muted); margin-top: 6px; display: block; }
+        
+        .btn { width: 100%; padding: 16px; border-radius: var(--radius-btn); font-size: 15px; font-weight: 800; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; border: none; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-outline { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); }
+        .wizard-footer { display: flex; gap: 12px; align-items: center; margin-top: 32px;}
+        .wizard-footer .btn-outline { width: 30%; }
+        .wizard-footer .btn-primary { width: 70%; }
 
-        /* MODALS & BOTTOM NAV */
+        .toggle-card-config { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow-sm); }
+        .config-panel { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--border); animation: fadeIn 0.3s ease; }
+        .list-row { display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-btn); margin-bottom: 8px; background: var(--bg-main);}
+        .list-info h5 { font-size: 14px; font-weight: 700; color: var(--text-main); }
+        .list-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        /* FAB & BOTTOM NAV */
         .fab { position: fixed; bottom: 100px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(234, 88, 12, 0.4); border: none; cursor: pointer; z-index: 80;}
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 10px 24px; z-index: 100; box-shadow: var(--shadow-nav); max-width: 600px; margin: 0 auto; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94A3B8; font-size: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; width: 20%; }
@@ -206,6 +198,7 @@
         .nav-item svg { width: 22px; height: 22px; stroke-width: 2.2; }
         .nav-item.active svg { fill: var(--primary-light); }
         
+        /* Modals & Toasts */
         .overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .overlay.active { opacity: 1; pointer-events: auto; }
         .modal { background: var(--surface); width: 100%; max-width: 340px; border-radius: 24px; padding: 24px; box-shadow: var(--shadow-modal); transform: scale(0.95); transition: 0.3s; text-align: center; display: none;}
@@ -219,151 +212,118 @@
 </head>
 <body>
 
-    <div id="view-login" class="app-view active">
-        <div class="login-box">
-            <div style="display:flex; justify-content:center; margin-bottom:16px;">
-                <svg viewBox="0 0 24 24" style="width:48px; height:48px; color:var(--primary);"><path d="M17.66 11.2C17.43 10.9 17.15 10.64 16.89 10.38C16.22 9.78 15.46 9.35 14.82 8.72C13.33 7.26 13.07 4.8 14.56 3.11C14.72 2.93 14.57 2.66 14.33 2.7C13.25 2.89 12.06 3.46 11.23 4.29C9.17 6.36 9.07 9.87 10.73 12.06C10.87 12.24 10.64 12.47 10.45 12.33C9.4 11.59 8.87 10.23 9.04 8.93C9.07 8.68 8.77 8.52 8.6 8.7C7.45 9.84 6.75 11.55 7.03 13.33C7.4 15.65 9.02 17.5 11.24 18.23C13.56 18.99 16.27 18.35 17.84 16.39C19.11 14.81 18.9 12.63 17.66 11.2Z"></path></svg>
+    <div id="view-dashboard" class="app-view active container">
+        <div class="header-top">
+            <div>
+                <h1>Hello, Lasco 👋</h1>
+                <p>Here's what's happening with your store today.</p>
             </div>
-            <h1>Lasco Admin</h1>
-            <p>Access your store dashboard</p>
-            <div class="login-form">
-                <div class="form-group"><label>Email address</label><input type="email" id="loginEmail" class="form-control" placeholder="admin@lasco.com"></div>
-                <div class="form-group"><label>Password</label><input type="password" id="loginPwd" class="form-control" placeholder="••••••••"></div>
-                <button class="btn btn-primary" id="btnLogin" onclick="loginAdmin()">Sign In</button>
+            <div class="btn-exit" onclick="showToast('Login system ready in next update!')">
+                <svg viewBox="0 0 24 24" style="width:18px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                Exit
             </div>
         </div>
+
+        <div class="card toggle-wrapper" style="padding: 16px; margin-bottom: 24px;">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <div id="statusIconBox" style="width: 44px; height: 44px; border-radius: 12px; background: var(--danger-light); color: var(--danger); display: flex; align-items: center; justify-content: center; transition: 0.3s;">
+                    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                </div>
+                <div>
+                    <span id="statusTextMain" style="display:block; font-size:15px; font-weight:800; color:var(--text-main);">Store Closed</span>
+                    <span id="statusTextSub" style="font-size:12px; font-weight: 500; color:var(--text-muted);">You are not receiving orders</span>
+                </div>
+            </div>
+            <label class="switch"><input type="checkbox" id="storeStatusToggle" onchange="toggleStoreStatus(this.checked)"><span class="slider"></span></label>
+        </div>
+
+        <div class="dash-stats-row">
+            <div class="dash-stat-col">
+                <div class="dash-stat-icon" style="background:#FFEDD5; color:#EA580C;"><svg viewBox="0 0 24 24" style="width:16px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg></div>
+                <div class="dash-stat-val" id="dashStatOrders">0</div>
+                <div class="dash-stat-label">Orders<br>Today</div>
+            </div>
+            <div class="dash-stat-col">
+                <div class="dash-stat-icon" style="background:#DCFCE7; color:#16A34A;"><svg viewBox="0 0 24 24" style="width:16px;"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><line x1="12" y1="18" x2="12" y2="22"></line><line x1="12" y1="2" x2="12" y2="6"></line></svg></div>
+                <div class="dash-stat-val" id="dashStatRevenue" style="font-size:14px;">0 DH</div>
+                <div class="dash-stat-label">Revenue<br>(Gross)</div>
+            </div>
+            <div class="dash-stat-col">
+                <div class="dash-stat-icon" style="background:#EDE9FE; color:#8B5CF6;"><svg viewBox="0 0 24 24" style="width:16px;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg></div>
+                <div class="dash-stat-val" id="dashStatItems">0</div>
+                <div class="dash-stat-label">Items<br>Sold</div>
+            </div>
+        </div>
+
+        <div class="section-title">
+            Active Drivers (Cash to Collect)
+        </div>
+        <div class="card" id="dashDriversContainer" style="padding: 12px 16px;">
+            </div>
+
+        <div class="section-title" style="margin-top: 32px;">
+            Recent Orders
+            <span class="section-link" onclick="switchTab('commandes')">View all</span>
+        </div>
+        <div id="dashRecentOrdersContainer"></div>
+
     </div>
 
-    <div id="main-app" style="display:none;">
+    <div id="view-commandes" class="app-view container">
+        <div class="header-top">
+            <h1 style="font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Orders</h1>
+        </div>
+        <div id="adminOrderListContainer"></div>
+    </div>
+
+    <div id="view-order-detail" class="app-view container">
+        <div class="header-top">
+            <div class="icon-btn" style="border-radius:50%;" onclick="switchTab('commandes')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
+            <h1 id="det-id" style="font-size: 20px;">#ID</h1>
+        </div>
+        <div id="det-actions"></div>
+    </div>
+
+    <div id="view-produits" class="app-view container">
+        <div class="header-top">
+            <div>
+                <h1>Menu & Catalog</h1>
+                <p id="prodCountText">0 items • Updated just now</p>
+            </div>
+            <div class="icon-btn" onclick="showToast('Filter options coming soon')"><svg viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg></div>
+        </div>
+
+        <div class="cat-toggle-wrapper">
+            <div class="cat-toggle-btn active" id="catBtnResto" onclick="setCatalogMode('Resto')">Resto (Food)</div>
+            <div class="cat-toggle-btn" id="catBtnGrocery" onclick="setCatalogMode('Grocery')">Grocery</div>
+        </div>
+
+        <div id="adminProductListContainer">
+            </div>
+
+        <button class="fab" onclick="prepareAddProduct()">
+            <svg viewBox="0 0 24 24" style="stroke-width: 2.5;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+    </div>
+
+    <div id="view-ajouter" class="app-view container" style="background: var(--surface); min-height: 100vh;">
         
-        <div id="view-dashboard" class="app-view container">
-            <div class="header-top">
-                <div>
-                    <h1>Hello, Lasco 👋</h1>
-                    <p>Here's what's happening with your store today.</p>
-                </div>
-                <div class="btn-exit" onclick="logoutAdmin()">
-                    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                    Exit
-                </div>
-            </div>
+        <div class="wizard-header-top">
+            <div class="icon-btn" onclick="switchTab('produits')" style="width:40px; height:40px; border-radius: 50%; border:none; box-shadow:none; background: var(--bg-main);"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
+            <h1 style="font-size: 16px; font-weight:800;" id="wizardTitle">Add Item</h1>
+            <div style="width:40px;"></div> </div>
 
-            <div class="card toggle-wrapper" style="padding: 16px; margin-bottom: 24px;">
-                <div style="display:flex; align-items:center; gap:16px;">
-                    <div id="statusIconBox" style="width: 44px; height: 44px; border-radius: 12px; background: var(--danger-light); color: var(--danger); display: flex; align-items: center; justify-content: center; transition: 0.3s;">
-                        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                    </div>
-                    <div>
-                        <span id="statusTextMain" style="display:block; font-size:15px; font-weight:800; color:var(--text-main);">Store Closed</span>
-                        <span id="statusTextSub" style="font-size:12px; font-weight: 500; color:var(--text-muted);">You are not receiving orders</span>
-                    </div>
-                </div>
-                <label class="switch"><input type="checkbox" id="storeStatusToggle" onchange="toggleStoreStatus(this.checked)"><span class="slider"></span></label>
+        <div class="stepper-container">
+            <div class="step-pill active" id="step-nav-1">Step 1 of 3</div>
+            <div class="step-dots">
+                <div class="s-dot active" id="dot-1"></div>
+                <div class="s-dot" id="dot-2"></div>
+                <div class="s-dot" id="dot-3"></div>
             </div>
-
-            <div class="dash-stats-row">
-                <div class="dash-stat-col">
-                    <div class="dash-stat-icon" style="background:#FFEDD5; color:#EA580C;"><svg viewBox="0 0 24 24" style="width:16px;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></div>
-                    <div class="dash-stat-val" id="dashStatOrders">0</div>
-                    <div class="dash-stat-label">Orders<br>Today</div>
-                </div>
-                <div class="dash-stat-col">
-                    <div class="dash-stat-icon" style="background:#EDE9FE; color:#8B5CF6;"><svg viewBox="0 0 24 24" style="width:16px;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg></div>
-                    <div class="dash-stat-val" id="dashStatItems">0</div>
-                    <div class="dash-stat-label">Items<br>Sold</div>
-                </div>
-                <div class="dash-stat-col">
-                    <div class="dash-stat-icon" style="background:#DCFCE7; color:#16A34A;"><svg viewBox="0 0 24 24" style="width:16px;"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
-                    <div class="dash-stat-val" id="dashStatRevenue" style="font-size:15px;">0 DH</div>
-                    <div class="dash-stat-label">Net Profit<br>(Revenue)</div>
-                </div>
-            </div>
-
-            <div class="section-title">Active Drivers (Cash to Collect)</div>
-            <div class="card" id="dashDriversContainer" style="padding: 12px 16px; margin-bottom:24px;">
-                </div>
-
-            <div class="section-title">
-                Recent Orders
-                <span class="section-link" onclick="switchTab('commandes')">View all</span>
-            </div>
-            <div id="dashRecentOrdersContainer"></div>
         </div>
 
-        <div id="view-commandes" class="app-view container">
-            <div class="header-top"><h1 style="font-size: 24px;">Orders</h1></div>
-            <div class="tabs-scroll">
-                <div class="tab-pill active" onclick="filterOrdersList('All', this)">All</div>
-                <div class="tab-pill" onclick="filterOrdersList('Pending', this)">Pending</div>
-                <div class="tab-pill" onclick="filterOrdersList('Preparing', this)">Preparing</div>
-                <div class="tab-pill" onclick="filterOrdersList('Out for Delivery', this)">In Transit</div>
-                <div class="tab-pill" onclick="filterOrdersList('Delivered', this)">Delivered</div>
-            </div>
-            <div id="adminOrderListContainer"></div>
-        </div>
-
-        <div id="view-order-detail" class="app-view container">
-            <div class="detail-header">
-                <div class="back-btn" onclick="switchTab('commandes')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
-                <div style="flex:1; display: flex; justify-content: space-between; align-items: center;">
-                    <h1 style="font-size: 20px; font-weight: 800;" id="det-id">#ID</h1>
-                    <div class="badge" id="det-badge">STATUS</div>
-                </div>
-            </div>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; font-weight: 500;" id="det-date">Date</p>
-            <div class="card info-list">
-                <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Customer</div><div class="info-val" id="det-client">-</div></div>
-                <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Address</div><div class="info-val" id="det-neighborhood">-</div></div>
-            </div>
-            <div class="card"><h3 style="font-size: 14px; margin-bottom: 12px;" id="det-items-count">Items (0)</h3><div id="det-items-list"></div></div>
-            <div class="summary-box">
-                <div class="summary-row"><span>Gross Subtotal</span><span id="det-subtotal">0.00 DH</span></div>
-                <div class="summary-row"><span>Delivery Fee (Driver)</span><span id="det-shipping">0.00 DH</span></div>
-                <div class="summary-row"><span>Items Cost (Driver Paid)</span><span id="det-cost" style="color:var(--danger);">-0.00 DH</span></div>
-                <div class="summary-row total" style="color:var(--accent);"><span>Admin Profit</span><span id="det-profit">0.00 DH</span></div>
-            </div>
-            <div class="action-stack" id="det-actions"></div>
-        </div>
-
-        <div id="view-produits" class="app-view container">
-            <div class="header-top">
-                <div>
-                    <h1 style="font-size: 24px;">Menu & Catalog</h1>
-                    <p id="prodCountText">0 items • Updated just now</p>
-                </div>
-            </div>
+        <div class="wizard-box">
             
-            <div class="search-box">
-                <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input type="text" id="searchProdInput" placeholder="Search items...">
-            </div>
-
-            <div class="cat-toggle-wrap">
-                <div class="cat-toggle-btn active" id="catTglResto" onclick="filterCatalog('Resto')">Resto Food</div>
-                <div class="cat-toggle-btn" id="catTglGrocery" onclick="filterCatalog('Grocery')">Grocery</div>
-            </div>
-
-            <div id="adminProductListContainer"></div>
-            
-            <button class="fab" onclick="prepareAddProduct()">
-                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            </button>
-        </div>
-
-        <div id="view-ajouter" class="app-view container" style="background: var(--surface); min-height: 100vh; margin: -20px; padding: 20px 20px 100px 20px; width: calc(100% + 40px); max-width: 640px;">
-            
-            <div class="wizard-header-top">
-                <div class="icon-btn" onclick="switchTab('produits')" style="width:40px; height:40px; border-radius: 50%;"><svg viewBox="0 0 24 24" style="width:16px;"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
-                <h1 style="font-size: 18px; font-weight:800;" id="wizardTitle">Add Item</h1>
-                <div style="width:40px;"></div> </div>
-
-            <p class="step-text" id="stepTextIndicator">Step 1 of 3</p>
-            <div class="stepper-container">
-                <div class="step-dot active" id="sdot-1"></div>
-                <div class="step-dot" id="sdot-2"></div>
-                <div class="step-dot" id="sdot-3"></div>
-            </div>
-
             <div id="wizard-1" class="wizard-step active">
                 
                 <div class="form-group">
@@ -374,18 +334,18 @@
                             <h5 style="color:var(--primary);">Upload Photo</h5>
                             <p>Drag & drop or click</p>
                         </div>
-                        <div class="upload-card" style="border-style: solid; border-color: var(--accent-light); background: var(--surface);" onclick="document.getElementById('pImg').focus()">
-                            <div class="upload-icon" style="color:var(--accent); background:var(--accent-light);"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></div>
+                        <div class="upload-card" style="border-style: solid; border-color: #E2E8F0; background: #F8FAFC;" onclick="document.getElementById('pImg').focus()">
+                            <div class="upload-icon" style="background: white; color: var(--accent);"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></div>
                             <h5 style="color:var(--accent);">Paste Image URL</h5>
                             <p>Add image from link</p>
                         </div>
                     </div>
                     
                     <div class="search-box" style="margin-bottom: 8px;">
-                        <svg class="search-icon" viewBox="0 0 24 24" style="color:var(--text-muted);"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                        <input type="text" id="pImg" placeholder="https://example.com/image.jpg" style="padding-left:44px;" oninput="previewWizardImg(); validateStep1();">
+                        <svg class="search-icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                        <input type="text" id="pImg" placeholder="https://example.com/image.jpg" style="padding-left:44px; background:var(--surface);" oninput="previewWizardImg(); validateStep1();">
                     </div>
-                    <span class="help-text" style="margin-bottom:24px;">Recommended size: 1000x800px (5:4 ratio) · JPG, PNG transparent</span>
+                    <span class="help-text" style="margin-bottom:24px;">Recommended: 1000x800px (5:4 ratio) · JPG, PNG transparent</span>
                     
                     <img id="previewImg" style="width: 100%; max-width: 200px; aspect-ratio: 5/4; border-radius: 12px; object-fit: contain; margin-bottom: 24px; display: none; border: 1px solid var(--border); background: var(--bg-main);" src="">
                 </div>
@@ -404,17 +364,13 @@
                     <label>Product Type *</label>
                     <div class="type-grid">
                         <div class="type-card tc-resto active" id="typeCardResto" onclick="selectProductType('Resto')">
-                            <div class="type-icon-box">
-                                <div class="type-icon"><svg viewBox="0 0 24 24"><path d="M17.66 11.2C17.43 10.9 17.15 10.64 16.89 10.38C16.22 9.78 15.46 9.35 14.82 8.72C13.33 7.26 13.07 4.8 14.56 3.11C14.72 2.93 14.57 2.66 14.33 2.7C13.25 2.89 12.06 3.46 11.23 4.29C9.17 6.36 9.07 9.87 10.73 12.06C10.87 12.24 10.64 12.47 10.45 12.33C9.4 11.59 8.87 10.23 9.04 8.93C9.07 8.68 8.77 8.52 8.6 8.7C7.45 9.84 6.75 11.55 7.03 13.33C7.4 15.65 9.02 17.5 11.24 18.23C13.56 18.99 16.27 18.35 17.84 16.39C19.11 14.81 18.9 12.63 17.66 11.2Z"></path></svg></div>
-                                <h5 style="color:var(--primary);">Resto</h5>
-                            </div>
+                            <div class="type-icon"><svg viewBox="0 0 24 24" style="width:28px; height:28px;"><path d="M17.66 11.2C17.43 10.9 17.15 10.64 16.89 10.38C16.22 9.78 15.46 9.35 14.82 8.72C13.33 7.26 13.07 4.8 14.56 3.11C14.72 2.93 14.57 2.66 14.33 2.7C13.25 2.89 12.06 3.46 11.23 4.29C9.17 6.36 9.07 9.87 10.73 12.06C10.87 12.24 10.64 12.47 10.45 12.33C9.4 11.59 8.87 10.23 9.04 8.93C9.07 8.68 8.77 8.52 8.6 8.7C7.45 9.84 6.75 11.55 7.03 13.33C7.4 15.65 9.02 17.5 11.24 18.23C13.56 18.99 16.27 18.35 17.84 16.39C19.11 14.81 18.9 12.63 17.66 11.2Z"></path></svg></div>
+                            <h5>Resto</h5>
                             <div class="radio-dot"></div>
                         </div>
                         <div class="type-card tc-grocery" id="typeCardGrocery" onclick="selectProductType('Grocery')">
-                            <div class="type-icon-box">
-                                <div class="type-icon"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></div>
-                                <h5 style="color:var(--accent);">Grocery</h5>
-                            </div>
+                            <div class="type-icon"><svg viewBox="0 0 24 24" style="width:28px; height:28px;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></div>
+                            <h5>Grocery</h5>
                             <div class="radio-dot"></div>
                         </div>
                     </div>
@@ -423,31 +379,30 @@
                 <div class="form-group">
                     <label>Category *</label>
                     <div class="input-with-action">
-                        <select id="pCat" class="form-control" onchange="loadSubCats(); validateStep1();">
+                        <select id="pCat" class="form-control" onchange="loadSubCats(); validateStep1();" style="color:var(--text-muted);">
                             <option value="">Select category</option>
                         </select>
-                        <div class="btn-plus-field" onclick="openAddCategoryModal('main')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
+                        <div class="btn-plus-field" onclick="openAddCategoryModal('main')">+</div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Subcategory</label>
                     <div class="input-with-action">
-                        <select id="pSubCat" class="form-control">
+                        <select id="pSubCat" class="form-control" style="color:var(--text-muted);">
                             <option value="">Select subcategory</option>
                         </select>
-                        <div class="btn-plus-field" onclick="openAddCategoryModal('sub')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
+                        <div class="btn-plus-field" onclick="openAddCategoryModal('sub')">+</div>
                     </div>
                 </div>
 
                 <div class="wizard-footer">
-                    <button class="btn btn-outline" style="flex:0.5;" onclick="switchTab('produits')">Cancel</button>
-                    <button class="btn btn-primary" id="btnNext1" onclick="goToStep(2)" disabled>Continue <svg viewBox="0 0 24 24" style="width:18px;"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+                    <button class="btn btn-outline" onclick="switchTab('produits')">Cancel</button>
+                    <button class="btn btn-primary" id="btnNext1" onclick="goToStep(2)" disabled>Continue <svg viewBox="0 0 24 24" style="width:18px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button>
                 </div>
             </div>
 
             <div id="wizard-2" class="wizard-step">
-                
                 <div class="photo-grid">
                     <div class="form-group">
                         <label>Selling Price (DH) *</label>
@@ -455,40 +410,42 @@
                     </div>
                     <div class="form-group">
                         <label>Cost Price (DH)</label>
-                        <input type="number" id="pCost" class="form-control" placeholder="Driver pays...">
+                        <input type="number" id="pCost" class="form-control" placeholder="For profit tracking">
                     </div>
                 </div>
 
-                <div style="background:var(--bg-main); border:1px dashed var(--border); padding:16px; border-radius:16px; margin-bottom:24px;">
-                    <p style="font-size:12px; color:var(--text-muted); font-weight:600;"><span style="color:var(--accent);">Zero-Inventory Math:</span> Driver collects Selling Price, keeps Cost + Fee, gives you Margin.</p>
-                </div>
-
-                <div class="card" style="padding:16px;">
-                    <div class="toggle-wrapper" style="margin-bottom:12px;">
-                        <span style="font-size:14px; font-weight:800;">Size Variations</span>
+                <div class="toggle-card-config">
+                    <div class="toggle-wrapper">
+                        <div>
+                            <span style="display:block; font-size:14px; font-weight:800;">Size Variations</span>
+                            <span style="font-size:11px; color:var(--text-muted);">Overrides base price</span>
+                        </div>
                         <label class="switch"><input type="checkbox" id="tglSize" onchange="document.getElementById('cfgSize').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
                     </div>
-                    <div class="config-panel" id="cfgSize" style="margin-top:0;">
+                    <div class="config-panel" id="cfgSize">
                         <input type="text" id="inpSizeName" class="form-control" placeholder="Size Name (e.g. Large)" style="margin-bottom:8px;">
                         <div style="display:flex; gap:8px;">
-                            <input type="number" id="inpSizeSell" class="form-control" placeholder="Sell">
-                            <input type="number" id="inpSizeCost" class="form-control" placeholder="Cost">
+                            <input type="number" id="inpSizeSell" class="form-control" placeholder="Sell (DH)">
+                            <input type="number" id="inpSizeCost" class="form-control" placeholder="Cost (DH)">
                             <button class="btn-outline" style="width:auto; padding:0 20px; font-size:13px; border-radius:12px;" onclick="addSize()">Add</button>
                         </div>
                         <div style="margin-top: 16px;" id="listSizes"></div>
                     </div>
                 </div>
 
-                <div class="card" style="padding:16px;">
-                    <div class="toggle-wrapper" style="margin-bottom:12px;">
-                        <span style="font-size:14px; font-weight:800;">Extras (Add-ons)</span>
+                <div class="toggle-card-config">
+                    <div class="toggle-wrapper">
+                        <div>
+                            <span style="display:block; font-size:14px; font-weight:800;">Extras (Add-ons)</span>
+                            <span style="font-size:11px; color:var(--text-muted);">Paid additional options (+ DH)</span>
+                        </div>
                         <label class="switch"><input type="checkbox" id="tglExtra" onchange="document.getElementById('cfgExtra').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
                     </div>
-                    <div class="config-panel" id="cfgExtra" style="margin-top:0;">
+                    <div class="config-panel" id="cfgExtra">
                         <input type="text" id="inpExtraName" class="form-control" placeholder="E.g. Extra Cheese" style="margin-bottom:8px;">
                         <div style="display:flex; gap:8px;">
-                            <input type="number" id="inpExtraSell" class="form-control" placeholder="Sell">
-                            <input type="number" id="inpExtraCost" class="form-control" placeholder="Cost">
+                            <input type="number" id="inpExtraSell" class="form-control" placeholder="Sell (DH)">
+                            <input type="number" id="inpExtraCost" class="form-control" placeholder="Cost (DH)">
                             <button class="btn-outline" style="width:auto; padding:0 20px; font-size:13px; border-radius:12px;" onclick="addExtra()">Add</button>
                         </div>
                         <div style="margin-top: 16px;" id="listExtras"></div>
@@ -496,58 +453,56 @@
                 </div>
 
                 <div class="wizard-footer">
-                    <button class="btn btn-outline" style="flex:0.5;" onclick="goToStep(1)">Back</button>
-                    <button class="btn btn-primary" id="btnNext2" onclick="goToStep(3)" disabled>Continue <svg viewBox="0 0 24 24" style="width:18px;"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+                    <button class="btn btn-outline" onclick="goToStep(1)">Back</button>
+                    <button class="btn btn-primary" id="btnNext2" onclick="goToStep(3)" disabled>Continue <svg viewBox="0 0 24 24" style="width:18px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button>
                 </div>
             </div>
 
             <div id="wizard-3" class="wizard-step">
-                
-                <div class="card" style="padding:16px; border-color:var(--warning-light);">
+                <div class="toggle-card-config">
                     <div class="toggle-wrapper">
                         <div>
-                            <span style="display:block; font-size:14px; font-weight:800;">★ Vedette</span>
-                            <span style="font-size:11px; color:var(--text-muted);">Display in Top Sales</span>
+                            <span style="display:block; font-size:14px; font-weight:800;">Top Ventes (Vedette)</span>
+                            <span style="font-size:11px; color:var(--text-muted);">Display in featured section</span>
                         </div>
                         <label class="switch"><input type="checkbox" id="tglFeatured"><span class="slider"></span></label>
                     </div>
                 </div>
 
-                <div class="card" style="padding:16px; border-color:var(--promo-light);">
+                <div class="toggle-card-config">
                     <div class="toggle-wrapper">
                         <div>
-                            <span style="display:block; font-size:14px; font-weight:800; color:var(--promo);">% Promo Discount</span>
+                            <span style="display:block; font-size:14px; font-weight:800;">Discount Promo</span>
+                            <span style="font-size:11px; color:var(--text-muted);">Apply a special offer</span>
                         </div>
-                        <label class="switch"><input type="checkbox" id="tglPromo" onchange="document.getElementById('cfgPromo').style.display = this.checked ? 'block' : 'none'"><span class="slider" style="background-color:var(--border);"></span></label>
+                        <label class="switch"><input type="checkbox" id="tglPromo" onchange="document.getElementById('cfgPromo').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
                     </div>
-                    <div class="config-panel" id="cfgPromo" style="border-top:none; padding-top:0;">
-                        <input type="number" id="vPromoPrice" class="form-control" placeholder="New Promo Price (DH)">
-                    </div>
-                </div>
-
-                <div class="photo-grid">
-                    <div class="card" style="padding:16px;">
-                        <div class="toggle-wrapper">
-                            <div><span style="display:block; font-size:13px; font-weight:800;">Notes</span></div>
-                            <label class="switch"><input type="checkbox" id="tglNotes" checked><span class="slider"></span></label>
-                        </div>
-                    </div>
-                    <div class="card" style="padding:16px; border-color:var(--accent);">
-                        <div class="toggle-wrapper">
-                            <div><span style="display:block; font-size:13px; font-weight:800;">Available</span></div>
-                            <label class="switch"><input type="checkbox" id="tglAvailable" checked><span class="slider"></span></label>
+                    <div class="config-panel" id="cfgPromo">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>New Promotional Price (DH)</label>
+                            <input type="number" id="vPromoPrice" class="form-control" placeholder="Ex: 35">
                         </div>
                     </div>
                 </div>
+                
+                <div class="toggle-card-config">
+                    <div class="toggle-wrapper">
+                        <div>
+                            <span style="display:block; font-size:14px; font-weight:800;">Available</span>
+                            <span style="font-size:11px; color:var(--text-muted);">In stock & visible</span>
+                        </div>
+                        <label class="switch"><input type="checkbox" id="tglAvailable" checked><span class="slider"></span></label>
+                    </div>
+                </div>
 
-                <div class="form-group" style="margin-bottom: 24px;">
-                    <label>Full Description / Ingredients</label>
-                    <textarea id="pDesc" class="form-control" placeholder="Full details shown when user opens the item..." style="height: 120px; resize: none;"></textarea>
+                <div class="form-group" style="margin-bottom: 24px; margin-top:24px;">
+                    <label>Description</label>
+                    <textarea id="pDesc" class="form-control" placeholder="Optional details..." style="height: 100px; resize: none;"></textarea>
                 </div>
 
                 <div class="wizard-footer">
-                    <button class="btn btn-outline" style="flex:0.5;" onclick="goToStep(2)">Back</button>
-                    <button class="btn btn-primary" onclick="saveProductData()">Save Item <svg viewBox="0 0 24 24" style="width:18px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg></button>
+                    <button class="btn btn-outline" onclick="goToStep(2)">Back</button>
+                    <button class="btn btn-primary" onclick="saveProductData()">Save Item</button>
                 </div>
             </div>
         </div>
@@ -555,53 +510,60 @@
 
     <div id="view-analytics" class="app-view container">
         <div class="header-top">
-            <h1 style="font-size: 24px; font-weight:800;">Analytics</h1>
+            <h1 style="font-size: 24px; font-weight:800; letter-spacing: -0.5px;">Analytics</h1>
+            <div class="btn-exit" style="flex-direction:row; padding:10px 16px; font-size:12px; gap:8px;">
+                <svg viewBox="0 0 24 24" style="width:14px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Today
+            </div>
         </div>
-        <p style="font-size: 13px; color: var(--text-muted); font-weight: 500; margin-bottom:20px;">Track your store performance</p>
-        
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <h3 style="font-size: 18px; font-weight:800;">Today</h3>
-            <span style="font-size:12px; color:var(--text-muted); font-weight:600;" id="statYestLabel">Yesterday: 0 DH</span>
-        </div>
+        <p style="font-size: 13px; color: var(--text-muted); margin-top: -16px; margin-bottom: 24px;">Track your store performance</p>
 
-        <div class="stat-hero">
-            <div class="stat-hero-left">
-                <h4>Total Revenue</h4>
-                <h2 id="statGross">0 DH</h2>
-                <div class="profit-badge">
-                    <svg viewBox="0 0 24 24" style="width:16px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> 
-                    Profit <span id="statNet">0 DH</span>
+        <div class="analytics-hero">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <div style="width:48px; height:48px; background:var(--accent-light); color:var(--accent); border-radius:14px; display:flex; align-items:center; justify-content:center;">
+                    <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                </div>
+                <div>
+                    <div class="hero-val" id="statGrossRevenue">0 DH</div>
+                    <div class="hero-title">Gross Revenue (Sales + Delivery)</div>
                 </div>
             </div>
-            <div style="background:var(--primary-light); color:var(--primary); width:56px; height:56px; border-radius:16px; display:flex; align-items:center; justify-content:center;">
-                <svg viewBox="0 0 24 24" style="width:28px;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            
+            <div class="hero-profit" id="statNetProfit">
+                <svg viewBox="0 0 24 24" style="width:16px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                Profit: 0 DH
             </div>
+            <div style="font-size:11px; color:var(--text-muted); font-weight:600; padding-left:16px;">Yesterday: <span id="yestProfit">0 DH</span></div>
         </div>
 
         <div class="analytics-grid">
             <div class="metric-card">
                 <div class="mc-icon" style="background:var(--primary-light); color:var(--primary);"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
-                <div class="mc-val" id="statOrders">0</div>
+                <div class="mc-val" id="statOrdersTotal">0</div>
                 <div class="mc-title">Orders</div>
+                <div style="font-size:9px; color:var(--text-muted); margin-top:4px;">Yest: <span id="yestOrders">0</span></div>
             </div>
             <div class="metric-card">
                 <div class="mc-icon" style="background:var(--blue-light); color:var(--blue);"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg></div>
-                <div class="mc-val" id="statItems">0</div>
+                <div class="mc-val" id="statItemsTotal">0</div>
                 <div class="mc-title">Items Sold</div>
+                <div style="font-size:9px; color:var(--text-muted); margin-top:4px;">Yest: <span id="yestItems">0</span></div>
             </div>
             <div class="metric-card">
-                <div class="mc-icon" style="background:var(--purple-light); color:var(--purple);"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
-                <div class="mc-val" id="statCust">0</div>
+                <div class="mc-icon" style="background:var(--purple-light); color:var(--purple);"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+                <div class="mc-val" id="statCustomersTotal">0</div>
                 <div class="mc-title">Customers</div>
             </div>
         </div>
 
-        <div class="fee-card">
-            <div class="fee-icon-wrap">
-                <div class="fee-icon"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div>
-                <span style="font-size:14px; font-weight:700;">Delivery Fees</span>
+        <div class="compare-row">
+            <div class="compare-label">
+                <div style="width:36px; height:36px; background:var(--warning-light); color:var(--warning); border-radius:10px; display:flex; align-items:center; justify-content:center;">
+                    <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                </div>
+                Delivery Fees (Driver)
             </div>
-            <div style="font-size:18px; font-weight:800;" id="statDelivery">0 DH</div>
+            <div class="compare-val" id="statDeliveryTotal">0 DH</div>
         </div>
     </div>
 
@@ -612,10 +574,29 @@
         <div class="nav-item" id="nav-commandes" onclick="switchTab('commandes')"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg> Orders</div>
         <div class="nav-item" id="nav-analytics" onclick="switchTab('analytics')"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Analytics</div>
     </nav>
+
+    <div class="overlay" id="confirmOverlay">
+        <div class="modal">
+            <div class="modal-icon" style="color:var(--danger); margin-bottom:12px;"><svg viewBox="0 0 24 24" style="width:36px;height:36px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+            <h3 id="modalTitle" style="font-size:18px; font-weight:800; margin-bottom:8px;">Confirmation</h3>
+            <p id="modalMsg" style="font-size:13px; color:var(--text-muted); margin-bottom:24px;">Are you sure?</p>
+            <div style="display: flex; gap: 12px;"><button class="btn btn-outline" style="flex:1; padding:12px; font-size:14px;" onclick="closeModals()">Cancel</button><button class="btn btn-primary" id="modalConfirmBtn" style="flex:1; padding:12px; font-size:14px;">Confirm</button></div>
+        </div>
+    </div>
     
-    </div> <script type="module">
+    <div class="overlay" id="addCatOverlay" onclick="if(event.target===this) closeModals()"></div>
+    <div class="bottom-sheet" id="addCatModal">
+        <div class="sheet-handle"></div><h2 style="font-size: 18px; font-weight:800; margin-bottom:20px;" id="catModalTitle">Add</h2>
+        <div class="form-group"><input type="text" id="newCatInput" class="form-control" placeholder="Category name..." autofocus></div>
+        <button class="btn btn-primary" id="btnSaveCategory">Add</button>
+    </div>
+    
+    <div class="toast" id="toastBox">
+        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg><span id="toastMsg">Action successful</span>
+    </div>
+
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -627,35 +608,12 @@
           appId: "1:618932234525:web:8eb0b934b1bfd1060059f4"
         };
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- AUTHENTICATION ---
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('view-login').classList.remove('active');
-                document.getElementById('main-app').style.display = 'block';
-                const savedTab = localStorage.getItem('lasGoAdminTab') || 'dashboard'; switchTab(savedTab);
-            } else {
-                document.getElementById('main-app').style.display = 'none';
-                document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
-                document.getElementById('view-login').classList.add('active');
-            }
-        });
-
-        window.loginAdmin = () => {
-            const e = document.getElementById('loginEmail').value; const p = document.getElementById('loginPwd').value;
-            if(!e || !p) return showToast("Enter email and password");
-            document.getElementById('btnLogin').innerText = "Authenticating...";
-            signInWithEmailAndPassword(auth, e, p).catch(err => { showToast("Invalid credentials"); document.getElementById('btnLogin').innerText = "Sign In"; });
-        };
-        window.logoutAdmin = () => { signOut(auth); };
-
-        // --- GLOBALS ---
         let allOrders = [], allProducts = [], globalCategoriesData = [], allDrivers = [];
-        let currentOrderFilter = 'All', currentEditProductId = null; 
-        let currentCatAddingType = ''; let selectedProductType = 'Resto'; 
-        let currentCatalogType = 'Resto'; // For catalog filtering
+        let currentOrderFilter = 'All', currentCatalogMode = 'Resto', currentEditProductId = null; 
+        let currentCatAddingType = ''; 
+        let selectedProductType = 'Resto'; // Default for the wizard
         const safeNum = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
         const formatPrice = (num) => { const p = Number(num); return p % 1 === 0 ? p.toString() : p.toFixed(2); };
 
@@ -668,123 +626,123 @@
             let navTarget = tabId === 'order-detail' ? 'commandes' : tabId;
             const navItem = document.getElementById(`nav-${navTarget}`);
             if(navItem) navItem.classList.add('active');
-            if(tabId !== 'order-detail' && tabId !== 'ajouter' && tabId !== 'login') localStorage.setItem('lasGoAdminTab', tabId);
+            if(tabId !== 'order-detail' && tabId !== 'ajouter') localStorage.setItem('lasGoAdminTab', tabId);
             window.scrollTo(0,0);
         };
 
-        // --- STORE STATUS ---
-        window.toggleStoreStatus = async (isOnline) => {
-            try { await setDoc(doc(db, "settings", "store_status"), { isOnline: isOnline }, { merge: true }); showToast(isOnline ? "Store is online" : "Store is offline"); } 
-            catch(e) { console.error(e); }
-        };
-        onSnapshot(doc(db, "settings", "store_status"), (docSnap) => {
-            let isOnline = false; if (docSnap.exists()) { isOnline = docSnap.data().isOnline === true; }
-            document.getElementById('storeStatusToggle').checked = isOnline;
-            const iconBox = document.getElementById('statusIconBox');
-            if(isOnline) { iconBox.style.background = 'var(--accent-light)'; iconBox.style.color = 'var(--accent)'; document.getElementById('statusTextMain').innerText = 'Store Open'; document.getElementById('statusTextSub').innerText = 'You are receiving orders'; } 
-            else { iconBox.style.background = 'var(--danger-light)'; iconBox.style.color = 'var(--danger)'; document.getElementById('statusTextMain').innerText = 'Store Closed'; document.getElementById('statusTextSub').innerText = 'You are not receiving orders'; }
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTab = localStorage.getItem('lasGoAdminTab') || 'dashboard'; switchTab(savedTab);
         });
 
-        // --- CATALOG LOGIC (ACCORDION) ---
-        window.filterCatalog = (type) => {
-            currentCatalogType = type;
-            document.getElementById('catTglResto').classList.remove('active'); document.getElementById('catTglGrocery').classList.remove('active');
-            document.getElementById(`catTgl${type}`).classList.add('active');
-            renderAccordionCatalog();
+        // ---------------- STORE STATUS LOGIC ---------------- 
+        window.toggleStoreStatus = async (isOnline) => {
+            try {
+                await setDoc(doc(db, "settings", "store_status"), { isOnline: isOnline }, { merge: true });
+                showToast(isOnline ? "Store is now online!" : "Store is offline!");
+            } catch(e) { console.error(e); alert("Error updating store status."); }
         };
 
-        function renderAccordionCatalog() {
-            const container = document.getElementById('adminProductListContainer');
-            if(!container) return;
+        onSnapshot(doc(db, "settings", "store_status"), (docSnap) => {
+            const toggle = document.getElementById('storeStatusToggle');
+            const iconBox = document.getElementById('statusIconBox');
+            const textMain = document.getElementById('statusTextMain');
+            const textSub = document.getElementById('statusTextSub');
             
-            const q = document.getElementById('searchProdInput').value.toLowerCase();
-            let filtered = allProducts.filter(p => p.productType === currentCatalogType || (!p.productType && currentCatalogType === 'Resto'));
-            if(q) filtered = filtered.filter(p => p.name.toLowerCase().includes(q));
-
-            // Group by category
-            const groups = {};
-            filtered.forEach(p => { const c = p.category || 'Uncategorized'; if(!groups[c]) groups[c] = []; groups[c].push(p); });
-
-            let html = '';
-            for(let cat in groups) {
-                const items = groups[cat];
-                const catInfo = globalCategoriesData.find(c => c.name === cat) || {};
-                // Determine icon based on category logic from before
-                const icon = getIconForCat(cat); 
-
-                html += `
-                <div class="accordion-item">
-                    <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <div style="background:var(--bg-main); width:32px; height:32px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px;">${icon}</div>
-                            <strong style="font-size:15px; color:var(--text-main);">${cat}</strong> 
-                            <span class="acc-count">${items.length} items</span>
-                        </div>
-                        <svg viewBox="0 0 24 24" class="accordion-chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </div>
-                    <div class="accordion-body">
-                        ${items.map(p => {
-                            const img = p.imageUrl ? `<img src="${p.imageUrl}">` : `<span style="font-weight:800;color:var(--text-muted);">${p.name.charAt(0)}</span>`;
-                            const statusDot = p.isAvailable !== false ? '<span class="status-dot dot-on"></span> Available' : '<span class="status-dot dot-off"></span> Hidden';
-                            return `<div class="prod-card-list">
-                                <div class="prod-img-box">${img}</div>
-                                <div class="prod-info">
-                                    <h4>${p.name}</h4>
-                                    <div class="prod-meta">${statusDot} • <strong style="color:var(--primary);">${formatPrice(p.sellPrice)} DH</strong></div>
-                                </div>
-                                <div class="prod-actions">
-                                    <button class="btn-icon-small btn-edit-prod" onclick="editProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:16px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
-                                    <button class="btn-icon-small btn-del-prod" onclick="promptDeleteProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-                                </div>
-                            </div>`;
-                        }).join('')}
-                    </div>
-                </div>`;
+            let isOnline = false;
+            if (docSnap.exists()) { isOnline = docSnap.data().isOnline === true; }
+            
+            toggle.checked = isOnline;
+            if(isOnline) {
+                iconBox.style.background = 'var(--accent-light)'; iconBox.style.color = 'var(--accent)';
+                textMain.innerText = 'Store Open'; textSub.innerText = 'You are receiving orders';
+            } else {
+                iconBox.style.background = 'var(--danger-light)'; iconBox.style.color = 'var(--danger)';
+                textMain.innerText = 'Store Closed'; textSub.innerText = 'You are not receiving orders';
             }
-            if(html === '') html = `<div class="empty-state-card">No products found.</div>`;
-            container.innerHTML = html;
-        }
+        });
 
-        document.getElementById('searchProdInput').addEventListener('input', renderAccordionCatalog);
-
-        // --- ADD/EDIT WIZARD LOGIC ---
+        // ---------------- WIZARD LOGIC ----------------
         window.selectProductType = (type) => {
             selectedProductType = type;
-            document.getElementById('typeCardResto').classList.remove('active'); document.getElementById('typeCardGrocery').classList.remove('active');
+            document.getElementById('typeCardResto').classList.remove('active');
+            document.getElementById('typeCardGrocery').classList.remove('active');
             document.getElementById(`typeCard${type}`).classList.add('active');
-            loadMainCats(); validateStep1();
+            loadMainCats(); 
+            validateStep1();
         };
 
-        window.previewWizardImg = () => { const url = document.getElementById('pImg').value; const imgEl = document.getElementById('previewImg'); if(url) { imgEl.src = url; imgEl.style.display = 'block'; } else { imgEl.style.display = 'none'; } }
-        window.validateStep1 = () => { const btn = document.getElementById('btnNext1'); if(document.getElementById('pName').value.trim() && document.getElementById('pCat').value) { btn.disabled = false; } else { btn.disabled = true; } };
-        window.validateStep2 = () => { const btn = document.getElementById('btnNext2'); if(document.getElementById('pSell').value !== "") { btn.disabled = false; } else { btn.disabled = true; } };
+        window.previewWizardImg = () => {
+            const url = document.getElementById('pImg').value; 
+            const imgEl = document.getElementById('previewImg');
+            if(url) { imgEl.src = url; imgEl.style.display = 'block'; } 
+            else { imgEl.style.display = 'none'; }
+        }
+
+        window.validateStep1 = () => {
+            const name = document.getElementById('pName').value.trim(); 
+            const cat = document.getElementById('pCat').value;
+            const btn = document.getElementById('btnNext1'); 
+            if(name && cat) { btn.disabled = false; } else { btn.disabled = true; }
+        };
+
+        window.validateStep2 = () => {
+            const sell = document.getElementById('pSell').value; const btn = document.getElementById('btnNext2'); 
+            if(sell !== "") { btn.disabled = false; } else { btn.disabled = true; }
+        };
 
         window.goToStep = (step) => {
             document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
             document.getElementById(`wizard-${step}`).classList.add('active');
-            document.querySelectorAll('.step-dot').forEach((el, index) => { el.classList.remove('active'); if(index + 1 === step) el.classList.add('active'); });
-            document.getElementById('stepTextIndicator').innerText = `Step ${step} of 3`;
+            
+            document.getElementById('step-nav-1').innerText = `Step ${step} of 3`;
+            document.querySelectorAll('.s-dot').forEach((el, index) => {
+                el.classList.remove('active'); 
+                if(index + 1 <= step) el.classList.add('active'); 
+            });
             window.scrollTo(0,0);
         };
 
-        // --- OPTIONS (SAUCES/SIZES/EXTRAS) ---
-        window.addSize = () => { const name = document.getElementById('inpSizeName').value.trim(); const sell = parseFloat(document.getElementById('inpSizeSell').value); const cost = parseFloat(document.getElementById('inpSizeCost').value) || 0; if(name && !isNaN(sell)) { window.productSizes.push({ name, sellPrice: sell, costPrice: cost }); document.getElementById('inpSizeName').value = ''; document.getElementById('inpSizeSell').value = ''; document.getElementById('inpSizeCost').value = ''; renderSizes(); } };
+        // ---------------- STEP 2 LIST LOGIC ----------------
+        window.addSauce = () => { const input = document.getElementById('inpSauce'); const val = input.value.trim(); if(val && !window.productSauces.includes(val)) { window.productSauces.push(val); input.value = ''; renderSauces(); } };
+        window.removeSauce = (index) => { window.productSauces.splice(index, 1); renderSauces(); };
+        function renderSauces() { document.getElementById('listSauces').innerHTML = window.productSauces.map((s, i) => `<div style="padding:6px 12px; background:var(--bg-main); border:1px solid var(--border); border-radius:50px; font-size:12px; font-weight:600; display:flex; gap:6px; align-items:center;">${s} <span style="color:var(--danger); cursor:pointer; font-size:14px;" onclick="removeSauce(${i})">×</span></div>`).join(''); }
+
+        window.addSize = () => {
+            const name = document.getElementById('inpSizeName').value.trim(); const sell = parseFloat(document.getElementById('inpSizeSell').value); const cost = parseFloat(document.getElementById('inpSizeCost').value) || 0;
+            if(name && !isNaN(sell)) { window.productSizes.push({ name, sellPrice: sell, costPrice: cost }); document.getElementById('inpSizeName').value = ''; document.getElementById('inpSizeSell').value = ''; document.getElementById('inpSizeCost').value = ''; renderSizes(); }
+        };
         window.removeSize = (index) => { window.productSizes.splice(index, 1); renderSizes(); };
-        function renderSizes() { document.getElementById('listSizes').innerHTML = window.productSizes.map((s, i) => `<div class="list-row"><div class="list-info"><h5>${s.name}</h5><p>Sell: ${formatPrice(s.sellPrice)} DH | Cost: ${formatPrice(s.costPrice)} DH</p></div><button class="btn-icon-small btn-del-prod" onclick="removeSize(${i})"><svg viewBox="0 0 24 24" style="width:14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div>`).join(''); }
+        function renderSizes() { document.getElementById('listSizes').innerHTML = window.productSizes.map((s, i) => `<div class="list-row"><div class="list-info"><h5>${s.name}</h5><p>Sell: ${formatPrice(s.sellPrice)} DH | Cost: ${formatPrice(s.costPrice)} DH</p></div><button class="btn-icon-small btn-del-prod" onclick="removeSize(${i})" style="color:var(--danger);"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div>`).join(''); }
 
-        window.addExtra = () => { const name = document.getElementById('inpExtraName').value.trim(); const sell = parseFloat(document.getElementById('inpExtraSell').value) || 0; const cost = parseFloat(document.getElementById('inpExtraCost').value) || 0; if(name) { window.productExtras.push({ name, price: sell, costPrice: cost }); document.getElementById('inpExtraName').value = ''; document.getElementById('inpExtraSell').value = ''; document.getElementById('inpExtraCost').value = ''; renderExtras(); } };
+        window.addExtra = () => {
+            const name = document.getElementById('inpExtraName').value.trim(); 
+            const sell = parseFloat(document.getElementById('inpExtraSell').value) || 0;
+            const cost = parseFloat(document.getElementById('inpExtraCost').value) || 0;
+            if(name) { 
+                window.productExtras.push({ name, price: sell, costPrice: cost }); 
+                document.getElementById('inpExtraName').value = ''; document.getElementById('inpExtraSell').value = ''; document.getElementById('inpExtraCost').value = ''; 
+                renderExtras(); 
+            }
+        };
         window.removeExtra = (index) => { window.productExtras.splice(index, 1); renderExtras(); };
-        function renderExtras() { document.getElementById('listExtras').innerHTML = window.productExtras.map((e, i) => `<div class="list-row"><div class="list-info"><h5>${e.name}</h5><p>Sell: +${formatPrice(e.price)} DH | Cost: ${formatPrice(e.costPrice || 0)} DH</p></div><button class="btn-icon-small btn-del-prod" onclick="removeExtra(${i})"><svg viewBox="0 0 24 24" style="width:14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div>`).join(''); }
+        function renderExtras() { document.getElementById('listExtras').innerHTML = window.productExtras.map((e, i) => `<div class="list-row"><div class="list-info"><h5>${e.name}</h5><p>Sell: +${formatPrice(e.price)} DH | Cost: ${e.costPrice !== undefined ? formatPrice(e.costPrice) : '0'} DH</p></div><button class="btn-icon-small btn-del-prod" onclick="removeExtra(${i})" style="color:var(--danger);"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div>`).join(''); }
 
-        // --- CATEGORIES ---
+        // ---------------- CATEGORY CASCADING LOGIC ----------------
         function loadMainCats() {
             const filteredCats = globalCategoriesData.filter(c => c.type === selectedProductType || !c.type); 
             const currentSelected = document.getElementById('pCat').value;
-            document.getElementById('pCat').innerHTML = '<option value="">Select...</option>' + filteredCats.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
-            if(currentSelected && filteredCats.find(c => c.name === currentSelected)) document.getElementById('pCat').value = currentSelected; else document.getElementById('pCat').value = '';
+            
+            document.getElementById('pCat').innerHTML = '<option value="">Select category</option>' + filteredCats.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+            if(currentSelected && filteredCats.find(c => c.name === currentSelected)) { document.getElementById('pCat').value = currentSelected; } 
+            else { document.getElementById('pCat').value = ''; }
             loadSubCats();
         }
-        window.loadSubCats = () => { const main = document.getElementById('pCat').value; const subEl = document.getElementById('pSubCat'); const catDoc = globalCategoriesData.find(c => c.name === main); if(catDoc && catDoc.subcategories && catDoc.subcategories.length > 0) { subEl.innerHTML = '<option value="">(Optional) Choose...</option>' + catDoc.subcategories.map(s => `<option value="${s}">${s}</option>`).join(''); } else { subEl.innerHTML = '<option value="">No subcategories</option>'; } };
+
+        window.loadSubCats = () => {
+            const main = document.getElementById('pCat').value; const subEl = document.getElementById('pSubCat'); const catDoc = globalCategoriesData.find(c => c.name === main);
+            if(catDoc && catDoc.subcategories && catDoc.subcategories.length > 0) { subEl.innerHTML = '<option value="">Select subcategory</option>' + catDoc.subcategories.map(s => `<option value="${s}">${s}</option>`).join(''); } 
+            else { subEl.innerHTML = '<option value="">No subcategories</option>'; }
+        };
 
         window.openAddCategoryModal = (type) => {
             currentCatAddingType = type;
@@ -801,24 +759,132 @@
             const btn = document.getElementById('btnSaveCategory'); btn.innerText = '...'; btn.disabled = true;
             try {
                 if(currentCatAddingType === 'main') {
-                    if(!globalCategoriesData.find(c => c.name.toLowerCase() === val.toLowerCase())) { await addDoc(collection(db, "categories"), { name: val, subcategories: [], type: selectedProductType }); showToast("Category created!"); } else { showToast("Category already exists!"); }
+                    if(!globalCategoriesData.find(c => c.name.toLowerCase() === val.toLowerCase())) {
+                        await addDoc(collection(db, "categories"), { name: val, subcategories: [], type: selectedProductType }); 
+                        showToast("Category created!");
+                    } else { showToast("Category already exists!"); }
                 } else {
                     const mainCatName = document.getElementById('pCat').value; const catDoc = globalCategoriesData.find(c => c.name === mainCatName);
-                    if(catDoc) { let subs = catDoc.subcategories || []; if(!subs.includes(val)) { subs.push(val); await updateDoc(doc(db, "categories", catDoc.id), { subcategories: subs }); showToast("Subcategory added!"); document.getElementById('pSubCat').value = val; } else { showToast("Subcategory already exists!"); } }
+                    if(catDoc) {
+                        let subs = catDoc.subcategories || [];
+                        if(!subs.includes(val)) { 
+                            subs.push(val); await updateDoc(doc(db, "categories", catDoc.id), { subcategories: subs }); showToast("Subcategory added!"); 
+                            document.getElementById('pSubCat').value = val;
+                        } else { showToast("Subcategory already exists!"); }
+                    }
                 }
                 closeModals();
-            } catch (e) { console.error(e); } finally { btn.innerText = 'Add'; btn.disabled = false; }
+            } catch (e) { console.error(e); showToast("Error connecting."); } finally { btn.innerText = 'Add'; btn.disabled = false; }
         });
 
-        // --- DASHBOARD & MATH LOGIC ---
-        onSnapshot(collection(db, "drivers"), snap => { allDrivers = snap.docs.map(d => d.data()); renderDriverSettlements(); });
-        onSnapshot(collection(db, "categories"), snap => { globalCategoriesData = snap.docs.map(d => ({id: d.id, ...d.data()})); globalCategoriesData.sort((a,b) => a.name.localeCompare(b.name)); if(document.getElementById('view-ajouter').classList.contains('active')) loadMainCats(); });
-        
+        // ---------------- NEW CATALOG ACCORDION LOGIC ----------------
+        window.setCatalogMode = (mode) => {
+            currentCatalogMode = mode;
+            document.getElementById('catBtnResto').classList.remove('active');
+            document.getElementById('catBtnGrocery').classList.remove('active');
+            document.getElementById(`catBtn${mode}`).classList.add('active');
+            renderCatalog();
+        };
+
+        window.toggleAccordion = (id) => {
+            const el = document.getElementById(id);
+            if(el) el.classList.toggle('open');
+        };
+
+        function renderCatalog() {
+            const container = document.getElementById('adminProductListContainer');
+            if(!container) return;
+
+            let filteredProducts = allProducts.filter(p => p.productType === currentCatalogMode);
+            document.getElementById('prodCountText').innerText = `${filteredProducts.length} items • Updated just now`;
+
+            if(filteredProducts.length === 0) {
+                container.innerHTML = `<div class="empty-state-card" style="margin-top:20px;">No items in ${currentCatalogMode}.</div>`;
+                return;
+            }
+
+            // Group by category
+            const grouped = {};
+            filteredProducts.forEach(p => {
+                const cat = p.category || "Uncategorized";
+                if(!grouped[cat]) grouped[cat] = [];
+                grouped[cat].push(p);
+            });
+
+            // Sort categories alphabetically
+            const sortedCats = Object.keys(grouped).sort();
+
+            let html = '';
+            sortedCats.forEach((catName, index) => {
+                const items = grouped[catName];
+                const groupId = `accordion-${index}`;
+                const icon = getIconForCat(catName);
+
+                // Build cards for this category
+                const cardsHtml = items.map(p => {
+                    const price = p.promoPrice ? p.promoPrice : p.sellPrice;
+                    const imgTag = p.imageUrl ? `<img src="${p.imageUrl}" class="prod-img">` : `<span style="font-weight:800; color:var(--text-muted); font-size:24px;">${p.name.charAt(0)}</span>`;
+                    const isAvail = p.isAvailable !== false;
+                    const statusHtml = isAvail 
+                        ? `<div class="prod-status status-avail">● Available</div>` 
+                        : `<div class="prod-status status-unavail">● Hidden</div>`;
+
+                    return `
+                    <div class="prod-card">
+                        <div class="card-actions">
+                            <button class="btn-mini" onclick="editProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:14px; stroke:var(--text-main);"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
+                            <button class="btn-mini" onclick="promptDeleteProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:14px; stroke:var(--danger);"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                        </div>
+                        <div class="prod-img-wrap">${imgTag}</div>
+                        <div class="prod-info-block">
+                            <h3 class="prod-title">${p.name}</h3>
+                            ${statusHtml}
+                            <div class="prod-bottom-row">
+                                <span class="prod-price">${formatPrice(price)} DH</span>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                // Accordion HTML
+                html += `
+                <div class="accordion-group open" id="${groupId}">
+                    <div class="accordion-header" onclick="toggleAccordion('${groupId}')">
+                        <div class="accordion-title">
+                            <div style="width:28px;height:28px; background:var(--primary-light); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:14px;">${icon}</div>
+                            ${catName}
+                            <span class="accordion-badge">${items.length} items</span>
+                        </div>
+                        <svg class="accordion-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="product-grid">
+                            ${cardsHtml}
+                        </div>
+                    </div>
+                </div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ---------------- LISTENERS ----------------
+        onSnapshot(collection(db, "drivers"), snap => {
+            allDrivers = snap.docs.map(d => d.data());
+            renderDriverSettlements();
+        });
+
+        onSnapshot(collection(db, "categories"), snap => {
+            globalCategoriesData = snap.docs.map(d => ({id: d.id, ...d.data()})); 
+            globalCategoriesData.sort((a,b) => a.name.localeCompare(b.name));
+            if(document.getElementById('view-ajouter').classList.contains('active')) { loadMainCats(); }
+        });
+
         onSnapshot(collection(db, "products"), snap => {
             allProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
-            document.getElementById('prodCountText').innerText = `${allProducts.length} items • Updated just now`;
-            renderAccordionCatalog();
-            calculateDashboard(); // Recalculate costs if products updated
+            if(document.getElementById('view-produits').classList.contains('active')) {
+                renderCatalog();
+            }
         });
 
         onSnapshot(collection(db, "orders"), snap => {
@@ -833,100 +899,132 @@
             }
         });
 
-        // The Zero-Inventory Profit Calculation
+        // ---------------- DASHBOARD, MATH & ANALYTICS ----------------
         function calculateDashboard() {
             try {
-                const now = new Date(); const todayStr = now.toDateString(); const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1); const yesterdayStr = yesterday.toDateString(); 
-                let grossToday = 0, grossYesterday = 0, netToday = 0, netYesterday = 0, ordersToday = 0, itemsToday = 0, shippingToday = 0; let customersToday = new Set(); 
+                const now = new Date(); const todayStr = now.toDateString(); 
+                const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1); const yesterdayStr = yesterday.toDateString(); 
+                
+                let grossToday = 0, grossYest = 0;
+                let profitToday = 0, profitYest = 0;
+                let ordersToday = 0, ordersYest = 0;
+                let itemsToday = 0, itemsYest = 0; 
+                let shippingToday = 0, shippingYest = 0; 
+                let customersToday = new Set(); 
+                let customersTotal = new Set(); // For all time
 
                 allOrders.forEach(order => {
                     if(!order) return; let orderDate = new Date();
                     if (order.timestamp) { const parsed = new Date(order.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
-                    const isToday = orderDate.toDateString() === todayStr; const isYesterday = orderDate.toDateString() === yesterdayStr;
+                    const isToday = orderDate.toDateString() === todayStr; 
+                    const isYesterday = orderDate.toDateString() === yesterdayStr;
+
+                    if(order.customerName) customersTotal.add(order.customerName);
 
                     if (isToday) { ordersToday++; if(order.customerName) customersToday.add(order.customerName); }
+                    if (isYesterday) ordersYest++;
 
                     if (order.status === 'Delivered') {
-                        let orderGross = safeNum(order.totalPrice); // Customer paid this (Sale + Delivery)
-                        let orderShipping = safeNum(order.deliveryFee); // Driver keeps this
-                        let orderCost = 0; // Driver paid this at restaurant
-                        let orderItems = parseInt(order.totalItems) || 0;
+                        let orderGross = safeNum(order.totalPrice);
+                        let orderShipping = safeNum(order.deliveryFee);
+                        let orderCost = 0;
+                        let orderItems = 0;
 
-                        if(order.cart && Array.isArray(order.cart)) {
-                            order.cart.forEach(item => {
-                                // Find live product cost if not saved in cart
-                                let liveCost = 0; const liveProd = allProducts.find(p => p.id === item.product.id);
-                                if(liveProd) {
-                                    if(item.variantName) { const sizeObj = liveProd.sizes?.find(s => s.name === item.variantName); if(sizeObj) liveCost = safeNum(sizeObj.costPrice); }
-                                    if(!liveCost) liveCost = safeNum(liveProd.costPrice);
-                                    if(item.extras && item.extras.length > 0) {
-                                        item.extras.forEach(eName => { const exObj = liveProd.extras?.find(e => e.name === eName); if(exObj) liveCost += safeNum(exObj.costPrice); });
+                        if(order.cart && Array.isArray(order.cart)) { 
+                            order.cart.forEach(item => { 
+                                const p = item.product || {}; 
+                                const qty = parseInt(item.qty) || 0; 
+                                orderItems += qty; 
+                                // Fetch cost from allProducts catalog based on item ID, fallback to 0
+                                const catalogProduct = allProducts.find(prod => prod.id === p.id);
+                                let itemCost = 0;
+                                if(catalogProduct) {
+                                    itemCost = safeNum(catalogProduct.costPrice);
+                                    // Check if variant was selected, if so use variant cost
+                                    if(item.variantName && catalogProduct.sizes) {
+                                        const variant = catalogProduct.sizes.find(s => s.name === item.variantName);
+                                        if(variant && variant.costPrice) itemCost = safeNum(variant.costPrice);
                                     }
                                 }
-                                orderCost += (liveCost * item.qty);
-                            });
+                                orderCost += (itemCost * qty);
+                                
+                                // Add extra costs
+                                if(item.extras && item.extras.length > 0 && catalogProduct && catalogProduct.extras) {
+                                    item.extras.forEach(extName => {
+                                        const extra = catalogProduct.extras.find(e => e.name === extName);
+                                        if(extra && extra.costPrice) orderCost += (safeNum(extra.costPrice) * qty);
+                                    });
+                                }
+                            }); 
                         }
 
-                        // ZERO INVENTORY MATH: Admin Profit = Gross (Total Customer Paid) - Driver Shipping - Item Costs
-                        let orderNetProfit = orderGross - orderShipping - orderCost; 
+                        // MATH Logic:
+                        // Gross = Total order price (including delivery)
+                        // Profit = Subtotal (Gross - Shipping) - Cost of Goods
+                        let orderProfit = (orderGross - orderShipping) - orderCost;
 
-                        if (isToday) { grossToday += orderGross; netToday += orderNetProfit; shippingToday += orderShipping; itemsToday += orderItems; }
-                        if (isYesterday) { grossYesterday += orderGross; netYesterday += orderNetProfit; }
+                        if (isToday) { 
+                            grossToday += orderGross; 
+                            shippingToday += orderShipping; 
+                            profitToday += orderProfit;
+                            itemsToday += orderItems; 
+                        }
+                        if (isYesterday) { 
+                            grossYest += orderGross; 
+                            shippingYest += orderShipping; 
+                            profitYest += orderProfit;
+                            itemsYest += orderItems; 
+                        }
                     }
                 });
 
-                // Dashboard view
+                // Update Dashboard Quick Stats
                 document.getElementById('dashStatOrders').innerText = ordersToday;
-                document.getElementById('dashStatRevenue').innerText = `${formatPrice(netToday)} DH`;
+                document.getElementById('dashStatRevenue').innerText = formatPrice(grossToday) + ' DH';
                 document.getElementById('dashStatItems').innerText = itemsToday;
 
-                // Analytics View
-                document.getElementById('statGross').innerText = `${formatPrice(grossToday)} DH`;
-                document.getElementById('statNet').innerText = `${formatPrice(netToday)} DH`;
-                document.getElementById('statOrders').innerText = ordersToday;
-                document.getElementById('statItems').innerText = itemsToday;
-                document.getElementById('statCust').innerText = customersToday.size;
-                document.getElementById('statDelivery').innerText = `${formatPrice(shippingToday)} DH`;
-                document.getElementById('statYestLabel').innerText = `Yesterday Profit: ${formatPrice(netYesterday)} DH`;
+                // Update Analytics View
+                document.getElementById('statGrossRevenue').innerText = formatPrice(grossToday) + ' DH';
+                document.getElementById('statNetProfit').innerHTML = `<svg viewBox="0 0 24 24" style="width:16px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> Profit: ${formatPrice(profitToday)} DH`;
+                document.getElementById('yestProfit').innerText = formatPrice(profitYest) + ' DH';
 
-                // Recent Orders list
+                document.getElementById('statOrdersTotal').innerText = ordersToday;
+                document.getElementById('yestOrders').innerText = ordersYest;
+
+                document.getElementById('statItemsTotal').innerText = itemsToday;
+                document.getElementById('yestItems').innerText = itemsYest;
+
+                document.getElementById('statCustomersTotal').innerText = customersToday.size;
+                document.getElementById('statDeliveryTotal').innerText = formatPrice(shippingToday) + ' DH';
+
                 const getTime = (ts) => { if (!ts) return 0; const t = new Date(ts).getTime(); return isNaN(t) ? 0 : t; };
                 const recentOrders = [...allOrders].sort((a,b) => getTime(b.timestamp) - getTime(a.timestamp)).slice(0, 3);
                 
                 const dashRecentContainer = document.getElementById('dashRecentOrdersContainer');
                 if(dashRecentContainer) {
-                    if(recentOrders.length === 0) { dashRecentContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">No orders yet</div>`; } 
+                    if(recentOrders.length === 0) { dashRecentContainer.innerHTML = `<div class="empty-state-card"><div class="empty-icon-wrap" style="background:#FFEDD5; color:#EA580C;"><svg viewBox="0 0 24 24" style="width:28px;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></div><h4>No orders yet</h4></div>`; } 
                     else { dashRecentContainer.innerHTML = generateOrdersHTML(recentOrders); }
                 }
             } catch (error) { console.error("Dashboard Error:", error); }
         }
 
-        // Driver Cash to Collect (Margin logic)
         function renderDriverSettlements() {
             const container = document.getElementById('dashDriversContainer');
             if(!container) return;
-            let html = ''; let totalDriversOwe = 0;
+
+            let html = '';
+            let totalDriversOwe = 0;
 
             allDrivers.forEach(driver => {
                 const driverOrders = allOrders.filter(o => o.driverEmail === driver.email && o.status === 'Delivered' && o.driverSettled !== true);
+                
                 let debt = 0;
-                driverOrders.forEach(order => {
-                    let orderGross = safeNum(order.totalPrice);
-                    let orderShipping = safeNum(order.deliveryFee);
-                    let orderCost = 0;
-                    if(order.cart) {
-                        order.cart.forEach(item => {
-                            let liveCost = 0; const liveProd = allProducts.find(p => p.id === item.product.id);
-                            if(liveProd) {
-                                if(item.variantName) { const sizeObj = liveProd.sizes?.find(s => s.name === item.variantName); if(sizeObj) liveCost = safeNum(sizeObj.costPrice); }
-                                if(!liveCost) liveCost = safeNum(liveProd.costPrice);
-                                if(item.extras) { item.extras.forEach(eName => { const exObj = liveProd.extras?.find(e => e.name === eName); if(exObj) liveCost += safeNum(exObj.costPrice); }); }
-                            }
-                            orderCost += (liveCost * item.qty);
-                        });
-                    }
-                    // Debt = Total Paid - (Fee + Cost)
-                    debt += (orderGross - orderShipping - orderCost); 
+                driverOrders.forEach(o => {
+                    const fee = safeNum(o.deliveryFee);
+                    const total = safeNum(o.totalPrice);
+                    const subtotal = total - fee;
+                    // Driver keeps delivery fee, gives back subtotal to Admin
+                    debt += subtotal; 
                 });
 
                 if(debt > 0) {
@@ -934,75 +1032,76 @@
                     html += `
                     <div class="driver-row">
                         <div style="display:flex; align-items:center; gap:12px;">
-                            <div style="width:36px;height:36px; border-radius:10px; background:var(--primary-light); color:var(--primary); display:flex; align-items:center; justify-content:center;">
-                                <svg viewBox="0 0 24 24" style="width:18px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            <div style="width:40px;height:40px; border-radius:12px; background:var(--primary-light); color:var(--primary); display:flex; align-items:center; justify-content:center;">
+                                <svg viewBox="0 0 24 24" style="width:20px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                             </div>
-                            <div class="d-info"><h4>${driver.name || driver.email.split('@')[0]}</h4><p>${driverOrders.length} order(s)</p></div>
+                            <div class="d-info">
+                                <h4>${driver.name || driver.email.split('@')[0]}</h4>
+                                <p>${driverOrders.length} order(s)</p>
+                            </div>
                         </div>
                         <div class="d-debt">${formatPrice(debt)} DH</div>
                     </div>`;
                 }
             });
 
-            if(html === '') { container.innerHTML = `<div style="text-align:center; color:var(--text-muted); font-size:12px; font-weight:500;">No pending settlements.</div>`; } 
-            else { container.innerHTML = html + `<div style="padding-top:12px; margin-top:4px; border-top:1px dashed var(--border); display:flex; justify-content:space-between; font-weight:800; font-size:14px;"><span>Total Expected:</span><span style="color:var(--primary);">${formatPrice(totalDriversOwe)} DH</span></div>`; }
+            if(html === '') {
+                container.innerHTML = `<div style="text-align:center; padding:12px; color:var(--text-muted); font-size:13px; font-weight:500;">No pending settlements.</div>`;
+            } else {
+                container.innerHTML = html + `<div style="padding-top:16px; margin-top:8px; border-top:1px dashed var(--border); display:flex; justify-content:space-between; font-weight:800; font-size:15px; color:var(--text-main);"><span>Total Cash to Collect</span><span style="color:var(--primary);">${formatPrice(totalDriversOwe)} DH</span></div>`;
+            }
         }
-
-        window.filterOrdersList = (status, tabElement) => { document.querySelectorAll('#view-commandes .tab-pill').forEach(t => t.classList.remove('active')); tabElement.classList.add('active'); currentOrderFilter = status; renderFullOrdersList(); };
 
         function renderFullOrdersList() {
             const getTime = (ts) => { if (!ts) return 0; const t = new Date(ts).getTime(); return isNaN(t) ? 0 : t; };
             let filtered = [...allOrders].sort((a,b) => getTime(b.timestamp) - getTime(a.timestamp));
-            if (currentOrderFilter !== 'All') { filtered = filtered.filter(o => o.status === currentOrderFilter); }
             const container = document.getElementById('adminOrderListContainer');
             if(container) container.innerHTML = generateOrdersHTML(filtered);
         }
 
         function generateOrdersHTML(ordersArray) {
-            if(!ordersArray || ordersArray.length === 0) return `<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">No orders found.</div>`;
+            if(!ordersArray || ordersArray.length === 0) return `<div class="empty-state-card" style="margin-top:20px;">No orders found.</div>`;
             return ordersArray.map(o => {
                 let orderDate = new Date(); if (o.timestamp) { const parsed = new Date(o.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
-                const date = orderDate.toLocaleDateString('en-US', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
-                let statusClass = 'b-pending'; if(o.status === 'Preparing') statusClass = 'b-processing'; if(o.status === 'Out for Delivery') statusClass = 'b-transit'; if(o.status === 'Delivered') statusClass = 'b-delivered'; if(o.status === 'Cancelled') statusClass = 'b-cancelled';
-                const price = formatPrice(o.totalPrice); const items = parseInt(o.totalItems) || 0; const cName = o.customerName || 'Customer';
-                return `<div class="order-card" onclick="window.viewOrder('${o.id}')"><div class="order-header"><div><div class="o-id">#${o.id.substring(0,6).toUpperCase()}</div><div class="o-date">${date}</div></div><div class="badge ${statusClass}">${o.status}</div></div><div style="display: flex; justify-content: space-between; align-items: flex-end;"><div><div class="o-client"><svg viewBox="0 0 24 24" style="width:14px; color:var(--text-muted);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${cName}</div><div class="o-items">${items} items</div></div><div class="o-price">${price} DH</div></div></div>`;
+                const date = orderDate.toLocaleDateString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+                
+                let statusClass = 'b-pending'; 
+                if(o.status === 'Preparing') statusClass = 'b-processing'; 
+                if(o.status === 'Out for Delivery') statusClass = 'b-transit'; 
+                if(o.status === 'Delivered') statusClass = 'b-delivered'; 
+                if(o.status === 'Cancelled') statusClass = 'b-cancelled';
+                
+                const price = formatPrice(safeNum(o.totalPrice)); 
+                const items = parseInt(o.totalItems) || 0; 
+                const cName = o.customerName || 'Customer';
+
+                return `
+                <div class="order-card" onclick="window.viewOrder('${o.id}')">
+                    <div class="order-header">
+                        <div>
+                            <div class="o-id">#${o.id.substring(0,6).toUpperCase()}</div>
+                            <div class="o-date">${date}</div>
+                        </div>
+                        <div class="badge ${statusClass}">${o.status}</div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                        <div>
+                            <div class="o-client"><svg viewBox="0 0 24 24" style="width:14px; color:var(--text-muted);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${cName}</div>
+                            <div class="o-items">${items} item${items>1?'s':''}</div>
+                        </div>
+                        <div class="o-price">${price} DH</div>
+                    </div>
+                </div>`;
             }).join('');
         }
 
         window.viewOrder = (orderId) => {
             const order = allOrders.find(o => o.id === orderId); if(!order) return;
             document.getElementById('det-id').innerText = "#" + order.id.substring(0,6).toUpperCase();
-            let orderDate = new Date(); if (order.timestamp) { const parsed = new Date(order.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
-            document.getElementById('det-date').innerText = orderDate.toLocaleDateString('en-US', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
-            document.getElementById('det-client').innerText = order.customerName || 'Unknown';
-            document.getElementById('det-neighborhood').innerText = order.neighborhood || 'Not specified';
-
-            let statusClass = 'b-pending'; if(order.status === 'Preparing') statusClass = 'b-processing'; if(order.status === 'Out for Delivery') statusClass = 'b-transit'; if(order.status === 'Delivered') statusClass = 'b-delivered'; if(order.status === 'Cancelled') statusClass = 'b-cancelled';
-            const badge = document.getElementById('det-badge'); badge.className = `badge ${statusClass}`; badge.innerText = (order.status || 'Unknown').toUpperCase();
-
-            let orderCost = 0;
-            document.getElementById('det-items-count').innerText = `Items (${order.totalItems || 0})`;
-            document.getElementById('det-items-list').innerHTML = (order.cart || []).map(item => {
-                const p = item.product || {}; const img = p.imageUrl ? `<img src="${p.imageUrl}">` : ''; const vText = item.variantName ? `<span style="color:var(--primary);">${item.variantName}</span>` : ''; const price = safeNum(item.unitPrice) || safeNum(p.sellPrice);
-                
-                let liveCost = 0; const liveProd = allProducts.find(prod => prod.id === p.id);
-                if(liveProd) {
-                    if(item.variantName) { const sizeObj = liveProd.sizes?.find(s => s.name === item.variantName); if(sizeObj) liveCost = safeNum(sizeObj.costPrice); }
-                    if(!liveCost) liveCost = safeNum(liveProd.costPrice);
-                    if(item.extras) { item.extras.forEach(eName => { const exObj = liveProd.extras?.find(e => e.name === eName); if(exObj) liveCost += safeNum(exObj.costPrice); }); }
-                }
-                orderCost += (liveCost * item.qty);
-
-                return `<div class="item-row"><div class="item-img">${img}</div><div class="item-details"><div class="item-name">${p.name || 'Item'} ${vText}</div><div class="item-meta">x${item.qty}</div></div><div class="item-price">${formatPrice(price * item.qty)} DH</div></div>`;
-            }).join('');
-
-            const deliveryFee = safeNum(order.deliveryFee); const total = safeNum(order.totalPrice); const subTotal = total - deliveryFee;
-            document.getElementById('det-subtotal').innerText = `${formatPrice(subTotal)} DH`; 
-            document.getElementById('det-shipping').innerText = `${formatPrice(deliveryFee)} DH`;
-            document.getElementById('det-cost').innerText = `-${formatPrice(orderCost)} DH`;
-            document.getElementById('det-profit').innerText = `${formatPrice(subTotal - orderCost)} DH`;
 
             let actionsHTML = '';
+            
+            // DISPATCH DROPDOWN
             if(order.status === 'Pending' || order.status === 'Preparing') {
                 const driverOptions = allDrivers.map(d => {
                     const activeCount = allOrders.filter(o => o.driverEmail === d.email && o.status === 'Out for Delivery').length;
@@ -1011,7 +1110,14 @@
                     return `<option value="${d.email}" ${isSelected}>${d.name ? d.name.toUpperCase() : d.email.split('@')[0].toUpperCase()} ${statusText}</option>`;
                 }).join('');
                 
-                actionsHTML += `<div style="margin-bottom: 16px; background: var(--bg-main); padding: 12px; border-radius: 12px; border: 1px solid var(--border);"><label style="font-size:12px; font-weight:800; color:var(--text-main); margin-bottom:8px; display:block;">Assign to Driver:</label><select class="form-control" onchange="assignDriver('${order.id}', this.value)" style="padding:12px; font-weight:700; color:var(--primary);"><option value="">-- Unassigned --</option>${driverOptions}</select></div>`;
+                actionsHTML += `
+                <div style="margin-bottom: 16px; background: var(--surface); padding: 16px; border-radius: 16px; border: 1px solid var(--border);">
+                    <label style="font-size:13px; font-weight:800; color:var(--text-main); margin-bottom:12px; display:block;">Assign to Driver:</label>
+                    <select class="form-control" onchange="assignDriver('${order.id}', this.value)" style="padding:14px; font-weight:700; color:var(--primary);">
+                        <option value="">-- Unassigned --</option>
+                        ${driverOptions}
+                    </select>
+                </div>`;
             }
 
             if(order.status !== 'Cancelled' && order.status !== 'Delivered') {
@@ -1019,10 +1125,11 @@
                 if(order.status === 'Preparing') actionsHTML += `<button class="btn btn-warning" onclick="promptOrderStatus('${order.id}', 'Out for Delivery')">Force Dispatch</button>`;
                 if(order.status === 'Out for Delivery') actionsHTML += `<button class="btn btn-success" onclick="promptOrderStatus('${order.id}', 'Delivered')">Force Delivered</button>`;
                 actionsHTML += `<button class="btn btn-danger-outline" onclick="promptOrderStatus('${order.id}', 'Cancelled')">Cancel Order</button>`;
-            } else if (order.status === 'Cancelled') { actionsHTML = `<div style="text-align:center; color:var(--danger); font-weight:700; padding:12px; background:var(--danger-light); border-radius:12px;">Order Cancelled</div>`; } 
-            else { actionsHTML = `<div style="text-align:center; color:var(--accent); font-weight:700; padding:12px; background:var(--accent-light); border-radius:12px;">Order Completed</div>`; }
+            } else if (order.status === 'Cancelled') { actionsHTML = `<div style="text-align:center; color:var(--danger); font-weight:700; padding:16px; background:var(--danger-light); border-radius:16px;">Order Cancelled</div>`; } 
+            else { actionsHTML = `<div style="text-align:center; color:var(--accent); font-weight:700; padding:16px; background:var(--accent-light); border-radius:16px;">Order Delivered</div>`; }
             
-            actionsHTML += `<button class="btn btn-outline" style="color:var(--danger); border-color:var(--danger-light); margin-top: 24px;" onclick="promptDeleteOrder('${order.id}')">Delete Order</button>`;
+            actionsHTML += `<button class="btn btn-outline" style="color:var(--danger); border-color:var(--danger-light); margin-top: 12px;" onclick="promptDeleteOrder('${order.id}')">Delete Order</button>`;
+            
             document.getElementById('det-actions').innerHTML = actionsHTML; switchTab('order-detail');
         };
 
@@ -1032,14 +1139,20 @@
             if(newStatus === 'Cancelled') btn.style.background = 'var(--danger)'; else if(newStatus === 'Out for Delivery') btn.style.background = 'var(--warning)'; else if(newStatus === 'Delivered') btn.style.background = 'var(--accent)'; else btn.style.background = 'var(--blue)';
             window.confirmActionCallback = async () => { closeModals(); try { await updateDoc(doc(db, "orders", orderId), { status: newStatus }); showToast(`Status updated`); } catch(e) { alert("Network error"); } }; document.getElementById('confirmOverlay').classList.add('active');
         };
-        window.assignDriver = async (orderId, driverEmail) => { try { await updateDoc(doc(db, "orders", orderId), { driverEmail: driverEmail }); showToast("Driver assigned!"); } catch(e) { console.error(e); } };
+
+        window.assignDriver = async (orderId, driverEmail) => {
+            try { await updateDoc(doc(db, "orders", orderId), { driverEmail: driverEmail }); showToast("Driver assigned!"); } catch(e) { console.error(e); alert("Failed to assign driver."); }
+        };
+
         window.promptDeleteOrder = (orderId) => {
             document.getElementById('modalTitle').innerText = "Delete Order"; document.getElementById('modalMsg').innerText = "This will permanently delete the order. Confirm?";
             const btn = document.getElementById('modalConfirmBtn'); btn.style.background = 'var(--danger)'; btn.style.border = 'none';
-            window.confirmActionCallback = async () => { closeModals(); try { await deleteDoc(doc(db, "orders", orderId)); showToast("Order deleted"); switchTab('commandes'); } catch(e) { console.error(e); } }; document.getElementById('confirmOverlay').classList.add('active');
+            window.confirmActionCallback = async () => { closeModals(); try { await deleteDoc(doc(db, "orders", orderId)); showToast("Order deleted"); switchTab('commandes'); } catch(e) { console.error(e); alert("Error during deletion."); } }; document.getElementById('confirmOverlay').classList.add('active');
         };
 
+        // ---------------- ADD / EDIT EXECUTION ----------------
         window.promptDeleteProduct = (id) => {
+            event.stopPropagation();
             document.getElementById('modalTitle').innerText = "Delete Item"; document.getElementById('modalMsg').innerText = "This action is irreversible. Confirm?";
             const btn = document.getElementById('modalConfirmBtn'); btn.style.background = 'var(--danger)'; btn.style.border = 'none';
             window.confirmActionCallback = async () => { closeModals(); await deleteDoc(doc(db, "products", id)); showToast("Item deleted"); }; document.getElementById('confirmOverlay').classList.add('active');
@@ -1048,46 +1161,83 @@
         window.prepareAddProduct = () => {
             currentEditProductId = null; document.getElementById('wizardTitle').innerText = "Add Item"; 
             document.querySelectorAll('#view-ajouter input').forEach(i => { if(i.type !== 'checkbox' && i.type !== 'radio') i.value = '' });
-            document.getElementById('previewImg').style.display = 'none'; document.getElementById('pDesc').value = '';
+            document.getElementById('previewImg').style.display = 'none'; 
+            document.getElementById('pDesc').value = '';
+            
             selectProductType('Resto'); 
+
             document.getElementById('tglFeatured').checked = false;
             document.getElementById('tglPromo').checked = false; document.getElementById('cfgPromo').style.display = 'none';
             document.getElementById('tglSauce').checked = false; document.getElementById('cfgSauce').style.display = 'none'; window.productSauces = []; renderSauces();
             document.getElementById('tglSize').checked = false; document.getElementById('cfgSize').style.display = 'none'; window.productSizes = []; renderSizes();
             document.getElementById('tglExtra').checked = false; document.getElementById('cfgExtra').style.display = 'none'; window.productExtras = []; renderExtras();
             document.getElementById('tglNotes').checked = true; document.getElementById('tglAvailable').checked = true;
+
             switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
         };
 
         window.editProduct = (id) => {
+            event.stopPropagation();
             const p = allProducts.find(x => x.id === id); if(!p) return;
             currentEditProductId = id; document.getElementById('wizardTitle').innerText = "Edit Item";
-            document.getElementById('pName').value = p.name || ''; document.getElementById('pSubtitle').value = p.subtitle || ''; 
+            
+            document.getElementById('pName').value = p.name || ''; 
+            document.getElementById('pSubtitle').value = p.subtitle || ''; 
             selectProductType(p.productType || 'Resto');
+            
             setTimeout(() => { document.getElementById('pCat').value = p.category || ''; loadSubCats(); setTimeout(() => document.getElementById('pSubCat').value = p.subCategory || '', 50); }, 50);
+            
             document.getElementById('pImg').value = p.imageUrl || ''; 
-            if(p.imageUrl) { document.getElementById('previewImg').src = p.imageUrl; document.getElementById('previewImg').style.display = 'block'; } else { document.getElementById('previewImg').style.display = 'none'; }
-            document.getElementById('pSell').value = p.sellPrice || ''; document.getElementById('pCost').value = p.costPrice || '';
+            if(p.imageUrl) { document.getElementById('previewImg').src = p.imageUrl; document.getElementById('previewImg').style.display = 'block'; } 
+            else { document.getElementById('previewImg').style.display = 'none'; }
+
+            document.getElementById('pSell').value = p.sellPrice || '';
+            document.getElementById('pCost').value = p.costPrice || '';
+            
             document.getElementById('tglFeatured').checked = p.featured || false; 
-            document.getElementById('tglPromo').checked = (p.promoPrice !== null && p.promoPrice !== undefined); document.getElementById('cfgPromo').style.display = document.getElementById('tglPromo').checked ? 'block' : 'none'; document.getElementById('vPromoPrice').value = p.promoPrice || '';
-            document.getElementById('tglSauce').checked = (p.sauces && p.sauces.length > 0); document.getElementById('cfgSauce').style.display = document.getElementById('tglSauce').checked ? 'block' : 'none'; window.productSauces = p.sauces ? [...p.sauces] : []; renderSauces();
-            document.getElementById('tglSize').checked = (p.sizes && p.sizes.length > 0); document.getElementById('cfgSize').style.display = document.getElementById('tglSize').checked ? 'block' : 'none'; window.productSizes = p.sizes ? [...p.sizes] : []; renderSizes();
-            document.getElementById('tglExtra').checked = (p.extras && p.extras.length > 0); document.getElementById('cfgExtra').style.display = document.getElementById('tglExtra').checked ? 'block' : 'none'; window.productExtras = p.extras ? [...p.extras] : []; renderExtras();
-            document.getElementById('tglNotes').checked = p.allowNotes !== false; document.getElementById('tglAvailable').checked = p.isAvailable !== false;
+            document.getElementById('tglPromo').checked = (p.promoPrice !== null && p.promoPrice !== undefined);
+            document.getElementById('cfgPromo').style.display = document.getElementById('tglPromo').checked ? 'block' : 'none';
+            document.getElementById('vPromoPrice').value = p.promoPrice || '';
+
+            document.getElementById('tglSauce').checked = (p.sauces && p.sauces.length > 0);
+            document.getElementById('cfgSauce').style.display = document.getElementById('tglSauce').checked ? 'block' : 'none';
+            window.productSauces = p.sauces ? [...p.sauces] : []; renderSauces();
+
+            document.getElementById('tglSize').checked = (p.sizes && p.sizes.length > 0);
+            document.getElementById('cfgSize').style.display = document.getElementById('tglSize').checked ? 'block' : 'none';
+            window.productSizes = p.sizes ? [...p.sizes] : []; renderSizes();
+
+            document.getElementById('tglExtra').checked = (p.extras && p.extras.length > 0);
+            document.getElementById('cfgExtra').style.display = document.getElementById('tglExtra').checked ? 'block' : 'none';
+            window.productExtras = p.extras ? [...p.extras] : []; renderExtras();
+
+            document.getElementById('tglNotes').checked = p.allowNotes !== false;
+            document.getElementById('tglAvailable').checked = p.isAvailable !== false;
             document.getElementById('pDesc').value = p.description || '';
+
             switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
         };
 
         window.saveProductData = async () => {
             const data = {
-                name: document.getElementById('pName').value, subtitle: document.getElementById('pSubtitle').value, productType: selectedProductType,
-                category: document.getElementById('pCat').value || "Uncategorized", subCategory: document.getElementById('pSubCat').value || "", 
-                sellPrice: parseFloat(document.getElementById('pSell').value) || 0, costPrice: parseFloat(document.getElementById('pCost').value) || 0, 
-                imageUrl: document.getElementById('pImg').value, featured: document.getElementById('tglFeatured').checked,
+                name: document.getElementById('pName').value, 
+                subtitle: document.getElementById('pSubtitle').value,
+                productType: selectedProductType,
+                category: document.getElementById('pCat').value || "Uncategorized", 
+                subCategory: document.getElementById('pSubCat').value || "", 
+                sellPrice: parseFloat(document.getElementById('pSell').value) || 0, 
+                costPrice: parseFloat(document.getElementById('pCost').value) || 0, 
+                imageUrl: document.getElementById('pImg').value, 
+                featured: document.getElementById('tglFeatured').checked,
                 promoPrice: document.getElementById('tglPromo').checked ? (parseFloat(document.getElementById('vPromoPrice').value) || null) : null,
-                sauces: document.getElementById('tglSauce').checked ? window.productSauces : [], sizes: document.getElementById('tglSize').checked ? window.productSizes : [], extras: document.getElementById('tglExtra').checked ? window.productExtras : [],
-                allowNotes: document.getElementById('tglNotes').checked, isAvailable: document.getElementById('tglAvailable').checked, description: document.getElementById('pDesc').value
+                sauces: document.getElementById('tglSauce').checked ? window.productSauces : [],
+                sizes: document.getElementById('tglSize').checked ? window.productSizes : [],
+                extras: document.getElementById('tglExtra').checked ? window.productExtras : [],
+                allowNotes: document.getElementById('tglNotes').checked,
+                isAvailable: document.getElementById('tglAvailable').checked,
+                description: document.getElementById('pDesc').value
             };
+
             if(!data.name || !data.category) return showToast("Please fill in the basic info.");
             try {
                 if(currentEditProductId) { await updateDoc(doc(db, "products", currentEditProductId), data); showToast("Item updated!"); } 
