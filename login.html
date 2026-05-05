@@ -38,26 +38,40 @@
         /* FORMS */
         .form-group { margin-bottom: 20px; text-align: left; position: relative;}
         .form-label { font-size: 13px; font-weight: 800; margin-bottom: 8px; display: block; color: var(--text-main); }
-        .form-input { width: 100%; padding: 16px 16px 16px 44px; border-radius: 14px; border: 1px solid var(--border); background: var(--bg-main); font-size: 14px; font-weight: 500; color: var(--text-main); transition: 0.2s; }
-        .form-input:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 3px var(--primary-light); }
         
-        .input-icon { position: absolute; left: 16px; top: 41px; width: 18px; height: 18px; color: var(--text-muted); transition: 0.2s; }
-        .form-input:focus + .input-icon { color: var(--primary); }
+        .input-wrapper { position: relative; display: flex; align-items: center; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-main); transition: 0.2s;}
+        .input-wrapper:focus-within { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 3px var(--primary-light); }
+        
+        .left-icon { position: absolute; left: 16px; color: var(--text-muted); width: 18px; height: 18px; transition: 0.2s; }
+        .input-wrapper:focus-within .left-icon { color: var(--primary); }
+        
+        .form-input { width: 100%; padding: 16px 40px; font-size: 14px; font-weight: 500; color: var(--text-main); background: transparent; border: none; outline: none;}
+        .form-input::placeholder { color: #9CA3AF; }
+        
+        .right-action { position: absolute; right: 14px; color: var(--text-muted); cursor: pointer; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .right-action:active { transform: scale(0.9); }
+
+        /* CHECKBOX */
+        .remember-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 24px; cursor: pointer; }
+        .custom-checkbox { width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; transition: 0.2s; background: white;}
+        .custom-checkbox.checked { background: var(--primary); border-color: var(--primary); }
+        .custom-checkbox svg { width: 12px; height: 12px; stroke: white; stroke-width: 3; fill: none; display: none; }
+        .custom-checkbox.checked svg { display: block; }
+        .remember-text { font-size: 13px; font-weight: 600; color: var(--text-muted); }
 
         /* BUTTON */
-        .btn-login { width: 100%; padding: 18px; background: var(--primary); color: white; font-size: 16px; font-weight: 800; border-radius: var(--radius-btn); cursor: pointer; transition: 0.2s; box-shadow: 0 8px 20px rgba(255, 69, 0, 0.2); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;}
+        .btn-login { width: 100%; padding: 18px; background: var(--primary); color: white; font-size: 16px; font-weight: 800; border-radius: var(--radius-btn); cursor: pointer; transition: 0.2s; box-shadow: 0 8px 20px rgba(255, 69, 0, 0.2); display: flex; align-items: center; justify-content: center; gap: 8px;}
         .btn-login:active { transform: scale(0.98); }
         .btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
 
-        /* SECURITY TEXT */
+        /* SECURITY TEXT & ERRORS */
+        .error-msg { color: #DC2626; font-size: 13px; font-weight: 700; margin-bottom: 20px; text-align: center; display: none; background: #FEE2E2; padding: 10px; border-radius: 10px; border: 1px solid #F87171;}
         .secure-badge { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 24px; }
         .secure-badge svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.2;}
 
         /* SPINNER ANIMATION */
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; display: none; }
-        .btn-login.loading .btn-text { display: none; }
-        .btn-login.loading .spinner { display: block; }
     </style>
 </head>
 <body>
@@ -67,23 +81,39 @@
         <h1 class="login-title">Welcome Back</h1>
         <p class="login-subtitle">Sign in to the Lasco Admin Portal</p>
 
-        <form id="loginForm" onsubmit="handleDummyLogin(event)">
+        <form id="loginForm">
             
+            <div class="error-msg" id="errorMsg">Invalid email or password.</div>
+
             <div class="form-group">
                 <label class="form-label">Admin Email</label>
-                <input type="email" id="adminEmail" class="form-input" placeholder="admin@lasco.com" required>
-                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                <div class="input-wrapper">
+                    <svg class="left-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    <input type="email" id="adminEmail" class="form-input" placeholder="admin@lasgo.ma" required>
+                </div>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Password</label>
-                <input type="password" id="adminPassword" class="form-input" placeholder="••••••••" required>
-                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <div class="input-wrapper">
+                    <svg class="left-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    <input type="password" id="adminPassword" class="form-input" placeholder="••••••••" required>
+                    <div class="right-action" onclick="togglePassword()">
+                        <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="remember-row" onclick="toggleRemember()">
+                <div class="custom-checkbox checked" id="rememberCheck">
+                    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span class="remember-text">Remember this device</span>
             </div>
 
             <button type="submit" class="btn-login" id="loginBtn">
-                <span class="btn-text">Sign In</span>
-                <div class="spinner"></div>
+                <span id="btnText">Sign In</span>
+                <div class="spinner" id="spinner"></div>
             </button>
 
             <div class="secure-badge">
@@ -93,25 +123,81 @@
         </form>
     </div>
 
-    <script>
-        // Tomorrow we will replace this with real Firebase Authentication!
-        function handleDummyLogin(e) {
-            e.preventDefault(); // Stop page from refreshing
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyAaaR52bvyQfkxmZL16lcg4Bd4M76OtbI4",
+          authDomain: "lesgo-cd7f9.firebaseapp.com",
+          projectId: "lesgo-cd7f9",
+          storageBucket: "lesgo-cd7f9.firebasestorage.app",
+          messagingSenderId: "618932234525",
+          appId: "1:618932234525:web:8eb0b934b1bfd1060059f4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // UI Interactions
+        window.togglePassword = () => {
+            const input = document.getElementById('adminPassword');
+            const icon = document.getElementById('eyeIcon');
+            if(input.type === 'password') { 
+                input.type = 'text'; 
+                icon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><line x1="3" y1="3" x2="21" y2="21"></line>`; // Crossed out eye
+            } else { 
+                input.type = 'password'; 
+                icon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`; // Normal eye
+            }
+        };
+
+        window.toggleRemember = () => {
+            const check = document.getElementById('rememberCheck');
+            check.classList.toggle('checked');
+        };
+
+        // Login Submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            const rememberMe = document.getElementById('rememberCheck').classList.contains('checked');
             
             const btn = document.getElementById('loginBtn');
-            btn.classList.add('loading');
-            btn.disabled = true;
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('spinner');
+            const errorMsg = document.getElementById('errorMsg');
 
-            // Fake 1.5 second loading delay to show you the UI design
-            setTimeout(() => {
-                btn.classList.remove('loading');
+            // UI Loading state
+            btn.disabled = true;
+            btnText.style.display = 'none';
+            spinner.style.display = 'block';
+            errorMsg.style.display = 'none';
+
+            try {
+                // Set persistence (Local = stays logged in, Session = logs out when tab closed)
+                const persistenceType = rememberMe ? browserLocalPersistence : browserSessionPersistence;
+                await setPersistence(auth, persistenceType);
+                
+                // Attempt Login
+                await signInWithEmailAndPassword(auth, email, password);
+                
+                // Success! Redirect to the Admin dashboard
+                window.location.href = "admin.html"; 
+
+            } catch (error) {
+                console.error("Login failed:", error);
+                errorMsg.innerText = "Invalid email or password.";
+                errorMsg.style.display = 'block';
+                
+                // Reset UI
                 btn.disabled = false;
-                
-                // In tomorrow's code, this is where we will redirect to admin.html
-                alert("This is just the design! Tomorrow we will link Firebase to log you in.");
-                
-            }, 1500);
-        }
+                btnText.style.display = 'block';
+                spinner.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
