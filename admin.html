@@ -61,6 +61,12 @@
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(18px); }
 
+        /* ANIMATED TABS TOGGLE (Reused from Driver App) */
+        .tabs-toggle { position: relative; display: flex; background: var(--surface); border-radius: 50px; padding: 6px; border: 1px solid var(--border); margin-bottom: 24px; box-shadow: var(--shadow-sm); z-index: 1;}
+        .tab-bg { position: absolute; top: 6px; bottom: 6px; left: 6px; width: calc(50% - 6px); background: var(--primary); border-radius: 50px; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: -1; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);}
+        .tab-btn { flex: 1; padding: 12px; text-align: center; font-size: 14px; font-weight: 700; border-radius: 50px; color: var(--text-muted); transition: color 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
+        .tab-btn.active { color: white; }
+
         /* DASHBOARD STATS */
         .dash-stats-row { display: flex; justify-content: space-between; background: var(--surface); border-radius: var(--radius-card); padding: 16px; margin-bottom: 24px; box-shadow: var(--shadow-sm); }
         .dash-stat-col { flex: 1; text-align: center; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
@@ -97,11 +103,6 @@
         .tabs-scroll::-webkit-scrollbar { display: none; }
         .tab-pill { padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); white-space: nowrap; cursor: pointer; transition: 0.2s;}
         .tab-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-        /* CATALOG TOGGLE & ACCORDIONS */
-        .cat-toggle-wrapper { background: var(--surface); border-radius: 50px; padding: 4px; display: flex; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 20px;}
-        .cat-toggle-btn { flex: 1; padding: 10px; font-size: 13px; font-weight: 700; color: var(--text-muted); border-radius: 50px; transition: 0.3s; text-align: center; display: flex; justify-content: center; align-items: center; gap: 6px; cursor: pointer;}
-        .cat-toggle-btn.active { background: var(--primary); color: white; }
 
         /* HORIZONTAL LIST CATALOG */
         .catalog-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px;}
@@ -321,18 +322,22 @@
             </div>
         </div>
         <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; font-weight: 500;" id="det-date">Date</p>
+        
         <div class="card info-list">
             <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Customer</div><div class="info-val" id="det-client">-</div></div>
             <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> Phone</div><div class="info-val" id="det-phone">Not provided</div></div>
             <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Address</div><div class="info-val" id="det-neighborhood">-</div></div>
             <div class="info-row"><div class="info-label"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Payment</div><div class="info-val">Cash on Delivery</div></div>
         </div>
+        
         <div class="card"><h3 style="font-size: 14px; margin-bottom: 12px;" id="det-items-count">Items (0)</h3><div id="det-items-list"></div></div>
+        
         <div class="summary-box" style="background: var(--surface); border-radius: 12px; padding: 16px; margin-top: 24px; border: 1px solid var(--border);">
             <div class="summary-row" style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px; color: var(--text-muted);"><span>Subtotal</span><span id="det-subtotal">0.00 DH</span></div>
             <div class="summary-row" style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px; color: var(--text-muted);"><span>Delivery Fee</span><span id="det-shipping">0.00 DH</span></div>
             <div class="summary-row total" style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; color: var(--primary); padding-top: 12px; border-top: 1px dashed var(--border);"><span>Total</span><span id="det-total">0.00 DH</span></div>
         </div>
+
         <div class="action-stack" id="det-actions" style="display: flex; flex-direction: column; gap: 12px; margin-top: 32px;"></div>
     </div>
 
@@ -344,9 +349,10 @@
             </div>
         </div>
 
-        <div class="cat-toggle-wrapper">
-            <div class="cat-toggle-btn active" id="catBtnResto" onclick="setCatalogMode('Resto')">Resto (Food)</div>
-            <div class="cat-toggle-btn" id="catBtnGrocery" onclick="setCatalogMode('Grocery')">Grocery</div>
+        <div class="tabs-toggle" style="margin-bottom: 24px;">
+            <div class="tab-bg" id="catTabBg"></div>
+            <div class="tab-btn active" id="catBtnResto" onclick="setCatalogMode('Resto')">Resto (Food)</div>
+            <div class="tab-btn" id="catBtnGrocery" onclick="setCatalogMode('Grocery')">Grocery</div>
         </div>
 
         <div class="tabs-scroll" id="catalogCategoryTabs"></div>
@@ -755,7 +761,7 @@
             const navItem = document.getElementById(`nav-${navTarget}`);
             if(navItem) navItem.classList.add('active');
             
-            // FIX: Force re-render catalog instantly when opening tab
+            // Force re-render catalog instantly when opening tab
             if(tabId === 'produits') {
                 renderCatalogTabs();
                 renderCatalog();
@@ -850,7 +856,6 @@
         window.removeOption = (index) => { window.productCustomOptions.splice(index, 1); renderOptions(); };
         function renderOptions() { document.getElementById('listOptions').innerHTML = window.productCustomOptions.map((s, i) => `<div style="padding:6px 12px; background:var(--bg-main); border:1px solid var(--border); border-radius:50px; font-size:12px; font-weight:600; display:flex; gap:6px; align-items:center;">${s} <span style="color:var(--danger); cursor:pointer; font-size:14px;" onclick="removeOption(${i})">×</span></div>`).join(''); }
 
-
         window.addSize = () => {
             const name = document.getElementById('inpSizeName').value.trim(); const sell = parseFloat(document.getElementById('inpSizeSell').value); const cost = parseFloat(document.getElementById('inpSizeCost').value) || 0;
             if(name && !isNaN(sell)) { window.productSizes.push({ name, sellPrice: sell, costPrice: cost }); document.getElementById('inpSizeName').value = ''; document.getElementById('inpSizeSell').value = ''; document.getElementById('inpSizeCost').value = ''; renderSizes(); }
@@ -921,13 +926,21 @@
             } catch (e) { console.error(e); showToast("Error connecting."); } finally { btn.innerText = 'Add'; btn.disabled = false; }
         });
 
-        // ---------------- NEW HORIZONTAL LIST CATALOG LOGIC ----------------
+        // ---------------- CATALOG LOGIC ----------------
         window.setCatalogMode = (mode) => {
             currentCatalogMode = mode;
             currentCatalogCategory = 'All'; 
             document.getElementById('catBtnResto').classList.remove('active');
             document.getElementById('catBtnGrocery').classList.remove('active');
             document.getElementById(`catBtn${mode}`).classList.add('active');
+            
+            // Toggle Animation
+            if(mode === 'Resto') {
+                document.getElementById('catTabBg').style.transform = 'translateX(0)';
+            } else {
+                document.getElementById('catTabBg').style.transform = 'translateX(100%)';
+            }
+
             renderCatalogTabs();
             renderCatalog();
         };
@@ -1032,7 +1045,24 @@
             }
         });
 
-        // ---------------- DASHBOARD, MATH & ANALYTICS ----------------
+        // ---------------- GLOBAL EMPTY STATE HTML ----------------
+        const getEmptyOrdersHTML = () => `
+            <div style="background: #FFFAF5; border-radius: 20px; padding: 40px 20px; text-align: center; border: 1px solid #FEF0E6; margin-top: 12px;">
+                <div style="width: 80px; height: 80px; background: #FFEDD5; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;">
+                    <svg viewBox="0 0 64 64" style="width: 44px; height: 44px; stroke: #EA580C; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;">
+                        <rect x="18" y="24" width="28" height="28" rx="3"></rect>
+                        <path d="M26 24v-4a6 6 0 0 1 12 0v4"></path>
+                        <line x1="42" y1="18" x2="46" y2="14"></line>
+                        <line x1="48" y1="26" x2="52" y2="26"></line>
+                        <line x1="36" y1="12" x2="36" y2="8"></line>
+                    </svg>
+                </div>
+                <h4 style="font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">No orders yet</h4>
+                <p style="font-size: 14px; color: var(--text-muted); font-weight: 500; line-height: 1.4;">Orders from your customers<br>will appear here.</p>
+            </div>
+        `;
+
+        // ---------------- DASHBOARD & ANALYTICS ----------------
         function calculateDashboard() {
             try {
                 const now = new Date(); const todayStr = now.toDateString(); 
@@ -1129,14 +1159,7 @@
                 const dashRecentContainer = document.getElementById('dashRecentOrdersContainer');
                 if(dashRecentContainer) {
                     if(recentOrders.length === 0) { 
-                        // REDESIGNED EMPTY STATE CARD
-                        dashRecentContainer.innerHTML = `
-                        <div style="margin-top: 10px;">
-                            <div style="background: #FFEDD5; color: #EA580C; padding: 10px 12px; border-radius: 4px; margin-bottom: 12px;">
-                                <svg viewBox="0 0 24 24" style="width: 20px;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                            </div>
-                            <h4 style="font-size: 15px; font-weight: 800; color: var(--text-main);">No orders yet</h4>
-                        </div>`; 
+                        dashRecentContainer.innerHTML = getEmptyOrdersHTML(); 
                     } 
                     else { dashRecentContainer.innerHTML = generateOrdersHTML(recentOrders); }
                 }
@@ -1224,7 +1247,7 @@
         }
 
         function generateOrdersHTML(ordersArray) {
-            if(!ordersArray || ordersArray.length === 0) return `<div style="text-align:center; padding:40px 20px; color:var(--text-muted); font-size:14px; font-weight:600;">No orders found.</div>`;
+            if(!ordersArray || ordersArray.length === 0) return getEmptyOrdersHTML();
             return ordersArray.map(o => {
                 let orderDate = new Date(); if (o.timestamp) { const parsed = new Date(o.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
                 const date = orderDate.toLocaleDateString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
@@ -1285,11 +1308,8 @@
                 if(item.variantName) metaText.push(`<span style="color:var(--primary);">${item.variantName}</span>`);
                 if(item.extras && item.extras.length > 0) metaText.push(`+ ${item.extras.join(', ')}`);
                 if(item.sauces && item.sauces.length > 0) metaText.push(`Sauce: ${item.sauces.join(', ')}`);
-                
-                // FIXED: Adding Drinks & Options to Order Details
                 if(item.drinks && item.drinks.length > 0) metaText.push(`<span style="color:var(--blue); font-weight:700;">Drink: ${item.drinks.join(', ')}</span>`);
                 if(item.options && item.options.length > 0) metaText.push(`<span style="color:var(--warning); font-weight:700;">Option: ${item.options.join(', ')}</span>`);
-                
                 if(item.note) metaText.push(`Note: <span style="color:var(--danger); font-weight:700;">${item.note}</span>`);
 
                 const metaHtml = metaText.length > 0 ? `<div class="item-meta" style="margin-top:4px;">${metaText.join('<br>')}</div>` : '';
@@ -1313,31 +1333,26 @@
 
             let actionsHTML = '';
             
-            if(order.status === 'Pending' || order.status === 'Preparing') {
-                const driverOptions = allDrivers.map(d => {
-                    const activeCount = allOrders.filter(o => o.driverEmail === d.email && o.status === 'Out for Delivery').length;
-                    const statusText = activeCount > 0 ? `(Busy: ${activeCount})` : `(Free)`;
-                    const isSelected = order.driverEmail === d.email ? 'selected' : '';
-                    return `<option value="${d.email}" ${isSelected}>${d.name ? d.name.toUpperCase() : d.email.split('@')[0].toUpperCase()} ${statusText}</option>`;
-                }).join('');
-                
-                actionsHTML += `
-                <div style="margin-bottom: 16px; background: var(--surface); padding: 16px; border-radius: 16px; border: 1px solid var(--border);">
-                    <label style="font-size:13px; font-weight:800; color:var(--text-main); margin-bottom:12px; display:block;">Assign to Driver:</label>
-                    <select class="form-control" onchange="assignDriver('${order.id}', this.value)" style="padding:14px; font-weight:700; color:var(--primary);">
-                        <option value="">-- Unassigned --</option>
-                        ${driverOptions}
-                    </select>
-                </div>`;
+            // Replaced Manual Assignment with Open Pool Logic
+            if (order.driverEmail && order.driverEmail !== "") {
+                const d = allDrivers.find(x => x.email === order.driverEmail);
+                const dName = d ? (d.name || d.email.split('@')[0]) : order.driverEmail.split('@')[0];
+                actionsHTML += `<div style="text-align:center; padding:16px; background:var(--blue-light); color:var(--blue); border-radius:16px; font-weight:800; font-size:14px; margin-bottom:12px; border: 1px dashed var(--blue);">Assigned Driver: <span style="text-transform:capitalize;">${dName}</span></div>`;
+            } else if (order.status === 'Pending') {
+                actionsHTML += `<div style="text-align:center; padding:16px; background:var(--warning-light); color:var(--warning); border-radius:16px; font-weight:800; font-size:14px; margin-bottom:12px; border: 1px dashed var(--warning);">Waiting for a driver to claim...</div>`;
             }
 
+            // Kept overrides for admin in case of emergency
             if(order.status !== 'Cancelled' && order.status !== 'Delivered') {
-                if(order.status === 'Pending') actionsHTML += `<button class="btn btn-info" onclick="promptOrderStatus('${order.id}', 'Preparing')">Accept (Preparing)</button>`;
-                if(order.status === 'Preparing') actionsHTML += `<button class="btn btn-warning" onclick="promptOrderStatus('${order.id}', 'Out for Delivery')">Force Dispatch</button>`;
-                if(order.status === 'Out for Delivery') actionsHTML += `<button class="btn btn-success" onclick="promptOrderStatus('${order.id}', 'Delivered')">Force Delivered</button>`;
                 actionsHTML += `<button class="btn btn-danger-outline" onclick="promptOrderStatus('${order.id}', 'Cancelled')">Cancel Order</button>`;
-            } else if (order.status === 'Cancelled') { actionsHTML = `<div style="text-align:center; color:var(--danger); font-weight:700; padding:16px; background:var(--danger-light); border-radius:16px;">Order Cancelled</div>`; } 
-            else { actionsHTML = `<div style="text-align:center; color:var(--accent); font-weight:700; padding:16px; background:var(--accent-light); border-radius:16px;">Order Delivered</div>`; }
+                if(order.status === 'Out for Delivery') {
+                    actionsHTML += `<button class="btn btn-success" style="margin-top:12px;" onclick="promptOrderStatus('${order.id}', 'Delivered')">Force Delivered</button>`;
+                }
+            } else if (order.status === 'Cancelled') { 
+                actionsHTML += `<div style="text-align:center; color:var(--danger); font-weight:700; padding:16px; background:var(--danger-light); border-radius:16px;">Order Cancelled</div>`; 
+            } else { 
+                actionsHTML += `<div style="text-align:center; color:var(--accent); font-weight:700; padding:16px; background:var(--accent-light); border-radius:16px;">Order Delivered</div>`; 
+            }
             
             actionsHTML += `<button class="btn btn-outline" style="color:var(--danger); border-color:var(--danger-light); margin-top: 12px;" onclick="promptDeleteOrder('${order.id}')">Delete Order</button>`;
             
@@ -1349,10 +1364,6 @@
             const btn = document.getElementById('modalConfirmBtn'); btn.className = 'btn btn-primary'; btn.style.border = 'none';
             if(newStatus === 'Cancelled') btn.style.background = 'var(--danger)'; else if(newStatus === 'Out for Delivery') btn.style.background = 'var(--warning)'; else if(newStatus === 'Delivered') btn.style.background = 'var(--accent)'; else btn.style.background = 'var(--blue)';
             window.confirmActionCallback = async () => { closeModals(); try { await updateDoc(doc(db, "orders", orderId), { status: newStatus }); showToast(`Status updated`); } catch(e) { alert("Network error"); } }; document.getElementById('confirmOverlay').classList.add('active');
-        };
-
-        window.assignDriver = async (orderId, driverEmail) => {
-            try { await updateDoc(doc(db, "orders", orderId), { driverEmail: driverEmail }); showToast("Driver assigned!"); } catch(e) { console.error(e); alert("Failed to assign driver."); }
         };
 
         window.promptDeleteOrder = (orderId) => {
