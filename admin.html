@@ -27,7 +27,10 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-main); padding-bottom: 90px; }
+        
+        /* SECURITY: HIDE BODY UNTIL BOUNCER APPROVES */
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-main); padding-bottom: 90px; display: none; }
+        
         .container { padding: 20px; max-width: 600px; margin: 0 auto; position: relative; min-height: 100vh;}
         svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
         button { font-family: inherit; cursor: pointer; outline: none; border: none; background: none; }
@@ -100,15 +103,6 @@
         .cat-toggle-btn { flex: 1; padding: 10px; font-size: 13px; font-weight: 700; color: var(--text-muted); border-radius: 50px; transition: 0.3s; text-align: center; display: flex; justify-content: center; align-items: center; gap: 6px; cursor: pointer;}
         .cat-toggle-btn.active { background: var(--primary); color: white; }
 
-        .accordion-group { margin-bottom: 12px; background: var(--surface); border-radius: var(--radius-card); border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm);}
-        .accordion-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: var(--surface); }
-        .accordion-title { font-size: 15px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px;}
-        .accordion-badge { font-size: 11px; color: var(--text-muted); font-weight: 600; background: var(--bg-main); padding: 4px 8px; border-radius: 50px;}
-        .accordion-icon { transition: transform 0.3s; color: var(--text-muted);}
-        .accordion-group.open .accordion-icon { transform: rotate(180deg); }
-        .accordion-content { display: none; padding: 0 16px 16px; border-top: 1px solid var(--bg-main); background: #FAFAFA;}
-        .accordion-group.open .accordion-content { display: block; }
-        
         /* HORIZONTAL LIST CATALOG */
         .catalog-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px;}
         .cat-list-item { display: flex; align-items: center; gap: 12px; padding: 10px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); box-shadow: 0 2px 8px rgba(0,0,0,0.02);}
@@ -165,7 +159,6 @@
         .type-card h5 { font-size: 15px; font-weight: 800; color: var(--text-main); }
         .radio-dot { position: absolute; top: 12px; right: 12px; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; background: white;}
         
-        /* Resto (Orange) vs Grocery (Green) Styling */
         .type-card.tc-resto.active { border-color: var(--primary); background: var(--primary-light); }
         .type-card.tc-resto.active .type-icon { color: var(--primary); }
         .type-card.tc-resto.active .radio-dot { border-color: var(--primary); background: var(--primary); }
@@ -218,7 +211,7 @@
         .item-img img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply;}
         .item-details { flex: 1; }
         .item-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
-        .item-meta { font-size: 12px; color: var(--text-muted); }
+        .item-meta { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
         .item-price { font-size: 13px; font-weight: 700; text-align: right; }
         
         .summary-box { background: var(--surface); border-radius: var(--radius-btn); padding: 16px; margin-top: 24px; border: 1px solid var(--border); }
@@ -226,8 +219,7 @@
         .summary-row.total { font-size: 16px; font-weight: 800; color: var(--primary); margin-bottom: 0; padding-top: 12px; border-top: 1px dashed var(--border); }
         .action-stack { display: flex; flex-direction: column; gap: 12px; margin-top: 32px; }
 
-        /* FAB & BOTTOM NAV */
-        .fab { position: fixed; bottom: 100px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(234, 88, 12, 0.4); border: none; cursor: pointer; z-index: 80;}
+        /* BOTTOM NAV */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 10px 24px; z-index: 100; box-shadow: var(--shadow-nav); max-width: 600px; margin: 0 auto; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94A3B8; font-size: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; width: 20%; }
         .nav-item.active { color: var(--primary); }
@@ -254,7 +246,7 @@
                 <h1>Hello, Lasco 👋</h1>
                 <p>Here's what's happening with your store today.</p>
             </div>
-            <div class="btn-exit" onclick="showToast('Login system ready in next update!')">
+            <div class="btn-exit" onclick="logoutAdmin()">
                 <svg viewBox="0 0 24 24" style="width:18px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                 Exit
             </div>
@@ -542,6 +534,23 @@
                     </div>
                 </div>
 
+                <div class="toggle-card-config">
+                    <div class="toggle-wrapper">
+                        <div>
+                            <span style="display:block; font-size:14px; font-weight:800;">Custom Options</span>
+                            <span style="font-size:11px; color:var(--text-muted);">E.g. Well-Done, No Ice, Spicy</span>
+                        </div>
+                        <label class="switch"><input type="checkbox" id="tglOption" onchange="document.getElementById('cfgOption').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
+                    </div>
+                    <div class="config-panel" id="cfgOption">
+                        <div style="display:flex; gap:8px;">
+                            <input type="text" id="inpOption" class="form-control" placeholder="Ex: Well-Done">
+                            <button class="btn-outline" style="width:auto; padding:0 20px; font-size:13px; border-radius:12px;" onclick="addOption()">Add</button>
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px;" id="listOptions"></div>
+                    </div>
+                </div>
+
                 <div class="wizard-footer">
                     <button class="btn btn-outline" onclick="goToStep(1)">Back</button>
                     <button class="btn btn-primary" id="btnNext2" onclick="goToStep(3)" disabled>Continue <svg viewBox="0 0 24 24" style="width:18px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button>
@@ -688,6 +697,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyAaaR52bvyQfkxmZL16lcg4Bd4M76OtbI4",
@@ -699,6 +709,34 @@
         };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // ==========================================
+        // THE SMART BOUNCER
+        // ==========================================
+        const ADMIN_EMAILS = ["admin@lasco.ma"]; 
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.replace("login.html");
+            } else {
+                if (ADMIN_EMAILS.includes(user.email.toLowerCase())) {
+                    document.body.style.display = "block"; 
+                } else {
+                    alert("Security Alert: You are not authorized to view the Admin panel.");
+                    await signOut(auth); 
+                    window.location.replace("login.html");
+                }
+            }
+        });
+
+        window.logoutAdmin = async () => {
+            try {
+                await signOut(auth);
+                window.location.replace("login.html");
+            } catch(e) { console.error(e); }
+        };
+        // ==========================================
 
         let allOrders = [], allProducts = [], globalCategoriesData = [], allDrivers = [];
         let currentOrderFilter = 'All', currentCatalogMode = 'Resto', currentCatalogCategory = 'All', currentEditProductId = null; 
@@ -707,7 +745,7 @@
         const safeNum = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
         const formatPrice = (num) => { const p = Number(num); return p % 1 === 0 ? p.toString() : p.toFixed(2); };
 
-        window.productSauces = []; window.productSizes = []; window.productExtras = []; window.productDrinks = [];
+        window.productSauces = []; window.productSizes = []; window.productExtras = []; window.productDrinks = []; window.productCustomOptions = [];
 
         window.switchTab = (tabId) => {
             document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
@@ -716,6 +754,13 @@
             let navTarget = tabId === 'order-detail' ? 'commandes' : tabId;
             const navItem = document.getElementById(`nav-${navTarget}`);
             if(navItem) navItem.classList.add('active');
+            
+            // FIX: Force re-render catalog instantly when opening tab
+            if(tabId === 'produits') {
+                renderCatalogTabs();
+                renderCatalog();
+            }
+            
             if(tabId !== 'order-detail' && tabId !== 'ajouter') localStorage.setItem('lasGoAdminTab', tabId);
             window.scrollTo(0,0);
         };
@@ -800,6 +845,11 @@
         window.addDrink = () => { const input = document.getElementById('inpDrink'); const val = input.value.trim(); if(val && !window.productDrinks.includes(val)) { window.productDrinks.push(val); input.value = ''; renderDrinks(); } };
         window.removeDrink = (index) => { window.productDrinks.splice(index, 1); renderDrinks(); };
         function renderDrinks() { document.getElementById('listDrinks').innerHTML = window.productDrinks.map((s, i) => `<div style="padding:6px 12px; background:var(--bg-main); border:1px solid var(--border); border-radius:50px; font-size:12px; font-weight:600; display:flex; gap:6px; align-items:center;">${s} <span style="color:var(--danger); cursor:pointer; font-size:14px;" onclick="removeDrink(${i})">×</span></div>`).join(''); }
+
+        window.addOption = () => { const input = document.getElementById('inpOption'); const val = input.value.trim(); if(val && !window.productCustomOptions.includes(val)) { window.productCustomOptions.push(val); input.value = ''; renderOptions(); } };
+        window.removeOption = (index) => { window.productCustomOptions.splice(index, 1); renderOptions(); };
+        function renderOptions() { document.getElementById('listOptions').innerHTML = window.productCustomOptions.map((s, i) => `<div style="padding:6px 12px; background:var(--bg-main); border:1px solid var(--border); border-radius:50px; font-size:12px; font-weight:600; display:flex; gap:6px; align-items:center;">${s} <span style="color:var(--danger); cursor:pointer; font-size:14px;" onclick="removeOption(${i})">×</span></div>`).join(''); }
+
 
         window.addSize = () => {
             const name = document.getElementById('inpSizeName').value.trim(); const sell = parseFloat(document.getElementById('inpSizeSell').value); const cost = parseFloat(document.getElementById('inpSizeCost').value) || 0;
@@ -917,7 +967,7 @@
             document.getElementById('prodCountText').innerText = `${filteredProducts.length} items • Updated just now`;
 
             if(filteredProducts.length === 0) {
-                container.innerHTML = `<div class="empty-state-card" style="margin-top:20px;">No items found.</div>`;
+                container.innerHTML = `<div style="text-align:center; padding:40px 20px; color:var(--text-muted); font-size:14px; font-weight:600;">No items found in this category.</div>`;
                 return;
             }
 
@@ -1078,7 +1128,16 @@
                 
                 const dashRecentContainer = document.getElementById('dashRecentOrdersContainer');
                 if(dashRecentContainer) {
-                    if(recentOrders.length === 0) { dashRecentContainer.innerHTML = `<div class="empty-state-card"><div class="empty-icon-wrap" style="background:#FFEDD5; color:#EA580C;"><svg viewBox="0 0 24 24" style="width:28px;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></div><h4>No orders yet</h4></div>`; } 
+                    if(recentOrders.length === 0) { 
+                        // REDESIGNED EMPTY STATE CARD
+                        dashRecentContainer.innerHTML = `
+                        <div style="margin-top: 10px;">
+                            <div style="background: #FFEDD5; color: #EA580C; padding: 10px 12px; border-radius: 4px; margin-bottom: 12px;">
+                                <svg viewBox="0 0 24 24" style="width: 20px;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                            </div>
+                            <h4 style="font-size: 15px; font-weight: 800; color: var(--text-main);">No orders yet</h4>
+                        </div>`; 
+                    } 
                     else { dashRecentContainer.innerHTML = generateOrdersHTML(recentOrders); }
                 }
             } catch (error) { console.error("Dashboard Error:", error); }
@@ -1165,7 +1224,7 @@
         }
 
         function generateOrdersHTML(ordersArray) {
-            if(!ordersArray || ordersArray.length === 0) return `<div class="empty-state-card" style="margin-top:20px;">No orders found.</div>`;
+            if(!ordersArray || ordersArray.length === 0) return `<div style="text-align:center; padding:40px 20px; color:var(--text-muted); font-size:14px; font-weight:600;">No orders found.</div>`;
             return ordersArray.map(o => {
                 let orderDate = new Date(); if (o.timestamp) { const parsed = new Date(o.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
                 const date = orderDate.toLocaleDateString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
@@ -1219,8 +1278,32 @@
 
             document.getElementById('det-items-count').innerText = `Items (${order.totalItems || 0})`;
             document.getElementById('det-items-list').innerHTML = (order.cart || []).map(item => {
-                const p = item.product || {}; const img = p.imageUrl ? `<img src="${p.imageUrl}">` : ''; const vText = item.variantName ? `<span style="color:var(--primary);">${item.variantName}</span>` : ''; const price = safeNum(item.unitPrice) || safeNum(p.sellPrice);
-                return `<div class="item-row"><div class="item-img">${img}</div><div class="item-details"><div class="item-name">${p.name || 'Item'} ${vText}</div><div class="item-meta">x${item.qty}</div></div><div class="item-price">${formatPrice(price * item.qty)} DH</div></div>`;
+                const p = item.product || {}; 
+                const img = p.imageUrl ? `<img src="${p.imageUrl}">` : ''; 
+                
+                let metaText = [];
+                if(item.variantName) metaText.push(`<span style="color:var(--primary);">${item.variantName}</span>`);
+                if(item.extras && item.extras.length > 0) metaText.push(`+ ${item.extras.join(', ')}`);
+                if(item.sauces && item.sauces.length > 0) metaText.push(`Sauce: ${item.sauces.join(', ')}`);
+                
+                // FIXED: Adding Drinks & Options to Order Details
+                if(item.drinks && item.drinks.length > 0) metaText.push(`<span style="color:var(--blue); font-weight:700;">Drink: ${item.drinks.join(', ')}</span>`);
+                if(item.options && item.options.length > 0) metaText.push(`<span style="color:var(--warning); font-weight:700;">Option: ${item.options.join(', ')}</span>`);
+                
+                if(item.note) metaText.push(`Note: <span style="color:var(--danger); font-weight:700;">${item.note}</span>`);
+
+                const metaHtml = metaText.length > 0 ? `<div class="item-meta" style="margin-top:4px;">${metaText.join('<br>')}</div>` : '';
+                const price = safeNum(item.unitPrice) || safeNum(p.sellPrice);
+                
+                return `<div class="item-row">
+                            <div class="item-img">${img}</div>
+                            <div class="item-details">
+                                <div class="item-name">${p.name || 'Item'}</div>
+                                <div style="font-size:12px; font-weight:600; color:var(--text-main);">x${item.qty}</div>
+                                ${metaHtml}
+                            </div>
+                            <div class="item-price">${formatPrice(price * item.qty)} DH</div>
+                        </div>`;
             }).join('');
 
             const deliveryFee = safeNum(order.deliveryFee); const total = safeNum(order.totalPrice); const subTotal = total - deliveryFee;
@@ -1296,10 +1379,13 @@
 
             document.getElementById('tglFeatured').checked = false;
             document.getElementById('tglPromo').checked = false; document.getElementById('cfgPromo').style.display = 'none';
+            
             document.getElementById('tglSize').checked = false; document.getElementById('cfgSize').style.display = 'none'; window.productSizes = []; renderSizes();
             document.getElementById('tglExtra').checked = false; document.getElementById('cfgExtra').style.display = 'none'; window.productExtras = []; renderExtras();
             document.getElementById('tglSauce').checked = false; document.getElementById('cfgSauce').style.display = 'none'; window.productSauces = []; renderSauces();
             document.getElementById('tglDrink').checked = false; document.getElementById('cfgDrink').style.display = 'none'; window.productDrinks = []; renderDrinks();
+            document.getElementById('tglOption').checked = false; document.getElementById('cfgOption').style.display = 'none'; window.productCustomOptions = []; renderOptions();
+            
             document.getElementById('tglAvailable').checked = true;
 
             switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
@@ -1344,6 +1430,10 @@
             document.getElementById('cfgDrink').style.display = document.getElementById('tglDrink').checked ? 'block' : 'none';
             window.productDrinks = p.drinks ? [...p.drinks] : []; renderDrinks();
 
+            document.getElementById('tglOption').checked = (p.customOptions && p.customOptions.length > 0);
+            document.getElementById('cfgOption').style.display = document.getElementById('tglOption').checked ? 'block' : 'none';
+            window.productCustomOptions = p.customOptions ? [...p.customOptions] : []; renderOptions();
+
             document.getElementById('tglAvailable').checked = p.isAvailable !== false;
             document.getElementById('pDesc').value = p.description || '';
 
@@ -1351,12 +1441,14 @@
         };
 
         window.saveProductData = async () => {
-            // Auto-capture pending inputs if user forgot to click "Add"
             const pendingSauce = document.getElementById('inpSauce').value.trim();
             if(document.getElementById('tglSauce').checked && pendingSauce) { if(!window.productSauces.includes(pendingSauce)) window.productSauces.push(pendingSauce); }
             
             const pendingDrink = document.getElementById('inpDrink').value.trim();
             if(document.getElementById('tglDrink').checked && pendingDrink) { if(!window.productDrinks.includes(pendingDrink)) window.productDrinks.push(pendingDrink); }
+            
+            const pendingOption = document.getElementById('inpOption').value.trim();
+            if(document.getElementById('tglOption').checked && pendingOption) { if(!window.productCustomOptions.includes(pendingOption)) window.productCustomOptions.push(pendingOption); }
             
             const pendingSizeName = document.getElementById('inpSizeName').value.trim();
             if(document.getElementById('tglSize').checked && pendingSizeName) {
@@ -1385,6 +1477,7 @@
                 extras: document.getElementById('tglExtra').checked ? window.productExtras : [],
                 sauces: document.getElementById('tglSauce').checked ? window.productSauces : [],
                 drinks: document.getElementById('tglDrink').checked ? window.productDrinks : [],
+                customOptions: document.getElementById('tglOption').checked ? window.productCustomOptions : [],
                 isAvailable: document.getElementById('tglAvailable').checked,
                 description: document.getElementById('pDesc').value
             };
