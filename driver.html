@@ -12,7 +12,7 @@
         ========================================= */
         :root {
             --bg-main: #F8F9FB; --surface: #FFFFFF;
-            --primary: #0D5DFF; /* Vibrant Blue from Mockup */
+            --primary: #0D5DFF; /* Vibrant Blue */
             --primary-light: #EFF6FF;
             --accent: #16A34A; /* Success Green */
             --accent-light: #DCFCE7;
@@ -37,46 +37,6 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
         /* =========================================
-           NEW LOGIN SCREEN STYLES
-        ========================================= */
-        #view-login { background: #F4F7FE; padding: 20px; }
-        #view-login.active { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
-        
-        .login-illustration { width: 200px; margin-bottom: 16px; }
-        .login-illustration img { width: 100%; height: auto; object-fit: contain; }
-        
-        .login-header { text-align: center; margin-bottom: 32px; }
-        .login-header h1 { font-size: 36px; font-weight: 800; color: var(--text-main); letter-spacing: -1px; }
-        .login-header h1 span { color: var(--primary); }
-        .login-divider { width: 30px; height: 3px; background: var(--primary); margin: 12px auto; border-radius: 10px; }
-        .login-header p { color: var(--text-muted); font-size: 14px; font-weight: 500; }
-
-        .login-card { background: var(--surface); border-radius: 24px; padding: 32px 24px; width: 100%; max-width: 400px; box-shadow: var(--shadow-card); }
-        
-        .input-group { margin-bottom: 24px; position: relative; }
-        .input-group label { display: block; font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
-        
-        .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-icon-left { position: absolute; left: 16px; color: var(--primary); width: 20px; }
-        .input-icon-right { position: absolute; right: 16px; color: var(--text-muted); width: 20px; cursor: pointer; transition: 0.2s; }
-        .input-icon-right:active { transform: scale(0.9); }
-        
-        .login-input { width: 100%; padding: 16px 16px 16px 48px; border: 1px solid var(--border); border-radius: 14px; font-size: 14px; font-weight: 500; outline: none; transition: 0.2s; }
-        .login-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-light); }
-        
-        .remember-row { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; cursor: pointer; }
-        .remember-row input { accent-color: var(--primary); width: 18px; height: 18px; cursor: pointer;}
-        .remember-row span { font-size: 14px; color: var(--text-muted); font-weight: 500; }
-
-        .btn-login-new { width: 100%; background: var(--primary); color: white; border-radius: 14px; padding: 18px; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: 0 10px 25px rgba(13, 93, 255, 0.3); transition: 0.2s; }
-        .btn-login-new:active { transform: scale(0.98); box-shadow: 0 5px 15px rgba(13, 93, 255, 0.3); }
-        .btn-login-new svg { position: absolute; left: 35%; width: 20px; }
-        .btn-login-new .btn-divider { position: absolute; left: 45%; width: 1px; height: 24px; background: rgba(255,255,255,0.2); }
-        .btn-login-new span { margin-left: 10%; }
-
-        .login-footer { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 24px; font-weight: 500; }
-
-        /* =========================================
            MAIN DASHBOARD STYLES
         ========================================= */
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-top: 20px;}
@@ -86,10 +46,12 @@
         .btn-wallet { background: var(--accent-light); color: var(--accent); border-radius: 12px; padding: 10px 16px; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 6px; border: 1px solid #BBF7D0;}
         .btn-wallet:active { transform: scale(0.95); }
 
-        .tabs-toggle { display: flex; background: var(--surface); border-radius: 50px; padding: 6px; border: 1px solid var(--border); margin-bottom: 24px; box-shadow: var(--shadow-sm); }
-        .tab-btn { flex: 1; padding: 12px; text-align: center; font-size: 14px; font-weight: 700; border-radius: 50px; color: var(--text-muted); transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;}
-        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(13, 93, 255, 0.3); }
-        .badge-count { background: var(--primary-light); color: var(--primary); font-size: 12px; font-weight: 800; padding: 2px 10px; border-radius: 20px; }
+        /* ANIMATED TABS TOGGLE */
+        .tabs-toggle { position: relative; display: flex; background: var(--surface); border-radius: 50px; padding: 6px; border: 1px solid var(--border); margin-bottom: 24px; box-shadow: var(--shadow-sm); z-index: 1;}
+        .tab-bg { position: absolute; top: 6px; bottom: 6px; left: 6px; width: calc(50% - 6px); background: var(--primary); border-radius: 50px; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: -1; box-shadow: 0 4px 12px rgba(13, 93, 255, 0.3);}
+        .tab-btn { flex: 1; padding: 12px; text-align: center; font-size: 14px; font-weight: 700; border-radius: 50px; color: var(--text-muted); transition: color 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
+        .tab-btn.active { color: white; }
+        .badge-count { background: var(--primary-light); color: var(--primary); font-size: 12px; font-weight: 800; padding: 2px 10px; border-radius: 20px; transition: 0.3s;}
         .tab-btn.active .badge-count { background: white; color: var(--primary); }
 
         .order-card { background: var(--surface); border-radius: 24px; padding: 20px; box-shadow: var(--shadow-card); border: 1px solid var(--border); margin-bottom: 24px; position: relative; overflow: hidden;}
@@ -196,59 +158,12 @@
     </style>
 </head>
 <body>
+    
+    <audio id="notificationSound" preload="auto">
+        <source src="data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq" type="audio/mpeg">
+    </audio>
 
-    <div id="view-login" class="app-view">
-        <div class="login-illustration">
-            <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                <path fill="#E0E7FF" d="M256 512c141.38 0 256-114.62 256-256S397.38 0 256 0 0 114.62 0 256s114.62 256 256 256z" opacity="0.4"/>
-                <path fill="#0D5DFF" d="M380.8 281.6h-54.4v-44.8h32a12.8 12.8 0 0 0 12.8-12.8v-32a12.8 12.8 0 0 0-12.8-12.8h-70.4v-16h44.8a12.8 12.8 0 0 0 12.8-12.8v-32a12.8 12.8 0 0 0-12.8-12.8H188.8a12.8 12.8 0 0 0-12.8 12.8v108.8H144a25.6 25.6 0 0 0-25.6 25.6v64h38.4a44.8 44.8 0 1 0 83.2 0h76.8a44.8 44.8 0 1 0 83.2 0h25.6a12.8 12.8 0 0 0 12.8-12.8v-25.6a25.6 25.6 0 0 0-25.6-25.6z"/>
-                <path fill="#1E293B" d="M198.4 345.6a19.2 19.2 0 1 1-19.2-19.2 19.2 19.2 0 0 1 19.2 19.2zm160 0a19.2 19.2 0 1 1-19.2-19.2 19.2 19.2 0 0 1 19.2 19.2z"/>
-                <path fill="#F8FAFC" d="M211.2 121.6h76.8v64h-76.8z"/>
-            </svg>
-        </div>
-
-        <div class="login-header">
-            <h1><span>Lasco</span> Driver</h1>
-            <div class="login-divider"></div>
-            <p>Driver access only</p>
-        </div>
-
-        <div class="login-card">
-            <div class="input-group">
-                <label>Email Address</label>
-                <div class="input-wrapper">
-                    <svg class="input-icon-left" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                    <input type="email" id="loginEmail" class="login-input" placeholder="driver2@getlasco.ma">
-                </div>
-            </div>
-
-            <div class="input-group" style="margin-bottom: 16px;">
-                <label>Password</label>
-                <div class="input-wrapper">
-                    <svg class="input-icon-left" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                    <input type="password" id="loginPass" class="login-input" placeholder="••••••••">
-                    <svg class="input-icon-right" id="togglePass" onclick="togglePassword()" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                </div>
-            </div>
-
-            <label class="remember-row">
-                <input type="checkbox" checked>
-                <span>Remember this device</span>
-            </label>
-
-            <button class="btn-login-new" id="btnLoginBtn" onclick="loginDriver()">
-                <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
-                <div class="btn-divider"></div>
-                <span>Sign In</span>
-            </button>
-        </div>
-
-        <div class="login-footer">
-            Only authorized drivers can access this panel
-        </div>
-    </div>
-
-    <div id="view-dashboard" class="app-view container">
+    <div id="view-dashboard" class="app-view container active">
         <div class="header-top">
             <div>
                 <h1 style="font-size: 24px; font-weight: 800; color: var(--text-main); line-height: 1.2; display: flex; align-items: center; gap: 8px;">
@@ -263,6 +178,7 @@
         </div>
 
         <div class="tabs-toggle">
+            <div class="tab-bg" id="tabBg"></div>
             <div class="tab-btn active" id="tabAvailable" onclick="switchList('available')">
                 Available <span class="badge-count" id="countAvailable">0</span>
             </div>
@@ -271,14 +187,12 @@
             </div>
         </div>
 
-        <div id="ordersContainer">
-            </div>
+        <div id="ordersContainer"></div>
 
         <div class="section-header">
             <h3>Recent Activity</h3>
         </div>
-        <div class="activity-card" id="recentActivityList">
-            </div>
+        <div class="activity-card" id="recentActivityList"></div>
     </div>
 
     <div id="view-detail" class="app-view container">
@@ -315,12 +229,10 @@
 
         <div class="items-card">
             <h3 id="det-items-count">Items (0)</h3>
-            <div id="det-cart-list">
-                </div>
+            <div id="det-cart-list"></div>
         </div>
 
-        <div id="action-container" style="margin-top: 32px;">
-            </div>
+        <div id="action-container" style="margin-top: 32px;"></div>
     </div>
 
     <div id="view-wallet" class="app-view container">
@@ -355,8 +267,7 @@
         <h3 class="w-list-header">Unsettled Deliveries</h3>
         <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;" id="walletCount">0 deliveries to settle</p>
         
-        <div class="w-list" id="walletList">
-            </div>
+        <div class="w-list" id="walletList"></div>
 
         <div style="background: var(--primary-light); color: var(--primary); padding: 16px; border-radius: 12px; font-size: 13px; font-weight: 600; display: flex; gap: 12px; margin-bottom: 24px;">
             <svg viewBox="0 0 24 24" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
@@ -381,9 +292,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, doc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // ⚠️ SAME FIREBASE CONFIG AS ADMIN/INDEX
         const firebaseConfig = {
           apiKey: "AIzaSyAaaR52bvyQfkxmZL16lcg4Bd4M76OtbI4",
           authDomain: "lesgo-cd7f9.firebaseapp.com",
@@ -401,76 +311,63 @@
         let currentTab = 'available'; 
         let openedOrderId = null;
         let currentDriver = null;
+        let isInitialLoad = true;
         const safeNum = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
 
-        // --- PASSWORD VISIBILITY TOGGLE ---
-        window.togglePassword = () => {
-            const passInput = document.getElementById('loginPass');
-            const icon = document.getElementById('togglePass');
-            if(passInput.type === "password") {
-                passInput.type = "text";
-                icon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><line x1="3" y1="3" x2="21" y2="21"></line>`; // Eye closed
-            } else {
-                passInput.type = "password";
-                icon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`; // Eye open
-            }
-        };
-
-        // --- AUTHENTICATION STATE ---
+        // --- THE BOUNCER & NOTIFICATION SETUP ---
         onAuthStateChanged(auth, async user => {
             if (user) {
                 currentDriver = user;
                 
-                // Extract name from email (zakaria@lasco.ma -> zakaria)
                 const dName = user.email.split('@')[0];
                 const displayEl = document.getElementById('driverNameDisplay');
                 if(displayEl) displayEl.innerText = dName;
 
-                // Register driver in DB so Admin can see them
                 await setDoc(doc(db, "drivers", user.email), {
                     email: user.email,
                     name: dName,
                     lastActive: new Date().toISOString()
                 }, { merge: true });
 
-                const savedTab = localStorage.getItem('lasGoDriverTab') || 'dashboard';
-                if(savedTab === 'login') {
-                    switchTab('dashboard');
-                } else {
-                    switchTab(savedTab);
+                // Ask browser for Notification permissions
+                if ("Notification" in window) {
+                    if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                        Notification.requestPermission();
+                    }
                 }
+
+                const savedTab = localStorage.getItem('lasGoDriverTab') || 'dashboard';
+                switchTab(savedTab === 'login' ? 'dashboard' : savedTab);
             } else {
                 currentDriver = null;
-                switchTab('login');
+                // Kick to login page!
+                window.location.replace("driver-login.html");
             }
         });
 
-        window.loginDriver = async () => {
-            const email = document.getElementById('loginEmail').value.trim();
-            const pass = document.getElementById('loginPass').value.trim();
-            
-            if(!email || !pass) return showToast("Enter email and password");
-            
-            const btn = document.getElementById('btnLoginBtn');
-            btn.querySelector('span').innerText = "Signing in..."; btn.disabled = true;
-            
-            try {
-                await signInWithEmailAndPassword(auth, email, pass);
-                showToast("Logged in successfully");
-            } catch(e) {
-                showToast("Invalid credentials");
-                btn.querySelector('span').innerText = "Sign In"; btn.disabled = false;
+        // Trigger Audio + Visual notification
+        function playNotification(orderId, area) {
+            // Play Audio
+            const sound = document.getElementById("notificationSound");
+            if (sound) {
+                sound.play().catch(e => console.log("Audio play blocked by browser. User needs to interact first."));
             }
-        };
+            
+            // Show Native Push Notification
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("New Delivery Assigned! 🛵", {
+                    body: `A new order in ${area || 'your area'} is ready for pickup.`,
+                    icon: "https://cdn-icons-png.flaticon.com/512/3063/3063822.png" // Placeholder icon
+                });
+            }
+        }
 
         window.logoutDriver = async () => {
             try {
                 await signOut(auth);
                 localStorage.setItem('lasGoDriverTab', 'login');
                 showToast("Logged out");
-            } catch(e) {
-                console.error(e);
-            }
+            } catch(e) { console.error(e); }
         };
 
         // --- LISTENERS ---
@@ -483,6 +380,18 @@
             allOrders = snap.docs.map(d => ({id: d.id, ...d.data()}));
             
             if(currentDriver) {
+                // Check for brand new orders assigned to THIS driver
+                if (!isInitialLoad) {
+                    snap.docChanges().forEach(change => {
+                        if (change.type === "added") {
+                            const newOrder = change.doc.data();
+                            if (newOrder.driverEmail === currentDriver.email && newOrder.status === 'Preparing') {
+                                playNotification(change.doc.id, newOrder.neighborhood);
+                            }
+                        }
+                    });
+                }
+
                 if(document.getElementById('view-dashboard').classList.contains('active')) {
                     renderDashboard();
                 } else if (document.getElementById('view-wallet').classList.contains('active')) {
@@ -495,6 +404,7 @@
                     else goBack(); 
                 }
             }
+            isInitialLoad = false;
         });
 
         // --- UI NAVIGATION ---
@@ -513,8 +423,14 @@
             document.getElementById('tabAvailable').classList.remove('active');
             document.getElementById('tabActive').classList.remove('active');
             
-            if(tab === 'available') document.getElementById('tabAvailable').classList.add('active');
-            if(tab === 'active') document.getElementById('tabActive').classList.add('active');
+            if(tab === 'available') {
+                document.getElementById('tabAvailable').classList.add('active');
+                document.getElementById('tabBg').style.transform = 'translateX(0)';
+            }
+            if(tab === 'active') {
+                document.getElementById('tabActive').classList.add('active');
+                document.getElementById('tabBg').style.transform = 'translateX(100%)';
+            }
             
             renderDashboard();
         };
@@ -528,7 +444,6 @@
         function renderDashboard() {
             if(!currentDriver) return;
 
-            // Filter to ONLY show orders assigned to this specific driver
             const myOrders = allOrders.filter(o => o.driverEmail === currentDriver.email);
             
             const sortedOrders = [...myOrders].sort((a,b) => {
@@ -603,7 +518,6 @@
                 }).join('');
             }
 
-            // RECENT ACTIVITY RENDERING
             const actContainer = document.getElementById('recentActivityList');
             if(recent.length === 0) {
                 actContainer.innerHTML = `<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:13px; font-weight:600;">No completed deliveries today.</div>`;
@@ -631,13 +545,11 @@
             }
         }
 
-        // --- WALLET LOGIC ---
+        // --- WALLET LOGIC WITH EXTRA MATH FIXED ---
         function renderWallet() {
             if(!currentDriver) return;
 
-            // Filter to ONLY show orders assigned to this specific driver
             const myOrders = allOrders.filter(o => o.driverEmail === currentDriver.email);
-            
             const unsettledDeliveries = myOrders.filter(o => o.status === 'Delivered' && o.driverSettled !== true);
 
             let totalEarned = 0; 
@@ -654,6 +566,7 @@
                         const dbProduct = allProducts.find(x => x.id === item.product.id);
                         let unitCost = dbProduct ? safeNum(dbProduct.costPrice) : 0;
                         
+                        // Add Size cost
                         if(dbProduct && dbProduct.sizes && item.variantName) {
                             const sizeData = dbProduct.sizes.find(s => s.name === item.variantName);
                             if(sizeData && sizeData.costPrice) {
@@ -661,6 +574,16 @@
                             }
                         }
                         orderCost += (unitCost * item.qty);
+
+                        // ACCURATE EXTRA MATH FIX
+                        if(item.extras && item.extras.length > 0 && dbProduct && dbProduct.extras) {
+                            item.extras.forEach(extName => {
+                                const extra = dbProduct.extras.find(e => e.name === extName);
+                                if(extra && extra.costPrice) {
+                                    orderCost += (safeNum(extra.costPrice) * item.qty);
+                                }
+                            });
+                        }
                     });
                 }
 
@@ -701,7 +624,7 @@
             const unsettledDeliveries = myOrders.filter(o => o.status === 'Delivered' && o.driverSettled !== true);
             if(unsettledDeliveries.length === 0) return showToast("No deliveries to settle.");
             
-            const btn = document.querySelector('.btn-finish');
+            const btn = document.querySelector('button[onclick="markAsPaid()"]');
             const originalText = btn.innerHTML;
             btn.innerHTML = "Processing...";
             
@@ -727,7 +650,6 @@
             document.getElementById('view-detail').classList.add('active');
             window.scrollTo(0,0);
 
-            // Populate Info
             document.getElementById('det-id').innerText = `#${o.id.substring(0,6).toUpperCase()}`;
             document.getElementById('det-client').innerText = o.customerName || 'Unknown';
             document.getElementById('det-area').innerHTML = `<svg viewBox="0 0 24 24" style="width:12px; margin-right:4px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${o.neighborhood || 'Unknown Area'}`;
@@ -738,15 +660,12 @@
             if(o.status === 'Preparing') { statBadge.style.background = 'var(--primary-light)'; statBadge.style.color = 'var(--primary)'; }
             else { statBadge.style.background = 'var(--primary)'; statBadge.style.color = 'white'; }
 
-            // Action Buttons Setup
             const btnCall = document.getElementById('btnCall');
             const btnWa = document.getElementById('btnWa');
             
             if(o.customerPhone) {
                 let cleanPhone = o.customerPhone.replace(/^0+/, '');
-                
                 let waMsg = `Bonjour ${o.customerName || ''}, c'est Lasco ! 🛵\nNous préparons votre commande #${o.id.substring(0,6).toUpperCase()} d'un total de ${Number(o.totalPrice).toFixed(2)} DH.\n\nPouvez-vous nous envoyer votre position exacte (localisation) ici s'il vous plaît ? 📍`;
-                
                 btnCall.href = `tel:${o.customerPhone}`;
                 btnWa.href = `https://wa.me/212${cleanPhone}?text=${encodeURIComponent(waMsg)}`;
                 
@@ -758,14 +677,12 @@
                 btnCall.style.pointerEvents = "none"; btnWa.style.pointerEvents = "none";
             }
 
-            // Hide grid if order is done
             if(o.status === 'Delivered' || o.status === 'Cancelled') {
                 document.getElementById('det-action-grid').style.display = 'none';
             } else {
                 document.getElementById('det-action-grid').style.display = 'grid';
             }
 
-            // Cart Elements
             document.getElementById('det-items-count').innerText = `Items (${o.totalItems || 0})`;
             document.getElementById('det-cart-list').innerHTML = (o.cart || []).map(item => {
                 const p = item.product || {};
@@ -788,7 +705,6 @@
                 </div>`;
             }).join('');
 
-            // Main Action Button logic
             const actionContainer = document.getElementById('action-container');
             if(o.status === 'Preparing') {
                 actionContainer.innerHTML = `
@@ -808,16 +724,14 @@
                     </button>
                 `;
             } else {
-                actionContainer.innerHTML = ``; // Hide button if done
+                actionContainer.innerHTML = ``; 
             }
         };
 
-        // --- FIREBASE ACTIONS ---
         window.updateOrderStatus = async (orderId, newStatus) => {
             try {
                 await updateDoc(doc(db, "orders", orderId), { status: newStatus });
                 showToast(`Order marked as ${newStatus}`);
-                
                 if(newStatus === 'Delivered' || newStatus === 'Cancelled') { goBack(); }
             } catch (e) { console.error(e); alert("Network error. Please try again."); }
         };
