@@ -114,7 +114,7 @@
         .ic-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--bg-main); }
         .ic-icon { width: 40px; height: 40px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .ic-row h4 { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
-        .ic-row p { font-size: 13px; color: var(--text-muted); font-weight: 500;}
+        .ic-row p { font-size: 13px; color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 4px;}
         .ic-total-row { display: flex; justify-content: space-between; align-items: center; }
         .ic-total-label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--text-muted); }
         .ic-total-val { font-size: 22px; font-weight: 800; color: var(--accent); }
@@ -126,7 +126,7 @@
         .item-img { width: 44px; height: 44px; border-radius: 12px; background: var(--bg-main); object-fit: cover;}
         .item-details { flex: 1; }
         .item-name { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
-        .item-meta { font-size: 12px; color: var(--text-muted); line-height: 1.3; }
+        .item-meta { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
         .item-qty-badge { background: var(--accent-light); color: var(--accent); font-size: 13px; font-weight: 800; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
 
         /* WALLET VIEW */
@@ -218,7 +218,7 @@
                 <div class="ic-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
                 <div>
                     <h4 id="det-client">Name</h4>
-                    <p id="det-area"><svg viewBox="0 0 24 24" style="width:12px; margin-right:4px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Area</p>
+                    <p id="det-area"><svg viewBox="0 0 24 24" style="width:14px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Area</p>
                 </div>
             </div>
             <div class="ic-total-row">
@@ -329,7 +329,6 @@
                     lastActive: new Date().toISOString()
                 }, { merge: true });
 
-                // Ask browser for Notification permissions
                 if ("Notification" in window) {
                     if (Notification.permission !== "granted" && Notification.permission !== "denied") {
                         Notification.requestPermission();
@@ -340,24 +339,18 @@
                 switchTab(savedTab === 'login' ? 'dashboard' : savedTab);
             } else {
                 currentDriver = null;
-                // Kick to login page!
                 window.location.replace("driver-login.html");
             }
         });
 
-        // Trigger Audio + Visual notification
         function playNotification(orderId, area) {
-            // Play Audio
             const sound = document.getElementById("notificationSound");
-            if (sound) {
-                sound.play().catch(e => console.log("Audio play blocked by browser. User needs to interact first."));
-            }
+            if (sound) { sound.play().catch(e => console.log("Audio play blocked. Tap screen to unlock.")); }
             
-            // Show Native Push Notification
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("New Delivery Assigned! 🛵", {
                     body: `A new order in ${area || 'your area'} is ready for pickup.`,
-                    icon: "https://cdn-icons-png.flaticon.com/512/3063/3063822.png" // Placeholder icon
+                    icon: "https://cdn-icons-png.flaticon.com/512/3063/3063822.png" 
                 });
             }
         }
@@ -376,27 +369,32 @@
             if(document.getElementById('view-wallet').classList.contains('active') && currentDriver) renderWallet();
         });
 
+        // FIXED LISTENER: Now checks for MODIFIED events (like Admin assigning driver)
         onSnapshot(collection(db, "orders"), snap => {
+            if(currentDriver && !isInitialLoad) {
+                snap.docChanges().forEach(change => {
+                    if (change.type === "added" || change.type === "modified") {
+                        const newOrder = change.doc.data();
+                        const oldOrder = allOrders.find(o => o.id === change.doc.id);
+                        
+                        const isNowMyOrder = newOrder.driverEmail === currentDriver.email;
+                        const wasNotMyOrder = !oldOrder || oldOrder.driverEmail !== currentDriver.email;
+                        const isPreparing = newOrder.status === 'Preparing';
+                        
+                        // Fire notification if it was just assigned to THIS driver
+                        if (isNowMyOrder && isPreparing && wasNotMyOrder) {
+                            playNotification(change.doc.id, newOrder.neighborhood);
+                        }
+                    }
+                });
+            }
+            
+            // Save data after checking notifications
             allOrders = snap.docs.map(d => ({id: d.id, ...d.data()}));
             
             if(currentDriver) {
-                // Check for brand new orders assigned to THIS driver
-                if (!isInitialLoad) {
-                    snap.docChanges().forEach(change => {
-                        if (change.type === "added") {
-                            const newOrder = change.doc.data();
-                            if (newOrder.driverEmail === currentDriver.email && newOrder.status === 'Preparing') {
-                                playNotification(change.doc.id, newOrder.neighborhood);
-                            }
-                        }
-                    });
-                }
-
-                if(document.getElementById('view-dashboard').classList.contains('active')) {
-                    renderDashboard();
-                } else if (document.getElementById('view-wallet').classList.contains('active')) {
-                    renderWallet();
-                }
+                if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard();
+                else if (document.getElementById('view-wallet').classList.contains('active')) renderWallet();
                 
                 if(openedOrderId) {
                     const stillExists = allOrders.find(o => o.id === openedOrderId);
@@ -445,14 +443,10 @@
             if(!currentDriver) return;
 
             const myOrders = allOrders.filter(o => o.driverEmail === currentDriver.email);
-            
-            const sortedOrders = [...myOrders].sort((a,b) => {
-                return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
-            });
+            const sortedOrders = [...myOrders].sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
             const available = sortedOrders.filter(o => o.status === 'Preparing');
             const active = sortedOrders.filter(o => o.status === 'Out for Delivery');
-            
             const todayStr = new Date().toDateString();
             const recent = sortedOrders.filter(o => {
                 let orderDate = o.timestamp ? new Date(o.timestamp) : new Date();
@@ -525,7 +519,6 @@
                 actContainer.innerHTML = recent.map(o => {
                     let orderDate = new Date(); if (o.timestamp) orderDate = new Date(o.timestamp);
                     const time = orderDate.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
-                    
                     let isSuccess = o.status === 'Delivered';
                     let iconHtml = isSuccess ? `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>` : `<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
                     
@@ -545,16 +538,13 @@
             }
         }
 
-        // --- WALLET LOGIC WITH EXTRA MATH FIXED ---
+        // --- WALLET LOGIC ---
         function renderWallet() {
             if(!currentDriver) return;
-
             const myOrders = allOrders.filter(o => o.driverEmail === currentDriver.email);
             const unsettledDeliveries = myOrders.filter(o => o.status === 'Delivered' && o.driverSettled !== true);
 
-            let totalEarned = 0; 
-            let totalToReturn = 0; 
-
+            let totalEarned = 0; let totalToReturn = 0; 
             unsettledDeliveries.forEach(o => {
                 const fee = safeNum(o.deliveryFee);
                 const total = safeNum(o.totalPrice);
@@ -565,30 +555,21 @@
                     o.cart.forEach(item => {
                         const dbProduct = allProducts.find(x => x.id === item.product.id);
                         let unitCost = dbProduct ? safeNum(dbProduct.costPrice) : 0;
-                        
-                        // Add Size cost
                         if(dbProduct && dbProduct.sizes && item.variantName) {
                             const sizeData = dbProduct.sizes.find(s => s.name === item.variantName);
-                            if(sizeData && sizeData.costPrice) {
-                                unitCost = safeNum(sizeData.costPrice);
-                            }
+                            if(sizeData && sizeData.costPrice) unitCost = safeNum(sizeData.costPrice);
                         }
                         orderCost += (unitCost * item.qty);
 
-                        // ACCURATE EXTRA MATH FIX
                         if(item.extras && item.extras.length > 0 && dbProduct && dbProduct.extras) {
                             item.extras.forEach(extName => {
                                 const extra = dbProduct.extras.find(e => e.name === extName);
-                                if(extra && extra.costPrice) {
-                                    orderCost += (safeNum(extra.costPrice) * item.qty);
-                                }
+                                if(extra && extra.costPrice) orderCost += (safeNum(extra.costPrice) * item.qty);
                             });
                         }
                     });
                 }
-
-                totalEarned += fee;
-                totalToReturn += (subtotal - orderCost);
+                totalEarned += fee; totalToReturn += (subtotal - orderCost);
             });
 
             document.getElementById('walletEarned').innerHTML = `${totalEarned.toFixed(2)} <span style="font-size:16px;">DH</span>`;
@@ -603,7 +584,6 @@
                     let orderDate = new Date(); if (o.timestamp) orderDate = new Date(o.timestamp);
                     const time = orderDate.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
                     const fee = safeNum(o.deliveryFee).toFixed(2);
-                    
                     return `
                     <div class="w-item">
                         <div class="w-item-left">
@@ -625,20 +605,11 @@
             if(unsettledDeliveries.length === 0) return showToast("No deliveries to settle.");
             
             const btn = document.querySelector('button[onclick="markAsPaid()"]');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = "Processing...";
-            
+            const originalText = btn.innerHTML; btn.innerHTML = "Processing...";
             try {
-                for(let order of unsettledDeliveries) {
-                    await updateDoc(doc(db, "orders", order.id), { driverSettled: true });
-                }
+                for(let order of unsettledDeliveries) await updateDoc(doc(db, "orders", order.id), { driverSettled: true });
                 showToast("Wallet settled successfully!");
-            } catch(e) {
-                console.error(e);
-                alert("Error settling wallet.");
-            } finally {
-                btn.innerHTML = originalText;
-            }
+            } catch(e) { console.error(e); alert("Error settling wallet."); } finally { btn.innerHTML = originalText; }
         }
 
         // --- ORDER DETAILS ---
@@ -652,7 +623,7 @@
 
             document.getElementById('det-id').innerText = `#${o.id.substring(0,6).toUpperCase()}`;
             document.getElementById('det-client').innerText = o.customerName || 'Unknown';
-            document.getElementById('det-area').innerHTML = `<svg viewBox="0 0 24 24" style="width:12px; margin-right:4px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${o.neighborhood || 'Unknown Area'}`;
+            document.getElementById('det-area').innerHTML = `<svg viewBox="0 0 24 24" style="width:14px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${o.neighborhood || 'Unknown Area'}`;
             document.getElementById('det-total').innerText = `${Number(o.totalPrice).toFixed(2)} DH`;
             
             const statBadge = document.getElementById('det-status');
@@ -677,11 +648,8 @@
                 btnCall.style.pointerEvents = "none"; btnWa.style.pointerEvents = "none";
             }
 
-            if(o.status === 'Delivered' || o.status === 'Cancelled') {
-                document.getElementById('det-action-grid').style.display = 'none';
-            } else {
-                document.getElementById('det-action-grid').style.display = 'grid';
-            }
+            if(o.status === 'Delivered' || o.status === 'Cancelled') document.getElementById('det-action-grid').style.display = 'none';
+            else document.getElementById('det-action-grid').style.display = 'grid';
 
             document.getElementById('det-items-count').innerText = `Items (${o.totalItems || 0})`;
             document.getElementById('det-cart-list').innerHTML = (o.cart || []).map(item => {
@@ -692,6 +660,10 @@
                 if(item.variantName) metaText.push(`Size: ${item.variantName}`);
                 if(item.extras && item.extras.length > 0) metaText.push(`+ ${item.extras.join(', ')}`);
                 if(item.sauces && item.sauces.length > 0) metaText.push(`Sauce: ${item.sauces.join(', ')}`);
+                
+                // FIXED: Drink logic added with bold blue highlight!
+                if(item.drinks && item.drinks.length > 0) metaText.push(`<span style="color:var(--primary); font-weight:700;">Drink: ${item.drinks.join(', ')}</span>`);
+                
                 if(item.note) metaText.push(`Note: <span style="color:var(--danger); font-weight:700;">${item.note}</span>`);
 
                 return `
@@ -745,3 +717,4 @@
     </script>
 </body>
 </html>
+
