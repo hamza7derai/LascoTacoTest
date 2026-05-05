@@ -121,13 +121,14 @@
 
         .items-card { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); padding: 20px; margin-bottom: 24px; box-shadow: var(--shadow-sm);}
         .items-card h3 { font-size: 15px; font-weight: 800; margin-bottom: 16px; }
-        .item-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .item-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
         .item-row:last-child { border-bottom: none; padding-bottom: 0;}
-        .item-img { width: 44px; height: 44px; border-radius: 12px; background: var(--bg-main); object-fit: cover;}
+        .item-img { width: 44px; height: 44px; border-radius: 12px; background: var(--bg-main); object-fit: cover; flex-shrink: 0;}
         .item-details { flex: 1; }
         .item-name { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
         .item-meta { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-        .item-qty-badge { background: var(--accent-light); color: var(--accent); font-size: 13px; font-weight: 800; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .item-price { font-size: 13px; font-weight: 800; color: var(--primary); margin-top: 4px; }
+        .item-qty-badge { background: var(--accent-light); color: var(--accent); font-size: 13px; font-weight: 800; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;}
 
         /* WALLET VIEW */
         .wallet-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-top: 20px;}
@@ -384,7 +385,6 @@
             if(document.getElementById('view-wallet').classList.contains('active') && currentDriver) renderWallet();
         });
 
-        // FIXED LISTENER: Open Pool Notification Logic
         onSnapshot(collection(db, "orders"), snap => {
             if(currentDriver && !isInitialLoad) {
                 snap.docChanges().forEach(change => {
@@ -392,7 +392,7 @@
                         const newOrder = change.doc.data();
                         
                         // Fire notification if it's a brand new order with NO driver assigned
-                        if (newOrder.status === 'Pending' && !newOrder.driverEmail) {
+                        if (newOrder.status === 'Pending' && (!newOrder.driverEmail || newOrder.driverEmail === "")) {
                             playNotification(change.doc.id, newOrder.neighborhood);
                         }
                     }
@@ -452,13 +452,12 @@
             if(!currentDriver) return;
 
             // NEW OPEN POOL LOGIC
-            const unassignedOrders = allOrders.filter(o => o.status === 'Pending' && !o.driverEmail);
+            const unassignedOrders = allOrders.filter(o => o.status === 'Pending' && (!o.driverEmail || o.driverEmail === ""));
             const myOrders = allOrders.filter(o => o.driverEmail === currentDriver.email);
             
             const sortedUnassigned = [...unassignedOrders].sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
             const sortedMyOrders = [...myOrders].sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
-            // Available Tab = Unassigned Pool. Active Tab = Driver's Claimed Orders
             const available = sortedUnassigned;
             const active = sortedMyOrders.filter(o => o.status === 'Preparing' || o.status === 'Out for Delivery');
             
@@ -684,6 +683,9 @@
                 const p = item.product || {};
                 const img = p.imageUrl && p.imageUrl !== "local_file_selected" ? `<img src="${p.imageUrl}" class="item-img">` : `<div class="item-img" style="display:flex;align-items:center;justify-content:center;font-size:10px;">No Img</div>`;
                 
+                // ADDED: Individual Item Price Calculation
+                const linePrice = item.unitPrice ? Number(item.unitPrice * item.qty).toFixed(2) : '0.00';
+
                 let metaText = [];
                 if(item.variantName) metaText.push(`Size: ${item.variantName}`);
                 if(item.extras && item.extras.length > 0) metaText.push(`+ ${item.extras.join(', ')}`);
@@ -697,6 +699,7 @@
                     <div class="item-details">
                         <div class="item-name">${p.name || 'Item'}</div>
                         <div class="item-meta">${metaText.join('<br>')}</div>
+                        <div class="item-price">${linePrice} DH</div>
                     </div>
                     <div class="item-qty-badge">x${item.qty}</div>
                 </div>`;
@@ -704,8 +707,7 @@
 
             const actionContainer = document.getElementById('action-container');
             
-            // NEW: Claim Order Logic OR Manage Order Logic
-            if (!o.driverEmail && o.status === 'Pending') {
+            if ((!o.driverEmail || o.driverEmail === "") && o.status === 'Pending') {
                 actionContainer.innerHTML = `
                     <button style="width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 20px rgba(13, 93, 255, 0.3); transition: 0.2s; cursor: pointer;" onclick="claimOrder('${o.id}')">
                         <svg viewBox="0 0 24 24" style="width:20px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
@@ -714,10 +716,15 @@
             } else if (o.driverEmail === currentDriver.email) {
                 if(o.status === 'Preparing') {
                     actionContainer.innerHTML = `
-                        <button style="width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 20px rgba(13, 93, 255, 0.3); transition: 0.2s; cursor: pointer;" onclick="updateOrderStatus('${o.id}', 'Out for Delivery')">
+                        <button style="width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 20px rgba(13, 93, 255, 0.3); transition: 0.2s; cursor: pointer; margin-bottom: 12px;" onclick="updateOrderStatus('${o.id}', 'Out for Delivery')">
                             <svg viewBox="0 0 24 24" style="width:20px;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                             Start Delivery
-                        </button>`;
+                        </button>
+                        <button style="width: 100%; background: transparent; color: var(--text-muted); border: 1px solid var(--border); border-radius: 16px; padding: 18px; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; cursor: pointer;" onclick="unclaimOrder('${o.id}')">
+                            <svg viewBox="0 0 24 24" style="width:20px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                            Release back to Pool
+                        </button>
+                        `;
                 } else if (o.status === 'Out for Delivery') {
                     actionContainer.innerHTML = `
                         <button style="width: 100%; background: var(--accent); color: white; border: none; border-radius: 16px; padding: 18px; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3); margin-bottom: 12px; transition: 0.2s; cursor: pointer;" onclick="updateOrderStatus('${o.id}', 'Delivered')">
@@ -733,7 +740,6 @@
                     actionContainer.innerHTML = ``; 
                 }
             } else {
-                // Someone else claimed it!
                 actionContainer.innerHTML = `
                     <div style="text-align:center; padding:18px; background:var(--danger-light); color:var(--danger); border-radius:16px; font-weight:800; font-size:15px;">
                         This order was claimed by another driver.
@@ -741,7 +747,6 @@
             }
         };
 
-        // NEW: Driver Claim Function
         window.claimOrder = async (orderId) => {
             try {
                 await updateDoc(doc(db, "orders", orderId), { 
@@ -753,6 +758,21 @@
             } catch (e) { 
                 console.error(e); 
                 alert("Error claiming order. Someone else might have grabbed it!"); 
+            }
+        };
+
+        // NEW: Unclaim Order Function
+        window.unclaimOrder = async (orderId) => {
+            try {
+                await updateDoc(doc(db, "orders", orderId), { 
+                    driverEmail: "",
+                    status: 'Pending'
+                });
+                showToast("Order released to other drivers");
+                goBack();
+            } catch (e) { 
+                console.error(e); 
+                alert("Error releasing order."); 
             }
         };
 
