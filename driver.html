@@ -314,6 +314,22 @@
         let isInitialLoad = true;
         const safeNum = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);
 
+        // SILENT AUDIO UNLOCKER FOR MOBILE BROWSERS
+        function unlockAudio() {
+            const sound = document.getElementById("notificationSound");
+            if(sound) {
+                sound.play().then(() => {
+                    sound.pause();
+                    sound.currentTime = 0;
+                }).catch(e => {});
+            }
+            document.removeEventListener('click', unlockAudio);
+            document.removeEventListener('touchstart', unlockAudio);
+        }
+        document.addEventListener('click', unlockAudio);
+        document.addEventListener('touchstart', unlockAudio);
+
+
         // --- THE BOUNCER & NOTIFICATION SETUP ---
         onAuthStateChanged(auth, async user => {
             if (user) {
@@ -369,7 +385,7 @@
             if(document.getElementById('view-wallet').classList.contains('active') && currentDriver) renderWallet();
         });
 
-        // FIXED LISTENER: Now checks for MODIFIED events (like Admin assigning driver)
+        // FIXED LISTENER: Now catches orders whether they are Pending OR Preparing!
         onSnapshot(collection(db, "orders"), snap => {
             if(currentDriver && !isInitialLoad) {
                 snap.docChanges().forEach(change => {
@@ -377,19 +393,21 @@
                         const newOrder = change.doc.data();
                         const oldOrder = allOrders.find(o => o.id === change.doc.id);
                         
-                        const isNowMyOrder = newOrder.driverEmail === currentDriver.email;
-                        const wasNotMyOrder = !oldOrder || oldOrder.driverEmail !== currentDriver.email;
-                        const isPreparing = newOrder.status === 'Preparing';
+                        const isNowMine = newOrder.driverEmail === currentDriver.email;
+                        const wasNotMine = !oldOrder || oldOrder.driverEmail !== currentDriver.email;
+                        const justPrepared = oldOrder && oldOrder.status !== 'Preparing' && newOrder.status === 'Preparing';
                         
-                        // Fire notification if it was just assigned to THIS driver
-                        if (isNowMyOrder && isPreparing && wasNotMyOrder) {
-                            playNotification(change.doc.id, newOrder.neighborhood);
+                        // Fire notification if it was just assigned to THIS driver OR if it just finished preparing
+                        if (isNowMine && (wasNotMine || justPrepared)) {
+                            // Only notify if it's an active status
+                            if(newOrder.status === 'Pending' || newOrder.status === 'Preparing') {
+                                playNotification(change.doc.id, newOrder.neighborhood);
+                            }
                         }
                     }
                 });
             }
             
-            // Save data after checking notifications
             allOrders = snap.docs.map(d => ({id: d.id, ...d.data()}));
             
             if(currentDriver) {
@@ -445,8 +463,10 @@
             const myOrders = allOrders.filter(o => o.driverEmail === currentDriver.email);
             const sortedOrders = [...myOrders].sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
-            const available = sortedOrders.filter(o => o.status === 'Preparing');
+            // FIXED: Show BOTH Preparing AND Pending orders in the Available tab instantly
+            const available = sortedOrders.filter(o => o.status === 'Preparing' || o.status === 'Pending');
             const active = sortedOrders.filter(o => o.status === 'Out for Delivery');
+            
             const todayStr = new Date().toDateString();
             const recent = sortedOrders.filter(o => {
                 let orderDate = o.timestamp ? new Date(o.timestamp) : new Date();
@@ -473,13 +493,24 @@
                 container.innerHTML = displayList.map(o => {
                     let orderDate = new Date(); if (o.timestamp) orderDate = new Date(o.timestamp);
                     const time = orderDate.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+                    
+                    let statusBadgeHtml = '';
+                    if (o.status === 'Pending') {
+                        statusBadgeHtml = `<div style="background:var(--warning-light); color:var(--warning); font-size:10px; font-weight:800; padding:4px 8px; border-radius:8px;">WAITING FOR RESTO</div>`;
+                    } else if (o.status === 'Preparing') {
+                        statusBadgeHtml = `<div style="background:var(--primary-light); color:var(--primary); font-size:10px; font-weight:800; padding:4px 8px; border-radius:8px;">READY TO PICKUP</div>`;
+                    }
+                    
                     const btnHtml = currentTab === 'available' ? 'Accept Delivery' : 'View Details';
                     
                     return `
                     <div class="order-card" onclick="openOrder('${o.id}')">
                         <div class="oc-header">
-                            <div class="oc-id">#${o.id.substring(0,6).toUpperCase()}</div>
-                            <div class="oc-time"><svg viewBox="0 0 24 24" style="width:14px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${time}</div>
+                            <div>
+                                <div class="oc-id">#${o.id.substring(0,6).toUpperCase()}</div>
+                                <div class="oc-time"><svg viewBox="0 0 24 24" style="width:14px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${time}</div>
+                            </div>
+                            ${statusBadgeHtml}
                         </div>
                         <div class="oc-location">
                             <div class="loc-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
@@ -628,7 +659,9 @@
             
             const statBadge = document.getElementById('det-status');
             statBadge.innerText = o.status.toUpperCase();
-            if(o.status === 'Preparing') { statBadge.style.background = 'var(--primary-light)'; statBadge.style.color = 'var(--primary)'; }
+            
+            if(o.status === 'Pending') { statBadge.style.background = 'var(--warning-light)'; statBadge.style.color = 'var(--warning)'; }
+            else if(o.status === 'Preparing') { statBadge.style.background = 'var(--primary-light)'; statBadge.style.color = 'var(--primary)'; }
             else { statBadge.style.background = 'var(--primary)'; statBadge.style.color = 'white'; }
 
             const btnCall = document.getElementById('btnCall');
@@ -660,10 +693,7 @@
                 if(item.variantName) metaText.push(`Size: ${item.variantName}`);
                 if(item.extras && item.extras.length > 0) metaText.push(`+ ${item.extras.join(', ')}`);
                 if(item.sauces && item.sauces.length > 0) metaText.push(`Sauce: ${item.sauces.join(', ')}`);
-                
-                // FIXED: Drink logic added with bold blue highlight!
                 if(item.drinks && item.drinks.length > 0) metaText.push(`<span style="color:var(--primary); font-weight:700;">Drink: ${item.drinks.join(', ')}</span>`);
-                
                 if(item.note) metaText.push(`Note: <span style="color:var(--danger); font-weight:700;">${item.note}</span>`);
 
                 return `
@@ -678,7 +708,12 @@
             }).join('');
 
             const actionContainer = document.getElementById('action-container');
-            if(o.status === 'Preparing') {
+            if(o.status === 'Pending') {
+                actionContainer.innerHTML = `
+                    <div style="text-align:center; padding:18px; background:var(--warning-light); color:var(--warning); border-radius:16px; font-weight:800; font-size:15px; border: 1px dashed var(--warning);">
+                        Waiting for Restaurant to prepare...
+                    </div>`;
+            } else if(o.status === 'Preparing') {
                 actionContainer.innerHTML = `
                     <button style="width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 20px rgba(13, 93, 255, 0.3); transition: 0.2s; cursor: pointer;" onclick="updateOrderStatus('${o.id}', 'Out for Delivery')">
                         <svg viewBox="0 0 24 24" style="width:20px;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
@@ -717,4 +752,3 @@
     </script>
 </body>
 </html>
-
