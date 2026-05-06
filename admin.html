@@ -61,7 +61,7 @@
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(18px); }
 
-        /* ANIMATED TABS TOGGLE (Reused from Driver App) */
+        /* ANIMATED TABS TOGGLE */
         .tabs-toggle { position: relative; display: flex; background: var(--surface); border-radius: 50px; padding: 6px; border: 1px solid var(--border); margin-bottom: 24px; box-shadow: var(--shadow-sm); z-index: 1;}
         .tab-bg { position: absolute; top: 6px; bottom: 6px; left: 6px; width: calc(50% - 6px); background: var(--primary); border-radius: 50px; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: -1; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);}
         .tab-btn { flex: 1; padding: 12px; text-align: center; font-size: 14px; font-weight: 700; border-radius: 50px; color: var(--text-muted); transition: color 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;}
@@ -99,22 +99,31 @@
         .b-delivered { background: var(--accent-light); color: var(--accent); }
         .b-cancelled { background: var(--danger-light); color: var(--danger); }
 
-        .tabs-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -20px 20px; padding: 0 20px; position: relative; z-index: 10; }
+        /* SNAP SCROLL TABS */
+        .tabs-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -20px 20px; padding: 0 20px; position: relative; z-index: 10; scroll-behavior: smooth; scroll-snap-type: x mandatory;}
         .tabs-scroll::-webkit-scrollbar { display: none; }
-        .tab-pill { padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); white-space: nowrap; cursor: pointer; transition: 0.2s;}
+        .tab-pill { padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); white-space: nowrap; cursor: pointer; transition: 0.2s; scroll-snap-align: center;}
         .tab-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* CATALOG TOGGLE & ACCORDIONS */
+        .cat-toggle-wrapper { background: var(--surface); border-radius: 50px; padding: 4px; display: flex; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 20px;}
+        .cat-toggle-btn { flex: 1; padding: 10px; font-size: 13px; font-weight: 700; color: var(--text-muted); border-radius: 50px; transition: 0.3s; text-align: center; display: flex; justify-content: center; align-items: center; gap: 6px; cursor: pointer;}
+        .cat-toggle-btn.active { background: var(--primary); color: white; }
 
         /* HORIZONTAL LIST CATALOG */
         .catalog-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px;}
-        .cat-list-item { display: flex; align-items: center; gap: 12px; padding: 10px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); box-shadow: 0 2px 8px rgba(0,0,0,0.02);}
+        .cat-list-item { display: flex; flex-direction: column; padding: 12px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); box-shadow: 0 2px 8px rgba(0,0,0,0.02);}
+        .cat-list-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px;}
         .cat-list-img { width: 56px; height: 56px; border-radius: 12px; background: var(--bg-main); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: var(--text-muted); overflow: hidden; flex-shrink: 0;}
         .cat-list-img img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply;}
         .cat-list-info { flex: 1; overflow: hidden; }
         .cat-list-info h4 { font-size: 15px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         .cat-list-info p { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-        .cat-list-actions { display: flex; gap: 8px; align-items: center;}
+        .cat-list-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--border); padding-top: 12px;}
+        .cat-list-actions { display: flex; gap: 6px; align-items: center;}
         .btn-action { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: 0.2s; flex-shrink: 0;}
         .btn-action:active { transform: scale(0.9); }
+        .btn-action.copy { background: var(--bg-main); color: var(--text-muted); border: 1px solid var(--border);}
         .btn-action.edit { background: var(--primary-light); color: var(--primary); }
         .btn-action.del { background: var(--danger-light); color: var(--danger); }
 
@@ -296,6 +305,29 @@
         </div>
         <div id="dashRecentOrdersContainer"></div>
 
+        <div class="section-title" style="margin-top: 32px;">Store Settings (God Mode)</div>
+        <div class="card" style="padding:0; overflow:hidden;">
+            <div style="padding:16px; border-bottom:1px solid var(--border);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <div style="font-size:14px; font-weight:800;">Live Announcement</div>
+                    <label class="switch"><input type="checkbox" id="tglAnnounce"><span class="slider"></span></label>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="announceText" class="form-control" placeholder="E.g. Free delivery tonight!" style="font-size:13px;">
+                    <button class="btn btn-primary" style="width:auto; padding:0 20px; font-size:13px;" onclick="saveAnnouncement()">Save</button>
+                </div>
+            </div>
+            <div style="padding:16px;">
+                <div style="font-size:14px; font-weight:800; margin-bottom:12px;">Delivery Zones & Fees</div>
+                <div style="display:flex; gap:8px; margin-bottom:16px;">
+                    <input type="text" id="inpZoneName" class="form-control" placeholder="Area Name" style="font-size:13px;">
+                    <input type="number" id="inpZoneFee" class="form-control" placeholder="Fee (DH)" style="font-size:13px; width:100px;">
+                    <button class="btn btn-outline" style="width:auto; padding:0 16px;" onclick="addZone()">Add</button>
+                </div>
+                <div id="zoneListContainer" style="display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+        </div>
+
     </div>
 
     <div id="view-commandes" class="app-view container">
@@ -349,10 +381,15 @@
             </div>
         </div>
 
-        <div class="tabs-toggle" style="margin-bottom: 24px;">
+        <div class="tabs-toggle" style="margin-bottom: 16px;">
             <div class="tab-bg" id="catTabBg"></div>
             <div class="tab-btn active" id="catBtnResto" onclick="setCatalogMode('Resto')">Resto (Food)</div>
             <div class="tab-btn" id="catBtnGrocery" onclick="setCatalogMode('Grocery')">Grocery</div>
+        </div>
+
+        <div style="margin-bottom: 20px; position: relative;">
+            <svg viewBox="0 0 24 24" style="position: absolute; left: 16px; top: 14px; width: 18px; color: var(--text-muted);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="catSearch" class="form-control" placeholder="Search catalog..." style="padding-left: 44px; font-size: 13px;" oninput="renderCatalog()">
         </div>
 
         <div class="tabs-scroll" id="catalogCategoryTabs"></div>
@@ -491,7 +528,7 @@
                     <div class="toggle-wrapper">
                         <div>
                             <span style="display:block; font-size:14px; font-weight:800;">Extras (Add-ons)</span>
-                            <span style="font-size:11px; color:var(--text-muted);">Paid additional options (+ DH)</span>
+                            <span style="font-size:11px; color:var(--text-muted);">Paid options (+ DH)</span>
                         </div>
                         <label class="switch"><input type="checkbox" id="tglExtra" onchange="document.getElementById('cfgExtra').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
                     </div>
@@ -616,9 +653,9 @@
     <div id="view-analytics" class="app-view container">
         <div class="header-top">
             <h1 style="font-size: 24px; font-weight:800; letter-spacing: -0.5px;">Analytics</h1>
-            <div class="btn-exit" style="flex-direction:row; padding:10px 16px; font-size:12px; gap:8px;">
-                <svg viewBox="0 0 24 24" style="width:14px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                Today
+            <div class="btn-exit" onclick="exportCSV()" style="flex-direction:row; padding:10px 16px; font-size:12px; gap:8px; color:var(--accent); background:var(--accent-light); border:none;">
+                <svg viewBox="0 0 24 24" style="width:14px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export Excel
             </div>
         </div>
         <p style="font-size: 13px; color: var(--text-muted); margin-top: -16px; margin-bottom: 24px;">Track your store performance</p>
@@ -744,7 +781,7 @@
         };
         // ==========================================
 
-        let allOrders = [], allProducts = [], globalCategoriesData = [], allDrivers = [];
+        let allOrders = [], allProducts = [], globalCategoriesData = [], allDrivers = [], allZones = [];
         let currentOrderFilter = 'All', currentCatalogMode = 'Resto', currentCatalogCategory = 'All', currentEditProductId = null; 
         let currentCatAddingType = ''; 
         let selectedProductType = 'Resto'; 
@@ -761,7 +798,6 @@
             const navItem = document.getElementById(`nav-${navTarget}`);
             if(navItem) navItem.classList.add('active');
             
-            // Force re-render catalog instantly when opening tab
             if(tabId === 'produits') {
                 renderCatalogTabs();
                 renderCatalog();
@@ -775,7 +811,7 @@
             const savedTab = localStorage.getItem('lasGoAdminTab') || 'dashboard'; switchTab(savedTab);
         });
 
-        // ---------------- STORE STATUS LOGIC ---------------- 
+        // ---------------- STORE SETTINGS (GOD MODE) ---------------- 
         window.toggleStoreStatus = async (isOnline) => {
             try {
                 await setDoc(doc(db, "settings", "store_status"), { isOnline: isOnline }, { merge: true });
@@ -801,6 +837,64 @@
                 textMain.innerText = 'Store Closed'; textSub.innerText = 'You are not receiving orders';
             }
         });
+
+        onSnapshot(doc(db, "settings", "announcement"), snap => {
+            if(snap.exists()) {
+               document.getElementById('announceText').value = snap.data().text || '';
+               document.getElementById('tglAnnounce').checked = snap.data().isVisible === true;
+            }
+        });
+
+        window.saveAnnouncement = async () => {
+            try {
+                await setDoc(doc(db, "settings", "announcement"), { 
+                    text: document.getElementById('announceText').value.trim(), 
+                    isVisible: document.getElementById('tglAnnounce').checked 
+                });
+                showToast("Announcement saved!");
+            } catch(e) { console.error(e); alert("Error saving announcement."); }
+        };
+
+        onSnapshot(collection(db, "zones"), snap => {
+            allZones = snap.docs.map(d => ({id: d.id, ...d.data()}));
+            renderZones();
+        });
+
+        function renderZones() {
+            const container = document.getElementById('zoneListContainer');
+            if(allZones.length === 0) {
+                container.innerHTML = `<div style="font-size:12px; color:var(--text-muted); font-weight:500;">No zones configured. Delivery fee will be 0 DH.</div>`;
+                return;
+            }
+            container.innerHTML = allZones.map(z => `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-main); padding:10px 12px; border-radius:12px; border:1px solid var(--border);">
+                    <div style="font-size:13px; font-weight:700;">${z.name}</div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="font-size:13px; font-weight:800; color:var(--primary);">${formatPrice(z.fee)} DH</span>
+                        <svg viewBox="0 0 24 24" style="width:16px; color:var(--danger); cursor:pointer;" onclick="deleteZone('${z.id}')"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.addZone = async () => {
+            const name = document.getElementById('inpZoneName').value.trim();
+            const fee = parseFloat(document.getElementById('inpZoneFee').value) || 0;
+            if(!name) return showToast("Enter a zone name.");
+            try {
+                await addDoc(collection(db, "zones"), { name, fee });
+                document.getElementById('inpZoneName').value = '';
+                document.getElementById('inpZoneFee').value = '';
+                showToast("Zone added!");
+            } catch(e) { console.error(e); }
+        };
+
+        window.deleteZone = async (id) => {
+            if(confirm("Delete this delivery zone?")) {
+                await deleteDoc(doc(db, "zones", id));
+                showToast("Zone deleted.");
+            }
+        };
 
         // ---------------- WIZARD LOGIC ----------------
         window.selectProductType = (type) => {
@@ -861,7 +955,7 @@
             if(name && !isNaN(sell)) { window.productSizes.push({ name, sellPrice: sell, costPrice: cost }); document.getElementById('inpSizeName').value = ''; document.getElementById('inpSizeSell').value = ''; document.getElementById('inpSizeCost').value = ''; renderSizes(); }
         };
         window.removeSize = (index) => { window.productSizes.splice(index, 1); renderSizes(); };
-        function renderSizes() { document.getElementById('listSizes').innerHTML = window.productSizes.map((s, i) => `<div class="list-row"><div class="list-info"><h5>${s.name}</h5><p>Sell: ${formatPrice(s.sellPrice)} DH | Cost: ${formatPrice(s.costPrice)} DH</p></div><button class="btn-icon-small btn-del-prod" onclick="removeSize(${i})" style="color:var(--danger);"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div>`).join(''); }
+        function renderSizes() { document.getElementById('listSizes').innerHTML = window.productSizes.map((s, i) => `<div class="list-row"><div class="list-info"><h5>${s.name}</h5><p>Sell: ${formatPrice(s.sellPrice)} DH | Cost: ${formatPrice(s.costPrice)} DH</p></div><button class="btn-icon-small btn-del-prod" style="background:none; border:none; color:var(--danger); cursor:pointer;" onclick="removeSize(${i})"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div>`).join(''); }
 
         window.addExtra = () => {
             const name = document.getElementById('inpExtraName').value.trim(); 
@@ -874,7 +968,7 @@
             }
         };
         window.removeExtra = (index) => { window.productExtras.splice(index, 1); renderExtras(); };
-        function renderExtras() { document.getElementById('listExtras').innerHTML = window.productExtras.map((e, i) => `<div class="list-row"><div class="list-info"><h5>${e.name}</h5><p>Sell: +${formatPrice(e.price)} DH | Cost: ${e.costPrice !== undefined ? formatPrice(e.costPrice) : '0'} DH</p></div><button class="btn-icon-small btn-del-prod" onclick="removeExtra(${i})" style="color:var(--danger);"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div>`).join(''); }
+        function renderExtras() { document.getElementById('listExtras').innerHTML = window.productExtras.map((e, i) => `<div class="list-row"><div class="list-info"><h5>${e.name}</h5><p>Sell: +${formatPrice(e.price)} DH | Cost: ${e.costPrice !== undefined ? formatPrice(e.costPrice) : '0'} DH</p></div><button class="btn-icon-small btn-del-prod" style="background:none; border:none; color:var(--danger); cursor:pointer;" onclick="removeExtra(${i})"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div>`).join(''); }
 
         // ---------------- CATEGORY CASCADING LOGIC ----------------
         function loadMainCats() {
@@ -926,20 +1020,18 @@
             } catch (e) { console.error(e); showToast("Error connecting."); } finally { btn.innerText = 'Add'; btn.disabled = false; }
         });
 
-        // ---------------- CATALOG LOGIC ----------------
+        // ---------------- CATALOG LOGIC (WITH SEARCH & QUICK TOGGLE) ----------------
         window.setCatalogMode = (mode) => {
             currentCatalogMode = mode;
             currentCatalogCategory = 'All'; 
+            document.getElementById('catSearch').value = ''; // Reset search on tab switch
+            
             document.getElementById('catBtnResto').classList.remove('active');
             document.getElementById('catBtnGrocery').classList.remove('active');
             document.getElementById(`catBtn${mode}`).classList.add('active');
             
-            // Toggle Animation
-            if(mode === 'Resto') {
-                document.getElementById('catTabBg').style.transform = 'translateX(0)';
-            } else {
-                document.getElementById('catTabBg').style.transform = 'translateX(100%)';
-            }
+            if(mode === 'Resto') { document.getElementById('catTabBg').style.transform = 'translateX(0)'; } 
+            else { document.getElementById('catTabBg').style.transform = 'translateX(100%)'; }
 
             renderCatalogTabs();
             renderCatalog();
@@ -949,7 +1041,18 @@
             currentCatalogCategory = catName;
             document.querySelectorAll('#catalogCategoryTabs .tab-pill').forEach(t => t.classList.remove('active'));
             element.classList.add('active');
+            document.getElementById('catSearch').value = ''; // Reset search on category switch
             renderCatalog();
+            
+            // Scroll selected pill into view
+            element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        };
+
+        window.toggleProductAvailability = async (id, isAvailable) => {
+            try {
+                await updateDoc(doc(db, "products", id), { isAvailable: isAvailable });
+                showToast(isAvailable ? "Item set to Available" : "Item Hidden from store");
+            } catch(e) { console.error(e); alert("Network error"); }
         };
 
         function renderCatalogTabs() {
@@ -967,20 +1070,26 @@
             container.innerHTML = html;
         }
 
-        function renderCatalog() {
+        window.renderCatalog = () => {
             const container = document.getElementById('adminProductListContainer');
             if(!container) return;
 
+            const searchQuery = document.getElementById('catSearch').value.toLowerCase().trim();
+
             let filteredProducts = allProducts.filter(p => p.productType === currentCatalogMode);
             
-            if (currentCatalogCategory !== 'All') {
+            if (currentCatalogCategory !== 'All' && !searchQuery) {
                 filteredProducts = filteredProducts.filter(p => (p.category || "Uncategorized") === currentCatalogCategory);
+            }
+
+            if (searchQuery) {
+                filteredProducts = filteredProducts.filter(p => p.name.toLowerCase().includes(searchQuery));
             }
 
             document.getElementById('prodCountText').innerText = `${filteredProducts.length} items • Updated just now`;
 
             if(filteredProducts.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:40px 20px; color:var(--text-muted); font-size:14px; font-weight:600;">No items found in this category.</div>`;
+                container.innerHTML = `<div style="text-align:center; padding:40px 20px; color:var(--text-muted); font-size:14px; font-weight:600;">No items found.</div>`;
                 return;
             }
 
@@ -989,23 +1098,23 @@
                 const imgTag = p.imageUrl ? `<img src="${p.imageUrl}">` : `${p.name.charAt(0)}`;
                 const isAvail = p.isAvailable !== false;
                 
-                const statusHtml = isAvail 
-                    ? `<span style="color:var(--accent); font-size:11px; font-weight:600; display:flex; align-items:center; gap:4px;"><svg viewBox="0 0 24 24" style="width:8px; fill:var(--accent); stroke:none;"><circle cx="12" cy="12" r="10"></circle></svg> Available</span>` 
-                    : `<span style="color:var(--danger); font-size:11px; font-weight:600; display:flex; align-items:center; gap:4px;"><svg viewBox="0 0 24 24" style="width:8px; fill:var(--danger); stroke:none;"><circle cx="12" cy="12" r="10"></circle></svg> Hidden</span>`;
-
                 return `
                 <div class="cat-list-item">
-                    <div class="cat-list-img">${imgTag}</div>
-                    <div class="cat-list-info">
-                        <h4>${p.name}</h4>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <strong style="color:var(--primary); font-size:13px;">${formatPrice(price)} DH</strong>
-                            ${statusHtml}
+                    <div class="cat-list-top">
+                        <div class="cat-list-img">${imgTag}</div>
+                        <div class="cat-list-info">
+                            <h4>${p.name}</h4>
+                            <p>${p.category || 'Uncategorized'}</p>
+                            <div style="font-weight:800; color:var(--primary); font-size:14px; margin-top:4px;">${formatPrice(price)} DH</div>
                         </div>
                     </div>
-                    <div class="cat-list-actions">
-                        <button class="btn-action edit" onclick="editProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:16px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
-                        <button class="btn-action del" onclick="promptDeleteProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                    <div class="cat-list-bottom">
+                        <label class="switch" style="transform: scale(0.85); transform-origin: left;"><input type="checkbox" ${isAvail ? 'checked' : ''} onchange="toggleProductAvailability('${p.id}', this.checked)"><span class="slider"></span></label>
+                        <div class="cat-list-actions">
+                            <button class="btn-action copy" onclick="duplicateProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:16px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                            <button class="btn-action edit" onclick="editProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:16px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
+                            <button class="btn-action del" onclick="promptDeleteProduct('${p.id}')"><svg viewBox="0 0 24 24" style="width:16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                        </div>
                     </div>
                 </div>`;
             }).join('');
@@ -1166,7 +1275,21 @@
             } catch (error) { console.error("Dashboard Error:", error); }
         }
 
-        // PROFIT LOGIC FOR ACTIVE DRIVERS
+        // ---------------- ADMIN SETTLES THE DRIVER (FIXED LOOPHOLE) ----------------
+        window.settleDriver = async (email) => {
+            if(!confirm(`Did you collect all the cash from ${email}?`)) return;
+            try {
+                const unsettled = allOrders.filter(o => o.driverEmail === email && o.status === 'Delivered' && o.driverSettled !== true);
+                for(let o of unsettled) {
+                    await updateDoc(doc(db, "orders", o.id), { driverSettled: true });
+                }
+                showToast("Debt cleared!");
+            } catch(e) {
+                console.error(e);
+                alert("Error clearing debt.");
+            }
+        };
+
         function renderDriverSettlements() {
             const container = document.getElementById('dashDriversContainer');
             if(!container) return;
@@ -1221,10 +1344,10 @@
                             </div>
                             <div class="d-info">
                                 <h4>${driver.name || driver.email.split('@')[0]}</h4>
-                                <p>${driverOrders.length} order(s)</p>
+                                <p style="color:var(--danger); font-weight:800;">Owes: ${formatPrice(debt)} DH</p>
                             </div>
                         </div>
-                        <div class="d-debt">${formatPrice(debt)} DH</div>
+                        <button class="btn btn-outline" style="width:auto; padding:8px 16px; font-size:12px; font-weight:800;" onclick="settleDriver('${driver.email}')">Settle</button>
                     </div>`;
                 }
             });
@@ -1235,6 +1358,39 @@
                 container.innerHTML = html + `<div style="padding-top:16px; margin-top:8px; border-top:1px dashed var(--border); display:flex; justify-content:space-between; font-weight:800; font-size:15px; color:var(--text-main);"><span>Total Cash to Collect</span><span style="color:var(--primary);">${formatPrice(totalDriversOwe)} DH</span></div>`;
             }
         }
+
+        // ---------------- EXPORT TO EXCEL (CSV) ----------------
+        window.exportCSV = () => {
+            if(allOrders.length === 0) return showToast("No orders to export.");
+            
+            let csv = "Order ID,Date,Status,Customer Name,Phone,Zone,Items Total,Subtotal (DH),Delivery Fee (DH),Total Paid (DH)\n";
+            
+            const getTime = (ts) => { if (!ts) return 0; const t = new Date(ts).getTime(); return isNaN(t) ? 0 : t; };
+            const sortedOrders = [...allOrders].sort((a,b) => getTime(b.timestamp) - getTime(a.timestamp));
+
+            sortedOrders.forEach(o => {
+                let orderDate = "";
+                if (o.timestamp) { const parsed = new Date(o.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed.toLocaleString('en-US'); }
+                
+                // Sanitize fields to prevent comma breaks in CSV
+                const sanitize = (text) => `"${(text || '').toString().replace(/"/g, '""')}"`;
+                
+                const subtotal = safeNum(o.totalPrice) - safeNum(o.deliveryFee);
+
+                csv += `${o.id.substring(0,6).toUpperCase()},${sanitize(orderDate)},${o.status},${sanitize(o.customerName)},${sanitize(o.customerPhone)},${sanitize(o.neighborhood)},${o.totalItems || 0},${subtotal},${safeNum(o.deliveryFee)},${safeNum(o.totalPrice)}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `lasgo_orders_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("Export downloaded!");
+        };
 
         window.filterOrdersList = (status, tabElement) => { document.querySelectorAll('#view-commandes .tab-pill').forEach(t => t.classList.remove('active')); tabElement.classList.add('active'); currentOrderFilter = status; renderFullOrdersList(); };
 
@@ -1281,6 +1437,82 @@
                 </div>`;
             }).join('');
         }
+
+        // ---------------- THERMAL RECEIPT PRINTER ----------------
+        window.printReceipt = (orderId) => {
+            const o = allOrders.find(x => x.id === orderId); if(!o) return;
+            
+            let orderDate = "Date not found"; 
+            if (o.timestamp) { const parsed = new Date(o.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed.toLocaleString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}); }
+
+            let itemsHtml = (o.cart || []).map(item => {
+                const p = item.product || {};
+                let metaHtml = "";
+                if(item.variantName) metaHtml += `<div>- Size: ${item.variantName}</div>`;
+                if(item.extras && item.extras.length > 0) metaHtml += `<div>- + ${item.extras.join(', ')}</div>`;
+                if(item.sauces && item.sauces.length > 0) metaHtml += `<div>- Sauce: ${item.sauces.join(', ')}</div>`;
+                if(item.drinks && item.drinks.length > 0) metaHtml += `<div>- Drink: ${item.drinks.join(', ')}</div>`;
+                if(item.options && item.options.length > 0) metaHtml += `<div>- Opt: ${item.options.join(', ')}</div>`;
+                if(item.note) metaHtml += `<div>** NOTE: ${item.note} **</div>`;
+
+                const price = safeNum(item.unitPrice) || safeNum(p.sellPrice);
+                return `
+                    <div style="display:flex; justify-content:space-between; margin-top:10px; font-weight:bold;">
+                        <div>${item.qty}x ${p.name || 'Item'}</div>
+                        <div>${formatPrice(price * item.qty)}</div>
+                    </div>
+                    <div style="font-size:12px; margin-left:15px; margin-bottom:5px;">${metaHtml}</div>
+                `;
+            }).join('');
+
+            const receiptHtml = `
+                <html>
+                <head>
+                    <title>Print Receipt - #${o.id.substring(0,6).toUpperCase()}</title>
+                    <style>
+                        body { font-family: monospace; color: #000; width: 300px; margin: 0 auto; padding: 10px; font-size:14px; line-height: 1.2;}
+                        .center { text-align: center; }
+                        .line { border-bottom: 1px dashed #000; margin: 10px 0; }
+                        .bold { font-weight: bold; }
+                        .flex { display: flex; justify-content: space-between; }
+                    </style>
+                </head>
+                <body>
+                    <div class="center bold" style="font-size: 20px; margin-bottom:10px;">LASCO</div>
+                    <div class="center">Order #${o.id.substring(0,6).toUpperCase()}</div>
+                    <div class="center">${orderDate}</div>
+                    
+                    <div class="line"></div>
+                    <div><span class="bold">Name:</span> ${o.customerName || 'Unknown'}</div>
+                    <div><span class="bold">Phone:</span> ${o.customerPhone || 'Not provided'}</div>
+                    <div><span class="bold">Zone:</span> ${o.neighborhood || 'Not specified'}</div>
+                    
+                    <div class="line"></div>
+                    ${itemsHtml}
+                    
+                    <div class="line"></div>
+                    <div class="flex"><span>Subtotal:</span><span>${formatPrice(safeNum(o.totalPrice) - safeNum(o.deliveryFee))} DH</span></div>
+                    <div class="flex"><span>Delivery:</span><span>${formatPrice(safeNum(o.deliveryFee))} DH</span></div>
+                    <div class="flex bold" style="font-size: 16px; margin-top:5px;"><span>TOTAL:</span><span>${formatPrice(safeNum(o.totalPrice))} DH</span></div>
+                    
+                    <div class="line"></div>
+                    <div class="center" style="font-size:12px; margin-top:10px;">Thank you for ordering!</div>
+                    <div class="center" style="font-size:12px;">Powered by Lasco</div>
+                </body>
+                </html>
+            `;
+
+            const printWindow = window.open('', '', 'width=400,height=600');
+            printWindow.document.write(receiptHtml);
+            printWindow.document.close();
+            printWindow.focus();
+            
+            // Timeout ensures images/fonts load before print dialog blocks the thread
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
+        };
 
         window.viewOrder = (orderId) => {
             const order = allOrders.find(o => o.id === orderId); if(!order) return;
@@ -1332,6 +1564,9 @@
             document.getElementById('det-total').innerText = `${formatPrice(total)} DH`;
 
             let actionsHTML = '';
+
+            // THERMAL PRINTER BUTTON
+            actionsHTML += `<button class="btn btn-outline" style="margin-bottom:12px; background:var(--bg-main);" onclick="printReceipt('${order.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg> Print Receipt</button>`;
             
             // Replaced Manual Assignment with Open Pool Logic
             if (order.driverEmail && order.driverEmail !== "") {
@@ -1372,7 +1607,7 @@
             window.confirmActionCallback = async () => { closeModals(); try { await deleteDoc(doc(db, "orders", orderId)); showToast("Order deleted"); switchTab('commandes'); } catch(e) { console.error(e); alert("Error during deletion."); } }; document.getElementById('confirmOverlay').classList.add('active');
         };
 
-        // ---------------- ADD / EDIT EXECUTION ----------------
+        // ---------------- ADD / EDIT / DUPLICATE EXECUTION ----------------
         window.promptDeleteProduct = (id) => {
             event.stopPropagation();
             document.getElementById('modalTitle').innerText = "Delete Item"; document.getElementById('modalMsg').innerText = "This action is irreversible. Confirm?";
@@ -1449,6 +1684,22 @@
             document.getElementById('pDesc').value = p.description || '';
 
             switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
+        };
+
+        // NEW: DUPLICATE FUNCTION
+        window.duplicateProduct = (id) => {
+            event.stopPropagation();
+            editProduct(id); // Loads all the data into the form first
+            
+            // Now, we wipe the Edit ID so Firebase thinks it's a brand new item!
+            currentEditProductId = null; 
+            document.getElementById('wizardTitle').innerText = "Duplicate Item";
+            
+            // Add "(Copy)" to the name so you know it's the duplicate
+            const currentName = document.getElementById('pName').value;
+            document.getElementById('pName').value = currentName + " (Copy)";
+            
+            showToast("Item data copied! Ready to save as new.");
         };
 
         window.saveProductData = async () => {
