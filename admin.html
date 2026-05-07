@@ -105,11 +105,6 @@
         .tab-pill { padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); white-space: nowrap; cursor: pointer; transition: 0.2s; scroll-snap-align: center;}
         .tab-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* CATALOG TOGGLE & ACCORDIONS */
-        .cat-toggle-wrapper { background: var(--surface); border-radius: 50px; padding: 4px; display: flex; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 20px;}
-        .cat-toggle-btn { flex: 1; padding: 10px; font-size: 13px; font-weight: 700; color: var(--text-muted); border-radius: 50px; transition: 0.3s; text-align: center; display: flex; justify-content: center; align-items: center; gap: 6px; cursor: pointer;}
-        .cat-toggle-btn.active { background: var(--primary); color: white; }
-
         /* HORIZONTAL LIST CATALOG */
         .catalog-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px;}
         .cat-list-item { display: flex; flex-direction: column; padding: 12px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); box-shadow: 0 2px 8px rgba(0,0,0,0.02);}
@@ -212,12 +207,6 @@
         .trait-item:hover { border-color: var(--primary); }
         .trait-item input { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer;}
 
-        .toggle-card-config { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow-sm); }
-        .config-panel { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--border); animation: fadeIn 0.3s ease; }
-        .list-row { display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-btn); margin-bottom: 8px; background: var(--bg-main);}
-        .list-info h5 { font-size: 14px; font-weight: 700; color: var(--text-main); }
-        .list-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-
         /* ORDER DETAILS */
         .detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
         .back-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--surface); border-radius: 50%; box-shadow: var(--shadow-sm); cursor: pointer; flex-shrink: 0;}
@@ -308,8 +297,7 @@
         <div class="section-title">
             Active Drivers (Cash to Collect)
         </div>
-        <div class="card" id="dashDriversContainer" style="padding: 12px 16px;">
-            </div>
+        <div class="card" id="dashDriversContainer" style="padding: 12px 16px;"></div>
 
         <div class="section-title" style="margin-top: 32px;">
             Recent Orders
@@ -339,7 +327,6 @@
                 <div id="zoneListContainer" style="display:flex; flex-direction:column; gap:8px;"></div>
             </div>
         </div>
-
     </div>
 
     <div id="view-commandes" class="app-view container">
@@ -426,9 +413,7 @@
         </div>
 
         <div class="wizard-box">
-            
             <div id="wizard-1" class="wizard-step active">
-                
                 <div class="form-group">
                     <label>Photo *</label>
                     <div class="photo-grid" id="uploadBoxUI">
@@ -536,23 +521,26 @@
                     <label>Main Badge (Sorting Priority)</label>
                     <select id="pBadge" class="form-control">
                         <option value="Standard">Standard (Weight 0)</option>
-                        <option value="Vedette">Vedette (Top + Weight 100)</option>
-                        <option value="Nouveau">Nouveau (Weight 90)</option>
-                        <option value="Populaire">Populaire (Weight 80)</option>
-                        <option value="Combo">Combo Pack (Weight 70)</option>
+                        <option value="Vedette">Vedette (Highest Priority)</option>
+                        <option value="Top Vente">Top Vente</option>
+                        <option value="Nouveau">Nouveau</option>
+                        <option value="Promo">Promo</option>
+                        <option value="Combo Pack">Combo Pack</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label>Traits (Labels)</label>
                     <div class="trait-grid" id="traitGrid">
-                        <label class="trait-item resto-trait"><input type="checkbox" class="trait-ch" value="Piquant"> 🌶️ Piquant</label>
-                        <label class="trait-item resto-trait"><input type="checkbox" class="trait-ch" value="Healthy"> 🥗 Healthy</label>
-                        <label class="trait-item resto-trait"><input type="checkbox" class="trait-ch" value="Veggie"> 🌿 Veggie</label>
-                        <label class="trait-item resto-trait"><input type="checkbox" class="trait-ch" value="Maison"> 🏠 Maison</label>
-                        <label class="trait-item grocery-trait"><input type="checkbox" class="trait-ch" value="Bio"> ♻️ Bio</label>
-                        <label class="trait-item grocery-trait"><input type="checkbox" class="trait-ch" value="Frais"> ❄️ Frais</label>
-                        <label class="trait-item grocery-trait"><input type="checkbox" class="trait-ch" value="Sans Sucre"> 🚫 Sans Sucre</label>
+                        <label class="trait-item"><input type="checkbox" class="trait-ch" value="Bio"> ♻️ Bio</label>
+                        <label class="trait-item"><input type="checkbox" class="trait-ch" value="Frais"> ❄️ Frais</label>
+                        <label class="trait-item"><input type="checkbox" class="trait-ch" value="Piquant"> 🌶️ Piquant</label>
+                        <label class="trait-item"><input type="checkbox" class="trait-ch" value="Veggie"> 🌿 Veggie</label>
+                        <label class="trait-item"><input type="checkbox" class="trait-ch" value="Healthy"> 🥗 Healthy</label>
+                        <label class="trait-item"><input type="checkbox" class="trait-ch" value="Sans Sucre"> 🚫 Sans Sucre</label>
+                        <label class="trait-item"><input type="checkbox" class="trait-ch" value="Fait Maison"> 🏠 Fait Maison</label>
+                        <label class="trait-item"><input type="checkbox" class="trait-ch" value="Riche en protéines"> 💪 Riche en protéines</label>
+                        <label class="trait-item"><input type="checkbox" class="trait-ch" value="Local"> 📍 Local</label>
                     </div>
                 </div>
 
@@ -847,11 +835,6 @@
             document.getElementById('typeCardResto').classList.remove('active');
             document.getElementById('typeCardGrocery').classList.remove('active');
             document.getElementById(`typeCard${type}`).classList.add('active');
-            
-            // Show/Hide specific traits
-            document.querySelectorAll('.resto-trait').forEach(el => el.style.display = type === 'Resto' ? 'flex' : 'none');
-            document.querySelectorAll('.grocery-trait').forEach(el => el.style.display = type === 'Grocery' ? 'flex' : 'none');
-
             loadMainCats(); 
             validateStep1();
         };
@@ -1147,6 +1130,23 @@
             }
         });
 
+        // ---------------- GLOBAL EMPTY STATE HTML ----------------
+        const getEmptyOrdersHTML = () => `
+            <div style="background: #FFFAF5; border-radius: 20px; padding: 40px 20px; text-align: center; border: 1px solid #FEF0E6; margin-top: 12px;">
+                <div style="width: 80px; height: 80px; background: #FFEDD5; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;">
+                    <svg viewBox="0 0 64 64" style="width: 44px; height: 44px; stroke: #EA580C; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;">
+                        <rect x="18" y="24" width="28" height="28" rx="3"></rect>
+                        <path d="M26 24v-4a6 6 0 0 1 12 0v4"></path>
+                        <line x1="42" y1="18" x2="46" y2="14"></line>
+                        <line x1="48" y1="26" x2="52" y2="26"></line>
+                        <line x1="36" y1="12" x2="36" y2="8"></line>
+                    </svg>
+                </div>
+                <h4 style="font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">No orders yet</h4>
+                <p style="font-size: 14px; color: var(--text-muted); font-weight: 500; line-height: 1.4;">Orders from your customers<br>will appear here.</p>
+            </div>
+        `;
+
         // ---------------- DASHBOARD & ANALYTICS ----------------
         function calculateDashboard() {
             try {
@@ -1265,6 +1265,354 @@
             } catch (error) { console.error("Dashboard Error:", error); }
         }
 
+        // ---------------- ADMIN SETTLES THE DRIVER (FIXED LOOPHOLE) ----------------
+        window.settleDriver = async (email) => {
+            if(!confirm(`Did you collect all the cash from ${email}?`)) return;
+            try {
+                const unsettled = allOrders.filter(o => o.driverEmail === email && o.status === 'Delivered' && o.driverSettled !== true);
+                for(let o of unsettled) {
+                    await updateDoc(doc(db, "orders", o.id), { driverSettled: true });
+                }
+                showToast("Debt cleared!");
+            } catch(e) {
+                console.error(e);
+                alert("Error clearing debt.");
+            }
+        };
+
+        function renderDriverSettlements() {
+            const container = document.getElementById('dashDriversContainer');
+            if(!container) return;
+
+            let html = '';
+            let totalDriversOwe = 0;
+
+            allDrivers.forEach(driver => {
+                const driverOrders = allOrders.filter(o => o.driverEmail === driver.email && o.status === 'Delivered' && o.driverSettled !== true);
+                
+                let debt = 0;
+                driverOrders.forEach(o => {
+                    let orderCost = 0;
+                    if(o.cart && Array.isArray(o.cart)) {
+                        o.cart.forEach(item => {
+                            const p = item.product || {};
+                            const qty = parseInt(item.qty) || 0;
+                            const catalogProduct = allProducts.find(prod => prod.id === p.id);
+                            
+                            let itemCost = 0;
+                            if(catalogProduct) {
+                                itemCost = safeNum(catalogProduct.costPrice);
+                                if(item.variantName && catalogProduct.sizes) {
+                                    const variant = catalogProduct.sizes.find(s => s.name === item.variantName);
+                                    if(variant && variant.costPrice) itemCost = safeNum(variant.costPrice);
+                                }
+                            }
+                            orderCost += (itemCost * qty);
+                            
+                            if(item.extras && item.extras.length > 0 && catalogProduct && catalogProduct.extras) {
+                                item.extras.forEach(extName => {
+                                    const extra = catalogProduct.extras.find(e => e.name === extName);
+                                    if(extra && extra.costPrice) orderCost += (safeNum(extra.costPrice) * qty);
+                                });
+                            }
+                        });
+                    }
+                    const fee = safeNum(o.deliveryFee);
+                    const total = safeNum(o.totalPrice);
+                    const subtotal = total - fee;
+                    const adminProfit = subtotal - orderCost;
+                    if (adminProfit > 0) debt += adminProfit;
+                });
+
+                if(debt > 0) {
+                    totalDriversOwe += debt;
+                    html += `
+                    <div class="driver-row">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div style="width:40px;height:40px; border-radius:12px; background:var(--primary-light); color:var(--primary); display:flex; align-items:center; justify-content:center;">
+                                <svg viewBox="0 0 24 24" style="width:20px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            </div>
+                            <div class="d-info">
+                                <h4>${driver.name || driver.email.split('@')[0]}</h4>
+                                <p style="color:var(--danger); font-weight:800;">Owes: ${formatPrice(debt)} DH</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline" style="width:auto; padding:8px 16px; font-size:12px; font-weight:800;" onclick="settleDriver('${driver.email}')">Settle</button>
+                    </div>`;
+                }
+            });
+
+            if(html === '') {
+                container.innerHTML = `<div style="text-align:center; padding:12px; color:var(--text-muted); font-size:13px; font-weight:500;">No pending settlements.</div>`;
+            } else {
+                container.innerHTML = html + `<div style="padding-top:16px; margin-top:8px; border-top:1px dashed var(--border); display:flex; justify-content:space-between; font-weight:800; font-size:15px; color:var(--text-main);"><span>Total Cash to Collect</span><span style="color:var(--primary);">${formatPrice(totalDriversOwe)} DH</span></div>`;
+            }
+        }
+
+        // ---------------- EXPORT TO EXCEL (CSV) ----------------
+        window.exportCSV = () => {
+            if(allOrders.length === 0) return showToast("No orders to export.");
+            
+            let csv = "Order ID,Date,Status,Customer Name,Phone,Zone,Items Total,Subtotal (DH),Delivery Fee (DH),Total Paid (DH)\n";
+            
+            const getTime = (ts) => { if (!ts) return 0; const t = new Date(ts).getTime(); return isNaN(t) ? 0 : t; };
+            const sortedOrders = [...allOrders].sort((a,b) => getTime(b.timestamp) - getTime(a.timestamp));
+
+            sortedOrders.forEach(o => {
+                let orderDate = "";
+                if (o.timestamp) { const parsed = new Date(o.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed.toLocaleString('en-US'); }
+                
+                // Sanitize fields to prevent comma breaks in CSV
+                const sanitize = (text) => `"${(text || '').toString().replace(/"/g, '""')}"`;
+                
+                const subtotal = safeNum(o.totalPrice) - safeNum(o.deliveryFee);
+
+                csv += `${o.id.substring(0,6).toUpperCase()},${sanitize(orderDate)},${o.status},${sanitize(o.customerName)},${sanitize(o.customerPhone)},${sanitize(o.neighborhood)},${o.totalItems || 0},${subtotal},${safeNum(o.deliveryFee)},${safeNum(o.totalPrice)}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `lasgo_orders_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("Export downloaded!");
+        };
+
+        window.filterOrdersList = (status, tabElement) => { document.querySelectorAll('#view-commandes .tab-pill').forEach(t => t.classList.remove('active')); tabElement.classList.add('active'); currentOrderFilter = status; renderFullOrdersList(); };
+
+        function renderFullOrdersList() {
+            const getTime = (ts) => { if (!ts) return 0; const t = new Date(ts).getTime(); return isNaN(t) ? 0 : t; };
+            let filtered = [...allOrders].sort((a,b) => getTime(b.timestamp) - getTime(a.timestamp));
+            if (currentOrderFilter !== 'All') { filtered = filtered.filter(o => o.status === currentOrderFilter); }
+            const container = document.getElementById('adminOrderListContainer');
+            if(container) container.innerHTML = generateOrdersHTML(filtered);
+        }
+
+        function generateOrdersHTML(ordersArray) {
+            if(!ordersArray || ordersArray.length === 0) return getEmptyOrdersHTML();
+            return ordersArray.map(o => {
+                let orderDate = new Date(); if (o.timestamp) { const parsed = new Date(o.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
+                const date = orderDate.toLocaleDateString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+                
+                let statusClass = 'b-pending'; 
+                if(o.status === 'Preparing') statusClass = 'b-processing'; 
+                if(o.status === 'Out for Delivery') statusClass = 'b-transit'; 
+                if(o.status === 'Delivered') statusClass = 'b-delivered'; 
+                if(o.status === 'Cancelled') statusClass = 'b-cancelled';
+                
+                const price = formatPrice(safeNum(o.totalPrice)); 
+                const items = parseInt(o.totalItems) || 0; 
+                const cName = o.customerName || 'Customer';
+
+                return `
+                <div class="order-card" onclick="window.viewOrder('${o.id}')">
+                    <div class="order-header">
+                        <div>
+                            <div class="o-id">#${o.id.substring(0,6).toUpperCase()}</div>
+                            <div class="o-date">${date}</div>
+                        </div>
+                        <div class="badge ${statusClass}">${o.status}</div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                        <div>
+                            <div class="o-client"><svg viewBox="0 0 24 24" style="width:14px; color:var(--text-muted);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${cName}</div>
+                            <div class="o-items">${items} item${items>1?'s':''}</div>
+                        </div>
+                        <div class="o-price">${price} DH</div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // ---------------- THERMAL RECEIPT PRINTER ----------------
+        window.printReceipt = (orderId) => {
+            const o = allOrders.find(x => x.id === orderId); if(!o) return;
+            
+            let orderDate = "Date not found"; 
+            if (o.timestamp) { const parsed = new Date(o.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed.toLocaleString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}); }
+
+            let itemsHtml = (o.cart || []).map(item => {
+                const p = item.product || {};
+                let metaHtml = "";
+                
+                // Legacy support
+                if(item.variantName) metaHtml += `<div>- Size: ${item.variantName}</div>`;
+                if(item.extras && item.extras.length > 0) metaHtml += `<div>- + ${item.extras.join(', ')}</div>`;
+                if(item.sauces && item.sauces.length > 0) metaHtml += `<div>- Sauce: ${item.sauces.join(', ')}</div>`;
+                if(item.drinks && item.drinks.length > 0) metaHtml += `<div>- Drink: ${item.drinks.join(', ')}</div>`;
+                if(item.options && item.options.length > 0) metaHtml += `<div>- Opt: ${item.options.join(', ')}</div>`;
+                
+                // New Modular Options support
+                if(item.modularChoices && item.modularChoices.length > 0) {
+                    item.modularChoices.forEach(choice => {
+                        metaHtml += `<div>- ${choice.groupName}: ${choice.itemName}</div>`;
+                    });
+                }
+                
+                if(item.note) metaHtml += `<div>** NOTE: ${item.note} **</div>`;
+
+                const price = safeNum(item.unitPrice) || safeNum(p.sellPrice);
+                return `
+                    <div style="display:flex; justify-content:space-between; margin-top:10px; font-weight:bold;">
+                        <div>${item.qty}x ${p.name || 'Item'}</div>
+                        <div>${formatPrice(price * item.qty)}</div>
+                    </div>
+                    <div style="font-size:12px; margin-left:15px; margin-bottom:5px;">${metaHtml}</div>
+                `;
+            }).join('');
+
+            const receiptHtml = `
+                <html>
+                <head>
+                    <title>Print Receipt - #${o.id.substring(0,6).toUpperCase()}</title>
+                    <style>
+                        body { font-family: monospace; color: #000; width: 300px; margin: 0 auto; padding: 10px; font-size:14px; line-height: 1.2;}
+                        .center { text-align: center; }
+                        .line { border-bottom: 1px dashed #000; margin: 10px 0; }
+                        .bold { font-weight: bold; }
+                        .flex { display: flex; justify-content: space-between; }
+                    </style>
+                </head>
+                <body>
+                    <div class="center bold" style="font-size: 20px; margin-bottom:10px;">LASCO</div>
+                    <div class="center">Order #${o.id.substring(0,6).toUpperCase()}</div>
+                    <div class="center">${orderDate}</div>
+                    
+                    <div class="line"></div>
+                    <div><span class="bold">Name:</span> ${o.customerName || 'Unknown'}</div>
+                    <div><span class="bold">Phone:</span> ${o.customerPhone || 'Not provided'}</div>
+                    <div><span class="bold">Zone:</span> ${o.neighborhood || 'Not specified'}</div>
+                    
+                    <div class="line"></div>
+                    ${itemsHtml}
+                    
+                    <div class="line"></div>
+                    <div class="flex"><span>Subtotal:</span><span>${formatPrice(safeNum(o.totalPrice) - safeNum(o.deliveryFee))} DH</span></div>
+                    <div class="flex"><span>Delivery:</span><span>${formatPrice(safeNum(o.deliveryFee))} DH</span></div>
+                    <div class="flex bold" style="font-size: 16px; margin-top:5px;"><span>TOTAL:</span><span>${formatPrice(safeNum(o.totalPrice))} DH</span></div>
+                    
+                    <div class="line"></div>
+                    <div class="center" style="font-size:12px; margin-top:10px;">Thank you for ordering!</div>
+                    <div class="center" style="font-size:12px;">Powered by Lasco</div>
+                </body>
+                </html>
+            `;
+
+            const printWindow = window.open('', '', 'width=400,height=600');
+            printWindow.document.write(receiptHtml);
+            printWindow.document.close();
+            printWindow.focus();
+            
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
+        };
+
+        window.viewOrder = (orderId) => {
+            const order = allOrders.find(o => o.id === orderId); if(!order) return;
+            document.getElementById('det-id').innerText = "#" + order.id.substring(0,6).toUpperCase();
+            let orderDate = new Date(); if (order.timestamp) { const parsed = new Date(order.timestamp); if (!isNaN(parsed.getTime())) orderDate = parsed; }
+            document.getElementById('det-date').innerText = orderDate.toLocaleDateString('en-US', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+            document.getElementById('det-client').innerText = order.customerName || 'Unknown';
+            document.getElementById('det-phone').innerText = order.customerPhone || 'Not provided';
+            document.getElementById('det-neighborhood').innerText = order.neighborhood || 'Not specified';
+
+            let statusClass = 'b-pending'; 
+            if(order.status === 'Preparing') statusClass = 'b-processing'; 
+            if(order.status === 'Out for Delivery') statusClass = 'b-transit'; 
+            if(order.status === 'Delivered') statusClass = 'b-delivered'; 
+            if(order.status === 'Cancelled') statusClass = 'b-cancelled';
+            
+            const badge = document.getElementById('det-badge'); badge.className = `badge ${statusClass}`; badge.innerText = (order.status || 'Unknown').toUpperCase();
+
+            document.getElementById('det-items-count').innerText = `Items (${order.totalItems || 0})`;
+            document.getElementById('det-items-list').innerHTML = (order.cart || []).map(item => {
+                const p = item.product || {}; 
+                const img = p.imageUrl ? `<img src="${p.imageUrl}">` : ''; 
+                
+                let metaText = [];
+                
+                // Legacy
+                if(item.variantName) metaText.push(`<span style="color:var(--primary);">${item.variantName}</span>`);
+                if(item.extras && item.extras.length > 0) metaText.push(`+ ${item.extras.join(', ')}`);
+                if(item.sauces && item.sauces.length > 0) metaText.push(`Sauce: ${item.sauces.join(', ')}`);
+                if(item.drinks && item.drinks.length > 0) metaText.push(`<span style="color:var(--blue); font-weight:700;">Drink: ${item.drinks.join(', ')}</span>`);
+                if(item.options && item.options.length > 0) metaText.push(`<span style="color:var(--warning); font-weight:700;">Option: ${item.options.join(', ')}</span>`);
+                
+                // New Modular
+                if(item.modularChoices && item.modularChoices.length > 0) {
+                    item.modularChoices.forEach(choice => {
+                        metaText.push(`<span style="color:var(--primary); font-weight:700;">${choice.groupName}:</span> ${choice.itemName}`);
+                    });
+                }
+
+                if(item.note) metaText.push(`Note: <span style="color:var(--danger); font-weight:700;">${item.note}</span>`);
+
+                const metaHtml = metaText.length > 0 ? `<div class="item-meta" style="margin-top:4px;">${metaText.join('<br>')}</div>` : '';
+                const price = safeNum(item.unitPrice) || safeNum(p.sellPrice);
+                
+                return `<div class="item-row">
+                            <div class="item-img">${img}</div>
+                            <div class="item-details">
+                                <div class="item-name">${p.name || 'Item'}</div>
+                                <div style="font-size:12px; font-weight:600; color:var(--text-main);">x${item.qty}</div>
+                                ${metaHtml}
+                            </div>
+                            <div class="item-price">${formatPrice(price * item.qty)} DH</div>
+                        </div>`;
+            }).join('');
+
+            const deliveryFee = safeNum(order.deliveryFee); const total = safeNum(order.totalPrice); const subTotal = total - deliveryFee;
+            document.getElementById('det-subtotal').innerText = `${formatPrice(subTotal)} DH`; 
+            document.getElementById('det-shipping').innerText = `${formatPrice(deliveryFee)} DH`;
+            document.getElementById('det-total').innerText = `${formatPrice(total)} DH`;
+
+            let actionsHTML = '';
+
+            actionsHTML += `<button class="btn btn-outline" style="margin-bottom:12px; background:var(--bg-main);" onclick="printReceipt('${order.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg> Print Receipt</button>`;
+            
+            if (order.driverEmail && order.driverEmail !== "") {
+                const d = allDrivers.find(x => x.email === order.driverEmail);
+                const dName = d ? (d.name || d.email.split('@')[0]) : order.driverEmail.split('@')[0];
+                actionsHTML += `<div style="text-align:center; padding:16px; background:var(--blue-light); color:var(--blue); border-radius:16px; font-weight:800; font-size:14px; margin-bottom:12px; border: 1px dashed var(--blue);">Assigned Driver: <span style="text-transform:capitalize;">${dName}</span></div>`;
+            } else if (order.status === 'Pending') {
+                actionsHTML += `<div style="text-align:center; padding:16px; background:var(--warning-light); color:var(--warning); border-radius:16px; font-weight:800; font-size:14px; margin-bottom:12px; border: 1px dashed var(--warning);">Waiting for a driver to claim...</div>`;
+            }
+
+            if(order.status !== 'Cancelled' && order.status !== 'Delivered') {
+                actionsHTML += `<button class="btn btn-danger-outline" onclick="promptOrderStatus('${order.id}', 'Cancelled')">Cancel Order</button>`;
+                if(order.status === 'Out for Delivery') {
+                    actionsHTML += `<button class="btn btn-success" style="margin-top:12px;" onclick="promptOrderStatus('${order.id}', 'Delivered')">Force Delivered</button>`;
+                }
+            } else if (order.status === 'Cancelled') { 
+                actionsHTML += `<div style="text-align:center; color:var(--danger); font-weight:700; padding:16px; background:var(--danger-light); border-radius:16px;">Order Cancelled</div>`; 
+            } else { 
+                actionsHTML += `<div style="text-align:center; color:var(--accent); font-weight:700; padding:16px; background:var(--accent-light); border-radius:16px;">Order Delivered</div>`; 
+            }
+            
+            actionsHTML += `<button class="btn btn-outline" style="color:var(--danger); border-color:var(--danger-light); margin-top: 12px;" onclick="promptDeleteOrder('${order.id}')">Delete Order</button>`;
+            
+            document.getElementById('det-actions').innerHTML = actionsHTML; switchTab('order-detail');
+        };
+
+        window.promptOrderStatus = (orderId, newStatus) => {
+            document.getElementById('modalTitle').innerText = "Update Status"; document.getElementById('modalMsg').innerText = `Mark this order as ${newStatus}?`;
+            const btn = document.getElementById('modalConfirmBtn'); btn.className = 'btn btn-primary'; btn.style.border = 'none';
+            if(newStatus === 'Cancelled') btn.style.background = 'var(--danger)'; else if(newStatus === 'Out for Delivery') btn.style.background = 'var(--warning)'; else if(newStatus === 'Delivered') btn.style.background = 'var(--accent)'; else btn.style.background = 'var(--blue)';
+            window.confirmActionCallback = async () => { closeModals(); try { await updateDoc(doc(db, "orders", orderId), { status: newStatus }); showToast(`Status updated`); } catch(e) { alert("Network error"); } }; document.getElementById('confirmOverlay').classList.add('active');
+        };
+
+        window.promptDeleteOrder = (orderId) => {
+            document.getElementById('modalTitle').innerText = "Delete Order"; document.getElementById('modalMsg').innerText = "This will permanently delete the order. Confirm?";
+            const btn = document.getElementById('modalConfirmBtn'); btn.style.background = 'var(--danger)'; btn.style.border = 'none';
+            window.confirmActionCallback = async () => { closeModals(); try { await deleteDoc(doc(db, "orders", orderId)); showToast("Order deleted"); switchTab('commandes'); } catch(e) { console.error(e); alert("Error during deletion."); } }; document.getElementById('confirmOverlay').classList.add('active');
+        };
+
         // ---------------- ADD / EDIT / DUPLICATE EXECUTION ----------------
         window.promptDeleteProduct = (id) => {
             event.stopPropagation();
@@ -1291,7 +1639,7 @@
             
             document.getElementById('tglAvailable').checked = true;
 
-            switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
+            switchTab('ajouter'); goToStep(1); window.validateStep1(); window.validateStep2();
         };
 
         window.editProduct = (id) => {
@@ -1303,7 +1651,7 @@
             document.getElementById('pSubtitle').value = p.subtitle || ''; 
             selectProductType(p.productType || 'Resto');
             
-            setTimeout(() => { document.getElementById('pCat').value = p.category || ''; loadSubCats(); setTimeout(() => document.getElementById('pSubCat').value = p.subCategory || '', 50); }, 50);
+            setTimeout(() => { document.getElementById('pCat').value = p.category || ''; window.loadSubCats(); setTimeout(() => document.getElementById('pSubCat').value = p.subCategory || '', 50); }, 50);
             
             document.getElementById('pImg').value = p.imageUrl || ''; 
             if(p.imageUrl) { document.getElementById('previewImg').src = p.imageUrl; document.getElementById('previewImg').style.display = 'block'; } 
@@ -1328,22 +1676,16 @@
             document.getElementById('tglAvailable').checked = p.isAvailable !== false;
             document.getElementById('pDesc').value = p.description || '';
 
-            switchTab('ajouter'); goToStep(1); validateStep1(); validateStep2();
+            switchTab('ajouter'); goToStep(1); window.validateStep1(); window.validateStep2();
         };
 
-        // NEW: DUPLICATE FUNCTION
         window.duplicateProduct = (id) => {
             event.stopPropagation();
-            editProduct(id); // Loads all the data into the form first
-            
-            // Now, we wipe the Edit ID so Firebase thinks it's a brand new item!
+            window.editProduct(id);
             currentEditProductId = null; 
             document.getElementById('wizardTitle').innerText = "Duplicate Item";
-            
-            // Add "(Copy)" to the name so you know it's the duplicate
             const currentName = document.getElementById('pName').value;
             document.getElementById('pName').value = currentName + " (Copy)";
-            
             showToast("Item data copied! Ready to save as new.");
         };
 
@@ -1351,9 +1693,10 @@
             const badgeType = document.getElementById('pBadge').value;
             let weight = 0;
             if(badgeType === 'Vedette') weight = 100;
+            else if(badgeType === 'Top Vente') weight = 95;
             else if(badgeType === 'Nouveau') weight = 90;
-            else if(badgeType === 'Populaire') weight = 80;
-            else if(badgeType === 'Combo') weight = 70;
+            else if(badgeType === 'Promo') weight = 85;
+            else if(badgeType === 'Combo Pack') weight = 80;
 
             const data = {
                 name: document.getElementById('pName').value, 
