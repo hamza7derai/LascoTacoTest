@@ -103,18 +103,22 @@
         .prod-img-wrap { width: 100%; aspect-ratio: 5 / 4; overflow: hidden; background: transparent; transition: transform 0.3s; margin-bottom: 12px; display: flex; align-items: center; justify-content: center;}
         .prod-img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; display: block; }
         
+        /* NEW BADGES & TRAITS */
         .prod-tag { position: absolute; top: 10px; left: 10px; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 6px; z-index: 2; display: flex; align-items: center; gap: 3px; letter-spacing: 0.5px;}
-        
-        /* NEW BADGES */
         .tag-promo { background: var(--promo-light); color: var(--promo); }
         .tag-vedette { background: var(--danger-light); color: var(--danger); }
         .tag-nouveau { background: var(--purple-light); color: var(--purple); }
         .tag-populaire { background: var(--warning-light); color: var(--warning); }
         .tag-combo { background: var(--blue-light); color: var(--blue); }
+        .tag-resto { background: var(--warning-light); color: var(--warning); }
+        .tag-grocery { background: var(--grocery-light); color: var(--grocery-color); }
         
+        .card-trait-wrap { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+        .card-trait { background: #F3F4F6; color: var(--text-muted); font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 6px; display: inline-flex; align-items: center; text-transform: uppercase; letter-spacing: 0.5px; }
+
         .prod-info-block { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; padding: 0 2px; }
         .prod-title { font-size: 15px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;} 
-        .prod-category { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-bottom: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .prod-category { font-size: 12px; color: var(--text-muted); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         
         .prod-bottom-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto;}
         
@@ -613,6 +617,7 @@
 
             const imgTag = p.imageUrl ? `<img src="${p.imageUrl}" class="prod-img">` : `<span style="font-weight:800; color:var(--text-muted); font-size:24px;">${p.name.charAt(0)}</span>`;
             
+            // 1. MAIN BADGE LOGIC (Top Corner)
             let tagHtml = '';
             if (hasPromo) {
                 tagHtml = `<div class="prod-tag tag-promo">% PROMO</div>`;
@@ -621,7 +626,7 @@
                 if(p.badge === 'Vedette') badgeClass = 'tag-vedette';
                 if(p.badge === 'Nouveau') badgeClass = 'tag-nouveau';
                 if(p.badge === 'Populaire') badgeClass = 'tag-populaire';
-                if(p.badge === 'Combo') badgeClass = 'tag-combo';
+                if(p.badge === 'Combo Pack') badgeClass = 'tag-combo';
                 tagHtml = `<div class="prod-tag ${badgeClass}">★ ${p.badge.toUpperCase()}</div>`;
             } else if (p.featured) {
                 tagHtml = `<div class="prod-tag tag-vedette">★ VEDETTE</div>`; // Legacy support
@@ -629,13 +634,27 @@
 
             let subText = p.subtitle || p.category || '';
 
+            // 2. TRAIT LOGIC (Under Subtitle)
+            let traitHtml = '';
+            if (p.traits && p.traits.length > 0) {
+                // Limit to maximum 2 traits to prevent stretching the card vertically
+                const displayTraits = p.traits.slice(0, 2);
+                traitHtml = `<div class="card-trait-wrap">` + 
+                    displayTraits.map(t => `<span class="card-trait">${t}</span>`).join('') + 
+                    `</div>`;
+            }
+
+            // Adjust the bottom margin if traits exist so it looks perfectly spaced
+            const subMargin = traitHtml ? 'margin-bottom: 8px;' : 'margin-bottom: 16px;';
+
             return `
             <div class="prod-card" onclick="openProductModal('${p.id}')">
                 ${tagHtml}
                 <div class="prod-img-wrap">${imgTag}</div>
                 <div class="prod-info-block">
                     <h3 class="prod-title">${p.name}</h3>
-                    <p class="prod-category">${subText}</p>
+                    <p class="prod-category" style="${subMargin}">${subText}</p>
+                    ${traitHtml}
                     <div class="prod-bottom-row">
                         <div style="display:flex; align-items:center;">${priceHtml}</div>
                         <div class="btn-add"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
@@ -650,6 +669,7 @@
             if(q.length === 0) { renderUI(); return; }
             let subset = allProducts.filter(p => p.productType === currentMode && p.name.toLowerCase().includes(q));
             
+            // Apply Smart Sorting to search results as well
             subset.sort((a, b) => {
                 const wa = a.sortWeight || 0;
                 const wb = b.sortWeight || 0;
@@ -691,7 +711,7 @@
                 ? `<span style="text-decoration:line-through; color:var(--text-muted); font-size:16px; margin-right:8px;">${formatPrice(p.sellPrice)} DH</span>${formatPrice(p.promoPrice)} DH`
                 : `${formatPrice(p.sellPrice)} DH`;
             
-            // Render Traits
+            // Render ALL Traits in the modal
             const traitsContainer = document.getElementById('modalTraits');
             if(p.traits && p.traits.length > 0) {
                 traitsContainer.innerHTML = `<div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;">` + 
@@ -821,9 +841,8 @@
             const note = document.getElementById('modalNotes').value.trim();
 
             let optionsTotal = 0;
-            let formattedChoices = []; // Will store clean array of all chosen items
+            let formattedChoices = []; 
 
-            // Compile all modular choices
             if(p.optionGroups) {
                 p.optionGroups.forEach(g => {
                     const groupSelections = customModalState.selections[g.id] || [];
@@ -841,7 +860,6 @@
 
             let unitPrice = customModalState.basePrice + optionsTotal;
 
-            // Generate unique ID based on modular choices
             const choiceString = formattedChoices.map(c => `${c.groupId}-${c.itemName}`).join('|');
             const cartItemId = p.id + '_' + choiceString;
 
@@ -854,7 +872,7 @@
                     product: { id: p.id, name: p.name, imageUrl: p.imageUrl },
                     qty: customModalState.qty, 
                     unitPrice: unitPrice, 
-                    modularChoices: formattedChoices, // The new standard data structure
+                    modularChoices: formattedChoices,
                     note: note
                 });
             }
@@ -896,7 +914,6 @@
                 const imgHtml = item.product.imageUrl ? `<img src="${item.product.imageUrl}" class="ci-img">` : `<div class="ci-img" style="display:flex;align-items:center;justify-content:center;font-size:10px; font-weight:bold; color:var(--text-muted);">${item.product.name.charAt(0)}</div>`;
                 
                 let metaText = [];
-                // Render the new Modular Choices beautifully
                 if(item.modularChoices && item.modularChoices.length > 0) {
                     item.modularChoices.forEach(c => {
                         let priceTag = c.price > 0 ? ` (+${formatPrice(c.price)}DH)` : '';
