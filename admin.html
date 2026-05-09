@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Lasco Admin</title>
+    
+    <link rel="manifest" href="manifest-admin.json">
+    
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
@@ -545,15 +548,21 @@
 
             <div id="wizard-3" class="wizard-step">
                 <div class="form-group">
-                    <label>Main Badge (Sorting Priority)</label>
+                    <label>Main Badge</label>
                     <select id="pBadge" class="form-control">
-                        <option value="Standard">Standard (Weight 0)</option>
-                        <option value="Vedette">Vedette (Highest Priority)</option>
+                        <option value="Standard">Standard (No Badge)</option>
+                        <option value="Vedette">Vedette (Star Item)</option>
                         <option value="Top Vente">Top Vente</option>
                         <option value="Nouveau">Nouveau</option>
                         <option value="Promo">Promo</option>
                         <option value="Combo Pack">Combo Pack</option>
                     </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Priorité d'affichage (Sort Weight) <span style="color:var(--text-muted); font-weight:500;">(Optional)</span></label>
+                    <input type="number" id="pSortWeight" class="form-control" placeholder="Higher number = appears first (e.g. 100)">
+                    <span class="help-text">Leave blank to use default alphabetical or badge-based sorting.</span>
                 </div>
 
                 <div class="form-group">
@@ -562,8 +571,65 @@
                         <input type="text" id="traitInput" class="form-control" placeholder="Ex: Frais, Sans Gluten, Epicé..." onkeypress="if(event.key==='Enter') { event.preventDefault(); addCustomTrait(); }">
                         <div class="btn btn-outline" style="width:auto; padding:0 20px;" onclick="addCustomTrait()">Add</div>
                     </div>
-                    <div id="customTraitsContainer" style="display:flex; flex-wrap:wrap; gap:8px;">
+                    <div id="customTraitsContainer" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+                </div>
+
+                <div class="toggle-card-config">
+                    <div class="toggle-wrapper">
+                        <div>
+                            <span style="display:block; font-size:14px; font-weight:800;">Time Restricted</span>
+                            <span style="font-size:11px; color:var(--text-muted);">E.g., Only available 07:00 to 11:30</span>
                         </div>
+                        <label class="switch"><input type="checkbox" id="tglTimeLimit" onchange="document.getElementById('cfgTimeLimit').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
+                    </div>
+                    <div class="config-panel" id="cfgTimeLimit">
+                        <div style="display:flex; gap:12px;">
+                            <div class="form-group" style="margin-bottom:0; flex:1;">
+                                <label>Start Time</label>
+                                <input type="time" id="pStartTime" class="form-control">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0; flex:1;">
+                                <label>End Time</label>
+                                <input type="time" id="pEndTime" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="toggle-card-config">
+                    <div class="toggle-wrapper">
+                        <div>
+                            <span style="display:block; font-size:14px; font-weight:800;">Day Restricted</span>
+                            <span style="font-size:11px; color:var(--text-muted);">E.g., Only available on Fridays</span>
+                        </div>
+                        <label class="switch"><input type="checkbox" id="tglDayLimit" onchange="document.getElementById('cfgDayLimit').style.display = this.checked ? 'block' : 'none'"><span class="slider"></span></label>
+                    </div>
+                    <div class="config-panel" id="cfgDayLimit">
+                        <label style="font-size:13px; font-weight:800; color:var(--text-main); margin-bottom:8px; display:block;">Select Available Days:</label>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;" id="dayCheckboxes">
+                            <label style="font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; background:var(--bg-main); padding:8px 12px; border-radius:8px; border:1px solid var(--border); cursor:pointer;">
+                                <input type="checkbox" value="1" class="day-check" style="accent-color:var(--primary);"> Mon
+                            </label>
+                            <label style="font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; background:var(--bg-main); padding:8px 12px; border-radius:8px; border:1px solid var(--border); cursor:pointer;">
+                                <input type="checkbox" value="2" class="day-check" style="accent-color:var(--primary);"> Tue
+                            </label>
+                            <label style="font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; background:var(--bg-main); padding:8px 12px; border-radius:8px; border:1px solid var(--border); cursor:pointer;">
+                                <input type="checkbox" value="3" class="day-check" style="accent-color:var(--primary);"> Wed
+                            </label>
+                            <label style="font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; background:var(--bg-main); padding:8px 12px; border-radius:8px; border:1px solid var(--border); cursor:pointer;">
+                                <input type="checkbox" value="4" class="day-check" style="accent-color:var(--primary);"> Thu
+                            </label>
+                            <label style="font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; background:var(--bg-main); padding:8px 12px; border-radius:8px; border:1px solid var(--border); cursor:pointer;">
+                                <input type="checkbox" value="5" class="day-check" style="accent-color:var(--primary);"> Fri
+                            </label>
+                            <label style="font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; background:var(--bg-main); padding:8px 12px; border-radius:8px; border:1px solid var(--border); cursor:pointer;">
+                                <input type="checkbox" value="6" class="day-check" style="accent-color:var(--primary);"> Sat
+                            </label>
+                            <label style="font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; background:var(--bg-main); padding:8px 12px; border-radius:8px; border:1px solid var(--border); cursor:pointer;">
+                                <input type="checkbox" value="0" class="day-check" style="accent-color:var(--primary);"> Sun
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="toggle-card-config">
@@ -693,7 +759,6 @@
     </div>
 
     <script type="module">
-        // IMPORT BATCH OPERATIONS
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc, setDoc, writeBatch, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -852,9 +917,9 @@
             }
         };
 
-        // ---------------- CATEGORY MANAGER LOGIC (NEW) ----------------
+        // ---------------- CATEGORY MANAGER LOGIC ----------------
         window.openCatManager = () => {
-            document.body.classList.add('modal-open'); // Prevents background scroll
+            document.body.classList.add('modal-open'); 
             renderCatManagerList();
             document.getElementById('catManagerOverlay').classList.add('active');
             document.getElementById('catManagerModal').classList.add('active');
@@ -915,48 +980,28 @@
             if(!newName) return showToast("Category name cannot be empty");
             
             try {
-                // 1. Update Category Document
-                await updateDoc(doc(db, "categories", id), {
-                    name: newName,
-                    sortWeight: newWeight
-                });
+                await updateDoc(doc(db, "categories", id), { name: newName, sortWeight: newWeight });
                 
-                // 2. Cascade rename to all products if the name was changed
                 if(newName !== oldName) {
                     const q = query(collection(db, "products"), where("category", "==", oldName));
                     const snap = await getDocs(q);
                     const batch = writeBatch(db);
                     let count = 0;
-                    snap.forEach(d => {
-                        batch.update(d.ref, { category: newName });
-                        count++;
-                    });
+                    snap.forEach(d => { batch.update(d.ref, { category: newName }); count++; });
                     if(count > 0) {
                         await batch.commit();
                         showToast(`Updated category and moved ${count} items!`);
-                    } else {
-                        showToast("Category updated!");
-                    }
-                } else {
-                    showToast("Category weight updated!");
-                }
+                    } else { showToast("Category updated!"); }
+                } else { showToast("Category weight updated!"); }
                 
-                renderCatManagerList(); // Refresh list to reflect changes
-            } catch(e) { 
-                console.error(e); 
-                showToast("Error updating category"); 
-            }
+                renderCatManagerList(); 
+            } catch(e) { console.error(e); showToast("Error updating category"); }
         };
 
         window.deleteCategoryDb = async (id) => {
             if(confirm("Delete this category? Items inside it will remain in your database but may lose their grouping tab.")) {
-                try {
-                    await deleteDoc(doc(db, "categories", id));
-                    showToast("Category deleted");
-                    renderCatManagerList();
-                } catch (e) {
-                    console.error(e);
-                }
+                try { await deleteDoc(doc(db, "categories", id)); showToast("Category deleted"); renderCatManagerList(); } 
+                catch (e) { console.error(e); }
             }
         };
 
@@ -1001,7 +1046,7 @@
             window.scrollTo(0,0);
         };
 
-        // ---------------- NEW OPTION GROUP BUILDER LOGIC ----------------
+        // ---------------- OPTION GROUP BUILDER LOGIC ----------------
         window.addOptionGroup = () => {
             const group = { id: Date.now(), name: "", selection: "single", items: [] };
             window.optionGroups.push(group);
@@ -1067,7 +1112,7 @@
             document.getElementById('pCat').innerHTML = '<option value="">Select category</option>' + filteredCats.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
             if(currentSelected && filteredCats.find(c => c.name === currentSelected)) { document.getElementById('pCat').value = currentSelected; } 
             else { document.getElementById('pCat').value = ''; }
-            loadSubCats(); // Ensure subcategories load when main category loads
+            loadSubCats(); 
         }
 
         window.loadSubCats = () => {
@@ -1096,7 +1141,7 @@
         };
 
         window.closeModals = () => { 
-            document.body.classList.remove('modal-open'); // Restore scroll
+            document.body.classList.remove('modal-open'); 
             document.getElementById('confirmOverlay').classList.remove('active'); 
             document.getElementById('addCatOverlay').classList.remove('active'); 
             document.getElementById('addCatModal').classList.remove('active'); 
@@ -1162,7 +1207,7 @@
         window.setCatalogMode = (mode) => {
             currentCatalogMode = mode;
             currentCatalogCategory = 'All'; 
-            document.getElementById('catSearch').value = ''; // Reset search on tab switch
+            document.getElementById('catSearch').value = ''; 
             
             document.getElementById('catBtnResto').classList.remove('active');
             document.getElementById('catBtnGrocery').classList.remove('active');
@@ -1179,10 +1224,8 @@
             currentCatalogCategory = catName;
             document.querySelectorAll('#catalogCategoryTabs .tab-pill').forEach(t => t.classList.remove('active'));
             element.classList.add('active');
-            document.getElementById('catSearch').value = ''; // Reset search on category switch
+            document.getElementById('catSearch').value = ''; 
             renderCatalog();
-            
-            // Scroll selected pill into view
             element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         };
 
@@ -1197,7 +1240,6 @@
             const container = document.getElementById('catalogCategoryTabs');
             if(!container) return;
             
-            // We use globalCategoriesData so we respect the new sortWeight logic for Tabs!
             const activeCats = globalCategoriesData.filter(c => c.type === currentCatalogMode || !c.type);
             activeCats.sort((a,b) => (b.sortWeight || 0) - (a.sortWeight || 0) || a.name.localeCompare(b.name));
             
@@ -1225,7 +1267,6 @@
                 filteredProducts = filteredProducts.filter(p => p.name.toLowerCase().includes(searchQuery));
             }
 
-            // SMART SORTING: Highest sortWeight first, then alphabetical
             filteredProducts.sort((a, b) => {
                 const weightA = a.sortWeight || 0;
                 const weightB = b.sortWeight || 0;
@@ -1741,7 +1782,7 @@
 
             let actionsHTML = '';
 
-            actionsHTML += `<button class="btn btn-outline" style="margin-bottom:12px; background:var(--bg-main);" onclick="printReceipt('${order.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg> Print Receipt</button>`;
+            actionsHTML += `<button class="btn btn-outline" style="margin-bottom:12px; background:var(--bg-main);" onclick="printReceipt('${order.id}')"><svg viewBox="0 0 24 24" style="width:18px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1-2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg> Print Receipt</button>`;
             
             if (order.driverEmail && order.driverEmail !== "") {
                 const d = allDrivers.find(x => x.email === order.driverEmail);
@@ -1797,9 +1838,20 @@
             selectProductType('Resto'); 
 
             document.getElementById('pBadge').value = 'Standard';
+            document.getElementById('pSortWeight').value = ''; // Reset Custom Sort Weight
             
             window.currentProductTraits = []; 
             renderCustomTraits();
+            
+            // RESET TIME AND DAY LIMITS
+            document.getElementById('tglTimeLimit').checked = false;
+            document.getElementById('cfgTimeLimit').style.display = 'none';
+            document.getElementById('pStartTime').value = '';
+            document.getElementById('pEndTime').value = '';
+
+            document.getElementById('tglDayLimit').checked = false;
+            document.getElementById('cfgDayLimit').style.display = 'none';
+            document.querySelectorAll('.day-check').forEach(cb => cb.checked = false);
             
             document.getElementById('tglPromo').checked = false; document.getElementById('cfgPromo').style.display = 'none';
             
@@ -1830,15 +1882,30 @@
             document.getElementById('pCost').value = p.costPrice || '';
             
             document.getElementById('pBadge').value = p.badge || 'Standard';
+            document.getElementById('pSortWeight').value = p.sortWeight || ''; // Load Custom Weight
             
             window.currentProductTraits = p.traits ? JSON.parse(JSON.stringify(p.traits)) : []; 
             renderCustomTraits();
+
+            // LOAD TIME LIMITS
+            const hasTime = p.startTime && p.endTime;
+            document.getElementById('tglTimeLimit').checked = hasTime;
+            document.getElementById('cfgTimeLimit').style.display = hasTime ? 'block' : 'none';
+            document.getElementById('pStartTime').value = hasTime ? p.startTime : '';
+            document.getElementById('pEndTime').value = hasTime ? p.endTime : '';
+
+            // LOAD DAY LIMITS
+            const hasDays = p.daysAvailable && p.daysAvailable.length > 0;
+            document.getElementById('tglDayLimit').checked = hasDays;
+            document.getElementById('cfgDayLimit').style.display = hasDays ? 'block' : 'none';
+            document.querySelectorAll('.day-check').forEach(cb => {
+                cb.checked = hasDays ? p.daysAvailable.includes(parseInt(cb.value)) : false;
+            });
 
             document.getElementById('tglPromo').checked = (p.promoPrice !== null && p.promoPrice !== undefined);
             document.getElementById('cfgPromo').style.display = document.getElementById('tglPromo').checked ? 'block' : 'none';
             document.getElementById('vPromoPrice').value = p.promoPrice || '';
 
-            // Handle legacy data to new format safely
             window.optionGroups = p.optionGroups ? JSON.parse(JSON.stringify(p.optionGroups)) : [];
             renderOptionGroups();
 
@@ -1859,13 +1926,32 @@
         };
 
         window.saveProductData = async () => {
+            // HANDLE SORT WEIGHT OVERRIDE
             const badgeType = document.getElementById('pBadge').value;
-            let weight = 0;
-            if(badgeType === 'Vedette') weight = 100;
-            else if(badgeType === 'Top Vente') weight = 95;
-            else if(badgeType === 'Nouveau') weight = 90;
-            else if(badgeType === 'Promo') weight = 85;
-            else if(badgeType === 'Combo Pack') weight = 80;
+            let weight = parseInt(document.getElementById('pSortWeight').value);
+            
+            // If custom weight is blank, fallback to automatic badge priority
+            if(isNaN(weight)) {
+                weight = 0;
+                if(badgeType === 'Vedette') weight = 100;
+                else if(badgeType === 'Top Vente') weight = 95;
+                else if(badgeType === 'Nouveau') weight = 90;
+                else if(badgeType === 'Promo') weight = 85;
+                else if(badgeType === 'Combo Pack') weight = 80;
+            }
+
+            // EXTRACT TIME LIMITS
+            let sTime = null, eTime = null;
+            if(document.getElementById('tglTimeLimit').checked) {
+                sTime = document.getElementById('pStartTime').value || null;
+                eTime = document.getElementById('pEndTime').value || null;
+            }
+
+            // EXTRACT DAY LIMITS
+            let dAvail = [];
+            if(document.getElementById('tglDayLimit').checked) {
+                dAvail = Array.from(document.querySelectorAll('.day-check:checked')).map(cb => parseInt(cb.value));
+            }
 
             const data = {
                 name: document.getElementById('pName').value, 
@@ -1877,8 +1963,11 @@
                 costPrice: parseFloat(document.getElementById('pCost').value) || 0, 
                 imageUrl: document.getElementById('pImg').value, 
                 badge: badgeType,
-                sortWeight: weight,
+                sortWeight: weight, // Uses custom or default
                 traits: window.currentProductTraits,
+                startTime: sTime, // New Time logic
+                endTime: eTime,   // New Time logic
+                daysAvailable: dAvail, // New Day logic
                 promoPrice: document.getElementById('tglPromo').checked ? (parseFloat(document.getElementById('vPromoPrice').value) || null) : null,
                 optionGroups: window.optionGroups,
                 isAvailable: document.getElementById('tglAvailable').checked,
