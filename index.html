@@ -96,10 +96,11 @@
         .mc-card { min-width: 85px; background: var(--surface); border: 1px solid var(--border-dark); border-radius: 16px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.02);}
         .mc-card:active { transform: scale(0.95); }
         
-        .mc-icon { font-size: 30px; line-height: 1; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; justify-content: center;}
-        .mc-icon svg { width: 30px; height: 30px; stroke-width: 1.5; color: var(--text-main); }
-        .mc-card:not(.active) .mc-icon { opacity: 0.5; filter: grayscale(100%); transform: scale(0.85); }
-        .mc-card.active .mc-icon { transform: scale(1.15); filter: drop-shadow(0 6px 8px rgba(255, 69, 0, 0.25)); }
+        /* ICONS - SCALING REMOVED */
+        .mc-icon { font-size: 28px; line-height: 1; transition: 0.2s ease; display: flex; align-items: center; justify-content: center;}
+        .mc-icon svg { width: 28px; height: 28px; stroke-width: 1.5; color: var(--text-main); transition: 0.2s ease; }
+        .mc-card:not(.active) .mc-icon { opacity: 0.5; filter: grayscale(100%); }
+        .mc-card.active .mc-icon { opacity: 1; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.08)); }
         .mc-card.active .mc-icon svg { color: var(--theme-color); }
         
         .mc-text { font-size: 12px; font-weight: 700; color: var(--text-main); text-align: center; }
@@ -143,8 +144,10 @@
         
         .prod-bottom-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto;}
         
-        .p-old-price { font-size: 12px; color: var(--text-muted); text-decoration: line-through; font-weight: 600; margin-right: 6px;}
-        .prod-price { font-size: 16px; font-weight: 800; color: var(--theme-color); transition: color 0.3s ease;} 
+        /* UPDATED PRICE LAYOUT (STACKED) */
+        .p-old-price { font-size: 11px; color: var(--text-muted); text-decoration: line-through; font-weight: 600; margin-bottom: 2px; line-height: 1; display: block;}
+        .prod-price { font-size: 16px; font-weight: 800; color: var(--theme-color); line-height: 1; display: block;} 
+
         .btn-add { width: 34px; height: 34px; background: var(--theme-color); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background-color 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.1);} 
 
         /* FULL WIDTH BOTTOM CART BAR */
@@ -440,7 +443,7 @@
         let currentMode = 'Resto'; 
         let activeMainCategory = 'Top ventes'; 
         let activeSubCategory = 'All';
-        let isFirstDataLoad = true; // Added to fix skeleton bug
+        let isFirstDataLoad = true; 
         
         let cart = [];
         try {
@@ -456,7 +459,6 @@
             selections: {} 
         };
 
-        // ICONS UPGRADED FOR GROCERY
         const categoryAssets = {
             "Top ventes": "🔥",
             "En Vedette": "⭐",
@@ -469,7 +471,7 @@
             "Dairy": "🥛", "Produits Laitiers": "🥛", "Bakery": "🥖", "Boulangerie": "🥖", 
             "Cleaning": "🧼", "Entretien": "🧼",
             "Épicerie": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M4 10h16M4 14h16M6 4h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>`,
-            "Snacks": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><circle cx="12" cy="12" r="10"></circle><path d="M8.5 8.5v.01M15.5 9.5v.01M12 13.5v.01M9 15.5v.01M14.5 16.5v.01"></path></svg>`
+            "Snacks": "🍪" /* Updated to Emoji */
         };
         
         function getIconForCat(name) {
@@ -533,10 +535,8 @@
             updateCartTotals(); 
         };
 
-        // REFRESH BUG FIX: Save mode to LocalStorage
         window.setMode = (mode) => {
             currentMode = mode;
-            // Set default view based on mode
             activeMainCategory = mode === 'Resto' ? 'Top ventes' : 'En Vedette';
             activeSubCategory = 'All';
             
@@ -561,12 +561,10 @@
             renderUI();
         };
 
-        // SKELETON BUG FIX: Wait for true data load
         onSnapshot(collection(db, "products"), snap => {
             allProducts = snap.docs.map(d => ({id: d.id, ...d.data()})).filter(p => p.isAvailable !== false);
             
             if (isFirstDataLoad && snap.metadata.fromCache && allProducts.length === 0) {
-                // If it's the very first millisecond and cache is empty, wait briefly before clearing skeletons
                 setTimeout(() => { if (isFirstDataLoad) { isFirstDataLoad = false; renderUI(); } }, 1500);
                 return;
             }
@@ -578,7 +576,7 @@
         });
 
         function renderUI() {
-            if (isFirstDataLoad) return; // Don't wipe skeletons early
+            if (isFirstDataLoad) return; 
             renderMainCategories();
             renderSubCategories();
             renderProductGrid();
@@ -642,7 +640,6 @@
                 displayProducts = modeProducts.filter(p => p.featured === true || (p.sortWeight && p.sortWeight > 0) || (p.badge && p.badge !== 'Standard'));
                 document.getElementById('gridTitle').innerHTML = `Nos produits les plus populaires <span class="count">${displayProducts.length} produits</span>`;
             } else if (activeMainCategory === 'En Vedette') {
-                // Grocery "Featured" Filter
                 displayProducts = modeProducts.filter(p => p.promoPrice > 0 || p.badge === 'Top Vente' || p.badge === 'Promo' || p.badge === 'Combo Pack');
                 document.getElementById('gridTitle').innerHTML = `En Vedette <span class="count">${displayProducts.length} produits</span>`;
             } else {
@@ -665,12 +662,17 @@
         }
 
         function generateProductCard(p) {
-            const hasPromo = p.promoPrice !== null && p.promoPrice !== undefined;
-            const displayPrice = hasPromo ? p.promoPrice : p.sellPrice;
+            const hasPromo = p.promoPrice !== null && p.promoPrice !== undefined && p.promoPrice > 0;
             
+            // UPDATED PRICE HTML TO STACK
             const priceHtml = hasPromo 
-                ? `<span class="p-old-price">${formatPrice(p.sellPrice)} DH</span><span class="prod-price">${formatPrice(p.promoPrice)} DH</span>`
-                : `<span class="prod-price">${formatPrice(p.sellPrice)} DH</span>`;
+                ? `<div style="display:flex; flex-direction:column; justify-content:center;">
+                       <span class="p-old-price">${formatPrice(p.sellPrice)} DH</span>
+                       <span class="prod-price">${formatPrice(p.promoPrice)} DH</span>
+                   </div>`
+                : `<div style="display:flex; align-items:center;">
+                       <span class="prod-price">${formatPrice(p.sellPrice)} DH</span>
+                   </div>`;
 
             const imgTag = p.imageUrl ? `<img src="${p.imageUrl}" class="prod-img" loading="lazy" decoding="async">` : `<span style="font-weight:800; color:var(--text-muted); font-size:24px;">${p.name.charAt(0)}</span>`;
             
@@ -709,7 +711,7 @@
                     <p class="prod-category" style="${subMargin}">${subText}</p>
                     ${traitHtml}
                     <div class="prod-bottom-row">
-                        <div style="display:flex; align-items:center;">${priceHtml}</div>
+                        ${priceHtml}
                         <div class="btn-add" onclick="event.stopPropagation(); quickAddToCart('${p.id}')">
                             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                         </div>
@@ -748,7 +750,7 @@
             currentProductData = p;
             history.pushState({ modalOpen: true }, "");
 
-            const hasPromo = p.promoPrice !== null && p.promoPrice !== undefined;
+            const hasPromo = p.promoPrice !== null && p.promoPrice !== undefined && p.promoPrice > 0;
             const baseP = hasPromo ? p.promoPrice : p.sellPrice;
 
             customModalState = { 
@@ -801,7 +803,7 @@
 
             updateModalDOMPrice();
             
-            document.body.classList.add('no-scroll'); // LOCK SCROLL
+            document.body.classList.add('no-scroll'); 
             document.getElementById('productOverlay').classList.add('active'); 
             document.getElementById('productModal').classList.add('active');
         };
@@ -878,25 +880,22 @@
         window.addEventListener('popstate', (e) => { closeModals(true); });
 
         window.closeModals = (fromHistory = false) => { 
-            document.body.classList.remove('no-scroll'); // UNLOCK SCROLL
+            document.body.classList.remove('no-scroll'); 
             document.querySelectorAll('.overlay').forEach(el => el.classList.remove('active')); 
             document.querySelectorAll('.bottom-sheet, .std-sheet, .product-sheet').forEach(el => el.classList.remove('active')); 
             if(!fromHistory && history.state && history.state.modalOpen) { history.back(); }
         };
 
-        // NEW QUICK ADD FUNCTION
         window.quickAddToCart = (id) => {
             const p = allProducts.find(x => x.id === id);
             if(!p) return;
 
-            // If it's a Resto item with options, force them to the modal!
             if(p.productType === 'Resto' || (p.optionGroups && p.optionGroups.length > 0)) {
                 openProductModal(id);
                 return;
             }
 
-            // Otherwise, it's a simple Grocery item. Add instantly!
-            const price = (p.promoPrice !== null && p.promoPrice !== undefined) ? p.promoPrice : p.sellPrice;
+            const price = (p.promoPrice !== null && p.promoPrice !== undefined && p.promoPrice > 0) ? p.promoPrice : p.sellPrice;
             const cartItemId = p.id + '_quick';
 
             const existingIndex = cart.findIndex(item => item.cartItemId === cartItemId);
@@ -959,7 +958,7 @@
                 });
             }
 
-            localStorage.setItem('lasGoCart', JSON.stringify(cart)); // SAVE TO STORAGE
+            localStorage.setItem('lasGoCart', JSON.stringify(cart)); 
 
             closeModals(); updateFloatingCart(); showToast("Ajouté au panier !");
         };
@@ -1093,7 +1092,6 @@
                 });
                 waText += `\n*Sous-total:* ${formatPrice(subtotal)} DH\n*Livraison:* ${formatPrice(deliveryFee)} DH\n*TOTAL:* ${formatPrice(total)} DH`;
                 
-                // UPDATED WHATSAPP NUMBER
                 const waUrl = `https://wa.me/212708006088?text=${encodeURIComponent(waText)}`; 
                 
                 cart = []; 
@@ -1118,7 +1116,6 @@
 
         function showToast(msg) { const t = document.getElementById('toastBox'); document.getElementById('toastMsg').innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 
-        // Start App based on saved tab memory
         const savedTab = localStorage.getItem('lasGoActiveTab') || 'Resto';
         setMode(savedTab);
     </script>
