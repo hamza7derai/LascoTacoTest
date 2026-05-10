@@ -3,16 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>lasco.</title>
-    
-    <meta property="og:title" content="lasco.">
-    <meta property="og:description" content="Vos repas et courses livrés en un éclair à Marrakech !">
-    <meta property="og:image" content="https://i.postimg.cc/q7yMGWc1/file-00000000906471f4b781f0c5b3944220.png">
-    <meta property="og:url" content="https://hamza7derai.github.io/">
-    <meta property="og:type" content="website">
-    
-    <link rel="manifest" href="manifest.json">
-
+    <title>lasGo.</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
@@ -260,10 +251,6 @@
         .select-wrapper { position: relative; }
         .select-wrapper::after { content: ''; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid var(--text-main); pointer-events: none;}
 
-        /* CSS FOR THE NEW CART ZONE ICON */
-        .cart-zone-wrapper .zone-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; color: var(--text-muted); pointer-events: none; }
-        .cart-zone-wrapper select.form-input { padding-left: 44px; }
-
         .btn-main-cart { width: 100%; padding: 18px; background: var(--theme-color); color: white; font-size: 16px; font-weight: 800; border-radius: 16px; border: none; margin-top: 20px; box-shadow: 0 8px 20px rgba(255, 69, 0, 0.2); cursor: pointer; transition: 0.2s;}
         .btn-main-cart:active { transform: scale(0.98); }
 
@@ -284,7 +271,7 @@
 
         <header class="header">
             <div class="brand-logo" style="display: flex; align-items: center;">
-                <img src="https://i.postimg.cc/q7yMGWc1/file-00000000906471f4b781f0c5b3944220.png" alt="lasGo Logo" style="height: 48px; width: auto; object-fit: contain; mix-blend-mode: multiply;">
+                <img src="https://i.postimg.cc/HWJW9ySr/file-000000007c5c720ab4e6e16943cc7514.png" alt="lasGo Logo" style="height: 48px; width: auto; object-fit: contain; mix-blend-mode: multiply;">
             </div>
 
             <div class="header-right">
@@ -410,14 +397,12 @@
         <div id="checkoutForm">
             <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 16px;">Détails de livraison</h3>
             <div class="form-group">
-                <input type="text" id="custName" class="form-input" placeholder="Ton prénom ou surnom ✌️">
+                <input type="text" id="custName" class="form-input" placeholder="Nom Complet *">
             </div>
             <div class="form-group">
                 <input type="tel" id="custPhone" class="form-input" placeholder="Numéro de téléphone *">
             </div>
-            
-            <div class="form-group select-wrapper cart-zone-wrapper">
-                <svg class="zone-icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <div class="form-group select-wrapper">
                 <select id="custArea" class="form-input" onchange="syncZone(this.value)">
                     <option value="" disabled selected>Choisissez votre zone...</option>
                 </select>
@@ -483,7 +468,7 @@
             "Produce": "🥗", "Fruits & Légumes": "🍎", "Meat": "🥩", "Viande": "🥩", "Charcuterie & Frais": "🥩",
             "Dairy": "🥛", "Produits Laitiers": "🥛", "Bakery": "🥖", "Boulangerie": "🥖", 
             "Cleaning": "🧼", "Entretien": "🧼",
-            "Épicerie": "🥫", 
+            "Épicerie": "🥫", /* Changed from SVG to matching Emoji */
             "Snacks": "🍪"
         };
         
@@ -588,32 +573,6 @@
             }
         });
 
-        // HELPER FUNCTION FOR TIME AND DAY LIMITS
-        function isProductTimeValid(p) {
-            if (!p.startTime && !p.endTime && (!p.daysAvailable || p.daysAvailable.length === 0)) {
-                return true; 
-            }
-
-            const now = new Date();
-            const currentDay = now.getDay(); 
-            
-            if (p.daysAvailable && p.daysAvailable.length > 0) {
-                if (!p.daysAvailable.includes(currentDay)) return false;
-            }
-
-            if (p.startTime && p.endTime) {
-                const currentHour = now.getHours().toString().padStart(2, '0');
-                const currentMin = now.getMinutes().toString().padStart(2, '0');
-                const currentTimeStr = `${currentHour}:${currentMin}`;
-                
-                if (currentTimeStr < p.startTime || currentTimeStr > p.endTime) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         function renderUI() {
             if (isFirstDataLoad) return; 
             renderMainCategories();
@@ -623,7 +582,7 @@
         }
 
         function renderMainCategories() {
-            const modeProducts = allProducts.filter(p => p.productType === currentMode && isProductTimeValid(p));
+            const modeProducts = allProducts.filter(p => p.productType === currentMode);
             const uniqueCats = [...new Set(modeProducts.map(p => p.category).filter(Boolean))].sort();
             const container = document.getElementById('mainCatContainer');
             let html = '';
@@ -653,7 +612,7 @@
             const container = document.getElementById('subCatContainer');
             if(activeMainCategory === 'Top ventes' || activeMainCategory === 'En Vedette') { container.style.display = 'none'; return; }
 
-            const modeProducts = allProducts.filter(p => p.productType === currentMode && p.category === activeMainCategory && isProductTimeValid(p));
+            const modeProducts = allProducts.filter(p => p.productType === currentMode && p.category === activeMainCategory);
             const uniqueSubs = [...new Set(modeProducts.map(p => p.subCategory).filter(Boolean))].sort();
             
             if(uniqueSubs.length === 0) { container.style.display = 'none'; return; }
@@ -673,7 +632,7 @@
 
         function renderProductGrid() {
             let displayProducts = [];
-            const modeProducts = allProducts.filter(p => p.productType === currentMode && isProductTimeValid(p));
+            const modeProducts = allProducts.filter(p => p.productType === currentMode);
             
             if(activeMainCategory === 'Top ventes') {
                 displayProducts = modeProducts.filter(p => p.featured === true || (p.sortWeight && p.sortWeight > 0) || (p.badge && p.badge !== 'Standard'));
@@ -716,6 +675,7 @@
             
             let tagHtml = '';
             if (hasPromo) {
+                // DYNAMIC PERCENTAGE CALCULATOR ADDED HERE
                 let discountText = '% PROMO';
                 if(p.sellPrice > p.promoPrice) {
                     const discount = Math.round(((p.sellPrice - p.promoPrice) / p.sellPrice) * 100);
@@ -766,7 +726,7 @@
         document.getElementById('searchInput').addEventListener('input', e => {
             const q = e.target.value.toLowerCase();
             if(q.length === 0) { renderUI(); return; }
-            let subset = allProducts.filter(p => p.productType === currentMode && isProductTimeValid(p) && p.name.toLowerCase().includes(q));
+            let subset = allProducts.filter(p => p.productType === currentMode && p.name.toLowerCase().includes(q));
             
             subset.sort((a, b) => {
                 const wa = a.sortWeight || 0;
