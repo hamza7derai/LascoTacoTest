@@ -1161,6 +1161,15 @@
 
         const savedTab = localStorage.getItem('lasGoActiveTab') || 'Resto';
         setMode(savedTab);
+
+if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => {
+                    console.log("Service worker bypassed, app continues normally.");
+                });
+            });
+}
+        
     </script>
 </body>
 </html>
