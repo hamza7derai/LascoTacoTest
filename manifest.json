@@ -1,7 +1,7 @@
 {
   "id": "/customer",
-  "name": "lasco.",
-  "short_name": "lasco",
+  "name": "Tasco",
+  "short_name": "Tasco",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
