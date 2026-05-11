@@ -3,70 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lasco Admin - Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>TASCO | Admin Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
-           VARIABLES & RESET
+           TASCO PREMIUM LIGHT THEME
         ========================================= */
         :root {
-            --bg-main: #F8F9FB; 
-            --surface: #FFFFFF;
-            --primary: #FF4500; /* Lasco Orange */
-            --primary-light: #FFF0EB;
-            --text-main: #111827; 
-            --text-muted: #6B7280;
-            --border: #E5E7EB; 
+            --bg-main: #F8F4EE; /* Warm Cream */
+            --surface: #FFFFFF; /* Pure White Card */
+            --primary: #FF5A00; /* TASCO Orange */
+            --primary-light: rgba(255, 90, 0, 0.1);
+            --text-main: #171717; /* Deep Charcoal */
+            --text-muted: #6B7280; /* Cool Gray */
+            --border: #E6E2DC; /* Warm Border */
             --radius-card: 24px; 
-            --radius-btn: 16px;
-            --shadow-modal: 0 20px 40px rgba(0,0,0,0.06);
+            --radius-input: 12px;
+            --shadow-modal: 0 20px 40px rgba(23, 23, 23, 0.08);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-main); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        body { 
+            font-family: 'Space Grotesk', sans-serif; 
+            background: var(--bg-main); 
+            color: var(--text-main); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
         input, button { font-family: inherit; outline: none; border: none; background: none; }
         
         /* LOGIN CARD */
-        .login-card { background: var(--surface); width: 100%; max-width: 400px; border-radius: var(--radius-card); padding: 40px 30px; box-shadow: var(--shadow-modal); border: 1px solid rgba(0,0,0,0.02); text-align: center; }
+        .login-card { 
+            background: var(--surface); 
+            width: 100%; 
+            max-width: 400px; 
+            border-radius: var(--radius-card); 
+            padding: 48px 32px; 
+            box-shadow: var(--shadow-modal); 
+            border: 1px solid rgba(23, 23, 23, 0.05); 
+            text-align: center; 
+        }
         
         /* BRANDING */
-        .brand-logo { display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: var(--primary-light); border-radius: 20px; margin-bottom: 24px; color: var(--primary); font-size: 32px; font-weight: 800; font-style: italic; letter-spacing: -2px;}
-        .login-title { font-size: 24px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; letter-spacing: -0.5px;}
-        .login-subtitle { font-size: 14px; color: var(--text-muted); font-weight: 500; margin-bottom: 32px; }
+        .brand-logo { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 64px; 
+            height: 64px; 
+            background: var(--text-main); 
+            border-radius: 20px; 
+            margin-bottom: 24px; 
+            color: var(--primary); 
+            font-size: 32px; 
+            font-weight: 800; 
+            letter-spacing: -1px;
+            box-shadow: 0 8px 16px rgba(23, 23, 23, 0.1);
+        }
+        .login-title { 
+            font-size: 28px; 
+            font-weight: 800; 
+            color: var(--text-main); 
+            margin-bottom: 8px; 
+            letter-spacing: -1px;
+            text-transform: uppercase;
+        }
+        .login-subtitle { 
+            font-size: 13px; 
+            color: var(--text-muted); 
+            font-weight: 700; 
+            margin-bottom: 32px; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
         /* FORMS */
-        .form-group { margin-bottom: 20px; text-align: left; position: relative;}
-        .form-label { font-size: 13px; font-weight: 800; margin-bottom: 8px; display: block; color: var(--text-main); }
+        .form-group { margin-bottom: 24px; text-align: left; position: relative;}
+        .form-label { 
+            font-size: 12px; 
+            font-weight: 800; 
+            margin-bottom: 8px; 
+            display: block; 
+            color: var(--text-main); 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
         
-        .input-wrapper { position: relative; display: flex; align-items: center; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-main); transition: 0.2s;}
-        .input-wrapper:focus-within { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 3px var(--primary-light); }
+        .input-wrapper { 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            border: 1px solid var(--border); 
+            border-radius: var(--radius-input); 
+            background: var(--surface); 
+            transition: 0.2s;
+        }
+        .input-wrapper:focus-within { 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 3px var(--primary-light); 
+        }
         
         .left-icon { position: absolute; left: 16px; color: var(--text-muted); width: 18px; height: 18px; transition: 0.2s; }
         .input-wrapper:focus-within .left-icon { color: var(--primary); }
         
-        .form-input { width: 100%; padding: 16px 40px; font-size: 14px; font-weight: 500; color: var(--text-main); background: transparent; border: none; outline: none;}
-        .form-input::placeholder { color: #9CA3AF; }
+        .form-input { 
+            width: 100%; 
+            padding: 16px 40px; 
+            font-size: 15px; 
+            font-weight: 600; 
+            color: var(--text-main); 
+            background: transparent; 
+            border: none; 
+            outline: none;
+        }
+        .form-input::placeholder { color: #A1A1AA; font-weight: 500;}
         
         .right-action { position: absolute; right: 14px; color: var(--text-muted); cursor: pointer; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .right-action:hover { color: var(--text-main); }
         .right-action:active { transform: scale(0.9); }
 
         /* CHECKBOX */
-        .remember-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 24px; cursor: pointer; }
-        .custom-checkbox { width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; transition: 0.2s; background: white;}
+        .remember-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 32px; cursor: pointer; }
+        .custom-checkbox { width: 18px; height: 18px; border-radius: 6px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; transition: 0.2s; background: var(--bg-main);}
         .custom-checkbox.checked { background: var(--primary); border-color: var(--primary); }
         .custom-checkbox svg { width: 12px; height: 12px; stroke: white; stroke-width: 3; fill: none; display: none; }
         .custom-checkbox.checked svg { display: block; }
-        .remember-text { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+        .remember-text { font-size: 13px; font-weight: 700; color: var(--text-muted); }
 
         /* BUTTON */
-        .btn-login { width: 100%; padding: 18px; background: var(--primary); color: white; font-size: 16px; font-weight: 800; border-radius: var(--radius-btn); cursor: pointer; transition: 0.2s; box-shadow: 0 8px 20px rgba(255, 69, 0, 0.2); display: flex; align-items: center; justify-content: center; gap: 8px;}
+        .btn-login { 
+            width: 100%; 
+            padding: 18px; 
+            background: var(--primary); 
+            color: var(--surface); 
+            font-size: 16px; 
+            font-weight: 800; 
+            border-radius: var(--radius-input); 
+            cursor: pointer; 
+            transition: 0.2s; 
+            box-shadow: 0 8px 24px rgba(255, 90, 0, 0.25); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(255, 90, 0, 0.35); }
         .btn-login:active { transform: scale(0.98); }
-        .btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
+        .btn-login:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
         /* SECURITY TEXT & ERRORS */
-        .error-msg { color: #DC2626; font-size: 13px; font-weight: 700; margin-bottom: 20px; text-align: center; display: none; background: #FEE2E2; padding: 10px; border-radius: 10px; border: 1px solid #F87171;}
-        .secure-badge { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 24px; }
+        .error-msg { background: rgba(220, 38, 38, 0.1); color: #EF4444; font-size: 13px; font-weight: 700; margin-bottom: 24px; text-align: center; display: none; padding: 12px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2);}
+        .secure-badge { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; color: var(--text-muted); font-weight: 700; margin-top: 32px; text-transform: uppercase; letter-spacing: 0.5px;}
         .secure-badge svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.2;}
 
         /* SPINNER ANIMATION */
@@ -78,18 +171,18 @@
 
     <div class="login-card">
         <div class="brand-logo">S</div>
-        <h1 class="login-title">Welcome Back</h1>
-        <p class="login-subtitle">Sign in to the Lasco Admin Portal</p>
+        <h1 class="login-title">TASCO</h1>
+        <p class="login-subtitle">Command Center Access</p>
 
         <form id="loginForm">
             
-            <div class="error-msg" id="errorMsg">Invalid email or password.</div>
+            <div class="error-msg" id="errorMsg">Invalid credentials. Access denied.</div>
 
             <div class="form-group">
                 <label class="form-label">Admin Email</label>
                 <div class="input-wrapper">
                     <svg class="left-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                    <input type="email" id="adminEmail" class="form-input" placeholder="admin@lasgo.ma" required>
+                    <input type="email" id="adminEmail" class="form-input" placeholder="admin@tasco.ma" required>
                 </div>
             </div>
 
@@ -112,7 +205,7 @@
             </div>
 
             <button type="submit" class="btn-login" id="loginBtn">
-                <span id="btnText">Sign In</span>
+                <span id="btnText">Enter Portal</span>
                 <div class="spinner" id="spinner"></div>
             </button>
 
@@ -145,10 +238,10 @@
             const icon = document.getElementById('eyeIcon');
             if(input.type === 'password') { 
                 input.type = 'text'; 
-                icon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><line x1="3" y1="3" x2="21" y2="21"></line>`; // Crossed out eye
+                icon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><line x1="3" y1="3" x2="21" y2="21"></line>`;
             } else { 
                 input.type = 'password'; 
-                icon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`; // Normal eye
+                icon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
             }
         };
 
@@ -177,19 +270,19 @@
             errorMsg.style.display = 'none';
 
             try {
-                // Set persistence (Local = stays logged in, Session = logs out when tab closed)
+                // Set persistence
                 const persistenceType = rememberMe ? browserLocalPersistence : browserSessionPersistence;
                 await setPersistence(auth, persistenceType);
                 
                 // Attempt Login
                 await signInWithEmailAndPassword(auth, email, password);
                 
-                // Success! Redirect to the Admin dashboard
+                // Success! Redirect
                 window.location.href = "admin.html"; 
 
             } catch (error) {
                 console.error("Login failed:", error);
-                errorMsg.innerText = "Invalid email or password.";
+                errorMsg.innerText = "Invalid credentials. Access denied.";
                 errorMsg.style.display = 'block';
                 
                 // Reset UI
