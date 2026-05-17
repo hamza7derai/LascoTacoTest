@@ -148,7 +148,6 @@
         .prod-img-wrap { width: 100%; aspect-ratio: 5 / 4; overflow: hidden; background: var(--bg-main); border-radius: 12px; transition: transform 0.3s; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-light);}
         .prod-img { width: 100%; height: 100%; object-fit: cover; display: block; } 
         
-        /* RESTORED COLORFUL BADGES & TRAITS */
         .prod-tag { position: absolute; top: 10px; left: 10px; font-size: 10px; font-weight: 800; padding: 6px 10px; border-radius: 6px; z-index: 2; display: flex; align-items: center; gap: 3px; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-transform: uppercase;}
         .tag-promo { background: var(--promo-light); color: var(--promo); }
         .tag-vedette { background: var(--danger-light); color: var(--danger); }
@@ -170,7 +169,6 @@
         .p-old-price { font-size: 12px; color: var(--text-muted); text-decoration: line-through; font-weight: 700; margin-bottom: 2px; line-height: 1; display: block;}
         .prod-price { font-size: 18px; font-weight: 800; color: var(--theme-color); line-height: 1; display: block;} 
 
-        /* DYNAMIC ADD BUTTON */
         .btn-add { width: 40px; height: 40px; background: var(--theme-color); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background-color 0.3s ease, transform 0.1s; box-shadow: 0 4px 10px rgba(0,0,0,0.15);} 
         .btn-add:active { transform: scale(0.9); }
         .btn-add svg { stroke-width: 2.5; }
@@ -216,7 +214,33 @@
         .badge-req { background: var(--theme-light); color: var(--theme-color); font-size: 10px; font-weight: 800; padding: 6px 10px; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.5px;}
         .badge-opt { background: var(--bg-main); color: var(--text-muted); border: 1px solid var(--border-dark); font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.5px;}
 
-        /* DYNAMIC MODAL OPTIONS */
+        /* =========================================
+           RICH VISUAL OPTION MENUS
+        ========================================= */
+        
+        /* 1. SQUARE GRID LAYOUT (Ingredients, Bases) */
+        .opt-img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; margin-top: 8px; }
+        .opt-img-grid.two-cols { grid-template-columns: 1fr 1fr; }
+        .opt-img-card { border: 2px solid var(--border-light); border-radius: 16px; padding: 16px 12px; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: pointer; transition: 0.2s; background: var(--surface); position: relative; }
+        .opt-img-card.selected { border-color: var(--theme-color); background: var(--theme-light); }
+        .opt-img-card img { width: 54px; height: 54px; object-fit: contain; margin-bottom: 12px; }
+        .opt-item-title { font-size: 13px; font-weight: 800; color: var(--text-main); line-height: 1.2;}
+        .opt-item-price { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 4px; }
+        .opt-img-card.selected .opt-item-price { color: var(--theme-color); }
+        .check-badge { position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; background: var(--theme-color); border-radius: 50%; display: none; align-items: center; justify-content: center; color: white; box-shadow: 0 2px 6px rgba(255, 90, 0, 0.3);}
+        .opt-img-card.selected .check-badge { display: flex; }
+
+        /* 2. HORIZONTAL LIST LAYOUT (Sauces, Meats) */
+        .opt-img-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+        .opt-img-row { border: 2px solid var(--border-light); border-radius: 50px; padding: 8px 16px 8px 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; background: var(--surface); position: relative; }
+        .opt-img-row.selected { border-color: var(--theme-color); background: var(--theme-light); }
+        .opt-img-row img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--bg-main); }
+        .opt-row-text { display: flex; flex-direction: column; flex: 1; }
+        .opt-row-title { font-size: 13px; font-weight: 800; color: var(--text-main); line-height: 1.2; }
+        .pill-check { width: 20px; height: 20px; background: var(--theme-color); border-radius: 50%; display: none; align-items: center; justify-content: center; color: white; }
+        .opt-img-row.selected .pill-check { display: flex; }
+
+        /* 3. TEXT PILL LAYOUT (Classic) */
         .opt-scroll { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; margin: 0 -24px; padding: 0 24px; }
         .opt-scroll::-webkit-scrollbar { display: none; }
         .opt-pill { border: 2px solid var(--border-dark); border-radius: 50px; padding: 12px 20px; font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
@@ -228,15 +252,16 @@
         .opt-check::after { content: ''; width: 4px; height: 8px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); margin-bottom: 2px;}
 
         .opt-list { display: flex; flex-direction: column; gap: 12px; }
-        .opt-row { display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 16px 20px; border: 2px solid var(--border-dark); border-radius: 16px; transition: 0.2s; background: var(--surface); }
-        .opt-row.selected { border-color: var(--theme-color); background: var(--theme-light); }
+        .opt-text-row { display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 16px 20px; border: 2px solid var(--border-dark); border-radius: 16px; transition: 0.2s; background: var(--surface); }
+        .opt-text-row.selected { border-color: var(--theme-color); background: var(--theme-light); }
         .opt-left { display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 700; color: var(--text-main); }
         .opt-right { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 700; color: var(--text-muted); }
-        .opt-row.selected .opt-right { color: var(--theme-color); }
+        .opt-text-row.selected .opt-right { color: var(--theme-color); }
         .opt-checkbox { width: 24px; height: 24px; border: 2px solid var(--border-dark); border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: 0.2s; background: white;}
-        .opt-row.selected .opt-checkbox { background: var(--theme-color); border-color: var(--theme-color); }
-        .opt-row.selected .opt-checkbox::after { content: ''; width: 5px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); margin-bottom: 2px;}
+        .opt-text-row.selected .opt-checkbox { background: var(--theme-color); border-color: var(--theme-color); }
+        .opt-text-row.selected .opt-checkbox::after { content: ''; width: 5px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); margin-bottom: 2px;}
 
+        /* TEXTAREA & CART FOOTER */
         .textarea-notes { width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--border-dark); background: var(--bg-main); font-size: 14px; resize: none; outline: none; margin-bottom: 20px; font-weight: 600; font-family: inherit;}
         .textarea-notes:focus { border-color: var(--theme-color); background: var(--surface); box-shadow: 0 0 0 3px var(--theme-light);}
 
@@ -470,7 +495,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, addDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // KEEP YOUR EXISTING FIREBASE CONFIG HERE
         const firebaseConfig = {
           apiKey: "AIzaSyAaaR52bvyQfkxmZL16lcg4Bd4M76OtbI4",
           authDomain: "lesgo-cd7f9.firebaseapp.com",
@@ -509,16 +533,16 @@
         const categoryAssets = {
             "Top ventes": "🔥",
             "En Vedette": "⭐",
-            "Breakfast": "🥐", "Petit-déjeuner": "🥐", "Croissants": "🥐", 
-            "Desserts": "🍰", "Sucré": "🍰", "Cakes": "🎂", 
-            "Traditional": "🫖", "Moroccan Sweets": "🍯",
-            "Drinks": "🧋", "Boissons": "🥤",
-            "Tacos": "🌮", "Fast Food": "🍔", "Burger": "🍔", "Pizza": "🍕", 
-            "Produce": "🥗", "Fruits & Légumes": "🍎", "Meat": "🥩", "Viande": "🥩", "Charcuterie & Frais": "🥩",
-            "Dairy": "🥛", "Produits Laitiers": "🥛", "Bakery": "🥖", "Boulangerie": "🥖", 
+            "Fast Food & Salé": "🍔", "Burgers": "🍔", "Tacos": "🌮", "Pizzas": "🍕",
+            "Petit-déjeuner & Pain": "🥐", "Bakery": "🥖", "Pain": "🥖",
+            "Snacks & Munchies": "🍫", "Chips": "🍿", "Chocolat": "🍫",
+            "Desserts & Glaces": "🍦", "Glaces": "🍨", "Cakes": "🍰",
+            "Boissons Fraîches": "🥤", "Drinks": "🧋", "Jus": "🍹",
+            "Traditional": "🫖",
+            "Produce": "🥗", "Fruits & Légumes": "🍎", "Meat": "🥩", "Viande": "🥩", 
+            "Dairy": "🥛", "Produits Laitiers": "🥛", 
             "Cleaning": "🧼", "Entretien": "🧼",
-            "Épicerie": "🥫", 
-            "Snacks": "🍪"
+            "Épicerie": "🥫"
         };
         
         function getIconForCat(name) {
@@ -617,13 +641,13 @@
             if(mode === 'Grocery') {
                 btnGrocery.classList.add('active');
                 toggleBg.style.transform = 'translateX(100%)';
-                toggleBg.style.boxShadow = '0 4px 12px rgba(22, 163, 74, 0.4)'; // Vibrant Green Shadow
+                toggleBg.style.boxShadow = '0 4px 12px rgba(22, 163, 74, 0.4)'; 
                 root.style.setProperty('--theme-color', 'var(--grocery-color)');
                 root.style.setProperty('--theme-light', 'var(--grocery-light)');
             } else {
                 btnResto.classList.add('active');
                 toggleBg.style.transform = 'translateX(0)';
-                toggleBg.style.boxShadow = '0 4px 12px rgba(255, 90, 0, 0.25)'; // TASCO Orange Shadow
+                toggleBg.style.boxShadow = '0 4px 12px rgba(255, 90, 0, 0.25)'; 
                 root.style.setProperty('--theme-color', 'var(--resto-color)');
                 root.style.setProperty('--theme-light', 'var(--resto-light)');
             }
@@ -643,7 +667,6 @@
                 renderUI();
             }
 
-            // --- INSTAGRAM DEEP LINKING LOGIC ---
             if (!window.deepLinkExecuted) {
                 window.deepLinkExecuted = true;
                 const urlParams = new URLSearchParams(window.location.search);
@@ -925,7 +948,35 @@
             document.getElementById('productModal').classList.add('active');
         };
 
+        // --- NEW RENDERING LOGIC FOR RICH MENUS ---
         function buildSingleChoiceHTML(group) {
+            if (group.layout === 'list') {
+                return `
+                <div class="opt-img-list">
+                    ${group.items.map((item, i) => `
+                    <div class="opt-img-row ${i===0?'selected':''}" onclick="toggleModularOption(this, ${group.id}, '${item.name}', ${item.price}, 'single')">
+                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name}">` : ''}
+                        <div class="opt-row-text">
+                            <span class="opt-row-title">${item.name}</span>
+                        </div>
+                        ${item.price > 0 ? `<div style="font-size:12px; font-weight:700; color:var(--text-muted);">+${formatPrice(item.price)}</div>` : ''}
+                        <div class="pill-check"><svg viewBox="0 0 24 24" style="width:12px;"><polyline points="20 6 9 17 4 12" stroke="white" stroke-width="3"></polyline></svg></div>
+                    </div>`).join('')}
+                </div>`;
+            } else if (group.layout === 'grid') {
+                return `
+                <div class="opt-img-grid ${group.items.length <= 2 ? 'two-cols' : ''}">
+                    ${group.items.map((item, i) => `
+                    <div class="opt-img-card ${i===0?'selected':''}" onclick="toggleModularOption(this, ${group.id}, '${item.name}', ${item.price}, 'single')">
+                        <div class="check-badge"><svg viewBox="0 0 24 24" style="width:14px;"><polyline points="20 6 9 17 4 12" stroke="white" stroke-width="3"></polyline></svg></div>
+                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name}">` : `<div style="height:54px; width:54px; background:var(--bg-main); border-radius:8px; margin-bottom:12px;"></div>`}
+                        <span class="opt-item-title">${item.name}</span>
+                        ${item.price > 0 ? `<span class="opt-item-price">+${formatPrice(item.price)} DH</span>` : ''}
+                    </div>`).join('')}
+                </div>`;
+            }
+            
+            // Fallback (text pills)
             return `
             <div class="opt-scroll">
                 ${group.items.map((item, i) => `
@@ -938,10 +989,37 @@
         }
 
         function buildMultipleChoiceHTML(group) {
+            if (group.layout === 'list') {
+                return `
+                <div class="opt-img-list">
+                    ${group.items.map((item, i) => `
+                    <div class="opt-img-row" onclick="toggleModularOption(this, ${group.id}, '${item.name}', ${item.price}, 'multiple')">
+                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name}">` : ''}
+                        <div class="opt-row-text">
+                            <span class="opt-row-title">${item.name}</span>
+                        </div>
+                        ${item.price > 0 ? `<div style="font-size:12px; font-weight:700; color:var(--text-muted);">+${formatPrice(item.price)}</div>` : ''}
+                        <div class="pill-check"><svg viewBox="0 0 24 24" style="width:12px;"><polyline points="20 6 9 17 4 12" stroke="white" stroke-width="3"></polyline></svg></div>
+                    </div>`).join('')}
+                </div>`;
+            } else if (group.layout === 'grid') {
+                return `
+                <div class="opt-img-grid ${group.items.length <= 2 ? 'two-cols' : ''}">
+                    ${group.items.map((item, i) => `
+                    <div class="opt-img-card" onclick="toggleModularOption(this, ${group.id}, '${item.name}', ${item.price}, 'multiple')">
+                        <div class="check-badge"><svg viewBox="0 0 24 24" style="width:14px;"><polyline points="20 6 9 17 4 12" stroke="white" stroke-width="3"></polyline></svg></div>
+                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name}">` : `<div style="height:54px; width:54px; background:var(--bg-main); border-radius:8px; margin-bottom:12px;"></div>`}
+                        <span class="opt-item-title">${item.name}</span>
+                        ${item.price > 0 ? `<span class="opt-item-price">+${formatPrice(item.price)} DH</span>` : ''}
+                    </div>`).join('')}
+                </div>`;
+            }
+
+            // Fallback (text list)
             return `
             <div class="opt-list">
                 ${group.items.map((item, i) => `
-                <div class="opt-row" onclick="toggleModularOption(this, ${group.id}, '${item.name}', ${item.price}, 'multiple')">
+                <div class="opt-text-row" onclick="toggleModularOption(this, ${group.id}, '${item.name}', ${item.price}, 'multiple')">
                     <div class="opt-left"><span>${item.name}</span></div>
                     <div class="opt-right">
                         ${item.price > 0 ? `<span>+${formatPrice(item.price)} DH</span>` : ''}
@@ -955,7 +1033,8 @@
             let selections = customModalState.selections[groupId] || [];
 
             if (type === 'single') {
-                const siblings = element.parentElement.querySelectorAll('.opt-pill'); 
+                // Determine which type of HTML element we are unselecting based on the parent
+                const siblings = element.parentElement.querySelectorAll('.opt-pill, .opt-img-card, .opt-img-row'); 
                 siblings.forEach(el => el.classList.remove('selected'));
                 element.classList.add('selected');
                 customModalState.selections[groupId] = [{ name: itemName, price: price }];
@@ -1092,7 +1171,6 @@
             
             if(animate) {
                 animateValue(document.getElementById('floatCartTotal'), previousCartTotal, totalPrice, 400);
-                // Pulse Animation
                 banner.classList.remove('pulse-anim');
                 void banner.offsetWidth; // Trigger reflow
                 banner.classList.add('pulse-anim');
