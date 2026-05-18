@@ -509,6 +509,7 @@
         const formatPrice = (num) => { const p = Number(num); return p % 1 === 0 ? p.toString() : p.toFixed(2); };
 
         let allProducts = [];
+        let globalCategoriesData = []; // ADDED: To store categories from database
         let currentMode = 'Resto'; 
         let activeMainCategory = 'Top ventes'; 
         let activeSubCategory = 'All';
@@ -545,7 +546,11 @@
             "Épicerie": "🥫"
         };
         
+        // FIXED: Now checks database for custom icon first!
         function getIconForCat(name) {
+            const dbCat = globalCategoriesData.find(c => c.name === name);
+            if(dbCat && dbCat.icon) return dbCat.icon;
+
             for(let key in categoryAssets) { if(name.toLowerCase().includes(key.toLowerCase())) return categoryAssets[key]; }
             return currentMode === 'Resto' ? "🍽️" : "🛒";
         }
@@ -587,6 +592,12 @@
             
             if(currHeader) headerSelect.value = currHeader;
             if(currCart) cartSelect.value = currCart;
+        });
+
+        // ADDED: Listener for custom categories and emojis from admin
+        onSnapshot(collection(db, "categories"), snap => {
+            globalCategoriesData = snap.docs.map(d => ({id: d.id, ...d.data()})); 
+            if (!isFirstDataLoad) renderUI();
         });
 
         onSnapshot(doc(db, "settings", "announcement"), snap => {
@@ -722,6 +733,16 @@
         function renderMainCategories() {
             const modeProducts = allProducts.filter(p => p.productType === currentMode && isProductTimeValid(p));
             const uniqueCats = [...new Set(modeProducts.map(p => p.category).filter(Boolean))].sort();
+            
+            // Sort custom categories by weight
+            uniqueCats.sort((a,b) => {
+                const catA = globalCategoriesData.find(c => c.name === a);
+                const catB = globalCategoriesData.find(c => c.name === b);
+                const weightA = catA ? (catA.sortWeight || 0) : 0;
+                const weightB = catB ? (catB.sortWeight || 0) : 0;
+                return weightB - weightA || a.localeCompare(b);
+            });
+
             const container = document.getElementById('mainCatContainer');
             let html = '';
             
@@ -919,6 +940,16 @@
             const imgEl = document.getElementById('modalImg');
             if(p.imageUrl) { imgEl.src = p.imageUrl; imgEl.style.display = 'block'; } else { imgEl.style.display = 'none'; }
 
+            // FIXED: Smart Placeholder Logic
+            const notesBox = document.getElementById('modalNotes');
+            const catLower = (p.category || '').toLowerCase();
+            notesBox.value = ''; // clear old notes
+            if (catLower.includes('jus') || catLower.includes('boisson') || catLower.includes('dessert') || catLower.includes('drink')) {
+                notesBox.placeholder = "Ex: Sans sucre, moins de glaçons, allergies...";
+            } else {
+                notesBox.placeholder = "Ex: Sans oignons, bien cuit, sauce à part...";
+            }
+
             let sectionsHtml = '';
 
             if (p.optionGroups && p.optionGroups.length > 0) {
@@ -948,14 +979,14 @@
             document.getElementById('productModal').classList.add('active');
         };
 
-        // --- NEW RENDERING LOGIC FOR RICH MENUS ---
+        // FIXED: Escaped single quotes in item.name to prevent toggle bug
         function buildSingleChoiceHTML(group) {
             if (group.layout === 'list') {
                 return `
                 <div class="opt-img-list">
                     ${group.items.map((item, i) => `
-                    <div class="opt-img-row ${i===0?'selected':''}" onclick="toggleModularOption(this, ${group.id}, '${item.name}', ${item.price}, 'single')">
-                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name}">` : ''}
+                    <div class="opt-img-row ${i===0?'selected':''}" onclick="toggleModularOption(this, ${group.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price}, 'single')">
+                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name.replace(/"/g, '&quot;')}">` : ''}
                         <div class="opt-row-text">
                             <span class="opt-row-title">${item.name}</span>
                         </div>
@@ -967,9 +998,9 @@
                 return `
                 <div class="opt-img-grid ${group.items.length <= 2 ? 'two-cols' : ''}">
                     ${group.items.map((item, i) => `
-                    <div class="opt-img-card ${i===0?'selected':''}" onclick="toggleModularOption(this, ${group.id}, '${item.name}', ${item.price}, 'single')">
+                    <div class="opt-img-card ${i===0?'selected':''}" onclick="toggleModularOption(this, ${group.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price}, 'single')">
                         <div class="check-badge"><svg viewBox="0 0 24 24" style="width:14px;"><polyline points="20 6 9 17 4 12" stroke="white" stroke-width="3"></polyline></svg></div>
-                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name}">` : `<div style="height:54px; width:54px; background:var(--bg-main); border-radius:8px; margin-bottom:12px;"></div>`}
+                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name.replace(/"/g, '&quot;')}">` : `<div style="height:54px; width:54px; background:var(--bg-main); border-radius:8px; margin-bottom:12px;"></div>`}
                         <span class="opt-item-title">${item.name}</span>
                         ${item.price > 0 ? `<span class="opt-item-price">+${formatPrice(item.price)} DH</span>` : ''}
                     </div>`).join('')}
@@ -980,7 +1011,7 @@
             return `
             <div class="opt-scroll">
                 ${group.items.map((item, i) => `
-                <div class="opt-pill ${i===0?'selected':''}" onclick="toggleModularOption(this, ${group.id}, '${item.name}', ${item.price}, 'single')">
+                <div class="opt-pill ${i===0?'selected':''}" onclick="toggleModularOption(this, ${group.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price}, 'single')">
                     <span>${item.name}</span>
                     ${item.price > 0 ? `<span class="price-tag">+${formatPrice(item.price)}DH</span>` : ''}
                     <div class="opt-check"></div>
@@ -988,13 +1019,14 @@
             </div>`;
         }
 
+        // FIXED: Escaped single quotes in item.name to prevent toggle bug
         function buildMultipleChoiceHTML(group) {
             if (group.layout === 'list') {
                 return `
                 <div class="opt-img-list">
                     ${group.items.map((item, i) => `
-                    <div class="opt-img-row" onclick="toggleModularOption(this, ${group.id}, '${item.name}', ${item.price}, 'multiple')">
-                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name}">` : ''}
+                    <div class="opt-img-row" onclick="toggleModularOption(this, ${group.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price}, 'multiple')">
+                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name.replace(/"/g, '&quot;')}">` : ''}
                         <div class="opt-row-text">
                             <span class="opt-row-title">${item.name}</span>
                         </div>
@@ -1006,9 +1038,9 @@
                 return `
                 <div class="opt-img-grid ${group.items.length <= 2 ? 'two-cols' : ''}">
                     ${group.items.map((item, i) => `
-                    <div class="opt-img-card" onclick="toggleModularOption(this, ${group.id}, '${item.name}', ${item.price}, 'multiple')">
+                    <div class="opt-img-card" onclick="toggleModularOption(this, ${group.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price}, 'multiple')">
                         <div class="check-badge"><svg viewBox="0 0 24 24" style="width:14px;"><polyline points="20 6 9 17 4 12" stroke="white" stroke-width="3"></polyline></svg></div>
-                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name}">` : `<div style="height:54px; width:54px; background:var(--bg-main); border-radius:8px; margin-bottom:12px;"></div>`}
+                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name.replace(/"/g, '&quot;')}">` : `<div style="height:54px; width:54px; background:var(--bg-main); border-radius:8px; margin-bottom:12px;"></div>`}
                         <span class="opt-item-title">${item.name}</span>
                         ${item.price > 0 ? `<span class="opt-item-price">+${formatPrice(item.price)} DH</span>` : ''}
                     </div>`).join('')}
@@ -1019,7 +1051,7 @@
             return `
             <div class="opt-list">
                 ${group.items.map((item, i) => `
-                <div class="opt-text-row" onclick="toggleModularOption(this, ${group.id}, '${item.name}', ${item.price}, 'multiple')">
+                <div class="opt-text-row" onclick="toggleModularOption(this, ${group.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price}, 'multiple')">
                     <div class="opt-left"><span>${item.name}</span></div>
                     <div class="opt-right">
                         ${item.price > 0 ? `<span>+${formatPrice(item.price)} DH</span>` : ''}
@@ -1033,17 +1065,24 @@
             let selections = customModalState.selections[groupId] || [];
 
             if (type === 'single') {
-                // Determine which type of HTML element we are unselecting based on the parent
                 const siblings = element.parentElement.querySelectorAll('.opt-pill, .opt-img-card, .opt-img-row'); 
                 siblings.forEach(el => el.classList.remove('selected'));
                 element.classList.add('selected');
                 customModalState.selections[groupId] = [{ name: itemName, price: price }];
             } else {
+                // FIXED: Enforce Max Limit Logic
+                const groupDef = currentProductData.optionGroups.find(g => g.id === groupId);
+                const limit = groupDef.maxLimit || 0;
                 const idx = selections.findIndex(s => s.name === itemName);
+                
                 if (idx > -1) {
                     selections.splice(idx, 1);
                     element.classList.remove('selected');
                 } else {
+                    if (limit > 0 && selections.length >= limit) {
+                        showToast(`Vous ne pouvez choisir que ${limit} options maximum.`);
+                        return; // Stop them from selecting more
+                    }
                     selections.push({ name: itemName, price: price });
                     element.classList.add('selected');
                 }
