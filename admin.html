@@ -429,7 +429,7 @@
     <div class="bottom-sheet" id="catManagerModal" style="max-height: 80vh; overflow-y:auto;">
         <div class="sheet-handle"></div>
         <h2 style="font-size: 18px; font-weight:800; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">Manage Categories</h2>
-        <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px; line-height:1.4; font-weight:600;">Set weights to control tab order (higher = first), or rename categories across all items instantly.</p>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px; line-height:1.4; font-weight:600;">Set emojis and weights to control tab order (higher = first).</p>
         <div id="catManagerList" style="display:flex; flex-direction:column; gap:12px;"></div>
     </div>
 
@@ -760,7 +760,10 @@
     <div class="overlay" id="addCatOverlay" onclick="if(event.target===this) closeModals()"></div>
     <div class="bottom-sheet" id="addCatModal">
         <div class="sheet-handle"></div><h2 style="font-size: 18px; font-weight:800; margin-bottom:20px; text-transform:uppercase; letter-spacing:0.5px;" id="catModalTitle">Add</h2>
-        <div class="form-group"><input type="text" id="newCatInput" class="form-control" placeholder="Category name..." autofocus></div>
+        <div class="form-group" style="display:flex; gap:8px;">
+            <input type="text" id="newCatIcon" class="form-control" style="width:60px; text-align:center;" placeholder="🍔">
+            <input type="text" id="newCatInput" class="form-control" placeholder="Category name..." autofocus>
+        </div>
         <button class="btn btn-primary" id="btnSaveCategory">Add</button>
     </div>
     
@@ -954,8 +957,9 @@
                     html += `
                     <div style="background:var(--bg-main); padding:10px; border-radius:12px; border:1px solid var(--border-dark); margin-bottom: 8px;">
                         <div style="display:flex; gap:8px; align-items:center;">
+                            <input type="text" id="catIcon_${c.id}" class="form-control" style="width:48px; padding:10px; font-size:16px; text-align:center;" placeholder="🍔" value="${c.icon || ''}">
                             <input type="text" id="catName_${c.id}" class="form-control" style="padding:10px; font-size:13px; font-weight:700;" value="${c.name}">
-                            <input type="number" id="catWeight_${c.id}" class="form-control" style="width:70px; padding:10px; font-size:13px; text-align:center;" placeholder="Wgt" value="${c.sortWeight || 0}">
+                            <input type="number" id="catWeight_${c.id}" class="form-control" style="width:60px; padding:10px; font-size:13px; text-align:center;" placeholder="Wgt" value="${c.sortWeight || 0}">
                             <button class="btn-action edit" onclick="saveCategoryChanges('${c.id}', '${c.name.replace(/'/g, "\\'")}')"><svg viewBox="0 0 24 24" style="width:16px;"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
                             <button class="btn-action del" onclick="deleteCategoryDb('${c.id}')"><svg viewBox="0 0 24 24" style="width:16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
                         </div>
@@ -984,14 +988,16 @@
         window.saveCategoryChanges = async (id, oldName) => {
             const newNameInput = document.getElementById(`catName_${id}`);
             const newWeightInput = document.getElementById(`catWeight_${id}`);
+            const newIconInput = document.getElementById(`catIcon_${id}`);
             
             const newName = newNameInput.value.trim();
             const newWeight = parseInt(newWeightInput.value) || 0;
+            const newIcon = newIconInput.value.trim();
             
             if(!newName) return showToast("Category name cannot be empty");
             
             try {
-                await updateDoc(doc(db, "categories", id), { name: newName, sortWeight: newWeight });
+                await updateDoc(doc(db, "categories", id), { name: newName, sortWeight: newWeight, icon: newIcon });
                 
                 if(newName !== oldName) {
                     const q = query(collection(db, "products"), where("category", "==", oldName));
@@ -1003,7 +1009,7 @@
                         await batch.commit();
                         showToast(`Updated category and moved ${count} items!`);
                     } else { showToast("Category updated!"); }
-                } else { showToast("Category weight updated!"); }
+                } else { showToast("Category updated!"); }
                 
                 renderCatManagerList(); 
             } catch(e) { console.error(e); showToast("Error updating category"); }
@@ -1059,7 +1065,7 @@
 
         // ---------------- OPTION GROUP BUILDER LOGIC ----------------
         window.addOptionGroup = () => {
-            const group = { id: Date.now(), name: "", selection: "single", layout: "text", items: [] };
+            const group = { id: Date.now(), name: "", selection: "single", layout: "text", maxLimit: 0, items: [] };
             window.optionGroups.push(group);
             renderOptionGroups();
         };
@@ -1089,6 +1095,11 @@
                             <label style="font-size:13px; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer;">
                                 <input type="radio" name="sel_${g.id}" ${g.selection==='multiple'?'checked':''} onchange="updateGroupSel(${g.id}, 'multiple')" style="accent-color:var(--primary);"> Pick Multiple (Checkbox)
                             </label>
+                            ${g.selection === 'multiple' ? `
+                            <div style="padding-left: 24px;">
+                                <input type="number" placeholder="Max limit (0 = none)" class="form-control" style="font-size:12px; padding:8px; height:auto;" value="${g.maxLimit || ''}" oninput="updateGroupLimit(${g.id}, this.value)">
+                            </div>
+                            ` : ''}
                         </div>
                         <select class="form-control" style="width: 140px; font-size:12px; padding:10px;" onchange="updateGroupLayout(${g.id}, this.value)">
                             <option value="text" ${g.layout==='text' || !g.layout ? 'selected' : ''}>Pills (Text)</option>
@@ -1117,7 +1128,8 @@
         };
 
         window.updateGroupName = (id, val) => { window.optionGroups.find(g => g.id === id).name = val; };
-        window.updateGroupSel = (id, val) => { window.optionGroups.find(g => g.id === id).selection = val; };
+        window.updateGroupSel = (id, val) => { window.optionGroups.find(g => g.id === id).selection = val; renderOptionGroups(); };
+        window.updateGroupLimit = (id, val) => { window.optionGroups.find(g => g.id === id).maxLimit = parseInt(val) || 0; };
         window.updateGroupLayout = (id, val) => { window.optionGroups.find(g => g.id === id).layout = val; };
         window.updateItemField = (gid, idx, field, val) => { 
             const item = window.optionGroups.find(g => g.id === gid).items[idx];
@@ -1157,6 +1169,7 @@
                 document.getElementById('catModalTitle').innerText = `New Subcategory for '${mainCat}'`; 
             }
             document.getElementById('newCatInput').value = ''; 
+            document.getElementById('newCatIcon').value = ''; 
             document.getElementById('addCatOverlay').classList.add('active'); 
             document.getElementById('addCatModal').classList.add('active');
             setTimeout(() => document.getElementById('newCatInput').focus(), 100);
@@ -1172,12 +1185,15 @@
         };
 
         document.getElementById('btnSaveCategory').addEventListener('click', async () => {
-            const val = document.getElementById('newCatInput').value.trim(); if(!val) return;
+            const val = document.getElementById('newCatInput').value.trim(); 
+            const iconVal = document.getElementById('newCatIcon').value.trim();
+            if(!val) return;
+            
             const btn = document.getElementById('btnSaveCategory'); btn.innerText = '...'; btn.disabled = true;
             try {
                 if(currentCatAddingType === 'main') {
                     if(!globalCategoriesData.find(c => c.name.toLowerCase() === val.toLowerCase())) {
-                        await addDoc(collection(db, "categories"), { name: val, subcategories: [], type: selectedProductType, sortWeight: 0 }); 
+                        await addDoc(collection(db, "categories"), { name: val, icon: iconVal, subcategories: [], type: selectedProductType, sortWeight: 0 }); 
                         showToast("Category created!");
                     } else { showToast("Category already exists!"); }
                 } else {
